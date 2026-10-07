@@ -1,0 +1,17 @@
+{
+  "name": "poker-coach",
+  "version": "1.0.0",
+  "description": "AI poker coach: play WSOP-style tournaments against pro-inspired AI opponents, get GTO advice, and learn your own style.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/*.test.js",
+    "simulate": "node scripts/simulate.js",
+    "build:equity": "node scripts/build-equity.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT"
+}
