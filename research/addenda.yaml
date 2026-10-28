@@ -1,38 +1,406 @@
-# Research overlay for AI CRASH MONITOR (DESIGN.md §7). Applied on top of universe.yaml by the config loader.
-# Written by the RESEARCH agent; every figure has a source id with a verbatim quote (see docs/research_addenda.md).
-# accessed: 2026-10-28 for all sources unless stated.
-
+# Research overlay for AI CRASH MONITOR (docs/DESIGN.md section 7). Applied on top of universe.yaml by the
+# config loader: `quantities` replace the universe.yaml definition of the same id wholesale; `sources` are added
+# to the bundle. Every figure carries a source id with a verbatim quote; narrative and verification notes are in
+# docs/research_addenda.md. Written by the RESEARCH agent; all sources accessed 2026-10-28.
 sources:
-  - id: tcs_q2fy27_investing_slides
-    title: "TCS Q2 FY27 slides: steady growth, margin compression to 24%"
-    publisher: "Investing.com"
-    url: "https://uk.investing.com/news/stock-market-news/tcs-q2-fy27-slides-steady-growth-margin-compression-to-24-93CH-4901629"
-    date: "2026-10-08"
-    quote: "Banking, Financial Services, and Insurance (BFSI) remains TCS's largest vertical at 32.8% of revenue ... Manufacturing (9.0% of revenue) ... Technology & Services (8.6%) ... North America, representing 48.3% of total revenue"
-    verification: SECONDARY
-    accessed: "2026-10-28"
-    note: "Summary of TCS's Q2 FY27 investor presentation; TCS fact sheet PDF returns HTTP 403 to automated fetch."
-  - id: tcs_q2fy27_multibagg
-    title: "TCS Q2 FY27: International Growth, Strategic Wins, and AI Revenue Crossing 10%"
-    publisher: "Multibagg"
-    url: "https://www.multibagg.ai/market-pulse/articles/tcs-q2fy27-1525243338"
-    date: "2026-10-08"
-    quote: "| Technology and Services | 8.6% | 3.1% | 4.8% |"
-    verification: SECONDARY
-    accessed: "2026-10-28"
-    note: "Segment table: mix 8.6%, QoQ cc +3.1%, YoY cc +4.8%. Concurs with Investing.com; the search index extraction of the TCS fact sheet shows 8.5% (Q2 FY26), 8.5% (Q1 FY27), 8.6% (Q2 FY27)."
-
+- id: tcs_q2fy27_investing_slides
+  title: 'TCS Q2 FY27 slides: steady growth, margin compression to 24%'
+  publisher: Investing.com
+  url: https://uk.investing.com/news/stock-market-news/tcs-q2-fy27-slides-steady-growth-margin-compression-to-24-93CH-4901629
+  date: '2026-10-08'
+  quote: Banking, Financial Services, and Insurance (BFSI) remains TCS's largest vertical at 32.8% of revenue ... Manufacturing (9.0% of revenue) ... Technology & Services (8.6%) ... North America, representing
+    48.3% of total revenue
+  verification: SECONDARY
+  accessed: '2026-10-28'
+  note: Summary of TCS's Q2 FY27 investor presentation; TCS fact sheet PDF returns HTTP 403 to automated fetch.
+- id: tcs_q2fy27_multibagg
+  title: 'TCS Q2 FY27: International Growth, Strategic Wins, and AI Revenue Crossing 10%'
+  publisher: Multibagg
+  url: https://www.multibagg.ai/market-pulse/articles/tcs-q2fy27-1525243338
+  date: '2026-10-08'
+  quote: '| Technology and Services | 8.6% | 3.1% | 4.8% |'
+  verification: SECONDARY
+  accessed: '2026-10-28'
+  note: 'Segment table: mix 8.6%, QoQ cc +3.1%, YoY cc +4.8%. Concurs with Investing.com; the search index extraction of the TCS fact sheet shows 8.5% (Q2 FY26), 8.5% (Q1 FY27), 8.6% (Q2 FY27).'
+- id: infy_6k_q2fy27_ex993
+  title: 'Infosys Ltd Form 6-K (23-Oct-2026), Exhibit 99.3: Form of Release to Stock Exchanges (Q2 FY27, Ind AS)'
+  publisher: Infosys Ltd via SEC EDGAR
+  url: https://www.sec.gov/Archives/edgar/data/1067491/000106749126000042/exv99w03.htm
+  date: '2026-10-23'
+  quote: Revenue by business segment ... Quarter ended September 30, 2026 ... Hi-Tech 3,332 ... Total 49,244 (in ₹ crore)
+  verification: PRIMARY
+  accessed: '2026-10-28'
+  note: 'Segment table: Financial Services 13,774; Retail 5,664; Communication 6,150; Energy, Utilities, Resources and Services 6,975; Manufacturing 7,913; Hi-Tech 3,332; Life Sciences 4,145; All other
+    segments 1,291; Total 49,244 (sum verified). Hi-Tech share = 3,332/49,244 = 6.77%.'
+- id: hcl_q2fy27_investing_slides
+  title: 'HCLTech Q2 FY27 slides: AI revenue surges 78%, margins expand'
+  publisher: Investing.com
+  url: https://ca.investing.com/news/stock-market-news/hcltech-q2-fy27-slides-ai-revenue-surges-78-margins-expand-93CH-4876646
+  date: '2026-10-12'
+  quote: total revenue of $3,724 million ... HCLSoftware, accounting for 7.9% of revenue ... Financial Services led at 22.4% of services revenue with 7.1% growth ... the United States remained HCLTech's
+    largest market at 56.1% of services revenue
+  verification: SECONDARY
+  accessed: '2026-10-28'
+  note: Shows HCLTech vertical/geography mix is stated on a Services-revenue basis. HCLTech investor release on NSE (HCLTECH_12102026170757_InvestorRelease_5.pdf) returned HTTP 503; hcltech.com returned
+    503.
+- id: hcl_q2fy27_finology
+  title: 'HCL Tech Q2 FY27 Results Analysis: Revenue, Profit & AI Growth'
+  publisher: Finology Ticker
+  url: https://ticker.finology.in/discover/market-update/hcl-tech-q2-fy27-results-analysis
+  date: '2026-10-12'
+  quote: Technology & Services at 14.3% revenue mix (as surfaced by the search index; page returns HTTP 403 to direct fetch)
+  verification: UNVERIFIED
+  accessed: '2026-10-28'
+  note: Single source, could not be fetched directly; basis (services vs total) not stated.
+- id: ltm_q2fy27_angelone
+  title: 'LTM Share Price in Focus After Q2 FY27 Earnings Results: Total Income Up 11.3% YoY'
+  publisher: Angel One
+  url: https://www.angelone.in/news/stocks/ltm-share-price-in-focus-after-q2-fy27-earnings-results-total-income-up-11-3-yoy
+  date: '2026-10-16'
+  quote: Technology & Services with ₹2,236.1 crore ... North America contributed 74.3% of the total revenue
+  verification: SECONDARY
+  accessed: '2026-10-28'
+  note: 'Segments: Financial Services ₹4,091.9 cr (34.7%), Consumer ₹3,125.0 cr, Production ₹2,354.6 cr, Technology & Services ₹2,236.1 cr; the four sum to ₹11,807.6 cr = revenue from operations reported
+    by Kotak Neo. LTM fact sheet not reachable.'
+- id: ltm_q2fy27_kotakneo
+  title: 'LTM Q2 FY27 Results: Revenue Grows in Double Digits, Net Profit Stays Flat and Order Inflow Stands at $1.26 Billion'
+  publisher: Kotak Neo
+  url: https://www.kotakneo.com/news/stocks/ltm-share-price-and-q2-fy-27-results/
+  date: '2026-10-16'
+  quote: Revenue from operations was ₹11,807.6 crore, up 13.6% year on year
+  verification: SECONDARY
+  accessed: '2026-10-28'
+  note: Wording as surfaced by the search index; used only to confirm the segment total.
+- id: coforge_q2fy27_investing_slides
+  title: 'Coforge Q2 FY27 slides: margins upgraded as order intake tops $1B'
+  publisher: Investing.com
+  url: https://uk.investing.com/news/stock-market-news/coforge-q2-fy27-slides-margins-upgraded-as-order-intake-tops-1b-93CH-4928784
+  date: '2026-10-23'
+  quote: Healthcare & HiTech at 17.6% ... Americas remained the largest market at 63.1% of revenue
+  verification: SECONDARY
+  accessed: '2026-10-28'
+  note: Coforge reports Healthcare and HiTech as one combined vertical; growth partly from the first full quarter of the Encora acquisition (organic cc +3.8% q/q).
+- id: mphasis_q1fy27_icicisec
+  title: Mphasis Q1FY27 result update (ICICI Securities)
+  publisher: ICICI Securities
+  url: https://mailcontent.icicidirect.com/mailcontent/idirect_mphasis_q1fy27.pdf
+  date: 2026-07
+  quote: Vertical wise on a QoQ CC basis, TMT (18% of mix), Others (10% of mix) and BFSI (53% of mix) grew by 15.5%, 5.2% and 0.7%, respectively, while Logistics (4% of mix) and Insurance (15% of mix) declined
+    ... Americas (85% of mix)
+  verification: SECONDARY
+  accessed: '2026-10-28'
+  note: Quarter ended 30-Jun-2026; Mphasis Q2 FY27 results not yet published/found as of 2026-10-28. Text extracted with pdftotext.
+- id: tataelxsi_q2fy27_pr
+  title: Tata Elxsi delivers healthy revenue growth of 3.4% QoQ and 15% YoY in Q2 FY27
+  publisher: Tata Elxsi (press release)
+  url: https://www.tataelxsi.com/news-and-events/press-releases/tata-elxsi-delivers-healthy-revenue-growth-of-34-qoq-and-15-yoy-in-q2-fy27
+  date: '2026-10-13'
+  quote: Our Media & Communications vertical, which accounted for 33.6% of our SDS segment ... operating revenue of Rs. 1,055.7 Cr. growing 3.4% QoQ and 15.0% YoY
+  verification: PRIMARY
+  accessed: '2026-10-28'
+  note: Transportation 'more than 55%' of SDS.
+- id: tataelxsi_q2fy27_fpj
+  title: 'Tata Elxsi Q2 FY27 Results: Net Profit Rises 10% To ₹170.30 Crore; Revenue Jumps 15%'
+  publisher: Free Press Journal
+  url: https://www.freepressjournal.in/business/tata-elxsi-q2-fy27-results-net-profit-rises-10-to-17030-crore-revenue-jumps-15
+  date: '2026-10-13'
+  quote: The software development and services segment recorded quarterly revenue of Rs 1,027.87 crore, compared with Rs 893.82 crore a year earlier.
+  verification: SECONDARY
+  accessed: '2026-10-28'
+  note: Quote as surfaced by the search index.
+- id: cyient_q2fy27_investing_slides
+  title: 'Cyient Q2 FY27 slides: margins hit 10-quarter high, stock slips'
+  publisher: Investing.com
+  url: https://in.investing.com/news/stock-market-news/cyient-q2-fy27-slides-margins-hit-10quarter-high-stock-slips-93CH-5648360
+  date: '2026-10-22'
+  quote: Group operating revenue of $233.9 million (₹22,350 million) ... DET revenue came in at $174.2 million ... Semiconductor revenue of $19.3 million (₹1,847 million) ... Networks & Infrastructure posted
+    $52.8 million in revenue ... Americas at 53.9%
+  verification: SECONDARY
+  accessed: '2026-10-28'
+  note: Transportation & Mobility $75.8M; Strategic Units $35.3M.
+- id: smci_10k_fy26_r53
+  title: 'Super Micro Computer, Inc. Form 10-K FY2026 (period ended 30-Jun-2026), XBRL R53: Segment Information - Narrative (Details)'
+  publisher: SEC EDGAR
+  url: https://www.sec.gov/Archives/edgar/data/1375365/000137536526000022/R53.htm
+  date: '2026-08-31'
+  quote: Customer One ... 28.10% [FY2026] ... 20.90% [FY2025] ... 20.00% [FY2024]; United States geographic concentration (% of net sales) 70.90%; Net sales 39,063,072 ($ thousands)
+  verification: PRIMARY
+  accessed: '2026-10-28'
+  note: 'FY2025 also had Customers Two/Three/Four at 11.5%/11.3%/11.1%. Main 10-K text: ''We had one customer account for 10% or more of our net sales in fiscal year 2026''. AR concentration (R52): Customer
+    One 23.0%, Customer Two 17.1% at 30-Jun-2026.'
+- id: smci_fy26_secapi
+  title: Financial analysis of Super Micro Computer fiscal 2026
+  publisher: sec-api.io
+  url: https://sec-api.io/insights/financial-analysis-of-super-micro-computer-fiscal-2026
+  date: 2026-09
+  quote: One large data center and cloud service provider customer accounted for 28% of fiscal 2026 revenue
+  verification: SECONDARY
+  accessed: '2026-10-28'
+  note: Used only for the customer type (large data centre / CSP); the 28.1% figure itself is from the 10-K XBRL.
+- id: asml_20f_fy25_r67
+  title: 'ASML Holding N.V. Form 20-F FY2025, XBRL R67: Net System Sales per End-Use (Details)'
+  publisher: SEC EDGAR
+  url: https://www.sec.gov/Archives/edgar/data/0000937966/000162828026011378/R67.htm
+  date: '2026-02-25'
+  quote: 'Logic ... 2025: € 16,054.1 ... Memory ... 2025: € 8,420.2 (EUR millions)'
+  verification: PRIMARY
+  accessed: '2026-10-28'
+  note: '2024: Logic €13,195.1M, Memory €8,573.6M.'
+- id: asml_20f_fy25_r71
+  title: 'ASML Holding N.V. Form 20-F FY2025, XBRL R71: Net Sales and Long-Lived Assets by Geographic Region (Details)'
+  publisher: SEC EDGAR
+  url: https://www.sec.gov/Archives/edgar/data/0000937966/000162828026011378/R71.htm
+  date: '2026-02-25'
+  quote: Taiwan 8,337.9 ... South Korea 8,159.6 ... China 9,519.7 ... United States 4,089.1 ... Total net sales 32,667.3 (EUR millions, 2025)
+  verification: PRIMARY
+  accessed: '2026-10-28'
+  note: Taiwan = 25.5% of 2025 net sales.
+- id: asml_concentration_fool
+  title: 'ASML vs. Taiwan Semiconductor Manufacturing: Which Technology Stock Is a Better Buy in 2026?'
+  publisher: The Motley Fool
+  url: https://www.fool.com/coverage/better-buy/2026/10/12/asml-vs-taiwan-semiconductor-manufacturing-which-technology-stock-is-a-better-buy-in-2026/
+  date: '2026-10-12'
+  quote: According to ASML's 2025 annual report, four customers accounted for about 61% of ASML's 2025 net sales.
+  verification: SECONDARY
+  accessed: '2026-10-28'
+  note: null
+- id: asml_largest_customer_substack
+  title: ASML Built a $400 Million Machine. TSMC Isn't Using It.
+  publisher: The Dutch Investors (Substack)
+  url: https://thedutchinvestors.substack.com/p/asml-built-a-400-million-machine
+  date: '2026'
+  quote: Although ASML does not publicly name its largest customer, we do know its largest customer accounted for 24% of 2025 sales.
+  verification: UNVERIFIED
+  accessed: '2026-10-28'
+  note: Blog; the 20-F text contains the phrase 'largest customer' (EDGAR full-text search) but the 24.9 MB document could not be read in full.
+- id: mu_10k_fy26_r82
+  title: 'Micron Technology Form 10-K FY2026 (FY ended 3-Sep-2026), XBRL R82: Segment and Other Information - Results by Segment (Details)'
+  publisher: SEC EDGAR
+  url: https://www.sec.gov/Archives/edgar/data/0000723125/000072312526000023/R82.htm
+  date: 2026-10
+  quote: 'Revenue FY2026: CMBU 43,085; CDBU 37,592; MCBU 36,601; AEBU 15,886; Total 133,188 ($ millions)'
+  verification: PRIMARY
+  accessed: '2026-10-28'
+  note: 'Operating income FY2026: CMBU 31,225; CDBU 29,539; MCBU 29,208; AEBU 11,217; Total 99,340.'
+- id: mu_10k_fy26_bu_defs
+  title: Micron Technology Form 10-K FY2026 - Business unit definitions
+  publisher: SEC EDGAR
+  url: https://www.sec.gov/Archives/edgar/data/0000723125/000072312526000023/mu-20260903.htm
+  date: 2026-10
+  quote: CMBU is focused on memory solutions for large hyperscale cloud customers, and HBM for all data center customers. ... CDBU is focused on storage solutions for all data center customers, including
+    data center SSDs and NAND components, and memory solutions for OEM data center, enterprise, and NeoCloud customers.
+  verification: PRIMARY
+  accessed: '2026-10-28'
+  note: 'Also: ''In each of the last three years, approximately one-half of our total revenue was from our top ten customers.'''
+- id: arm_20f_fy26_r58
+  title: 'Arm Holdings plc Form 20-F FY2026 (FY ended 31-Mar-2026), XBRL R58: Revenue, Narrative (Details)'
+  publisher: SEC EDGAR
+  url: https://www.sec.gov/Archives/edgar/data/1973239/000197323926000097/R58.htm
+  date: 2026-05
+  quote: 'Largest Customer: 16.00% (2026); 17.00% (2025); 21.00% (2024) ... Second Largest Customer: 14.00% (2026) ... Third Largest Customer: 12.00% (2026) ... Three Largest Customers: 42.00% (2026)'
+  verification: PRIMARY
+  accessed: '2026-10-28'
+  note: 'Largest customer is Arm China per the 20-F text (secondary summaries). Revenue FY2026 $4,920M; royalty $2,613M; related-party revenue $1,499M (R56). Data-centre share of royalties not disclosed
+    (Q1 FY27: data-centre royalties ''more than doubled'' y/y).'
 quantities:
   TCS.NS.exposure.revenue:
-    label: "Technology & Services vertical share of revenue (Q2 FY27)"
+    label: Technology & Services vertical share of revenue (Q2 FY27)
     parts:
-      - label: "Technology & Services share of TCS revenue, quarter ended 30-Sep-2026"
-        value: 0.086
-        status: SOURCED
-        src: [tcs_q2fy27_investing_slides, tcs_q2fy27_multibagg]
-        note: "Two independent secondary summaries of the TCS Q2 FY27 investor materials agree (8.6%). North America = 48.3% of revenue."
-    note: "Upgraded from single-source SECONDARY (finology) to two concurring sources."
-
+    - label: Technology & Services share of TCS revenue, quarter ended 30-Sep-2026
+      value: 0.086
+      status: SOURCED
+      src:
+      - tcs_q2fy27_investing_slides
+      - tcs_q2fy27_multibagg
+      note: Two independent secondary summaries of the TCS Q2 FY27 investor materials agree (8.6%). North America = 48.3% of revenue.
+    note: Upgraded from single-source SECONDARY (finology) to two concurring sources.
+  INFY.NS.exposure.revenue:
+    label: Hi-Tech segment share of revenue (Q2 FY27)
+    parts:
+    - label: Hi-Tech segment revenue / total revenue, quarter ended 30-Sep-2026 (₹3,332 cr / ₹49,244 cr)
+      value: 0.0677
+      status: SOURCED
+      src:
+      - infy_6k_q2fy27_ex993
+      note: 'PRIMARY: Ind AS segment table filed with the SEC (6-K Ex 99.3). Hi-Tech fell 17.5% y/y reported.'
+    note: 'Upgraded: previously read from the fact sheet via search index (fact-sheet PDF 403). Now verified from the primary segment table.'
+  HCLTECH.NS.exposure.revenue:
+    label: Technology & Services vertical share of total revenue (Q2 FY27)
+    parts:
+    - label: Technology & Services share of Services revenue (Q2 FY27)
+      value: 0.143
+      status: UNVERIFIED
+      src:
+      - hcl_q2fy27_finology
+      note: 'Single secondary source; HCLTech states vertical mix on a Services basis (Investing.com: FS 22.4% of services revenue).'
+    - label: Services share of total revenue = 1 - HCLSoftware 7.9%
+      value: 0.921
+      status: SOURCED
+      src:
+      - hcl_q2fy27_investing_slides
+      note: Converts the services-basis mix to a total-revenue basis.
+    note: Effective value 14.3% x 92.1% = 13.2% of total revenue; stays UNVERIFIED until the investor release (NSE 503) can be read.
+  LTM.NS.exposure.revenue:
+    label: Technology & Services segment share of revenue (Q2 FY27)
+    parts:
+    - label: Technology & Services ₹2,236.1 cr / revenue from operations ₹11,807.6 cr
+      value: 0.1894
+      status: SOURCED
+      src:
+      - ltm_q2fy27_angelone
+      - ltm_q2fy27_kotakneo
+      note: LTM re-segmented into Financial Services / Consumer / Production / Technology & Services in FY27. North America 74.3% of revenue.
+    note: Upgraded from Q4 FY26 TMC 23.7% (old segment) to the current Q2 FY27 Technology & Services segment.
+  COFORGE.NS.exposure.revenue:
+    label: Hi-Tech share of revenue (Q2 FY27)
+    parts:
+    - label: Healthcare & HiTech combined vertical share of revenue
+      value: 0.176
+      status: SOURCED
+      src:
+      - coforge_q2fy27_investing_slides
+      note: Combined vertical; Coforge does not break out HiTech alone.
+    - label: HiTech fraction of the combined Healthcare & HiTech vertical
+      value: 0.5
+      status: USER_ASSUMPTION
+      src: []
+      note: No disclosure; 50/50 split assumed. Set to 1.0 for an upper bound.
+    note: Effective 8.8% of revenue. Americas 63.1%.
+  MPHASIS.NS.exposure.revenue:
+    label: 'TMT vertical share of revenue (latest reported: Q1 FY27)'
+    parts:
+    - label: TMT share of mix, quarter ended 30-Jun-2026
+      value: 0.18
+      status: SOURCED
+      src:
+      - mphasis_q1fy27_icicisec
+      note: Q2 FY27 not yet reported as of 2026-10-28. Americas 85% of mix.
+    note: Verbatim broker figure (18%) replaces the computed 86/471.
+  TATAELXSI.NS.exposure.revenue:
+    label: Media & Communications vertical share of revenue (Q2 FY27)
+    parts:
+    - label: Media & Communications share of SDS segment
+      value: 0.336
+      status: SOURCED
+      src:
+      - tataelxsi_q2fy27_pr
+      note: PRIMARY company release. Closest 'technology' vertical; Tata Elxsi has no semiconductor vertical.
+    - label: SDS share of operating revenue (₹1,027.87 cr / ₹1,055.7 cr)
+      value: 0.9736
+      status: SOURCED
+      src:
+      - tataelxsi_q2fy27_fpj
+      - tataelxsi_q2fy27_pr
+      note: Converts the SDS-basis share to total revenue.
+    note: Effective 32.7% of revenue.
+  CYIENT.NS.exposure.revenue:
+    label: Semiconductor business share of group revenue (Q2 FY27)
+    parts:
+    - label: Cyient Semiconductors $19.3M / group operating revenue $233.9M
+      value: 0.0825
+      status: SOURCED
+      src:
+      - cyient_q2fy27_investing_slides
+      note: Networks & Infrastructure ($52.8M, 22.6%) is telecom/utility engineering and is not counted as AI/hi-tech exposure. Americas 53.9%.
+    note: Replaces the earlier semis/(DET+semis) = 10.0% with the group-revenue denominator.
+  SMCI.hyperscaler_share:
+    label: Share of revenue tied to hyperscaler / large-CSP AI capex
+    parts:
+    - label: Largest customer (a large data-centre / cloud customer) share of FY2026 net sales
+      value: 0.281
+      status: SOURCED
+      src:
+      - smci_10k_fy26_r53
+      - smci_fy26_secapi
+      note: 'Lower bound: only one customer is >=10% of net sales; other CSP/neocloud sales are not disclosed.'
+    note: Replaces the USER_ASSUMPTION 0.5. Treat as a floor; raise via slider for an all-CSP view.
+  ASML.hyperscaler_share:
+    label: Share of revenue tied to hyperscaler AI capex
+    parts:
+    - label: Logic + Memory system sales share of 2025 total net sales ((16,054.1 + 8,420.2) / 32,667.3)
+      value: 0.7492
+      status: SOURCED
+      src:
+      - asml_20f_fy25_r67
+      - asml_20f_fy25_r71
+      note: Installed-base service (25%) excluded.
+    - label: Fraction of system demand driven by AI data-centre capex (leading-edge logic + HBM/DRAM)
+      value: 0.27
+      status: USER_ASSUMPTION
+      src: []
+      note: 'No disclosure. 0.27 keeps the product at ~0.20 (the prior universe default). Concentration context: top-4 customers ~61% of 2025 sales (SECONDARY); largest customer 24% (UNVERIFIED); Taiwan
+        25.5% (PRIMARY).'
+    note: Effective 0.202; the AI fraction remains the binding assumption.
+  MU.hyperscaler_share:
+    label: Share of revenue tied to hyperscaler AI capex
+    parts:
+    - label: 'Cloud Memory BU (hyperscale cloud memory + HBM for all data-centre customers) share of FY2026 revenue: 43,085 / 133,188'
+      value: 0.3235
+      status: SOURCED
+      src:
+      - mu_10k_fy26_r82
+      - mu_10k_fy26_bu_defs
+      note: Full-year FY2026 replaces the single-quarter 30.0% (FQ4-26). Includes HBM sold to GPU/ASIC makers whose demand is hyperscaler-driven.
+    note: PRIMARY 10-K segment table.
+  MU.neocloud_share:
+    label: Share of revenue tied to AI-cloud / neocloud capex
+    parts:
+    - label: 'Core Data Center BU share of FY2026 revenue: 37,592 / 133,188'
+      value: 0.2822
+      status: SOURCED
+      src:
+      - mu_10k_fy26_r82
+      - mu_10k_fy26_bu_defs
+      note: CDBU = DC storage for all customers + memory for OEM data center, enterprise and NeoCloud customers.
+    - label: NeoCloud fraction of CDBU revenue
+      value: 0.25
+      status: USER_ASSUMPTION
+      src: []
+      note: Not disclosed.
+    note: Effective 0.071.
 history_notes: {}
-
-context: {}
+context:
+  na_revenue_share:
+    TCS.NS:
+      value: 0.483
+      basis: North America share of revenue Q2 FY27
+      src:
+      - tcs_q2fy27_investing_slides
+    LTM.NS:
+      value: 0.743
+      basis: North America share of revenue Q2 FY27
+      src:
+      - ltm_q2fy27_angelone
+    COFORGE.NS:
+      value: 0.631
+      basis: Americas share of revenue Q2 FY27
+      src:
+      - coforge_q2fy27_investing_slides
+    MPHASIS.NS:
+      value: 0.85
+      basis: Americas share of mix Q1 FY27
+      src:
+      - mphasis_q1fy27_icicisec
+    CYIENT.NS:
+      value: 0.539
+      basis: Americas share of revenue Q2 FY27
+      src:
+      - cyient_q2fy27_investing_slides
+    HCLTECH.NS:
+      value: 0.561
+      basis: United States share of services revenue Q2 FY27
+      src:
+      - hcl_q2fy27_investing_slides
+  concentration:
+    ARM:
+    - text: Largest customer (Arm China) 16% of FY2026 revenue; second 14%; third 12%; three largest 42%
+      src:
+      - arm_20f_fy26_r58
+    MU:
+    - text: Approximately one-half of total revenue from top ten customers in each of the last three years
+      src:
+      - mu_10k_fy26_bu_defs
+    SMCI:
+    - text: 'Customer One 28.1% of FY2026 net sales (FY2025: 20.9%, 11.5%, 11.3%, 11.1% for four customers); US 70.9% of net sales'
+      src:
+      - smci_10k_fy26_r53

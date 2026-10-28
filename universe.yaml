@@ -1,0 +1,1418 @@
+# =====================================================================================
+# AI CRASH MONITOR — universe definition (the single driver of build_data.py)
+# -------------------------------------------------------------------------------------
+# * Add/remove a company, tier, parent or shock origin here; no code changes needed.
+# * Every non-computed number carries `status`:
+#     SOURCED          -> cited in `sources:` (id in `src:`), verbatim quote stored
+#     UNVERIFIED       -> single weak/secondary source, conflicting sources, or unconfirmed
+#     USER_ASSUMPTION  -> no source; a declared model default (exposed as a slider)
+#   Quantities may have several multiplicative `parts`; value = product of parts and the
+#   effective status is the worst part (USER_ASSUMPTION > UNVERIFIED > SOURCED > COMPUTED).
+# * A part may use `value_from:` instead of `value:` for pipeline-computed inputs
+#   (supported: inv_revenue_ttm_cr = 1 / trailing-12m revenue in INR crore).
+# * All scenarios built from this file are HYPOTHETICAL. Educational model, not advice.
+# =====================================================================================
+version: 1
+includes: [history.yaml]          # written by the history stream; optional
+
+settings:
+  app: AI CRASH MONITOR
+  regression_years: 3
+  history_start: "2015-01-01"
+  pre_chatgpt_date: "2022-11-30"  # ChatGPT public launch (src: openai_chatgpt)
+  pre_chatgpt_src: [openai_chatgpt]
+  pre_chatgpt_window_years: 3
+  pre_chatgpt_min_obs: 250
+  downside_quantile: 0.05
+  downside_min_obs: 25
+  rolling_window: 252
+  rolling_step: 5
+  rolling_min_obs: 200
+  hac_lags: 5
+  mc_runs: 5000
+  inr_crore: 10000000
+  op_leverage_min: 1.0
+  op_leverage_max: 4.0
+  op_leverage_min_rev_change: 0.02
+  op_leverage_default: 1.5         # USER_ASSUMPTION fallback when statements are unusable
+  fundamentals_cache_days: 3
+  earnings_dates_limit: 80
+
+# Exchange close times drive the information-set alignment (DESIGN.md §3.2).
+# Only the ordering relative to the NSE close (15:30 IST) matters for the lag structure.
+markets:
+  IN: {tz: Asia/Kolkata, close: "15:30"}
+  US: {tz: America/New_York, close: "16:00"}
+  JP: {tz: Asia/Tokyo, close: "15:30", close_before: {"2024-11-05": "15:00"}, src: [jpx_trading_hours]}
+  DE: {tz: Europe/Berlin, close: "17:30"}
+  CH: {tz: Europe/Zurich, close: "17:30"}
+  FR: {tz: Europe/Paris, close: "17:30"}
+  FX: {tz: Europe/London, close: "22:00"}   # Yahoo FX daily bar; ordering only (after NSE close)
+
+factors:
+  - {id: SOX, ticker: "^SOX", name: "PHLX Semiconductor Index", market: US}
+  - {id: NDX, ticker: "^NDX", name: "Nasdaq-100", market: US}
+  - {id: SPX, ticker: "^GSPC", name: "S&P 500", market: US}
+  - {id: VIX, ticker: "^VIX", name: "CBOE Volatility Index", market: US, kind: level}
+  - {id: USDINR, ticker: "USDINR=X", name: "USD/INR", market: FX, kind: fx}
+  - {id: NIFTY, ticker: "^NSEI", name: "Nifty 50", market: IN}
+  - {id: NIFTYIT, ticker: "^CNXIT", name: "Nifty IT", market: IN}
+
+# Currency conversion series (latest close). quote: per_usd = units of currency per 1 USD.
+fx_rates:
+  INR: {ticker: "USDINR=X", quote: per_usd}
+  JPY: {ticker: "JPY=X", quote: per_usd}
+  EUR: {ticker: "EURUSD=X", quote: usd_per}
+  CHF: {ticker: "CHF=X", quote: per_usd}
+  TWD: {ticker: "TWD=X", quote: per_usd}
+
+# -------------------------------------------------------------------------------------
+# SHOCK ORIGINS (US / global). group: chips | hyperscalers | infra | software
+# hyperscaler_share: share of revenue tied to hyperscaler AI capex (capex channel, preset 1)
+# neocloud_share:    share tied to AI-cloud / neocloud capex (credit channel, preset 5)
+# credit.stressed:   participates as a stressed borrower in preset 5
+# -------------------------------------------------------------------------------------
+origins:
+  # ---------------- Chips ----------------
+  - ticker: NVDA
+    name: NVIDIA
+    group: chips
+    market: US
+    hyperscaler_share:
+      label: "Share of revenue from hyperscalers"
+      parts:
+        - {label: "Hyperscale revenue / total revenue, Q2 FY27 ($48,710M / $96,221M)", value: 0.50623, status: SOURCED, src: [nvda_q2fy27_cfo]}
+    neocloud_share:
+      label: "Share of revenue from AI clouds / neoclouds"
+      parts:
+        - {label: "AI Clouds, Industrial & Enterprise (ACIE) / total revenue, Q2 FY27 ($40,313M / $96,221M)", value: 0.41896, status: SOURCED, src: [nvda_q2fy27_cfo]}
+        - {label: "AI-cloud (neocloud) fraction of ACIE", value: 0.5, status: USER_ASSUMPTION, note: "ACIE also includes industrial, enterprise and sovereign customers; split not disclosed"}
+    concentration:
+      - {text: "\"For fiscal year 2026, sales to one direct customer represented 22% of total revenue and sales to another direct customer represented 14% of total revenue, all of which were primarily attributable to the Compute & Networking segment.\" (direct customers are mainly ODMs/OEMs, not hyperscalers)", status: SOURCED, src: [nvda_10k_fy26]}
+      - {text: "\"We estimate that one AI research and deployment company contributed to a meaningful amount of our revenue\" ... \"purchasing cloud services from our customers in fiscal year 2026.\"", status: SOURCED, src: [nvda_10k_fy26]}
+
+  - ticker: AMD
+    name: Advanced Micro Devices
+    group: chips
+    market: US
+    hyperscaler_share:
+      label: "Share of revenue from hyperscalers"
+      parts:
+        - {label: "Data Center segment / total revenue, Q2 2026 ($6,718M / $11,536M)", value: 0.58235, status: SOURCED, src: [amd_q2_2026]}
+        - {label: "Hyperscaler fraction of Data Center revenue", value: 0.5, status: USER_ASSUMPTION, note: "AMD does not disclose a hyperscaler split"}
+    neocloud_share:
+      label: "Share of revenue from AI clouds / neoclouds"
+      parts:
+        - {label: "Data Center segment / total revenue, Q2 2026", value: 0.58235, status: SOURCED, src: [amd_q2_2026]}
+        - {label: "Neocloud fraction of Data Center revenue", value: 0.15, status: USER_ASSUMPTION}
+
+  - ticker: AVGO
+    name: Broadcom
+    group: chips
+    market: US
+    hyperscaler_share:
+      label: "Share of revenue from hyperscalers / AI labs"
+      parts:
+        - {label: "AI semiconductor revenue / total revenue, Q3 FY26 ($16.7B / $29.6B)", value: 0.56419, status: SOURCED, src: [avgo_q3_fy26]}
+        - {label: "Fraction of AI semiconductor revenue driven by hyperscaler / AI-lab capex", value: 1.0, status: USER_ASSUMPTION, note: "custom XPUs + AI networking; customer split not disclosed"}
+    neocloud_share:
+      label: "Share of revenue from AI clouds / neoclouds"
+      parts:
+        - {label: "AI semiconductor revenue / total revenue, Q3 FY26", value: 0.56419, status: SOURCED, src: [avgo_q3_fy26]}
+        - {label: "Neocloud / AI-lab fraction of AI revenue", value: 0.15, status: USER_ASSUMPTION}
+
+  - ticker: TSM
+    name: Taiwan Semiconductor (ADR)
+    group: chips
+    market: US
+    hyperscaler_share:
+      label: "Share of revenue from AI accelerators (hyperscaler capex proxy)"
+      parts:
+        - {label: "AI accelerators share of 2025 revenue (\"high-teens\" percent, midpoint 18%)", value: 0.18, status: SOURCED, src: [tsm_ai_accel_2025], note: "CEO statement on the Q4-2025 call reported by Mobile World Live; 18% = midpoint interpretation of 'high-teens'"}
+    neocloud_share:
+      label: "Share of revenue from AI clouds / neoclouds"
+      parts:
+        - {label: "AI accelerators share of 2025 revenue", value: 0.18, status: SOURCED, src: [tsm_ai_accel_2025]}
+        - {label: "Neocloud fraction of AI-accelerator demand", value: 0.3, status: USER_ASSUMPTION}
+    concentration:
+      - {text: "Client A (NVIDIA) rose to 19% of 2025 revenue from 12% in 2024; Client B (Apple) 17% (2025 Form 20-F as reported by Taiwan News). HPC was 68% of 3Q26 revenue (secondary).", status: UNVERIFIED, src: [tsm_clienta_2025, tsm_hpc_3q26]}
+
+  - ticker: ASML
+    name: ASML Holding (ADR)
+    group: chips
+    market: US
+    hyperscaler_share:
+      label: "Share of revenue tied to AI-driven fab capex"
+      parts:
+        - {label: "AI-driven share of lithography demand (via TSMC leading-edge + HBM)", value: 0.20, status: USER_ASSUMPTION, note: "not disclosed; indirect, lagged exposure"}
+    neocloud_share:
+      label: "Share of revenue from AI clouds / neoclouds"
+      parts:
+        - {label: "Neocloud-driven share", value: 0.03, status: USER_ASSUMPTION}
+
+  - ticker: MU
+    name: Micron Technology
+    group: chips
+    market: US
+    hyperscaler_share:
+      label: "Share of revenue from hyperscalers"
+      parts:
+        - {label: "Cloud Memory Business Unit (hyperscale cloud customers) / revenue, FQ4-26 ($16,283M / $54,229M)", value: 0.30026, status: SOURCED, src: [mu_fq4_2026]}
+    neocloud_share:
+      label: "Share of revenue from AI clouds / neoclouds"
+      parts:
+        - {label: "Core Data Center Business Unit / revenue, FQ4-26 ($18,002M / $54,229M)", value: 0.33196, status: SOURCED, src: [mu_fq4_2026]}
+        - {label: "Neocloud fraction of core data-centre (OEM/ODM) demand", value: 0.25, status: USER_ASSUMPTION}
+
+  - ticker: INTC
+    name: Intel
+    group: chips
+    market: US
+    hyperscaler_share:
+      label: "Share of revenue from hyperscalers"
+      parts:
+        - {label: "DCAI revenue / total revenue, Q2 2026 ($6.3B / $16.1B)", value: 0.3913, status: SOURCED, src: [intc_q2_2026]}
+        - {label: "Hyperscaler fraction of DCAI", value: 0.5, status: USER_ASSUMPTION}
+    neocloud_share:
+      label: "Share of revenue from AI clouds / neoclouds"
+      parts:
+        - {label: "DCAI revenue / total revenue, Q2 2026", value: 0.3913, status: SOURCED, src: [intc_q2_2026]}
+        - {label: "Neocloud fraction of DCAI", value: 0.10, status: USER_ASSUMPTION}
+
+  - ticker: ARM
+    name: Arm Holdings (ADR)
+    group: chips
+    market: US
+    hyperscaler_share:
+      label: "Share of revenue tied to hyperscaler capex"
+      parts:
+        - {label: "Data-centre royalty/licence share tied to hyperscaler silicon", value: 0.10, status: USER_ASSUMPTION, note: "not disclosed"}
+    neocloud_share:
+      label: "Share of revenue from AI clouds / neoclouds"
+      parts:
+        - {label: "Neocloud-driven share", value: 0.02, status: USER_ASSUMPTION}
+
+  - ticker: MRVL
+    name: Marvell Technology
+    group: chips
+    market: US
+    hyperscaler_share:
+      label: "Share of revenue from hyperscalers"
+      parts:
+        - {label: "Data center end market / net revenue, Q2 FY27 ($2,171.5M / $2,739M)", value: 0.79281, status: SOURCED, src: [mrvl_q2_fy27]}
+        - {label: "Hyperscaler fraction of data-centre revenue", value: 0.6, status: USER_ASSUMPTION, note: "custom silicon for cloud customers; split not disclosed"}
+    neocloud_share:
+      label: "Share of revenue from AI clouds / neoclouds"
+      parts:
+        - {label: "Data center end market / net revenue, Q2 FY27", value: 0.79281, status: SOURCED, src: [mrvl_q2_fy27]}
+        - {label: "Neocloud fraction of data-centre revenue", value: 0.10, status: USER_ASSUMPTION}
+
+  - ticker: SMCI
+    name: Super Micro Computer
+    group: chips
+    market: US
+    hyperscaler_share:
+      label: "Share of revenue from hyperscalers / large CSPs"
+      parts:
+        - {label: "Large data-centre / CSP customer share of net sales", value: 0.5, status: USER_ASSUMPTION, note: "FY2026 10-K: one customer >=10% of net sales (exact % not quoted); a secondary source puts one DC/CSP customer at 28% (UNVERIFIED)"}
+    neocloud_share:
+      label: "Share of revenue from AI clouds / neoclouds"
+      parts:
+        - {label: "Neocloud / AI-cloud customer share", value: 0.3, status: USER_ASSUMPTION}
+    concentration:
+      - {text: "\"We had one customer account for 10% or more of our net sales in fiscal year 2026\" (FY2026 10-K).", status: SOURCED, src: [smci_10k_fy26]}
+      - {text: "One large data center and cloud service provider customer accounted for 28% of fiscal 2026 revenue (third-party analysis of the 10-K).", status: UNVERIFIED, src: [smci_secapi_fy26]}
+
+  # ---------------- Hyperscalers / big AI spenders (capex spenders, not suppliers) ----------------
+  - {ticker: MSFT, name: Microsoft, group: hyperscalers, market: US, capex_spender: true}
+  - {ticker: GOOGL, name: Alphabet, group: hyperscalers, market: US, capex_spender: true}
+  - {ticker: AMZN, name: Amazon, group: hyperscalers, market: US, capex_spender: true}
+  - {ticker: META, name: Meta Platforms, group: hyperscalers, market: US, capex_spender: true}
+  - ticker: ORCL
+    name: Oracle
+    group: hyperscalers
+    market: US
+    capex_spender: true
+    credit: {stressed: true}
+
+  # ---------------- AI infra, power, neoclouds ----------------
+  - ticker: VRT
+    name: Vertiv
+    group: infra
+    market: US
+    hyperscaler_share:
+      label: "Share of revenue from hyperscaler / colocation data-centre capex"
+      parts:
+        - {label: "Data-centre share of revenue", value: 0.75, status: UNVERIFIED, src: [vrt_zacks], note: "secondary (Zacks commentary); Vertiv's 10-K gives only a geographic split"}
+        - {label: "Hyperscaler / colocation fraction of data-centre sales", value: 0.8, status: USER_ASSUMPTION}
+    neocloud_share:
+      label: "Share of revenue from AI clouds / neoclouds"
+      parts:
+        - {label: "Data-centre share of revenue", value: 0.75, status: UNVERIFIED, src: [vrt_zacks]}
+        - {label: "Neocloud fraction of data-centre sales", value: 0.15, status: USER_ASSUMPTION}
+
+  - ticker: ETN
+    name: Eaton
+    group: infra
+    market: US
+    hyperscaler_share:
+      label: "Share of revenue from data-centre capex"
+      parts:
+        - {label: "Data centers / distributed IT share of sales (2026 end-market assumptions)", value: 0.21, status: UNVERIFIED, src: [etn_fintool_q4_2025]}
+        - {label: "Hyperscaler / colocation fraction", value: 0.8, status: USER_ASSUMPTION}
+    neocloud_share:
+      label: "Share of revenue from AI clouds / neoclouds"
+      parts:
+        - {label: "Data centers / distributed IT share of sales", value: 0.21, status: UNVERIFIED, src: [etn_fintool_q4_2025]}
+        - {label: "Neocloud fraction", value: 0.15, status: USER_ASSUMPTION}
+
+  - ticker: GEV
+    name: GE Vernova
+    group: infra
+    market: US
+    hyperscaler_share:
+      label: "Share of revenue tied to data-centre power demand"
+      parts:
+        - {label: "Data-centre-driven share of orders/revenue (gas power + grid)", value: 0.15, status: USER_ASSUMPTION, note: "not disclosed"}
+    neocloud_share:
+      label: "Share of revenue from AI clouds / neoclouds"
+      parts:
+        - {label: "Neocloud-driven share", value: 0.03, status: USER_ASSUMPTION}
+
+  - ticker: CEG
+    name: Constellation Energy
+    group: infra
+    market: US
+    hyperscaler_share:
+      label: "Share of revenue tied to hyperscaler power contracts"
+      parts:
+        - {label: "Data-centre PPA share of revenue", value: 0.10, status: USER_ASSUMPTION, note: "not disclosed as a share"}
+    neocloud_share:
+      label: "Share of revenue from AI clouds / neoclouds"
+      parts:
+        - {label: "Neocloud-driven share", value: 0.0, status: USER_ASSUMPTION}
+
+  - ticker: VST
+    name: Vistra
+    group: infra
+    market: US
+    hyperscaler_share:
+      label: "Share of revenue tied to hyperscaler power contracts"
+      parts:
+        - {label: "Data-centre PPA share of revenue", value: 0.10, status: USER_ASSUMPTION, note: "not disclosed as a share"}
+    neocloud_share:
+      label: "Share of revenue from AI clouds / neoclouds"
+      parts:
+        - {label: "Neocloud-driven share", value: 0.0, status: USER_ASSUMPTION}
+
+  - ticker: CRWV
+    name: CoreWeave
+    group: infra
+    market: US
+    hyperscaler_share:
+      label: "Share of revenue from hyperscalers"
+      parts:
+        - {label: "Microsoft share of FY2025 revenue", value: 0.67, status: SOURCED, src: [crwv_10k_2025]}
+    neocloud_share:
+      label: "Share of revenue from AI clouds / neoclouds"
+      parts:
+        - {label: "CoreWeave is itself the neocloud borrower (hit via the credit channel)", value: 0.0, status: USER_ASSUMPTION}
+    credit: {stressed: true}
+    concentration:
+      - {text: "\"We recognized an aggregate of approximately 67% of our revenue from our top customer, Microsoft\"; \"None of our other customers represented 10% or more of our revenue for the year ended December 31, 2025.\" (FY2025 10-K)", status: SOURCED, src: [crwv_10k_2025]}
+
+  # ---------------- AI software ----------------
+  - {ticker: PLTR, name: Palantir Technologies, group: software, market: US}
+  - {ticker: NOW, name: ServiceNow, group: software, market: US}
+  - {ticker: CRM, name: Salesforce, group: software, market: US}
+  - {ticker: ADBE, name: Adobe, group: software, market: US}
+
+# Non-US parents of Tier A names (US-listed parents ORCL and GEV are origins above).
+parents:
+  - {ticker: "6501.T", name: "Hitachi Ltd", market: JP, note: "Hitachi Ltd owns 100% of Hitachi Energy Ltd since 28-Dec-2022", src: [abb_hitachi_energy_2022]}
+  - {ticker: ENR.DE, name: "Siemens Energy AG", market: DE}
+  - {ticker: SIE.DE, name: "Siemens AG", market: DE}
+  - {ticker: ABBN.SW, name: "ABB Ltd", market: CH}
+  - {ticker: SU.PA, name: "Schneider Electric SE", market: FR}
+
+# -------------------------------------------------------------------------------------
+# INDIA TARGETS
+#   Tier A parent link | Tier B revenue link (US tech clients) | Tier C AI/DC capex chain
+#   Tier D semiconductor & electronics manufacturing theme
+# exposures[].channel: revenue (US tech client IT budgets) | capex (data-centre/AI capex orders)
+#                      | credit (neocloud capex)
+# fx_margin_sens_bps: EBIT-margin bps per 1% INR depreciation (+ = benefit)
+# -------------------------------------------------------------------------------------
+india:
+  # ===== Tier A — Indian arms of global players =====
+  - ticker: OFSS.NS
+    display: OFSS
+    name: "Oracle Financial Services Software"
+    tier: A
+    parent: ORCL
+    parent_stake:
+      label: "Promoter (Oracle Global (Mauritius) Ltd) holding"
+      parts:
+        - {label: "63,051,197 shares = 72.41% at 30-Jun-2026", value: 0.7241, status: SOURCED, src: [ofss_shp_jun26]}
+    exposures: []
+    fx_margin_sens_bps:
+      label: "EBIT margin sensitivity to INR (bps per 1%)"
+      parts:
+        - {label: "Export software margin sensitivity", value: 20, status: USER_ASSUMPTION, note: "same mechanics as IT services; not disclosed for OFSS"}
+    notes: ["Parent link is ownership/brand; no disclosed AI-capex revenue exposure (fundamental channel = AI-premium unwind + FX only)."]
+
+  - ticker: "GVT&D.NS"
+    display: "GVT&D"
+    name: "GE Vernova T&D India"
+    tier: A
+    parent: GEV
+    parent_stake:
+      label: "Promoter holding (Grid Equipments Pvt Ltd 50.70% + GE Grid Alliance B.V. 0.30%)"
+      parts:
+        - {label: "Promoter group holding, Mar-2026", value: 0.51, status: SOURCED, src: [gvtd_shareholding]}
+    exposures:
+      - channel: capex
+        driver: "grid / data-centre power equipment orders"
+        share:
+          label: "Data-centre / AI-power-linked share of orders"
+          parts:
+            - {label: "Share of revenue tied to AI/data-centre capex", value: 0.10, status: USER_ASSUMPTION, note: "not disclosed"}
+    fx_margin_sens_bps:
+      label: "EBIT margin sensitivity to INR (bps per 1%)"
+      parts:
+        - {label: "Not modelled", value: 0, status: USER_ASSUMPTION}
+
+  - ticker: POWERINDIA.NS
+    display: POWERINDIA
+    name: "Hitachi Energy India"
+    tier: A
+    parent: "6501.T"
+    parent_stake:
+      label: "Promoter (Hitachi Energy Ltd, Zurich) holding"
+      parts:
+        - {label: "Hitachi Energy Ltd holding (71.31%, Mar-2026; CRISIL 19-Jun-2026: 71.3%)", value: 0.7131, status: SOURCED, src: [powerindia_crisil]}
+    exposures:
+      - channel: capex
+        driver: "transformers / HVDC / grid orders incl. data centres"
+        share:
+          label: "Data-centre / AI-power-linked share of orders"
+          parts:
+            - {label: "Share of revenue tied to AI/data-centre capex", value: 0.10, status: USER_ASSUMPTION, note: "not disclosed"}
+    fx_margin_sens_bps:
+      label: "EBIT margin sensitivity to INR (bps per 1%)"
+      parts:
+        - {label: "Not modelled", value: 0, status: USER_ASSUMPTION}
+    notes: ["Ownership chain: Hitachi Energy India <- Hitachi Energy Ltd (Zurich, 100% Hitachi Ltd since Dec-2022) <- Hitachi Ltd (6501.T)."]
+
+  - ticker: ENRIN.NS
+    display: ENRIN
+    name: "Siemens Energy India"
+    tier: A
+    parent: ENR.DE
+    parent_secondary: SIE.DE
+    parent_stake:
+      label: "Promoter group holding (Siemens AG group + Siemens Energy group)"
+      parts:
+        - {label: "Promoter group total 75.00%", value: 0.75, status: SOURCED, src: [enrin_shareholding], note: "after the 16-Dec-2025 realignment: Siemens International Holding B.V. 47.70%, Siemens AG 16.30%, Siemens Energy Holdco B.V. 5.00%, Siemens Energy Holding B.V. 6.00% (7.02% after a Jun-2026 transfer) — i.e. most of the promoter stake sits with Siemens AG entities"}
+    exposures:
+      - channel: capex
+        driver: "power generation / grid orders incl. data centres"
+        share:
+          label: "Data-centre / AI-power-linked share of orders"
+          parts:
+            - {label: "Share of revenue tied to AI/data-centre capex", value: 0.08, status: USER_ASSUMPTION, note: "not disclosed"}
+    fx_margin_sens_bps:
+      label: "EBIT margin sensitivity to INR (bps per 1%)"
+      parts:
+        - {label: "Not modelled", value: 0, status: USER_ASSUMPTION}
+    notes: ["Listed 19-Jun-2025: regressions use the short available history.", "Parent verified: business parent Siemens Energy AG (ENR.DE) kept as requested; the larger promoter block is held by Siemens AG entities, so SIE.DE is reported as a secondary parent."]
+
+  - ticker: ABB.NS
+    display: ABB
+    name: "ABB India"
+    tier: A
+    parent: ABBN.SW
+    parent_stake:
+      label: "Promoter (ABB Asea Brown Boveri Ltd) holding"
+      parts:
+        - {label: "Promoter holding 75.00% (Mar/Jun-2026)", value: 0.75, status: SOURCED, src: [abb_shareholding]}
+    exposures:
+      - channel: capex
+        driver: "electrification orders incl. data centres"
+        share:
+          label: "Data-centre / AI-linked share of orders"
+          parts:
+            - {label: "Share of revenue tied to AI/data-centre capex", value: 0.08, status: USER_ASSUMPTION, note: "not disclosed"}
+    fx_margin_sens_bps:
+      label: "EBIT margin sensitivity to INR (bps per 1%)"
+      parts:
+        - {label: "Not modelled", value: 0, status: USER_ASSUMPTION}
+
+  - ticker: SCHNEIDER.NS
+    display: SCHNEIDER
+    name: "Schneider Electric Infrastructure"
+    tier: A
+    parent: SU.PA
+    parent_stake:
+      label: "Promoter holding (Energy Grid Automation T&S India 70.57% + Schneider Electric Singapore 4.43%)"
+      parts:
+        - {label: "Promoter group total 75.00%", value: 0.75, status: SOURCED, src: [schneider_shareholding]}
+    exposures:
+      - channel: capex
+        driver: "distribution transformers / data-centre power orders"
+        share:
+          label: "Data-centre / AI-linked share of orders"
+          parts:
+            - {label: "Share of revenue tied to AI/data-centre capex", value: 0.10, status: USER_ASSUMPTION, note: "not disclosed"}
+    fx_margin_sens_bps:
+      label: "EBIT margin sensitivity to INR (bps per 1%)"
+      parts:
+        - {label: "Not modelled", value: 0, status: USER_ASSUMPTION}
+
+  # ===== Tier B — revenue link to US tech / hyperscaler clients =====
+  - ticker: INFY.NS
+    display: INFY
+    name: "Infosys"
+    tier: B
+    adr: INFY
+    exposures:
+      - channel: revenue
+        driver: "US tech client IT budgets"
+        share:
+          label: "Hi-Tech vertical share of revenue"
+          parts:
+            - {label: "Hi-Tech share of revenue, Q2 FY27 (Q1 FY27 7.7%, Q2 FY26 8.3%)", value: 0.068, status: SOURCED, src: [infy_factsheet_q2fy27, infy_aim_q2fy27], note: "fact sheet direct download returned HTTP 403; value read via search-index extraction of the fact sheet and cross-checked with press coverage of the -17.5% Hi-Tech decline"}
+    fx_margin_sens_bps: &tierb_fx
+      label: "EBIT margin sensitivity to INR (bps per 1%)"
+      parts:
+        - {label: "~30 bps EBIT margin per 1% INR depreciation (range 20-40 bps)", value: 30, status: SOURCED, src: [fx_it_margin_sens]}
+
+  - ticker: TCS.NS
+    display: TCS
+    name: "Tata Consultancy Services"
+    tier: B
+    exposures:
+      - channel: revenue
+        driver: "US tech client IT budgets"
+        share:
+          label: "Technology & Services share of revenue"
+          parts:
+            - {label: "Technology & Services ~8.6% of Q2 FY27 revenue", value: 0.086, status: UNVERIFIED, src: [tcs_finology_q2fy27], note: "single secondary source; TCS fact sheet download blocked (403)"}
+    fx_margin_sens_bps: *tierb_fx
+
+  - ticker: WIPRO.NS
+    display: WIPRO
+    name: "Wipro"
+    tier: B
+    adr: WIT
+    exposures:
+      - channel: revenue
+        driver: "US tech client IT budgets"
+        share:
+          label: "Technology & Communications share of IT services revenue"
+          parts:
+            - {label: "Technology and Communications 16.5% of IT services, Q2 FY27 (Q1 FY27 17.0%)", value: 0.165, status: SOURCED, src: [wipro_6k_q2fy27]}
+    fx_margin_sens_bps: *tierb_fx
+
+  - ticker: HCLTECH.NS
+    display: HCLTECH
+    name: "HCLTech"
+    tier: B
+    exposures:
+      - channel: revenue
+        driver: "US tech client IT budgets"
+        share:
+          label: "Technology & Services share of revenue"
+          parts:
+            - {label: "Technology & Services ~14.3% revenue mix, Q2 FY27", value: 0.143, status: UNVERIFIED, src: [hcl_finology_q2fy27], note: "single secondary source; may be a share of services revenue (FS was 22.4% of services revenue per Investing.com)"}
+    fx_margin_sens_bps: *tierb_fx
+
+  - ticker: TECHM.NS
+    display: TECHM
+    name: "Tech Mahindra"
+    tier: B
+    exposures:
+      - channel: revenue
+        driver: "US tech client IT budgets"
+        share:
+          label: "Technology, Media & Entertainment share of revenue"
+          parts:
+            - {label: "Technology, Media and Entertainment 13.0%, Q2 FY27 (Communications 33.5% not included)", value: 0.13, status: SOURCED, src: [techm_q2fy27_pres]}
+    fx_margin_sens_bps: *tierb_fx
+
+  - ticker: LTM.NS
+    display: LTM
+    name: "LTM Ltd (formerly LTIMindtree)"
+    tier: B
+    exposures:
+      - channel: revenue
+        driver: "US tech client IT budgets"
+        share:
+          label: "Technology & Services share of revenue"
+          parts:
+            - {label: "Technology & Services Rs 2,236.1 cr / revenue Rs 11,807.6 cr, Q2 FY27", value: 0.18938, status: SOURCED, src: [ltm_angelone_q2fy27, ltm_multibagg_q2fy27], note: "secondary; two outlets agree (19.0%)"}
+    fx_margin_sens_bps: *tierb_fx
+    notes: ["NSE symbol changed LTIM -> LTM w.e.f. 27-Feb-2026; name LTM Ltd w.e.f. 17-Apr-2026."]
+
+  - ticker: PERSISTENT.NS
+    display: PERSISTENT
+    name: "Persistent Systems"
+    tier: B
+    exposures:
+      - channel: revenue
+        driver: "US tech client IT budgets"
+        share:
+          label: "Software, Hi-Tech & Emerging Industries share of revenue"
+          parts:
+            - {label: "Software, Hi-Tech & Emerging Industries 42.8%, Q2 FY27 (Q1 FY27 40.7%)", value: 0.428, status: SOURCED, src: [psys_q2fy27_factsheet]}
+    fx_margin_sens_bps: *tierb_fx
+
+  - ticker: COFORGE.NS
+    display: COFORGE
+    name: "Coforge"
+    tier: B
+    exposures:
+      - channel: revenue
+        driver: "US tech client IT budgets"
+        share:
+          label: "Hi-Tech share of revenue"
+          parts:
+            - {label: "Healthcare & HiTech (combined vertical) 17.6% of revenue, Q2 FY27", value: 0.176, status: SOURCED, src: [coforge_indmoney_q2fy27]}
+            - {label: "Hi-Tech fraction of the combined Healthcare & HiTech vertical", value: 0.5, status: USER_ASSUMPTION, note: "split not disclosed"}
+    fx_margin_sens_bps: *tierb_fx
+
+  - ticker: MPHASIS.NS
+    display: MPHASIS
+    name: "Mphasis"
+    tier: B
+    exposures:
+      - channel: revenue
+        driver: "US tech client IT budgets"
+        share:
+          label: "Technology, Media & Telecom share of revenue"
+          parts:
+            - {label: "TMT $86M / $471M, Q1 FY27 (latest found; Q2 FY27 not yet located)", value: 0.18259, status: SOURCED, src: [mphasis_icici_q1fy27]}
+    fx_margin_sens_bps: *tierb_fx
+
+  - ticker: TATAELXSI.NS
+    display: TATAELXSI
+    name: "Tata Elxsi"
+    tier: B
+    exposures:
+      - channel: revenue
+        driver: "tech / media client engineering budgets"
+        share:
+          label: "Media & Communications share of revenue"
+          parts:
+            - {label: "Media & Communications 33.6% of SDS segment, Q2 FY27", value: 0.336, status: SOURCED, src: [tataelxsi_pr_q2fy27]}
+            - {label: "SDS share of total revenue (~97%)", value: 0.97, status: UNVERIFIED, src: [tataelxsi_univest_q2fy27]}
+    fx_margin_sens_bps: *tierb_fx
+    notes: ["Tata Elxsi has no hi-tech vertical; Media & Communications is its closest technology vertical (broadcast/OTT/telecom clients, not semiconductors)."]
+
+  - ticker: LTTS.NS
+    display: LTTS
+    name: "L&T Technology Services"
+    tier: B
+    exposures:
+      - channel: revenue
+        driver: "tech / semiconductor client ER&D budgets"
+        share:
+          label: "Tech segment share of revenue"
+          parts:
+            - {label: "Tech segment 29.7% of revenue, Q2 FY27 (Q2 FY26 33.5%)", value: 0.297, status: SOURCED, src: [ltts_q2fy27_release]}
+    fx_margin_sens_bps: *tierb_fx
+
+  - ticker: CYIENT.NS
+    display: CYIENT
+    name: "Cyient"
+    tier: B
+    exposures:
+      - channel: revenue
+        driver: "semiconductor client budgets"
+        share:
+          label: "Semiconductor revenue share"
+          parts:
+            - {label: "Semiconductors $19.3M / (DET $174.2M + semiconductors $19.3M), Q2 FY27", value: 0.09974, status: SOURCED, src: [cyient_investing_q2fy27]}
+    fx_margin_sens_bps: *tierb_fx
+
+  # ===== Tier C — AI and data-centre capex chain =====
+  - ticker: NETWEB.NS
+    display: NETWEB
+    name: "Netweb Technologies"
+    tier: C
+    exposures:
+      - channel: capex
+        driver: "AI-server / GPU system demand"
+        share:
+          label: "AI-systems share of revenue linked to the AI capex cycle"
+          parts:
+            - {label: "AI systems Rs 773.1 cr = 58.4% of revenue from operations, Q2 FY27", value: 0.584, status: SOURCED, src: [netweb_q2fy27]}
+            - {label: "Fraction sensitive to the global AI capex cycle", value: 0.5, status: USER_ASSUMPTION, note: "customers are largely Indian government / enterprise / sovereign AI"}
+    fx_margin_sens_bps:
+      label: "EBIT margin sensitivity to INR (bps per 1%)"
+      parts:
+        - {label: "Importer of GPUs/components (negative)", value: -10, status: USER_ASSUMPTION}
+
+  - ticker: E2E.NS
+    display: E2E
+    name: "E2E Networks"
+    tier: C
+    exposures:
+      - channel: capex
+        driver: "GPU-cloud demand (Indian neocloud)"
+        share:
+          label: "AI/GPU-cloud share of revenue linked to the AI capex cycle"
+          parts:
+            - {label: "AI / GPU cloud share of revenue sensitive to the AI cycle", value: 0.3, status: USER_ASSUMPTION, note: "no disclosure located"}
+    fx_margin_sens_bps:
+      label: "EBIT margin sensitivity to INR (bps per 1%)"
+      parts:
+        - {label: "Not modelled", value: 0, status: USER_ASSUMPTION}
+
+  - ticker: SIFY
+    display: SIFY
+    name: "Sify Technologies (US ADR)"
+    tier: C
+    exposures:
+      - channel: capex
+        driver: "data-centre colocation demand"
+        share:
+          label: "Data-centre share of revenue linked to hyperscaler/AI demand"
+          parts:
+            - {label: "Data Center services 42% of revenue, Q1 FY2026-27", value: 0.42, status: SOURCED, src: [sify_q1fy27]}
+            - {label: "Hyperscaler / AI-demand fraction of colocation revenue", value: 0.5, status: USER_ASSUMPTION}
+    fx_margin_sens_bps:
+      label: "EBIT margin sensitivity to INR (bps per 1%)"
+      parts:
+        - {label: "Not modelled (INR revenues, USD-listed ADR)", value: 0, status: USER_ASSUMPTION}
+    notes: ["US-listed ADR (NASDAQ: SIFY): factors align same-day under the information-set rule; prices in USD."]
+
+  - ticker: ANANTRAJ.NS
+    display: ANANTRAJ
+    name: "Anant Raj"
+    tier: C
+    exposures:
+      - channel: capex
+        driver: "data-centre build-out"
+        share:
+          label: "Data-centre share of revenue"
+          parts:
+            - {label: "Data centre, infrastructure & allied services Rs 90 cr / revenue Rs 631.4 cr, Q1 FY27", value: 0.14254, status: SOURCED, src: [anantraj_q1fy27]}
+    fx_margin_sens_bps:
+      label: "EBIT margin sensitivity to INR (bps per 1%)"
+      parts:
+        - {label: "Not modelled", value: 0, status: USER_ASSUMPTION}
+
+  - ticker: TECHNOE.NS
+    display: TECHNOE
+    name: "Techno Electric & Engineering"
+    tier: C
+    exposures:
+      - channel: capex
+        driver: "data-centre revenue (own DC portfolio)"
+        share:
+          label: "Data-centre share of revenue"
+          parts:
+            - {label: "FY27 data-centre revenue guidance Rs 40-50 cr vs ~Rs 4,000 cr FY27 revenue target (~1.1%)", value: 0.011, status: UNVERIFIED, src: [technoe_bnt_q1fy27, technoe_sahi_fy27], note: "management says DC revenue is not yet material; guidance figures come from secondary coverage"}
+    fx_margin_sens_bps:
+      label: "EBIT margin sensitivity to INR (bps per 1%)"
+      parts:
+        - {label: "Not modelled", value: 0, status: USER_ASSUMPTION}
+
+  - ticker: TARIL.NS
+    display: TARIL
+    name: "Transformers & Rectifiers India"
+    tier: C
+    exposures:
+      - channel: capex
+        driver: "transformer orders linked to data-centre power demand"
+        share:
+          label: "AI/data-centre-linked share of revenue"
+          parts:
+            - {label: "Share tied to AI/data-centre capex", value: 0.05, status: USER_ASSUMPTION, note: "no disclosure located"}
+    fx_margin_sens_bps:
+      label: "EBIT margin sensitivity to INR (bps per 1%)"
+      parts:
+        - {label: "Not modelled", value: 0, status: USER_ASSUMPTION}
+
+  - ticker: STLTECH.NS
+    display: STLTECH
+    name: "Sterlite Technologies (STL)"
+    tier: C
+    exposures:
+      - channel: capex
+        driver: "hyperscaler optical-connectivity orders"
+        share:
+          label: "Data-centre share of revenue"
+          parts:
+            - {label: "Data centre segment 21% of Q1 FY27 revenue (up from ~1% in FY26)", value: 0.21, status: SOURCED, src: [stl_q1fy27]}
+    fx_margin_sens_bps:
+      label: "EBIT margin sensitivity to INR (bps per 1%)"
+      parts:
+        - {label: "Exporter (Americas 54% of Q1 FY27 revenue)", value: 10, status: USER_ASSUMPTION}
+    notes: ["US$1.11bn multi-year hyperscaler product award letter (FY27-FY29) per secondary coverage."]
+
+  - ticker: HFCL.NS
+    display: HFCL
+    name: "HFCL"
+    tier: C
+    exposures:
+      - channel: capex
+        driver: "hyperscaler optical-fibre-cable contract"
+        share:
+          label: "Annualised hyperscaler OFC contract / TTM revenue"
+          parts:
+            - {label: "Rs 10,159 cr five-year OFC supply agreement with a global hyperscaler, annualised (Rs cr / yr)", value: 2031.8, status: SOURCED, src: [hfcl_fy26]}
+            - {label: "1 / trailing-12m revenue (Rs cr)", value_from: inv_revenue_ttm_cr, status: COMPUTED}
+    fx_margin_sens_bps:
+      label: "EBIT margin sensitivity to INR (bps per 1%)"
+      parts:
+        - {label: "Exporter (exports 41% of FY26 consolidated revenue)", value: 10, status: USER_ASSUMPTION}
+
+  - ticker: POLYCAB.NS
+    display: POLYCAB
+    name: "Polycab India"
+    tier: C
+    exposures:
+      - channel: capex
+        driver: "data-centre cable demand"
+        share:
+          label: "Data-centre-linked share of revenue"
+          parts:
+            - {label: "Share tied to AI/data-centre capex", value: 0.05, status: USER_ASSUMPTION, note: "no disclosure located"}
+    fx_margin_sens_bps:
+      label: "EBIT margin sensitivity to INR (bps per 1%)"
+      parts:
+        - {label: "Not modelled", value: 0, status: USER_ASSUMPTION}
+
+  - ticker: KEI.NS
+    display: KEI
+    name: "KEI Industries"
+    tier: C
+    exposures:
+      - channel: capex
+        driver: "data-centre cable demand"
+        share:
+          label: "Data-centre-linked share of revenue"
+          parts:
+            - {label: "Share tied to AI/data-centre capex", value: 0.05, status: USER_ASSUMPTION, note: "no disclosure located"}
+    fx_margin_sens_bps:
+      label: "EBIT margin sensitivity to INR (bps per 1%)"
+      parts:
+        - {label: "Not modelled", value: 0, status: USER_ASSUMPTION}
+
+  # ===== Tier D — semiconductor & electronics manufacturing theme =====
+  - ticker: KAYNES.NS
+    display: KAYNES
+    name: "Kaynes Technology India"
+    tier: D
+    exposures: []
+    fx_margin_sens_bps:
+      label: "EBIT margin sensitivity to INR (bps per 1%)"
+      parts:
+        - {label: "Component importer (negative)", value: -10, status: USER_ASSUMPTION}
+    notes: ["Theme/sentiment exposure (EMS + OSAT plans); no disclosed AI-capex revenue link."]
+
+  - ticker: DIXON.NS
+    display: DIXON
+    name: "Dixon Technologies"
+    tier: D
+    exposures: []
+    fx_margin_sens_bps:
+      label: "EBIT margin sensitivity to INR (bps per 1%)"
+      parts:
+        - {label: "Component importer (negative)", value: -10, status: USER_ASSUMPTION}
+    notes: ["Theme/sentiment exposure (electronics manufacturing)."]
+
+  - ticker: CGPOWER.NS
+    display: CGPOWER
+    name: "CG Power & Industrial Solutions"
+    tier: D
+    exposures: []
+    fx_margin_sens_bps:
+      label: "EBIT margin sensitivity to INR (bps per 1%)"
+      parts:
+        - {label: "Not modelled", value: 0, status: USER_ASSUMPTION}
+    notes: ["Theme/sentiment exposure (OSAT JV); no disclosed AI-capex revenue link."]
+
+  - ticker: MOSCHIP.BO
+    display: MOSCHIP
+    name: "MosChip Technologies"
+    tier: D
+    exposures:
+      - channel: revenue
+        driver: "global semiconductor client design budgets"
+        share:
+          label: "Semiconductor design-services share of revenue linked to chip-client budgets"
+          parts:
+            - {label: "Share of revenue from global semiconductor clients' R&D budgets", value: 0.4, status: USER_ASSUMPTION, note: "no disclosure located"}
+    fx_margin_sens_bps:
+      label: "EBIT margin sensitivity to INR (bps per 1%)"
+      parts:
+        - {label: "Services exporter", value: 20, status: USER_ASSUMPTION}
+    notes: ["Exchange verified: BSE-listed since 2001 (532407, MOSCHIP.BO); NSE-listed only since 5-Feb-2025 (MOSCHIP.NS). Regressions use the BSE series for a full 3-year window."]
+
+benchmarks:
+  nifty: "^NSEI"
+  nifty_it: "^CNXIT"
+  adrs: [INFY, WIT]
+
+# Ticker verification log seeds (the pipeline also verifies every ticker live).
+ticker_fixes:
+  - {requested: LTIM.NS, resolved: LTM.NS, action: fixed, note: "NSE symbol LTIM carried forward as LTM w.e.f. 27-Feb-2026 (LTIMindtree renamed LTM Ltd)", src: [ltim_rename]}
+  - {requested: GVTD.NS, resolved: "GVT&D.NS", action: fixed, note: "Yahoo symbol keeps the ampersand"}
+  - {requested: MOSCHIP, resolved: MOSCHIP.BO, action: fixed, note: "BSE since 2001; NSE (MOSCHIP.NS) only since 5-Feb-2025 -> BSE series used"}
+  - {requested: ENRIN.NS, resolved: ENRIN.NS, action: warning, note: "listed 19-Jun-2025; short regression history"}
+  - {requested: LU, resolved: null, action: dropped, note: "Yahoo LU is now Lufax (2020+), not Lucent; Lucent handled qualitatively"}
+  - {requested: NT, resolved: null, action: dropped, note: "Nortel not on Yahoo; qualitative + sourced"}
+  - {requested: GBLX, resolved: null, action: dropped, note: "not Global Crossing (data from 2003); qualitative + sourced"}
+  - {requested: WCOM, resolved: null, action: dropped, note: "WorldCom not on Yahoo; qualitative + sourced"}
+  - {requested: SAY, resolved: null, action: dropped, note: "reused ticker (2022+), not Satyam ADR"}
+  - {requested: JNPR, resolved: null, action: dropped, note: "delisted on Yahoo"}
+  - {requested: JDSU, resolved: VIAV, action: fixed, note: "JDS Uniphase history is under VIAV"}
+  - {requested: DSQSOFT.BO, resolved: null, action: dropped, note: "DSQ Software defunct; not on Yahoo"}
+  - {requested: PENTAMEDIA.BO, resolved: null, action: dropped, note: "Pentamedia not on Yahoo"}
+  - {requested: SATYAMCOMP.NS, resolved: null, action: dropped, note: "Satyam (merged into Tech Mahindra) not on Yahoo"}
+
+# -------------------------------------------------------------------------------------
+# GLOBAL MODEL ASSUMPTIONS (all USER_ASSUMPTION unless sourced)
+# -------------------------------------------------------------------------------------
+assumptions:
+  - {id: assump.psi_supplier, label: "Pass-through of a capex cut to AI-supplier revenue", value: 1.0, unit: x, status: USER_ASSUMPTION, min: 0, max: 1.5, step: 0.05, note: "1.0 = suppliers lose revenue in proportion to the capex cut"}
+  - {id: assump.phi_it, label: "IT-services budget elasticity to US tech client revenue shock", value: 1.0, unit: x, status: USER_ASSUMPTION, min: 0, max: 2, step: 0.05}
+  - {id: assump.psi_india_dc, label: "Pass-through of US AI capex cut to Indian capex-order exposures", value: 0.5, unit: x, status: USER_ASSUMPTION, min: 0, max: 1.5, step: 0.05, note: "Indian DC/AI demand is partly domestic"}
+  - {id: assump.kappa_capex, label: "Growth-reset de-rating per unit EPS cut (capex shock)", value: 0.0, unit: x, status: USER_ASSUMPTION, min: 0, max: 1.5, step: 0.05}
+  - {id: assump.kappa_guidance, label: "Growth-reset de-rating per unit EPS cut (guidance shock)", value: 0.5, unit: x, status: USER_ASSUMPTION, min: 0, max: 1.5, step: 0.05}
+  - {id: assump.sympathy, label: "Peer sympathy multiplier on normal-times peer beta", value: 1.0, unit: x, status: USER_ASSUMPTION, min: 0, max: 2, step: 0.05}
+  - {id: assump.credit_duration, label: "Debt duration used to capitalise a spread shock", value: 5.0, unit: yrs, status: USER_ASSUMPTION, min: 1, max: 10, step: 0.5}
+  - {id: assump.op_leverage_default, label: "Fallback operating leverage when statements are unusable", value: 1.5, unit: x, status: USER_ASSUMPTION, min: 1, max: 4, step: 0.1}
+  - {id: assump.premium_fallback, label: "AI premium fallback when no pre-ChatGPT P/E exists", value: 1.0, unit: x, status: USER_ASSUMPTION, note: "1.0 = use the tier median AI premium"}
+
+# -------------------------------------------------------------------------------------
+# SHOCK PRESETS (F1). Param keys are fixed by docs/DESIGN.md §4.1.
+# Every default and Monte Carlo bound is a USER_ASSUMPTION unless stated.
+# mc: triangular(low, mode=value, high) | uniform(low, high) | fixed
+# -------------------------------------------------------------------------------------
+presets:
+  - id: capex
+    num: 1
+    label: "Hyperscaler capex cut"
+    description: "c% cut to the combined AI capex of MSFT, GOOGL, AMZN, META, ORCL; flows to suppliers via their hyperscaler revenue share and operating leverage, then to India."
+    params:
+      - {key: c, label: "Capex cut c", kind: number, value: 0.30, min: 0, max: 0.8, step: 0.01, unit: frac, mc: {dist: triangular, low: 0.15, high: 0.50}}
+      - {key: psi_supplier, label: "Supplier pass-through psi", kind: number, value: 1.0, min: 0, max: 1.5, step: 0.05, unit: x, mc: {dist: fixed}}
+      - {key: kappa, label: "Growth de-rating per EPS cut kappa", kind: number, value: 0.0, min: 0, max: 1.5, step: 0.05, unit: x, mc: {dist: fixed}}
+      - {key: phi_it, label: "IT budget elasticity phi", kind: number, value: 1.0, min: 0, max: 2, step: 0.05, unit: x, mc: {dist: triangular, low: 0.5, high: 1.5}}
+      - {key: psi_india_dc, label: "India capex-order pass-through", kind: number, value: 0.5, min: 0, max: 1.5, step: 0.05, unit: x, mc: {dist: triangular, low: 0.25, high: 1.0}}
+      - &lambda_india0 {key: lambda_india, label: "India AI-premium unwind", kind: number, value: 0.0, min: 0, max: 1, step: 0.05, unit: frac, mc: {dist: fixed}}
+      - &f_override {key: f_override, label: "INR depreciation f (blank = auto from beta)", kind: number, value: null, min: 0, max: 0.2, step: 0.005, unit: frac, mc: null}
+
+  - id: guidance
+    num: 2
+    label: "Chipmaker guidance cut"
+    description: "Pick any chip name; its revenue is guided down g%. EPS falls by g x operating leverage, the multiple de-rates by kappa x EPS cut, peers move by their peer beta."
+    params:
+      - {key: target, label: "Chipmaker", kind: ticker, value: NVDA, options: [NVDA, AMD, AVGO, TSM, ASML, MU, INTC, ARM, MRVL, SMCI]}
+      - {key: g, label: "Guided revenue cut g", kind: number, value: 0.20, min: 0, max: 0.8, step: 0.01, unit: frac, mc: {dist: triangular, low: 0.10, high: 0.35}}
+      - {key: kappa, label: "Growth de-rating per EPS cut kappa", kind: number, value: 0.5, min: 0, max: 1.5, step: 0.05, unit: x, mc: {dist: triangular, low: 0.25, high: 0.75}}
+      - {key: sympathy, label: "Peer sympathy multiplier", kind: number, value: 1.0, min: 0, max: 2, step: 0.05, unit: x, mc: {dist: triangular, low: 0.5, high: 1.25}}
+      - {key: phi_it, label: "IT budget elasticity phi", kind: number, value: 1.0, min: 0, max: 2, step: 0.05, unit: x, mc: {dist: fixed}}
+      - {key: psi_india_dc, label: "India capex-order pass-through", kind: number, value: 0.5, min: 0, max: 1.5, step: 0.05, unit: x, mc: {dist: fixed}}
+      - *lambda_india0
+      - *f_override
+
+  - id: restatement
+    num: 3
+    label: "Accounting restatement"
+    description: "Profit at any chosen company (origin or Indian target) restated down r%, plus a credibility de-rating d; peers in the same group/tier move by the calibrated contagion ratio."
+    params:
+      - {key: target, label: "Company", kind: ticker, value: SMCI, options: null, note: "any origin or India target"}
+      - {key: r, label: "Profit restated down r", kind: number, value: 0.30, min: 0, max: 1, step: 0.01, unit: frac, mc: {dist: triangular, low: 0.15, high: 0.50}}
+      - {key: d, label: "Credibility de-rating d", kind: number, value: 0.25, min: 0, max: 0.9, step: 0.01, unit: frac, mc: {dist: triangular, low: 0.10, high: 0.40}}
+      - {key: contagion, label: "Contagion ratio (blank = calibrated)", kind: number, value: null, min: 0, max: 1, step: 0.01, unit: x, mc: null, note: "default: calib.contagion_us (SMCI 2024) or calib.contagion_india (Satyam 2009)"}
+      - *lambda_india0
+      - *f_override
+
+  - id: multiple
+    num: 4
+    label: "Pure multiple compression"
+    description: "Earnings unchanged. The AI-basket P/E reverts toward its pre-ChatGPT (before 30-Nov-2022) median by lambda, or to a user-set multiple."
+    params:
+      - {key: mode, label: "Target", kind: enum, value: median, options: [median, multiple]}
+      - {key: lambda, label: "Reversion fraction lambda", kind: number, value: 0.5, min: 0, max: 1, step: 0.05, unit: frac, mc: {dist: triangular, low: 0.25, high: 0.80}}
+      - {key: target_pe, label: "User-set basket P/E", kind: number, value: 25, min: 5, max: 80, step: 0.5, unit: x, mc: {dist: fixed}}
+      - {key: per_name, label: "Per-name medians", kind: bool, value: false}
+      - {key: floor_zero, label: "Compression only (floor at 0)", kind: bool, value: true}
+      - {key: lambda_india, label: "India AI-premium unwind", kind: number, value: 0.5, min: 0, max: 1, step: 0.05, unit: frac, mc: {dist: triangular, low: 0.25, high: 0.80}}
+      - *f_override
+
+  - id: credit
+    num: 5
+    label: "AI credit event"
+    description: "LOW CONFIDENCE. Neocloud / AI-debt stress: spreads widen on stressed borrowers (CRWV, ORCL), equity absorbs the capitalised extra interest plus a de-rating, and stressed borrowers cut capex by k, hitting suppliers via their neocloud share."
+    low_confidence: true
+    params:
+      - {key: ds_bps, label: "Spread widening", kind: number, value: 400, min: 0, max: 1500, step: 25, unit: bps, mc: {dist: triangular, low: 200, high: 800}}
+      - {key: duration, label: "Debt duration", kind: number, value: 5, min: 1, max: 10, step: 0.5, unit: yrs, mc: {dist: fixed}}
+      - {key: k, label: "Stressed-borrower capex cut k", kind: number, value: 0.30, min: 0, max: 0.8, step: 0.01, unit: frac, mc: {dist: triangular, low: 0.15, high: 0.50}}
+      - {key: d_credit, label: "Credit de-rating", kind: number, value: 0.15, min: 0, max: 0.6, step: 0.01, unit: frac, mc: {dist: triangular, low: 0.05, high: 0.30}}
+      - {key: psi_supplier, label: "Supplier pass-through psi", kind: number, value: 1.0, min: 0, max: 1.5, step: 0.05, unit: x, mc: {dist: fixed}}
+      - {key: phi_it, label: "IT budget elasticity phi", kind: number, value: 1.0, min: 0, max: 2, step: 0.05, unit: x, mc: {dist: fixed}}
+      - {key: psi_india_dc, label: "India capex-order pass-through", kind: number, value: 0.5, min: 0, max: 1.5, step: 0.05, unit: x, mc: {dist: fixed}}
+      - *lambda_india0
+      - *f_override
+
+  - id: replay
+    num: 6
+    label: "Historical replay"
+    description: "Apply the actual US factor moves (SOX, NDX) from a historical window to today's Indian universe using today's betas. Fundamental damage is not modelled."
+    params:
+      - {key: window, label: "Window", kind: window, value: DOTCOM, options: null, note: "ids from replay_windows"}
+      - *f_override
+
+  - id: fullpop
+    num: 7
+    label: "Full bubble pop"
+    description: "Capex cut (1) + multiple compression (4) + AI credit event (5) over a chosen horizon. Horizon-specific defaults; LOW CONFIDENCE because it includes the credit leg."
+    low_confidence: true
+    params:
+      - {key: c, label: "Capex cut c", kind: number, value: 0.35, min: 0, max: 0.8, step: 0.01, unit: frac, mc: {dist: triangular, low: 0.20, high: 0.60}}
+      - {key: psi_supplier, label: "Supplier pass-through psi", kind: number, value: 1.0, min: 0, max: 1.5, step: 0.05, unit: x, mc: {dist: fixed}}
+      - {key: kappa, label: "Growth de-rating per EPS cut kappa", kind: number, value: 0.0, min: 0, max: 1.5, step: 0.05, unit: x, mc: {dist: fixed}}
+      - {key: phi_it, label: "IT budget elasticity phi", kind: number, value: 1.0, min: 0, max: 2, step: 0.05, unit: x, mc: {dist: triangular, low: 0.5, high: 1.5}}
+      - {key: psi_india_dc, label: "India capex-order pass-through", kind: number, value: 0.5, min: 0, max: 1.5, step: 0.05, unit: x, mc: {dist: triangular, low: 0.25, high: 1.0}}
+      - {key: mode, label: "Multiple target", kind: enum, value: median, options: [median, multiple]}
+      - {key: lambda, label: "Reversion fraction lambda", kind: number, value: 0.60, min: 0, max: 1, step: 0.05, unit: frac, mc: {dist: triangular, low: 0.35, high: 0.85}}
+      - {key: target_pe, label: "User-set basket P/E", kind: number, value: 25, min: 5, max: 80, step: 0.5, unit: x, mc: {dist: fixed}}
+      - {key: per_name, label: "Per-name medians", kind: bool, value: false}
+      - {key: floor_zero, label: "Compression only (floor at 0)", kind: bool, value: true}
+      - {key: ds_bps, label: "Spread widening", kind: number, value: 500, min: 0, max: 1500, step: 25, unit: bps, mc: {dist: triangular, low: 250, high: 1000}}
+      - {key: duration, label: "Debt duration", kind: number, value: 5, min: 1, max: 10, step: 0.5, unit: yrs, mc: {dist: fixed}}
+      - {key: k, label: "Stressed-borrower capex cut k", kind: number, value: 0.35, min: 0, max: 0.8, step: 0.01, unit: frac, mc: {dist: triangular, low: 0.20, high: 0.60}}
+      - {key: d_credit, label: "Credit de-rating", kind: number, value: 0.20, min: 0, max: 0.6, step: 0.01, unit: frac, mc: {dist: triangular, low: 0.10, high: 0.35}}
+      - {key: lambda_india, label: "India AI-premium unwind", kind: number, value: 0.50, min: 0, max: 1, step: 0.05, unit: frac, mc: {dist: triangular, low: 0.25, high: 0.75}}
+      - *f_override
+    horizon_overrides:
+      "1D":
+        c: {value: 0.10, low: 0.05, high: 0.20}
+        lambda: {value: 0.10, low: 0.05, high: 0.20}
+        ds_bps: {value: 150, low: 75, high: 300}
+        k: {value: 0.10, low: 0.05, high: 0.20}
+        d_credit: {value: 0.05, low: 0.02, high: 0.10}
+        lambda_india: {value: 0.05, low: 0.02, high: 0.10}
+      "1M":
+        c: {value: 0.20, low: 0.10, high: 0.35}
+        lambda: {value: 0.30, low: 0.15, high: 0.50}
+        ds_bps: {value: 300, low: 150, high: 600}
+        k: {value: 0.20, low: 0.10, high: 0.35}
+        d_credit: {value: 0.10, low: 0.05, high: 0.20}
+        lambda_india: {value: 0.25, low: 0.10, high: 0.40}
+      "12M":
+        c: {value: 0.35, low: 0.20, high: 0.60}
+        lambda: {value: 0.60, low: 0.35, high: 0.85}
+        ds_bps: {value: 500, low: 250, high: 1000}
+        k: {value: 0.35, low: 0.20, high: 0.60}
+        d_credit: {value: 0.20, low: 0.10, high: 0.35}
+        lambda_india: {value: 0.50, low: 0.25, high: 0.75}
+
+# -------------------------------------------------------------------------------------
+# REPLAY WINDOWS (preset 6). Close-to-close from `start` close to `end` close.
+# Window boundaries are definitional choices; the moves are COMPUTED from Yahoo data.
+# -------------------------------------------------------------------------------------
+replay_windows:
+  - {id: DOTCOM, label: "Dot-com bust: Nasdaq peak (10-Mar-2000) -> trough (9-Oct-2002)", start: "2000-03-10", end: "2002-10-09"}
+  - {id: DOTCOM12M, label: "Dot-com, first 12 months after the Nasdaq peak", start: "2000-03-10", end: "2001-03-12"}
+  - {id: TELECOM, label: "Telecom/fiber bust, 2002 leg (WorldCom/Global Crossing year)", start: "2001-12-31", end: "2002-10-09"}
+  - {id: GFC, label: "GFC: Lehman weekend -> Nov-2008 low", start: "2008-09-12", end: "2008-11-20"}
+  - {id: COVID, label: "COVID crash: Feb-2020 peak -> 23-Mar-2020 low", start: "2020-02-19", end: "2020-03-23"}
+  - {id: Y2022, label: "2022 rate bear: NDX Nov-2021 peak -> Oct-2022 low", start: "2021-11-19", end: "2022-10-13"}
+  - {id: SMCI24, label: "Super Micro accounting scare: Hindenburg report -> mid-Nov-2024", start: "2024-08-26", end: "2024-11-14", src: [smci_ey_2024]}
+  - {id: DEEPSEEK, label: "DeepSeek day (27-Jan-2025, one US session)", start: "2025-01-24", end: "2025-01-27", src: [deepseek_bs_2025]}
+  - {id: NOV2025, label: "NVDA earnings reversal day (20-Nov-2025)", start: "2025-11-19", end: "2025-11-20", src: [nvda_nov2025_fortune]}
+  - {id: OCT2026, label: "Oct-2026 AI funding/credit scare: OpenAI revenue report -> Lam warning", start: "2026-10-07", end: "2026-10-22", src: [oct2026_openai_admiral, lam_oct2026_techtimes]}
+
+# -------------------------------------------------------------------------------------
+# SOURCES (verbatim quotes; accessed 2026-10-28). History-specific sources live in history.yaml.
+# -------------------------------------------------------------------------------------
+sources:
+  - id: openai_chatgpt
+    title: "ChatGPT: Optimizing Language Models for Dialogue (ChatGPT launch post, 30-Nov-2022)"
+    publisher: OpenAI (date via Wikipedia '2022 in artificial intelligence')
+    url: https://openai.com/index/chatgpt/
+    date: "2022-11-30"
+    quote: "OpenAI's November 30, 2022 blog post, titled \"ChatGPT: Optimizing Language Models for Dialogue\" (as referenced by Wikipedia)"
+    verification: SECONDARY
+    note: "openai.com returned HTTP 403 to automated fetch; launch date confirmed via https://en.wikipedia.org/wiki/2022_in_artificial_intelligence"
+  - id: jpx_trading_hours
+    title: "Extension of trading hours (TSE close 15:30 JST from 5-Nov-2024)"
+    publisher: Japan Exchange Group
+    url: https://www.jpx.co.jp/english/corporate/news/news-releases/1030/uorii50000002f2a-att/pressrelease_extension_of_trading_hours_en.pdf
+    date: "2024-10-30"
+    quote: "trading hours will be extended by 30 minutes and end at 15:30 JST (previously 15:00 JST) starting from 5th November 2024"
+    verification: SECONDARY
+    note: "quote as reproduced in the BofA index notice / search results"
+  - id: nvda_10k_fy26
+    title: "NVIDIA Form 10-K for fiscal year ended 25-Jan-2026"
+    publisher: NVIDIA / SEC EDGAR
+    url: https://www.sec.gov/Archives/edgar/data/1045810/000104581026000021/nvda-20260125.htm
+    date: "2026-02-25"
+    quote: "For fiscal year 2026, sales to one direct customer represented 22% of total revenue and sales to another direct customer represented 14% of total revenue, all of which were primarily attributable to the Compute & Networking segment."
+    verification: PRIMARY
+  - id: nvda_q2fy27_cfo
+    title: "CFO Commentary on Second Quarter Fiscal 2027 Results"
+    publisher: NVIDIA
+    url: https://s201.q4cdn.com/141608511/files/doc_financials/2027/Q227/Q2FY27-CFO-Commentary.pdf
+    date: "2026-08-26"
+    quote: "Revenue by Market Platform ... Data Center $89,023 ... Hyperscale 48,710 ... AI Clouds, Industrial, & Enterprise 40,313 ... Edge Computing 7,198 ... Total $96,221"
+    verification: PRIMARY
+  - id: amd_q2_2026
+    title: "AMD Reports Second Quarter 2026 Financial Results (Form 8-K Ex. 99.1)"
+    publisher: AMD / SEC EDGAR
+    url: https://www.sec.gov/Archives/edgar/data/0000002488/000000248826000121/q22026991.htm
+    date: "2026-08-04"
+    quote: "Second quarter revenue was $11.5 billion ... Data Center segment revenue was $6.7 billion, up 107% year-over-year (table: $11,536 million total; $6,718 million Data Center)"
+    verification: PRIMARY
+  - id: avgo_q3_fy26
+    title: "Broadcom Q3 FY2026 results (Form 8-K Ex. 99)"
+    publisher: Broadcom / SEC EDGAR
+    url: https://www.sec.gov/Archives/edgar/data/0001730168/000173016826000076/avgo-08022026x8kxex99.htm
+    date: "2026-09-02"
+    quote: "Revenue of $29.6 billion for the third quarter, up 86 percent from the prior year period ... Q3 AI semiconductor revenue of $16.7 billion grew 221% year-over-year, and 54% quarter-over-quarter"
+    verification: PRIMARY
+  - id: tsm_ai_accel_2025
+    title: "TSMC hikes capex as Q4 profit rises"
+    publisher: Mobile World Live
+    url: https://www.mobileworldlive.com/greater-china/tsmc-hikes-capex-as-q4-profit-rises/
+    date: "2026-01-15"
+    quote: "AI accelerators made up a high-teens percentage of total 2025 revenue (CEO C.C. Wei, Q4-2025 earnings call)"
+    verification: SECONDARY
+  - id: tsm_clienta_2025
+    title: "NVIDIA surpasses Apple as TSMC's largest customer (2025 Form 20-F)"
+    publisher: Taiwan News
+    url: https://www.taiwannews.com.tw/news/6310676
+    date: "2026-04"
+    quote: "As a share of TSMC's total revenue, it had grown from 12% in 2024 to 19% in 2025."
+    verification: SECONDARY
+  - id: tsm_hpc_3q26
+    title: "The Most Important Number in Taiwan Semiconductor's Earnings Report Was 68%"
+    publisher: The Motley Fool via Webull
+    url: https://www.webull.com/news/15775529776751616
+    date: "2026-10"
+    quote: "HPC accounted for a whopping 68% of TSMC's quarterly revenue"
+    verification: SECONDARY
+  - id: mu_fq4_2026
+    title: "Micron fiscal Q4 2026 results (Form 8-K Ex. 99.1)"
+    publisher: Micron / SEC EDGAR
+    url: https://www.sec.gov/Archives/edgar/data/0000723125/000072312526000018/a2026q4ex991-pressrelease.htm
+    date: "2026-09-30"
+    quote: "Cloud Memory Business Unit Revenue $ 16,283 $ 13,769 $ 4,543 ... Core Data Center Business Unit Revenue $ 18,002 $ 11,524 $ 1,577 ... Revenue $ 54,229 $ 41,456 $ 11,315"
+    verification: PRIMARY
+  - id: intc_q2_2026
+    title: "Intel Q2 2026 earnings release (Form 8-K)"
+    publisher: Intel / SEC EDGAR
+    url: https://www.sec.gov/Archives/edgar/data/0000050863/000005086326000155/q226earningsrelease.htm
+    date: "2026-07-23"
+    quote: "Second-quarter revenue was $16.1 billion, up 25% year-over-year (YoY) ... Data Center and AI (DCAI) ... 6.3 billion"
+    verification: PRIMARY
+  - id: mrvl_q2_fy27
+    title: "Marvell Technology Reports Second Quarter of Fiscal Year 2027 Financial Results"
+    publisher: Marvell
+    url: https://investor.marvell.com/news-events/press-releases/detail/1031/marvell-technology-inc-reports-second-quarter-of-fiscal-year-2027-financial-results
+    date: "2026-08-27"
+    quote: "Net revenue for the second quarter of fiscal 2027 was $2.739 billion ... Data center $2,171.5 (79% of total)"
+    verification: PRIMARY
+  - id: smci_10k_fy26
+    title: "Super Micro Computer Form 10-K for fiscal year ended 30-Jun-2026"
+    publisher: Super Micro Computer / SEC EDGAR
+    url: https://www.sec.gov/Archives/edgar/data/0001375365/000137536526000022/smci-20260630.htm
+    date: "2026-08"
+    quote: "We had one customer account for 10% or more of our net sales in fiscal year 2026"
+    verification: PRIMARY
+  - id: smci_secapi_fy26
+    title: "Financial analysis of Super Micro Computer fiscal 2026"
+    publisher: sec-api.io
+    url: https://sec-api.io/insights/financial-analysis-of-super-micro-computer-fiscal-2026
+    date: "2026"
+    quote: "One large data center and cloud service provider customer accounted for 28% of fiscal 2026 revenue"
+    verification: UNVERIFIED
+  - id: crwv_10k_2025
+    title: "CoreWeave Form 10-K for the year ended 31-Dec-2025"
+    publisher: CoreWeave / SEC EDGAR
+    url: https://www.sec.gov/Archives/edgar/data/1769628/000176962826000104/crwv-20251231.htm
+    date: "2026-03-02"
+    quote: "We recognized an aggregate of approximately 67% of our revenue from our top customer, Microsoft ... None of our other customers represented 10% or more of our revenue for the year ended December 31, 2025."
+    verification: PRIMARY
+  - id: vrt_zacks
+    title: "Bull of the Day: Vertiv (VRT)"
+    publisher: Zacks
+    url: https://www.zacks.com/commentary/2374965/bull-of-the-day-vertiv-vrt
+    date: "2024"
+    quote: "75% of Vertiv's revenue is data centers"
+    verification: UNVERIFIED
+    note: "Vertiv FY2025 10-K gives only a geographic split ('net sales was $10,229.9, of which 62% was transacted in the Americas')"
+  - id: etn_fintool_q4_2025
+    title: "Eaton Q4 2025 earnings summary"
+    publisher: Fintool
+    url: "https://fintool.com/app/research/companies/ETN/earnings/Q4%202025"
+    date: "2026-02"
+    quote: "End market growth assumptions for 2026 total ~7%, with particular strength in data centers/distributed IT (21% of sales)"
+    verification: UNVERIFIED
+  - id: abb_hitachi_energy_2022
+    title: "ABB completes sale of remaining stake in Hitachi Energy to Hitachi"
+    publisher: ABB
+    url: https://new.abb.com/news/detail/98507/abb-completes-sale-of-remaining-stake-in-hitachi-energy-to-hitachi
+    date: "2022-12-28"
+    quote: "ABB announced the completed divestment of its remaining 19.9% stake in the Hitachi Energy joint venture to Hitachi"
+    verification: PRIMARY
+  - id: ofss_shp_jun26
+    title: "Oracle Financial Services Software — shareholding pattern as of 30-Jun-2026"
+    publisher: Oracle Financial Services Software (oracle.com)
+    url: https://www.oracle.com/a/ocom/docs/industries/financial-services/shareholding-pattern-june-30-2026.pdf
+    date: "2026-06-30"
+    quote: "Sub-Total (A)(2) 63,051,197 shares, 72.41% (promoter and promoter group)"
+    verification: SECONDARY
+    note: "figure read via search-index extraction of the PDF"
+  - id: gvtd_shareholding
+    title: "GE Vernova T&D India — shareholding pattern (Mar-2026)"
+    publisher: Trendlyne / MarketsMojo
+    url: "https://trendlyne.com/equity/share-holding/67/GVT&D/latest/ge-vernova-t-d-india-ltd/"
+    date: "2026-03-31"
+    quote: "Grid Equipments Private Limited holds 50.70% ... GE Grid Alliance B.V. (foreign promoter) holds 0.30%"
+    verification: SECONDARY
+  - id: powerindia_crisil
+    title: "Hitachi Energy India Limited — rating rationale"
+    publisher: CRISIL Ratings
+    url: "https://www.crisil.com/mnt/winshare/Ratings/RatingList/RatingDocs/HitachiEnergyIndiaLimited_June%2019_%202026_RR_398707.html"
+    date: "2026-06-19"
+    quote: "the balance 71.3% promoter shareholding is currently held by Hitachi Energy Ltd., based in Zurich, Switzerland"
+    verification: SECONDARY
+  - id: enrin_shareholding
+    title: "Siemens promoter group realigns shareholding in Siemens Energy India"
+    publisher: Investywise
+    url: "https://www.investywise.com/?p=30639"
+    date: "2025-12-16"
+    quote: "Siemens International Holding B.V. held 47.70% ... Siemens Aktiengesellschaft holds 16.30% ... Siemens Energy Holdco B.V. held 5.00% ... Siemens Energy Holding B.V. held 6.00%"
+    verification: SECONDARY
+    note: "promoter group total 75.00% per multiple trackers; a Jun-2026 NSE filing shows Siemens AG 15.28% and Siemens Energy Holding B.V. 7.02% after a further transfer"
+  - id: abb_shareholding
+    title: "ABB India — shareholding pattern"
+    publisher: Trendlyne / Anand Rathi
+    url: https://trendlyne.com/equity/share-holding/17/ABB/latest/abb-india-ltd/
+    date: "2026-06-30"
+    quote: "Abb Asea Brown Boveri Limited (75.0%) ... approximately 75.00% promoters"
+    verification: SECONDARY
+  - id: schneider_shareholding
+    title: "Schneider Electric Infrastructure — promoter shareholding"
+    publisher: Trendlyne / NSE filings
+    url: https://trendlyne.com/equity/share-holding/1195/SCHNEIDER/latest/schneider-electric-infrastructure-ltd/
+    date: "2026-03-31"
+    quote: "Total ShareHolding for Promoter & Group 179328026 75.00 ... 168,735,367 fully paid up equity shares ... 1,05,92,659 equity shares"
+    verification: SECONDARY
+  - id: infy_factsheet_q2fy27
+    title: "Infosys Q2 FY27 fact sheet"
+    publisher: Infosys
+    url: https://www.infosys.com/investors/reports-filings/quarterly-results/2026-2027/q2/documents/fact-sheet.pdf
+    date: "2026-10"
+    quote: "Hi-Tech 6.8% (Sep 30, 2026), 7.7% (Jun 30, 2026), 8.3% (Sep 30, 2025); growth (17.5)% reported, (17.3)% constant currency"
+    verification: SECONDARY
+    note: "direct download returned HTTP 403; read via search-index extraction"
+  - id: infy_aim_q2fy27
+    title: "Infosys Q2 FY27 Results: Net Profit Rises 6.2%, AI Revenue Jumps"
+    publisher: Analytics Insight
+    url: https://www.analyticsinsight.net/business/infosys-q2-fy27-results-net-profit-rises-62-ai-revenue-jumps
+    date: "2026-10"
+    quote: "Hi-Tech had the sharpest decline of any segment, at 17.5% in reported currency and 17.3% in constant currency"
+    verification: SECONDARY
+  - id: tcs_finology_q2fy27
+    title: "TCS Q2 FY27 Results Analysis"
+    publisher: Finology Ticker
+    url: https://ticker.finology.in/discover/market-update/tcs-q2-fy27-results-analysis
+    date: "2026-10"
+    quote: "Technology and Services at about 8.6% of Q2 FY27 revenue"
+    verification: UNVERIFIED
+  - id: wipro_6k_q2fy27
+    title: "Wipro Form 6-K Ex. 99.5 — highlights for the quarter ended 30-Sep-2026"
+    publisher: Wipro / SEC EDGAR
+    url: https://www.sec.gov/Archives/edgar/data/0001123799/000119312526426841/d188224dex995.htm
+    date: "2026-10"
+    quote: "Technology and Communications 16.5% 17.0% 16.0% 16.8% 16.0% 15.6% 15.5% (columns Q2 FY27, Q1 FY27, FY26, Q4..Q1 FY26)"
+    verification: PRIMARY
+  - id: hcl_finology_q2fy27
+    title: "HCL Tech Q2 FY27 Results Analysis"
+    publisher: Finology Ticker
+    url: https://ticker.finology.in/discover/market-update/hcl-tech-q2-fy27-results-analysis
+    date: "2026-10"
+    quote: "Technology & Services at 14.3% revenue mix"
+    verification: UNVERIFIED
+  - id: techm_q2fy27_pres
+    title: "Tech Mahindra Q2 FY27 earnings presentation"
+    publisher: Tech Mahindra
+    url: https://insights.techmahindra.com/investors/tml-q2-fy-27-earnings-presentation.pdf
+    date: "2026-10"
+    quote: "Technology, Media and Entertainment 13.0% 2.8% 6.7% (% Mix, QoQ, YoY)"
+    verification: PRIMARY
+  - id: ltm_angelone_q2fy27
+    title: "LTM Share Price in Focus After Q2 FY27 Earnings Results"
+    publisher: Angel One
+    url: https://www.angelone.in/news/stocks/ltm-share-price-in-focus-after-q2-fy27-earnings-results-total-income-up-11-3-yoy
+    date: "2026-10-16"
+    quote: "Technology & Services at ₹2,236.1 crore ... revenue from operations ₹11,807.6 crore"
+    verification: SECONDARY
+  - id: ltm_multibagg_q2fy27
+    title: "LTM Q2 FY27: Mid-single digit growth, steady margins"
+    publisher: Multibagg
+    url: https://www.multibagg.ai/market-pulse/articles/ltm-q2-897ac183-5e48-4ae1-8a54-6e592e39c4e5
+    date: "2026-10"
+    quote: "Technology and Services at 19.0%"
+    verification: SECONDARY
+  - id: psys_q2fy27_factsheet
+    title: "Persistent Systems Investor Presentation October 2026 — Fact Sheet"
+    publisher: Persistent Systems
+    url: https://www.persistent.com/wp-content/uploads/2026/10/analyst-presentation-and-factsheet-q2fy27.pdf
+    date: "2026-10"
+    quote: "Software, Hi-Tech & Emerging Industries 42.8% 40.7% 39.2% 39.6% 40.0% (Q2FY27..Q2FY26); North America 81.4%"
+    verification: PRIMARY
+  - id: coforge_indmoney_q2fy27
+    title: "Coforge Q2 Results FY27"
+    publisher: INDmoney
+    url: https://www.indmoney.com/blog/stocks/coforge-q2-fy27-earnings-analysis
+    date: "2026-10"
+    quote: "Healthcare & HiTech at 17.6% of revenue"
+    verification: SECONDARY
+  - id: mphasis_icici_q1fy27
+    title: "Mphasis Q1FY27: revenue up 2.1% QoQ to $471m"
+    publisher: ICICI Direct
+    url: https://www.icicidirect.com/research/equity/trending-news/mphasis-q1fy27-revenue-up-21-qoq-to-471m-ebit-margin-at-148-pat-490cr
+    date: "2026-07"
+    quote: "TMT (18% of the mix) ... Q1 FY27 revenue in USD million by vertical: ... TMT at 86"
+    verification: SECONDARY
+  - id: tataelxsi_pr_q2fy27
+    title: "Tata Elxsi delivers 3.4% QoQ and 15% YoY revenue growth in Q2 FY27"
+    publisher: Tata Elxsi
+    url: https://www.tataelxsi.com/news-and-events/press-releases/tata-elxsi-delivers-healthy-revenue-growth-of-34-qoq-and-15-yoy-in-q2-fy27
+    date: "2026-10"
+    quote: "Our Media & Communications vertical, which accounted for 33.6% of our SDS segment, registered continued growth at 3.4% QoQ in constant currency."
+    verification: SECONDARY
+    note: "quote via search results"
+  - id: tataelxsi_univest_q2fy27
+    title: "Tata Elxsi vs Tata Technologies: Q2 FY27 compared"
+    publisher: Univest
+    url: https://univest.in/blogs/tata-elxsi-vs-tata-tech-which-tata-group-stock-wins-q2-results-report-card-profit-revenue-compared-target-price
+    date: "2026-10"
+    quote: "SDS makes up roughly 97% of total revenue"
+    verification: UNVERIFIED
+  - id: ltts_q2fy27_release
+    title: "LTTS Q2 FY27 investor release"
+    publisher: L&T Technology Services
+    url: https://www.ltts.com/system/files/2026-10/LTTS-Q2FY27-Investor-Release.pdf
+    date: "2026-10"
+    quote: "REVENUE BY SEGMENT ... Tech 33.5% 30.6% 29.7% -0.9% -8.5% (Q2 FY26, Q1 FY27, Q2 FY27, QoQ, YoY); North America 60.7%"
+    verification: PRIMARY
+  - id: cyient_investing_q2fy27
+    title: "Cyient Q2 FY27 slides: margins hit 10-quarter high"
+    publisher: Investing.com
+    url: https://in.investing.com/news/stock-market-news/cyient-q2-fy27-slides-margins-hit-10quarter-high-stock-slips-93CH-5648360
+    date: "2026-10-22"
+    quote: "Semiconductor revenue of $19.3 million ... Transportation & Mobility generated $75.8 million ... Networks & Infrastructure posted $52.8 million ... Strategic Units with revenue of $35.3 million"
+    verification: SECONDARY
+    note: "DET revenue $174.2M per Cyient Q2 coverage (Kotak Neo / Investywise)"
+  - id: netweb_q2fy27
+    title: "Netweb Technologies reports strong Q2 FY27"
+    publisher: Free Press Journal / Investywise
+    url: https://www.freepressjournal.in/business/netweb-technologies-reports-strong-q2-fy27-pat-up-3348-to-1367-crore-revenue-grows-3357
+    date: "2026-10"
+    quote: "AI Systems were the primary driver of growth, contributing ₹773.1 crore (58.4% of revenue from operations) in Q2 FY27."
+    verification: SECONDARY
+  - id: sify_q1fy27
+    title: "Sify Technologies Q1 FY2026-27 results (Form 6-K Ex. 99.1) and earnings-call highlights"
+    publisher: Sify / SEC EDGAR; MarketBeat
+    url: https://www.sec.gov/Archives/edgar/data/0001094324/000155485526001544/ex991_1.htm
+    date: "2026-07-15"
+    quote: "The Revenue split between the businesses for the quarter was Network services 39%, Data Center services 42% and Digital services 19%."
+    verification: SECONDARY
+  - id: anantraj_q1fy27
+    title: "Anant Raj Limited: Q1 FY27 revenue grows 6.58% to ₹631.4 Cr"
+    publisher: Investywise
+    url: https://www.investywise.com/anant-raj-limited-investor-presentation/
+    date: "2026-08"
+    quote: "Revenue from operations ₹631.40 Cr ... Data centre, infrastructure and allied services contributed ₹90 Cr"
+    verification: SECONDARY
+  - id: technoe_bnt_q1fy27
+    title: "Techno Electric revenue rises 25% but ₹628cr data centre build-out is still barely visible in earnings"
+    publisher: Business News Today
+    url: https://business-news-today.com/techno-electric-revenue-rises-25-but-rs-628cr-data-centre-build-out-is-still-barely-visible-in-earnings/
+    date: "2026-08"
+    quote: "quarterly data-centre revenue and profit remain insufficiently material to disclose separately ... retained data-centre FY27 revenue guidance of Rs 40–50 crore"
+    verification: SECONDARY
+  - id: technoe_sahi_fy27
+    title: "Techno Electric aims for ₹4,000 crore FY27 revenue supported by ₹11,000 crore order book"
+    publisher: Sahi
+    url: https://www.sahi.com/news/techno-electric-aims-for-4-000-crore-fy27-revenue-supported-by-11-000-crore-order-book-3904-PE1_COR
+    date: "2026-08"
+    quote: "Techno Electric Aims for ₹4,000 Crore FY27 Revenue"
+    verification: SECONDARY
+  - id: stl_q1fy27
+    title: "Sterlite Technologies posts record Q1 as AI data-centre orders grow"
+    publisher: Arihant Capital / Let's Data Science
+    url: https://letsdatascience.com/news/sterlite-technologies-posts-record-q1-as-ai-data-centre-orde-c88bc598
+    date: "2026-07"
+    quote: "The data centre segment contributed 21 per cent of Q1 revenue, up from approximately 1 per cent in FY26."
+    verification: SECONDARY
+  - id: hfcl_fy26
+    title: "HFCL FY26 results coverage — key wins"
+    publisher: FilingReader / Outlook Business
+    url: https://filingreader.com/news-wire/mumbai/2026-09-05/update-hfcl-shares-jump-following-record-fy26-profit-surge
+    date: "2026-05"
+    quote: "Key wins included a five-year optical fiber cable supply agreement worth approximately INR 10,159 crore with a global hyperscaler ... Exports generated 41% of consolidated revenue"
+    verification: SECONDARY
+  - id: fx_it_margin_sens
+    title: "Rupee depreciation may lift Indian IT earnings optics, not growth"
+    publisher: Analytics India Magazine (citing Nomura and brokerages)
+    url: https://analyticsindiamag.com/it-services/rupee-depreciation-may-lift-indian-it-earnings-optics-not-growth
+    date: "2025-12"
+    quote: "the theoretical sensitivity is about 30 basis points (bps) for every 1% depreciation in domestic currency and about 1.5% on earnings for every 1% rupee depreciation"
+    verification: SECONDARY
+    note: "other brokerages: 30-40 bps; UnearthInsight 20-30 bps; see also Business Standard 4-Dec-2025"
+  - id: ltim_rename
+    title: "NSE circular: change in symbol LTIM to LTM"
+    publisher: National Stock Exchange of India
+    url: https://nsearchives.nseindia.com/content/circulars/CML73700.pdf
+    date: "2026-02-23"
+    quote: "The security LTIM will be carried forward with the underlying symbol LTM with effect from February 27, 2026"
+    verification: SECONDARY
+    note: "NSE archive returned 503 to automated fetch; quote via search index (NSE Clearing F&O circular)"
+  - id: smci_ey_2024
+    title: "Supermicro shares plummet 33% after auditor resigns"
+    publisher: SiliconANGLE
+    url: https://siliconangle.com/2024/10/30/supermicro-shares-plummet-33-auditor-resigns/
+    date: "2024-10-30"
+    quote: "Super Micro Computer's shares plunged ... after the server maker disclosed that Ernst & Young had resigned as its public accounting firm"
+    verification: SECONDARY
+  - id: deepseek_bs_2025
+    title: "DeepSeek sparks AI stock selloff; Nvidia loses record $593 bn in mcap"
+    publisher: Business Standard (Reuters)
+    url: https://www.business-standard.com/amp/markets/news/deepseek-sparks-ai-stock-selloff-nvidia-loses-record-593-bn-in-mcap-125012800095_1.html
+    date: "2025-01-28"
+    quote: "$593 billion of the chipmaker's market value, a record one-day loss for any company on Wall Street"
+    verification: SECONDARY
+  - id: nvda_nov2025_fortune
+    title: "Nvidia CEO Jensen Huang: Q3 earnings beat a no-win situation amid AI bubble fears"
+    publisher: Fortune
+    url: https://www.fortune.com/2025/11/21/nvidia-ceo-jensen-huang-q3-earnings-beat-no-win-situation-ai-bubble-fears-nvda-stock-selloff
+    date: "2025-11-21"
+    quote: "Nvidia climbed as much as 5% early in Thursday's session before closing down roughly 3%"
+    verification: SECONDARY
+  - id: oct2026_openai_admiral
+    title: "OpenAI revenue at $50bn: why AI stocks fell in October"
+    publisher: Admiral Markets
+    url: https://admiralmarkets.com/analytics/traders-blog/openai-revenue-ai-selloff-october-2026
+    date: "2026-10"
+    quote: "Nasdaq Composite: -1.25% to 27,193.34; CoreWeave (CRWV): -7.77% to $81.58; Oracle (ORCL): -5.48% to $135.69; Nvidia (NVDA): -2.94% to $230.48 (8-Oct-2026)"
+    verification: SECONDARY
+  - id: lam_oct2026_techtimes
+    title: "Chip stocks lose $200 billion as equipment maker's warning counters Nvidia's AI optimism"
+    publisher: Tech Times
+    url: https://www.techtimes.com/articles/329406/20261023/chip-stocks-lose-200-billion-equipment-makers-warning-counters-nvidias-ai-optimism.htm
+    date: "2026-10-23"
+    quote: "The index fell 6.72% (773.58 points) to close at 10,731.98"
+    verification: SECONDARY

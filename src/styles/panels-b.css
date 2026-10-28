@@ -1,0 +1,80 @@
+/* UI-B (F4 HISTORY / F5 MODEL / F6 SOURCES) — panel-specific styles on top of theme.css. */
+.b-root { display: flex; flex-direction: column; min-width: 0; }
+.b-tabs { display: flex; flex-wrap: wrap; gap: 2px; padding: 2px 4px; border-bottom: 1px solid var(--line); background: #050505; }
+.b-tab {
+  background: #0b0b0b; color: var(--amber-dim); border: 1px solid var(--line); font-family: var(--font);
+  font-size: var(--fs-sm); padding: 2px 8px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.03em;
+}
+.b-tab:hover { color: var(--amber); border-color: var(--amber-dim); }
+.b-tab.active { background: var(--amber); color: #000; border-color: var(--amber); }
+.b-tab-n { display: inline-block; margin-right: 5px; padding: 0 3px; background: #1d1d1d; color: var(--white); font-size: var(--fs-xs); }
+.b-tab.active .b-tab-n { background: #000; color: var(--amber); }
+
+.b-grid-2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.b-grid-3 { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr); }
+@media (max-width: 1200px) { .b-grid-2, .b-grid-3 { grid-template-columns: minmax(0, 1fr); } }
+
+.b-note { color: var(--grey); font-size: var(--fs-xs); margin: 3px 0; line-height: 1.4; }
+.b-note b, .b-note strong { color: var(--amber); font-weight: 400; }
+.b-empty { padding: 6px; font-size: var(--fs-sm); }
+.b-scroll { overflow: auto; max-height: 460px; }
+.b-scroll-lg { overflow: auto; max-height: 640px; }
+.b-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 4px; font-size: var(--fs-sm); }
+.b-toolbar label { color: var(--amber-dim); }
+.b-search { width: 260px; padding: 2px 4px; }
+.b-kv { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 1px 12px; font-size: var(--fs-sm); }
+.b-kv > .k { color: var(--amber-dim); }
+.b-kv > .v { color: var(--white); word-break: break-word; }
+
+/* tables */
+.b-tbl td.wrap, .b-tbl th.wrap { white-space: normal; }
+.b-tbl td.txt { white-space: normal; max-width: 420px; }
+.b-tbl td.quote { white-space: normal; max-width: 520px; color: #cfcfcf; font-style: italic; }
+.b-tbl tr.clickable { cursor: pointer; }
+.b-tbl tr.focus td { outline: 1px solid var(--amber); background: #1a1300; }
+.b-tbl tr.detail > td { background: #050505; padding: 6px 10px 10px 18px; }
+.b-tbl th.num, .b-tbl td.num { text-align: right; }
+.b-tbl .grp th { color: var(--amber); background: #120d00; border-bottom: 1px solid var(--line-hi); }
+.b-sig { color: var(--amber) !important; font-weight: 700; }
+.b-t { color: var(--grey); font-size: var(--fs-xs); margin-left: 3px; font-weight: 400; }
+.b-flag { display: inline-block; font-size: 9px; padding: 0 3px; border: 1px solid #8a4a00; color: #ff8c1a; margin-left: 4px; }
+.b-caret { display: inline-block; width: 10px; color: var(--amber-dim); }
+
+/* crash-type tags */
+.b-tags { display: inline-flex; flex-wrap: wrap; gap: 2px; }
+.b-tag { font-size: 9px; padding: 0 3px; border: 1px solid; line-height: 12px; white-space: nowrap; }
+.b-tag-earnings_collapse { color: #ff6b6b; border-color: #7a2020; }
+.b-tag-multiple_compression { color: var(--cyan); border-color: #1d5c78; }
+.b-tag-fraud_trust { color: var(--magenta); border-color: #7a2d66; }
+.b-tag-credit_liquidity { color: #ff8c1a; border-color: #8a4a00; }
+.b-tag-capex_overbuild { color: var(--green); border-color: #0b6b3a; }
+
+/* source verification badges */
+.b-ver-primary { color: var(--green); border-color: #0b6b3a; }
+.b-ver-secondary { color: var(--amber); border-color: var(--amber-dim); }
+.b-ver-unverified { color: #ff8c1a; border-color: #8a4a00; }
+
+.b-qty { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 0 2px; }
+.b-parts { font-size: var(--fs-xs); }
+
+/* formulas */
+.b-formula-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0; }
+@media (max-width: 1300px) { .b-formula-grid { grid-template-columns: minmax(0, 1fr); } }
+.b-formula { border-bottom: 1px dotted #1e1e1e; padding: 2px 0 4px; }
+.b-formula-title { color: var(--amber); font-size: var(--fs-sm); text-transform: uppercase; letter-spacing: 0.03em; }
+.b-formula .katex-display { margin: 3px 0; }
+.b-list { margin: 2px 0 4px 16px; padding: 0; color: var(--white); font-size: var(--fs-sm); }
+.b-list li { margin: 1px 0; }
+
+/* assumption register editor */
+.b-edit { display: flex; align-items: center; gap: 4px; min-width: 260px; }
+.b-edit input[type='range'] { width: 120px; }
+.b-edit input[type='number'] { width: 76px; }
+.b-overridden { color: var(--magenta) !important; }
+.b-reset { padding: 0 5px; font-size: var(--fs-xs); }
+
+.b-warn { color: #ff8c1a; }
+.b-bad { color: var(--red); }
+.b-chip { display: inline-block; padding: 0 4px; border: 1px solid var(--line); margin: 1px 2px 1px 0; font-size: var(--fs-xs); color: var(--white); }
+.b-chip.active { border-color: var(--amber); color: #000; background: var(--amber); }
+.b-chart-caption { color: var(--grey); font-size: var(--fs-xs); margin-top: 2px; }

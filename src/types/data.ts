@@ -105,6 +105,8 @@ export interface Security {
   op_leverage: Quantity;
   data_ok: boolean;
   notes: string[];
+  /** OPTIONAL (added by UI-A): weekly split-adjusted closes since 2021-01-01 for the SEC-page price chart. */
+  price_history?: { dates: string[]; close: number[] } | null;
 }
 
 export interface OriginInfo {

@@ -1,0 +1,781 @@
+# AI CRASH MONITOR — historical evidence (F4 HISTORY). Included from universe.yaml (`includes:`).
+# Everything lives under the single top-level key `history:` so the include can never clobber
+# universe.yaml keys. Numbers here are either SOURCED (quote + url below) or computed by
+# pipeline/history.py from Yahoo Finance / Shiller data (COMPUTED). Window dates are model choices.
+history:
+  accessed: "2026-10-28"
+
+  sources:
+    - id: hist_odlyzko_mania
+      title: "Collective hallucinations and inefficient markets: The British Railway Mania of the 1840s"
+      publisher: "Andrew Odlyzko, University of Minnesota"
+      url: "https://www-users.cse.umn.edu/~odlyzko/doc/mania06.pdf"
+      date: null
+      quote: "The best known index of railway shares prices declined from 167.9 in the summer of 1845 to 60.5 at the end of 1849, a drop of 64%."
+      verification: PRIMARY
+      note: "Quote via search-index extraction (direct PDF fetch returned 503)."
+    - id: hist_campbell_voxeu
+      title: "Railway mania: Not so great expectations?"
+      publisher: "Gareth Campbell, VoxEU / CEPR"
+      url: "https://cepr.org/voxeu/columns/railway-mania-not-so-great-expectations"
+      date: null
+      quote: "It then fell by 20.2% in just over one month, and after a brief recovery continued to decline until April 1850, to a level of just 741, which represented a fall 64.1% from its peak to its trough."
+      verification: PRIMARY
+      note: "Campbell all-railway index (base 1,000) peaked in early October 1845 after rising 106% from January 1843. Quote via search-index extraction (direct fetch 403)."
+    - id: hist_ii_lucent
+      title: "Patricia Russo of Lucent Technologies: Slam dunk?"
+      publisher: "Institutional Investor"
+      url: "https://www.institutionalinvestor.com/article/b150nncppbblrn/patricia-russo-of-lucent-technologies-slam-dunk"
+      date: null
+      quote: "Lucent soared to $82 by December 1999 ... By October 2002, however, Lucent had sunk to 58 cents."
+      verification: SECONDARY
+      note: "Split-adjusted. Wikipedia gives $84 high / $0.55 low; the Institutional Investor figures are used. Quote via search-index extraction."
+    - id: hist_wiki_nortel
+      title: "Timeline of Nortel"
+      publisher: "Wikipedia"
+      url: "https://en.wikipedia.org/wiki/Timeline_of_Nortel"
+      date: null
+      quote: "Nortel's market capitalization fell from C$398 billion in September 2000 to less than C$5 billion in August 2002, as Nortel's stock price plunges from C$124 to C$0.47."
+      verification: SECONDARY
+      note: "Globe and Mail cites an all-time closing high of C$123.10 on 26-Jul-2000."
+    - id: hist_infoage_gx
+      title: "Global Crossing files for Chapter 11 bankruptcy"
+      publisher: "Information Age"
+      url: "https://www.information-age.com/global-crossing-files-for-chapter-11-bankruptcy-23571"
+      date: "2002-01-29"
+      quote: "The company has a reported $22.4 billion (€26bn) in assets. ... It is the largest ever telecoms bankruptcy and the fourth largest bankruptcy in the US."
+      verification: SECONDARY
+      note: "Debt of $12.4 billion per the same article. Filing date 28-Jan-2002 (Benzinga 'This Day In Market History')."
+    - id: hist_sec_lr17588
+      title: "Litigation Release No. 17588: SEC v. WorldCom, Inc."
+      publisher: "U.S. Securities and Exchange Commission"
+      url: "https://www.sec.gov/litigation/litreleases/lr-17588"
+      date: "2002-06-27"
+      quote: "The Securities and Exchange Commission filed a civil action yesterday ... with a massive accounting fraud totaling more than $3.8 billion."
+      verification: PRIMARY
+      note: "Civil action filed 26-Jun-2002."
+    - id: hist_breeden_worldcom
+      title: "Restoring Trust: Report to the Hon. Jed S. Rakoff on Corporate Governance for the Future of MCI, Inc. (Breeden report), exhibit to WorldCom 8-K"
+      publisher: "Richard C. Breeden, Corporate Monitor (filed with the SEC)"
+      url: "https://www.sec.gov/Archives/edgar/data/0000723527/000119312503044064/dex992.htm"
+      date: "2003-08-26"
+      quote: "The best current estimates suggest that income was overstated by at least $11 billion over a multiyear period."
+      verification: PRIMARY
+      note: null
+    - id: hist_cnn_worldcom_ch11
+      title: "WorldCom files largest bankruptcy ever"
+      publisher: "CNN/Money"
+      url: "https://money.cnn.com/2002/07/19/news/worldcom_bankruptcy/"
+      date: "2002-07-22"
+      quote: "WorldCom listed assets of $107 billion as of March 31, against liabilities of $41 billion."
+      verification: SECONDARY
+      note: "Filed Sunday 21-Jul-2002 in the SDNY bankruptcy court. Quote via search-index extraction; some outlets cite >$65B total liabilities."
+    - id: hist_wiki_satyam
+      title: "Satyam scandal"
+      publisher: "Wikipedia"
+      url: "https://en.wikipedia.org/wiki/Satyam_scandal"
+      date: null
+      quote: "resigned, confessing that he had manipulated the accounts of Rs 7,000 crore in several forms. ... Satyam's shares fell to 6.30 rupees on 9 January 2009, their lowest level since March 1998, compared to a high of 544 rupees in 2008."
+      verification: SECONDARY
+      note: null
+    - id: hist_dandodiary_satyam
+      title: "Fresh Scandal for a New Year: The Indian Enron?"
+      publisher: "The D&O Diary"
+      url: "https://www.dandodiary.com/2009/01/articles/securities-litigation/fresh-scandal-for-a-new-year-the-indian-enron/"
+      date: "2009-01-07"
+      quote: "However, the shares plunged 77% in trading on the Bombay exchange today."
+      verification: SECONDARY
+      note: "Bloomberg (7-Jan-2009) reported 'nearly 78%' with the Sensex down 7.3% (paywalled; via search index). 77% is the verbatim-verified figure and is used for calibration."
+    - id: hist_bloomberg_satyam
+      title: "India's Madoff? Satyam Scandal Rocks Outsourcing Industry"
+      publisher: "Bloomberg"
+      url: "https://www.bloomberg.com/news/articles/2009-01-07/indias-madoff-satyam-scandal-rocks-outsourcing-industry"
+      date: "2009-01-07"
+      quote: null
+      verification: UNVERIFIED
+      note: "Paywalled (403). Search-index summary: Satyam fell nearly 78% and the Sensex 7.3% on the day. Used only as corroboration."
+    - id: hist_icmr_k10
+      title: "The Ketan Parekh Scam (case study)"
+      publisher: "ICMR India"
+      url: "https://www.icmrindia.org/free%20resources/casestudies/ketan-parekh-scam3.htm"
+      date: null
+      quote: "In the next two months, while the Sensex declined by 23% and the NASDAQ by 35.9%, the K-10 stocks declined by an alarming 67%."
+      verification: SECONDARY
+      note: "Refers to the two months after April 2000. Quote via search-index extraction."
+    - id: hist_outlook_hfcl
+      title: "Bear-Hug And After"
+      publisher: "Outlook India"
+      url: "https://outlookindia.com/business/bear-hug-and-after-news-211103"
+      date: "2001-03"
+      quote: "on March 9, the scrip was quoting at Rs 328, and is still falling fast."
+      verification: SECONDARY
+      note: "HFCL (Himachal Futuristic), a K-10 stock. Yahoo has no HFCL price history before Aug-2002, so no computed drawdown."
+    - id: hist_moneylife_k10
+      title: "Aftek properties under the hammer: another one from the infamous K10 club goes belly-up"
+      publisher: "Moneylife"
+      url: "https://moneylife.in/article/aftek-properties-under-the-hammer-another-one-from-the-infamous-k10-club-goes-bellyup/31359.html"
+      date: null
+      quote: "DSQ is defunct."
+      verification: SECONDARY
+      note: "Same article: Pentamedia and other K-10 names only 'nominally quoted'; Zee and Ranbaxy were the K-10 stocks that did not collapse. No price history for DSQ/Pentamedia is available."
+    - id: hist_wiki_ketan
+      title: "Ketan Parekh"
+      publisher: "Wikipedia"
+      url: "https://en.wikipedia.org/wiki/Ketan_Parekh"
+      date: null
+      quote: "the bear cartel in Bombay stock exchange started to hammer his K-10 stocks in February 2001, leading them to fall and precipitating a payment crisis in Calcutta."
+      verification: SECONDARY
+      note: "Quote via search-index extraction."
+    - id: hist_fed_openmarket
+      title: "Open Market Operations — policy implementation (federal funds target range history)"
+      publisher: "Board of Governors of the Federal Reserve System"
+      url: "https://www.federalreserve.gov/monetarypolicy/openmarket.htm"
+      date: null
+      quote: "2022: March 17 +25 to 0.25-0.50 ... December 15 +50 to 4.25-4.50"
+      verification: PRIMARY
+      note: "Seven increases in 2022 took the target range from 0.00-0.25 to 4.25-4.50."
+    - id: hist_bs_hindenburg_smci
+      title: "Hindenburg takes aim at AI server maker Super Micro with short position"
+      publisher: "Business Standard (Reuters)"
+      url: "https://www.business-standard.com/amp/world-news/hindenburg-takes-aim-at-ai-server-maker-super-micro-with-short-position-124082701231_1.html"
+      date: "2024-08-27"
+      quote: null
+      verification: SECONDARY
+      note: "Report published Tuesday 27-Aug-2024 alleging accounting manipulation (search-index summary; direct fetch not attempted/blocked)."
+    - id: hist_fool_smci
+      title: "What Is Happening at Super Micro Computer?"
+      publisher: "The Motley Fool"
+      url: "https://www.fool.com/investing/2024/11/04/what-is-happening-at-super-micro-computer-heres-wh"
+      date: "2024-11-04"
+      quote: "The day after the report was released, the company once again announced the delay of its required SEC filing."
+      verification: SECONDARY
+      note: "EY's resignation letter: it would 'no longer be able to rely on management's and the Audit Committee's representations.'"
+    - id: hist_siliconangle_smci_ey
+      title: "Supermicro shares plummet 33% after auditor resigns"
+      publisher: "SiliconANGLE"
+      url: "https://siliconangle.com/2024/10/30/supermicro-shares-plummet-33-auditor-resigns/"
+      date: "2024-10-30"
+      quote: "plunged 33% today after the server maker disclosed that its auditor had resigned"
+      verification: SECONDARY
+      note: null
+    - id: hist_bs_deepseek
+      title: "DeepSeek sparks AI stock selloff; Nvidia loses record $593 bn in mcap"
+      publisher: "Business Standard (Reuters)"
+      url: "https://www.business-standard.com/amp/markets/news/deepseek-sparks-ai-stock-selloff-nvidia-loses-record-593-bn-in-mcap-125012800095_1.html"
+      date: "2025-01-28"
+      quote: "Nvidia loses record $593 bn in mcap"
+      verification: SECONDARY
+      note: "Headline. Other outlets cite $589B; the percentage move is computed from Yahoo data."
+    - id: hist_fortune_nvda_nov2025
+      title: "Nvidia CEO Jensen Huang: Q3 earnings beat a 'no-win situation' as AI bubble fears spark selloff"
+      publisher: "Fortune"
+      url: "https://www.fortune.com/2025/11/21/nvidia-ceo-jensen-huang-q3-earnings-beat-no-win-situation-ai-bubble-fears-nvda-stock-selloff"
+      date: "2025-11-21"
+      quote: "Nvidia climbed as much as 5% early in Thursday's session before closing down roughly 3%, as traders rotated out of the Big Tech names most closely associated with the AI boom."
+      verification: SECONDARY
+      note: "Thursday = 20-Nov-2025, the session after NVDA's Q3 FY26 results."
+    - id: hist_moneylife_anthropic
+      title: "Nifty IT Plunges 5.87% as Anthropic's AI Triggers Brutal Sell-off"
+      publisher: "Moneylife"
+      url: "https://moneylife.in/article/nifty-it-plunges-587-percentage-as-anthropics-ai-triggers-brutal-selloff/79573.html"
+      date: "2026-02-04"
+      quote: "Nifty IT Plunges 5.87% as Anthropic's AI Triggers Brutal Sell-off"
+      verification: SECONDARY
+      note: "Headline (direct fetch 403). Trigger: Anthropic's Claude Cowork plugins (announced 30-Jan-2026) and an overnight drop in US software stocks; worst sector day since March 2020 per coverage."
+    - id: hist_bt_anthropic
+      title: "Anthropic AI tool: Why Infosys, TCS, Wipro, HCL fell up to 6% today"
+      publisher: "Business Today"
+      url: "https://www.businesstoday.in/amp/markets/stocks/story/anthropic-ai-tool-why-infosys-tcs-wipro-hcl-fell-up-to-6-today-514504-2026-02-04"
+      date: "2026-02-04"
+      quote: "Anthropic AI tool: Why Infosys, TCS, Wipro, HCL fell up to 6% today"
+      verification: SECONDARY
+      note: "Headline."
+    - id: hist_bs_h1_2026_it
+      title: "Nifty IT logs worst first half since 2003 as AI fears weigh on sector"
+      publisher: "Business Standard"
+      url: "https://www.business-standard.com/amp/markets/news/nifty-it-logs-worst-first-half-since-2003-as-ai-fears-weigh-on-sector-126063001180_1.html"
+      date: "2026-06-30"
+      quote: "The Nifty IT index declined 31 per cent in the January-June 2026 period, its steepest first-half fall since 2003."
+      verification: SECONDARY
+      note: "Quote via search-index extraction."
+    - id: hist_reuters_openai_apr2026
+      title: "Oracle, CoreWeave lead AI selloff on OpenAI growth concerns"
+      publisher: "Reuters via Yahoo Finance"
+      url: "https://finance.yahoo.com/markets/stocks/articles/oracle-coreweave-shares-drop-report-115602292.html"
+      date: "2026-04-28"
+      quote: "OpenAI had missed its goals for new users and revenue in recent months"
+      verification: SECONDARY
+      note: "Reported intraday: ORCL -3.4% to $167.3, CRWV -2.8%, Arm -6.3%, PHLX SOX -3.2% (citing a Wall Street Journal report)."
+    - id: hist_bs_tomoro
+      title: "Nifty IT tumbles 3.7% to near 3-year low amid AI disruption concerns"
+      publisher: "Business Standard"
+      url: "https://www.business-standard.com/markets/news/nifty-it-tumbles-3-7-to-near-3-year-low-amid-ai-disruption-concerns-126051201286_1.html"
+      date: "2026-05-12"
+      quote: "Nifty IT tumbles 3.7% to near 3-year low amid AI disruption concerns"
+      verification: SECONDARY
+      note: "Headline; coverage ties the fall to OpenAI's acquisition of consulting firm Tomoro."
+    - id: hist_admiral_openai_oct2026
+      title: "OpenAI Revenue at $50bn: Why AI Stocks Fell in October"
+      publisher: "Admiral Markets"
+      url: "https://admiralmarkets.com/analytics/traders-blog/openai-revenue-ai-selloff-october-2026"
+      date: "2026-10"
+      quote: "Nasdaq Composite: −1.25% to 27,193.34; CoreWeave (CRWV): −7.77% to $81.58; Oracle (ORCL): −5.48% to $135.69; Nvidia (NVDA): −2.94% to $230.48"
+      verification: SECONDARY
+      note: "8-Oct-2026 closes after a Financial Times report of a ~$50bn OpenAI revenue run-rate."
+    - id: hist_siliconangle_crwv_oct2026
+      title: "Shares of Oracle, neoclouds drop on CoreWeave debt concerns"
+      publisher: "SiliconANGLE"
+      url: "https://siliconangle.com/2026/10/14/shares-of-oracle-neoclouds-drop-on-coreweave-debt-concerns/"
+      date: "2026-10-14"
+      quote: null
+      verification: SECONDARY
+      note: "Coverage (search index): CRWV fell about 15.5% to $65.78 with its bonds yielding above 15% / below 80 cents; ORCL closed down ~8.8% at $130.55 (24/7 Wall St); hotter September CPI revived rate-hike bets."
+    - id: hist_247_orcl_oct2026
+      title: "Oracle Fell Nearly 9% as CoreWeave's Bond Scare Spread"
+      publisher: "24/7 Wall St."
+      url: "https://247wallst.com/investing/2026/10/15/oracle-fell-nearly-9-as-coreweaves-bond-scare-spread/"
+      date: "2026-10-15"
+      quote: "Oracle Fell Nearly 9% as CoreWeave's Bond Scare Spread"
+      verification: SECONDARY
+      note: "Headline."
+    - id: hist_techtimes_lam_oct2026
+      title: "Chip Stocks Lose $200 Billion as Equipment Maker's Warning Counters NVIDIA's AI Optimism"
+      publisher: "Tech Times"
+      url: "https://www.techtimes.com/articles/329406/20261023/chip-stocks-lose-200-billion-equipment-makers-warning-counters-nvidias-ai-optimism.htm"
+      date: "2026-10-23"
+      quote: "would have been a bit higher if not for some near-term supply chain constraints that we are actively managing"
+      verification: SECONDARY
+      note: "Lam Research CFO. Article: SOX fell 6.72% (773.58 points) to 10,731.98 on 22-Oct-2026; all 30 SOX members fell; NVDA -4.40%."
+    - id: hist_man_nikkei
+      title: "Views From The Floor (27 February 2024)"
+      publisher: "Man Group"
+      url: "https://www.man.com/insights/views-from-the-floor-2024-february-27"
+      date: "2024-02-27"
+      quote: "trading at 60 times its earnings over the trailing 12 months"
+      verification: SECONDARY
+      note: "Nikkei 225 at its December-1989 peak. CME Group cites ~71x; MoneyWeek 70x (Dec 1989)."
+    - id: hist_cme_nikkei
+      title: "Is Japan's Nikkei 225 Still a Bargain?"
+      publisher: "CME Group"
+      url: "https://www.cmegroup.com/insights/economic-research/2024/is-japans-nikkei-225-still-a-bargain.html"
+      date: "2024"
+      quote: null
+      verification: UNVERIFIED
+      note: "Search-index summary: Japanese equities at around 71x earnings at the 1989 peak. Shown as the upper end of the P/E range only."
+    - id: hist_nasdaq_ndx_pe
+      title: "Is AI Another Bubble for the Nasdaq-100?"
+      publisher: "Nasdaq Global Indexes"
+      url: "https://www.nasdaq.com/docs/is-ai-another-bubble-for-the-nasdaq-100"
+      date: null
+      quote: "On an imputed basis based on aggregate index earnings and market caps, the index P/E was 104 as of December 31, 1999."
+      verification: PRIMARY
+      note: "Index provider research; quote via search-index extraction (direct fetch 503). Same note: trailing P/E 113 on 29-Dec-2000 (FactSet) and a likely 150-200 at the 1Q-2000 peak (extrapolation, not used)."
+    - id: hist_primeinvestor_nifty_pe
+      title: "What they don't tell you about the Nifty PE"
+      publisher: "PrimeInvestor"
+      url: "https://primeinvestor.in/reports/what-they-dont-tell-you-about-the-nifty-pe/"
+      date: null
+      quote: "peaked out at a Nifty50 PE of over 28 times in January 2008."
+      verification: SECONDARY
+      note: "28 is used (lower bound of 'over 28')."
+    - id: hist_shiller_ie
+      title: "Online Data — U.S. Stock Markets 1871-Present and CAPE Ratio (ie_data.xls)"
+      publisher: "Robert J. Shiller, Yale University"
+      url: "http://www.econ.yale.edu/~shiller/data/ie_data.xls"
+      date: "2023-09"
+      quote: null
+      verification: PRIMARY
+      note: "Monthly S&P Composite average price P, 12-month trailing earnings E, CPI and CAPE. Downloaded and parsed by pipeline/shiller.py; all derived figures are COMPUTED."
+    - id: hist_yahoo
+      title: "Yahoo Finance historical prices (via yfinance)"
+      publisher: "Yahoo Finance"
+      url: "https://finance.yahoo.com/"
+      date: null
+      quote: null
+      verification: PRIMARY
+      note: "Daily OHLC; split-adjusted Close for drawdowns, dividend-adjusted Adj Close for returns/CAR."
+
+  # ---------------------------------------------------------------------------------------
+  # Cases. drawdowns[]: either a computed spec {ticker, label, peak_search:[a,b], trough_end,
+  # recover_end?} or a sourced row {label, sourced: {...}, src: [...]}.
+  # computed_moves[]: one-day moves rendered as "COMPUTED:" notes.
+  # ---------------------------------------------------------------------------------------
+  cases:
+    - id: railway
+      name: "British Railway Mania"
+      period: "1844–1850"
+      what_broke: "A promotion boom in new railway lines peaked in 1845; railway share indices then fell for about four and a half years while lines authorised during the mania were still being built — capex committed far ahead of traffic and revenue."
+      crash_types: [capex_overbuild]
+      linked: "Qualitative overbuild analogy only: the real assets (track) survived and were used; the equity that financed the build-out did not earn its expected return. Analogy to GPUs/data centres financed ahead of AI revenue."
+      india: "No comparable listed Indian market; included for the overbuild analogy only."
+      src: [hist_odlyzko_mania, hist_campbell_voxeu]
+      drawdowns:
+        - label: "Railway share index (Odlyzko)"
+          src: [hist_odlyzko_mania]
+          sourced: {peak_date: "1845 (summer)", peak: 167.9, trough_date: "1849 (end)", trough: 60.5, drawdown: -0.64}
+          note: "Index levels as quoted; time to bottom ~4.5 years."
+        - label: "All-railway index (Campbell)"
+          src: [hist_campbell_voxeu]
+          sourced: {peak_date: "1845-10 (early October)", peak: null, trough_date: "1850-04", trough: 741, drawdown: -0.641}
+          note: "Base 1,000; peak level not quoted."
+      computed_moves: []
+
+    - id: dotcom
+      name: "Dot-com bust"
+      period: "Mar-2000 – Oct-2002"
+      what_broke: "Internet and telecom-equipment valuations priced in growth that did not arrive; earnings guidance cuts and rate rises turned a multiple-compression bear market into an earnings collapse for the 'picks and shovels' (networking gear) suppliers."
+      crash_types: [multiple_compression, earnings_collapse, capex_overbuild]
+      linked: "Cisco — the networking 'picks and shovels' of the internet build-out — is the closest analogue to Nvidia in the AI build-out; Intel and Qualcomm shown for breadth."
+      india: "Indian IT exporters and the Ketan Parekh 'K-10' new-economy stocks fell with Nasdaq; Sify (then Satyam Infoway, Nasdaq-listed) and Zee shown as computed series, K-10 and HFCL figures are sourced because Yahoo has no prices for DSQ, Pentamedia or pre-2002 HFCL."
+      src: [hist_icmr_k10, hist_outlook_hfcl, hist_moneylife_k10, hist_wiki_ketan, hist_yahoo]
+      drawdowns:
+        - {ticker: "^IXIC", label: "Nasdaq Composite", peak_search: ["1999-10-01", "2000-12-31"], trough_end: "2003-06-30"}
+        - {ticker: "^NDX", label: "Nasdaq-100", peak_search: ["1999-10-01", "2000-12-31"], trough_end: "2003-06-30"}
+        - {ticker: "^SOX", label: "PHLX Semiconductor", peak_search: ["1999-10-01", "2000-12-31"], trough_end: "2003-06-30"}
+        - {ticker: "CSCO", label: "Cisco (picks & shovels)", peak_search: ["1999-10-01", "2000-12-31"], trough_end: "2003-06-30"}
+        - {ticker: "INTC", label: "Intel", peak_search: ["1999-10-01", "2000-12-31"], trough_end: "2003-06-30"}
+        - {ticker: "QCOM", label: "Qualcomm", peak_search: ["1999-10-01", "2000-12-31"], trough_end: "2003-06-30"}
+        - {ticker: "^BSESN", label: "Sensex", peak_search: ["1999-10-01", "2000-12-31"], trough_end: "2003-06-30"}
+        - {ticker: "INFY.NS", label: "Infosys (NSE)", peak_search: ["1999-10-01", "2000-12-31"], trough_end: "2003-06-30"}
+        - {ticker: "WIPRO.NS", label: "Wipro (NSE)", peak_search: ["1999-10-01", "2000-12-31"], trough_end: "2003-06-30"}
+        - {ticker: "INFY", label: "Infosys ADR", peak_search: ["1999-10-01", "2000-12-31"], trough_end: "2003-06-30"}
+        - {ticker: "SIFY", label: "Sify / Satyam Infoway ADR", peak_search: ["1999-10-01", "2000-12-31"], trough_end: "2003-06-30"}
+        - {ticker: "ZEEL.BO", label: "Zee (BSE; series starts 2000-01-03)", peak_search: ["1999-10-01", "2000-12-31"], trough_end: "2003-06-30"}
+        - label: "K-10 stocks (two months after Apr-2000)"
+          src: [hist_icmr_k10]
+          sourced: {peak_date: "2000-04", peak: null, trough_date: "2000-06", trough: null, drawdown: -0.67}
+          note: "Same period: Sensex -23%, Nasdaq -35.9% (sourced)."
+        - label: "HFCL (K-10) on 9-Mar-2001"
+          src: [hist_outlook_hfcl]
+          sourced: {peak_date: null, peak: null, trough_date: "2001-03-09", trough: 328, drawdown: null}
+          note: "Rs 328 and 'still falling fast'; no peak price available → drawdown not computed."
+      computed_moves: []
+
+    - id: telecom
+      name: "Telecom & fiber overbuild"
+      period: "2000 – 2002"
+      what_broke: "Carriers financed a fiber and equipment build-out with debt ahead of demand; when traffic and pricing disappointed, over-levered networks went bankrupt (Global Crossing, WorldCom), equipment orders collapsed and accounting fraud surfaced — the closest analogue to a data-centre / GPU glut financed with debt."
+      crash_types: [capex_overbuild, credit_liquidity, fraud_trust]
+      linked: "Equipment makers (Lucent, Nortel, Corning fiber, Ciena, JDS Uniphase/Viavi, Nokia, Ericsson) lost most of their value as carrier capex was cut."
+      india: "Sterlite Optical Technologies (today STL, a Tier C fiber name) shown from Dec-2000 when its Yahoo series starts (after the global telecom peak, so the drawdown understates the fall); HFCL had no Yahoo data before 2002."
+      src: [hist_ii_lucent, hist_wiki_nortel, hist_infoage_gx, hist_sec_lr17588, hist_breeden_worldcom, hist_cnn_worldcom_ch11, hist_yahoo]
+      drawdowns:
+        - label: "Lucent"
+          src: [hist_ii_lucent]
+          sourced: {peak_date: "1999-12", peak: 82.0, trough_date: "2002-10", trough: 0.58, drawdown: -0.9929}
+          note: "Split-adjusted USD; drawdown = 0.58/82 − 1."
+        - label: "Nortel (TSX, C$)"
+          src: [hist_wiki_nortel]
+          sourced: {peak_date: "2000-07-26", peak: 124.0, trough_date: "2002-08", trough: 0.47, drawdown: -0.9962}
+          note: "Market cap C$398B (Sep-2000) → < C$5B (Aug-2002)."
+        - label: "Global Crossing"
+          src: [hist_infoage_gx]
+          sourced: {peak_date: null, peak: null, trough_date: "2002-01-28", trough: null, drawdown: null}
+          note: "Chapter 11 on 28-Jan-2002 with $22.4B assets and $12.4B debt; fourth-largest US bankruptcy at the time."
+        - label: "WorldCom"
+          src: [hist_sec_lr17588, hist_breeden_worldcom, hist_cnn_worldcom_ch11]
+          sourced: {peak_date: null, peak: null, trough_date: "2002-07-21", trough: null, drawdown: null}
+          note: "SEC fraud action 26-Jun-2002 (>$3.8B); Chapter 11 21-Jul-2002 with $107B assets; income overstated by at least $11B."
+        - {ticker: "GLW", label: "Corning (fiber)", peak_search: ["2000-01-01", "2001-06-30"], trough_end: "2003-06-30"}
+        - {ticker: "CIEN", label: "Ciena", peak_search: ["2000-01-01", "2001-06-30"], trough_end: "2003-06-30"}
+        - {ticker: "VIAV", label: "JDS Uniphase (now Viavi)", peak_search: ["2000-01-01", "2001-06-30"], trough_end: "2003-06-30"}
+        - {ticker: "NOK", label: "Nokia ADR", peak_search: ["2000-01-01", "2001-06-30"], trough_end: "2003-06-30"}
+        - {ticker: "ERIC", label: "Ericsson ADR", peak_search: ["2000-01-01", "2001-06-30"], trough_end: "2003-06-30"}
+        - {ticker: "^IXTC", label: "Nasdaq Telecommunications", peak_search: ["2000-01-01", "2001-06-30"], trough_end: "2003-06-30"}
+        - {ticker: "STLTECH.NS", label: "Sterlite Optical / STL (series starts 2000-12-08)", peak_search: ["2000-12-01", "2001-06-30"], trough_end: "2003-06-30"}
+      computed_moves:
+        - {ticker: "GLW", date: "2002-06-26", label: "Corning on SEC-WorldCom action day"}
+        - {ticker: "^IXTC", date: "2002-06-26", label: "Nasdaq Telecom on SEC-WorldCom action day"}
+
+    - id: satyam
+      name: "Satyam accounting fraud"
+      period: "7-Jan-2009"
+      what_broke: "Founder-chairman Ramalinga Raju confessed to years of fabricated cash and profits at India's fourth-largest IT exporter; trust in Indian IT disclosures was questioned in the middle of the global financial crisis."
+      crash_types: [fraud_trust]
+      linked: "Peers Infosys, TCS, Wipro, HCLTech and Tech Mahindra (which later bought Satyam) — the event study measures whether the trust shock spread."
+      india: "The 7-Jan-2009 contagion ratio (peer abnormal return ÷ Satyam's move) calibrates the India restatement shock (calib.contagion_india)."
+      src: [hist_wiki_satyam, hist_dandodiary_satyam, hist_bloomberg_satyam, hist_yahoo]
+      drawdowns:
+        - label: "Satyam Computer (one day, 7-Jan-2009)"
+          src: [hist_dandodiary_satyam]
+          sourced: {peak_date: "2009-01-06", peak: null, trough_date: "2009-01-07", trough: null, drawdown: -0.77}
+          note: "Bloomberg (paywalled) reported nearly 78%."
+        - label: "Satyam Computer (2008 high → 9-Jan-2009)"
+          src: [hist_wiki_satyam]
+          sourced: {peak_date: "2008", peak: 544, trough_date: "2009-01-09", trough: 6.30, drawdown: -0.9884}
+          note: "Rupees; drawdown = 6.30/544 − 1."
+      computed_moves:
+        - {ticker: "^NSEI", date: "2009-01-07", label: "Nifty 50"}
+        - {ticker: "^BSESN", date: "2009-01-07", label: "Sensex"}
+        - {ticker: "^CNXIT", date: "2009-01-07", label: "Nifty IT"}
+        - {ticker: "INFY.NS", date: "2009-01-07", label: "Infosys"}
+        - {ticker: "TCS.NS", date: "2009-01-07", label: "TCS"}
+        - {ticker: "WIPRO.NS", date: "2009-01-07", label: "Wipro"}
+
+    - id: bear2022
+      name: "2022 tech bear market"
+      period: "Nov-2021 – Dec-2022"
+      what_broke: "Inflation forced the fastest Fed tightening in decades (target range 0.00-0.25 → 4.25-4.50 during 2022); long-duration tech multiples compressed even where earnings held up."
+      crash_types: [multiple_compression]
+      linked: "Nasdaq-100 and the semiconductor index; hyperscaler and software multiples de-rated."
+      india: "Nifty IT de-rated alongside Nasdaq while the Nifty 50 held up far better (computed drawdowns)."
+      src: [hist_fed_openmarket, hist_yahoo]
+      drawdowns:
+        - {ticker: "^NDX", label: "Nasdaq-100", peak_search: ["2021-10-01", "2022-01-31"], trough_end: "2023-01-31"}
+        - {ticker: "^IXIC", label: "Nasdaq Composite", peak_search: ["2021-10-01", "2022-01-31"], trough_end: "2023-01-31"}
+        - {ticker: "^SOX", label: "PHLX Semiconductor", peak_search: ["2021-10-01", "2022-01-31"], trough_end: "2023-01-31"}
+        - {ticker: "^CNXIT", label: "Nifty IT", peak_search: ["2021-10-01", "2022-01-31"], trough_end: "2023-01-31"}
+        - {ticker: "^NSEI", label: "Nifty 50", peak_search: ["2021-10-01", "2022-01-31"], trough_end: "2023-01-31"}
+        - {ticker: "INFY.NS", label: "Infosys", peak_search: ["2021-10-01", "2022-01-31"], trough_end: "2023-01-31"}
+        - {ticker: "TCS.NS", label: "TCS", peak_search: ["2021-10-01", "2022-01-31"], trough_end: "2023-01-31"}
+        - {ticker: "WIPRO.NS", label: "Wipro", peak_search: ["2021-10-01", "2022-01-31"], trough_end: "2023-01-31"}
+      computed_moves: []
+
+    - id: smci2024
+      name: "Super Micro accounting scare"
+      period: "Aug-2024 – Nov-2024"
+      what_broke: "A short-seller report (27-Aug-2024) alleging accounting manipulation, a delayed 10-K the next day and the auditor's resignation (30-Oct-2024) hit the leading AI-server maker; the scare stayed largely contained to Super Micro."
+      crash_types: [fraud_trust]
+      linked: "AI-hardware peers (chip origins) — the 30-Oct-2024 abnormal-return ratio calibrates the US restatement shock (calib.contagion_us)."
+      india: "Netweb Technologies, India's listed AI-server maker, is the closest local analogue (event study)."
+      src: [hist_bs_hindenburg_smci, hist_fool_smci, hist_siliconangle_smci_ey, hist_yahoo]
+      drawdowns:
+        - {ticker: "SMCI", label: "Super Micro", peak_search: ["2024-01-01", "2024-06-30"], trough_end: "2024-12-31"}
+        - {ticker: "NETWEB.NS", label: "Netweb (India AI servers)", peak_search: ["2024-07-01", "2024-08-27"], trough_end: "2024-12-31"}
+      computed_moves:
+        - {ticker: "SMCI", date: "2024-08-28", label: "Super Micro on 10-K delay"}
+        - {ticker: "SMCI", date: "2024-10-30", label: "Super Micro on EY resignation"}
+        - {ticker: "NVDA", date: "2024-10-30", label: "NVIDIA on EY resignation day"}
+
+    - id: deepseek
+      name: "DeepSeek shock"
+      period: "27-Jan-2025"
+      what_broke: "A Chinese lab's low-cost frontier model questioned how much AI compute (and power) the build-out really needs; the market repriced compute, networking and power names in one session."
+      crash_types: [multiple_compression]
+      linked: "NVIDIA posted a record one-day market-value loss (sourced); power/infra names (VRT, CEG, VST, GEV) and networking fell with it."
+      india: "Next-day table: Indian AI, power-equipment and data-centre names on 27-Jan (news broke over the weekend) and 28-Jan (after the US close)."
+      src: [hist_bs_deepseek, hist_yahoo]
+      drawdowns:
+        - {ticker: "NVDA", label: "NVIDIA (event window)", peak_search: ["2025-01-21", "2025-01-24"], trough_end: "2025-01-31"}
+        - {ticker: "^SOX", label: "PHLX Semiconductor (event window)", peak_search: ["2025-01-21", "2025-01-24"], trough_end: "2025-01-31"}
+      computed_moves:
+        - {ticker: "NVDA", date: "2025-01-27", label: "NVIDIA"}
+        - {ticker: "^SOX", date: "2025-01-27", label: "PHLX SOX"}
+        - {ticker: "^NDX", date: "2025-01-27", label: "Nasdaq-100"}
+        - {ticker: "^NSEI", date: "2025-01-27", label: "Nifty 50 (same day)"}
+        - {ticker: "^NSEI", date: "2025-01-28", label: "Nifty 50 (next day)"}
+
+    - id: nvda_nov2025
+      name: "NVIDIA earnings reversal"
+      period: "20-Nov-2025"
+      what_broke: "A strong quarter failed to calm 'AI bubble' worries about circular financing; NVIDIA reversed from an early gain to a loss and AI-linked tech sold off."
+      crash_types: [multiple_compression]
+      linked: "Chips and AI infrastructure."
+      india: "See US-vs-India scatter / event study for the next NSE session."
+      src: [hist_fortune_nvda_nov2025, hist_yahoo]
+      drawdowns:
+        - {ticker: "NVDA", label: "NVIDIA", peak_search: ["2025-10-20", "2025-11-14"], trough_end: "2025-12-31"}
+        - {ticker: "^SOX", label: "PHLX Semiconductor", peak_search: ["2025-10-20", "2025-11-14"], trough_end: "2025-12-31"}
+      computed_moves:
+        - {ticker: "NVDA", date: "2025-11-20", label: "NVIDIA"}
+        - {ticker: "^NDX", date: "2025-11-20", label: "Nasdaq-100"}
+
+    - id: anthropic_feb2026
+      name: "AI-disruption rout in Indian IT (Anthropic plugins)"
+      period: "4-Feb-2026"
+      what_broke: "Anthropic's Claude Cowork enterprise plugins and an overnight US software sell-off revived fears that AI agents displace labour-based IT services — an AI *success* shock that hits Indian IT in the opposite direction to an AI bubble deflation."
+      crash_types: [multiple_compression]
+      linked: "US application software (CRM, NOW, ADBE) fell the US session before."
+      india: "Nifty IT's worst day since March 2020 (sourced) and a first half of 2026 down 31% (sourced); computed Nifty IT drawdown below."
+      src: [hist_moneylife_anthropic, hist_bt_anthropic, hist_bs_h1_2026_it, hist_yahoo]
+      drawdowns:
+        - {ticker: "^CNXIT", label: "Nifty IT (2026)", peak_search: ["2025-12-01", "2026-02-03"], trough_end: "2026-10-28"}
+        - label: "Nifty IT, Jan–Jun 2026"
+          src: [hist_bs_h1_2026_it]
+          sourced: {peak_date: "2025-12-31", peak: null, trough_date: "2026-06-30", trough: null, drawdown: -0.31}
+          note: "Half-year change as reported, not a peak-to-trough figure."
+      computed_moves:
+        - {ticker: "^CNXIT", date: "2026-02-04", label: "Nifty IT"}
+        - {ticker: "INFY.NS", date: "2026-02-04", label: "Infosys"}
+        - {ticker: "TCS.NS", date: "2026-02-04", label: "TCS"}
+
+    - id: openai_apr2026
+      name: "OpenAI growth miss report"
+      period: "28-Apr-2026"
+      what_broke: "A Wall Street Journal report that OpenAI missed user and revenue goals raised doubts about whether the largest AI buyer can pay for contracted compute."
+      crash_types: [credit_liquidity]
+      linked: "Oracle and CoreWeave (large OpenAI contracts), Arm, SOX."
+      india: "Next NSE session in the event study."
+      src: [hist_reuters_openai_apr2026, hist_yahoo]
+      drawdowns: []
+      computed_moves:
+        - {ticker: "ORCL", date: "2026-04-28", label: "Oracle"}
+        - {ticker: "CRWV", date: "2026-04-28", label: "CoreWeave"}
+        - {ticker: "^SOX", date: "2026-04-28", label: "PHLX SOX"}
+
+    - id: tomoro_may2026
+      name: "OpenAI–Tomoro consulting deal"
+      period: "12-May-2026"
+      what_broke: "OpenAI's acquisition of a consulting firm read as AI labs moving into services; Indian IT hit a near three-year low."
+      crash_types: [multiple_compression]
+      linked: "Indian IT services."
+      india: "Nifty IT -3.7% (sourced)."
+      src: [hist_bs_tomoro, hist_yahoo]
+      drawdowns: []
+      computed_moves:
+        - {ticker: "^CNXIT", date: "2026-05-12", label: "Nifty IT"}
+
+    - id: openai_oct2026
+      name: "OpenAI revenue run-rate report"
+      period: "8-Oct-2026"
+      what_broke: "A report of a ~$50bn OpenAI revenue run-rate, well below circulating estimates, hit the companies whose backlogs depend on OpenAI paying for compute."
+      crash_types: [credit_liquidity]
+      linked: "CoreWeave, Oracle, NVIDIA, Broadcom, AMD."
+      india: "Next NSE session in the event study."
+      src: [hist_admiral_openai_oct2026, hist_yahoo]
+      drawdowns: []
+      computed_moves:
+        - {ticker: "CRWV", date: "2026-10-08", label: "CoreWeave"}
+        - {ticker: "ORCL", date: "2026-10-08", label: "Oracle"}
+        - {ticker: "NVDA", date: "2026-10-08", label: "NVIDIA"}
+
+    - id: coreweave_oct2026
+      name: "CoreWeave bond scare"
+      period: "14-Oct-2026"
+      what_broke: "CoreWeave bonds traded at distressed levels (>15% yield) while a hot CPI print revived rate-hike bets — the AI build-out's debt financing came into focus."
+      crash_types: [credit_liquidity]
+      linked: "Oracle (debt-funded AI capex), neoclouds, NVIDIA."
+      india: "Next NSE session in the event study; Indian neocloud/data-centre names (E2E, Anant Raj, Netweb) are the local read-across."
+      src: [hist_siliconangle_crwv_oct2026, hist_247_orcl_oct2026, hist_yahoo]
+      drawdowns:
+        - {ticker: "CRWV", label: "CoreWeave (Oct-2026)", peak_search: ["2026-09-15", "2026-10-07"], trough_end: "2026-10-28"}
+        - {ticker: "ORCL", label: "Oracle (Oct-2026)", peak_search: ["2026-09-15", "2026-10-07"], trough_end: "2026-10-28"}
+      computed_moves:
+        - {ticker: "CRWV", date: "2026-10-14", label: "CoreWeave"}
+        - {ticker: "ORCL", date: "2026-10-14", label: "Oracle"}
+
+    - id: lam_oct2026
+      name: "Lam Research supply-chain warning"
+      period: "22-Oct-2026"
+      what_broke: "A semiconductor-equipment maker's outlook flagged supply-chain constraints and limited 2027 visibility; every SOX member fell."
+      crash_types: [earnings_collapse]
+      linked: "Equipment (LRCX, AMAT, KLAC), AMD, ASML, Arm, Intel, Marvell; NVIDIA -4.4% (sourced)."
+      india: "Next NSE session in the event study."
+      src: [hist_techtimes_lam_oct2026, hist_yahoo]
+      drawdowns:
+        - {ticker: "^SOX", label: "PHLX Semiconductor (Oct-2026)", peak_search: ["2026-09-15", "2026-10-21"], trough_end: "2026-10-28"}
+      computed_moves:
+        - {ticker: "^SOX", date: "2026-10-22", label: "PHLX SOX"}
+        - {ticker: "NVDA", date: "2026-10-22", label: "NVIDIA"}
+
+  # ---------------------------------------------------------------------------------------
+  # Event studies: CAR -5..+60 trading days, market model on [-250,-11] (market-adjusted if
+  # < 120 estimation obs). day0: same = first trading day on/after `date`; next = first
+  # trading day strictly after `date` (used for India reactions to a US close).
+  # members: explicit tickers, or "@tier:B" / "@tier:ALL" / "@origins:chips" expansions.
+  # ---------------------------------------------------------------------------------------
+  event_studies:
+    - id: es_dotcom
+      label: "Nasdaq peak (10-Mar-2000)"
+      date: "2000-03-10"
+      crash_types: [multiple_compression]
+      src: [hist_yahoo]
+      groups:
+        - {name: "US picks & shovels", index: "^GSPC", day0: same, members: [CSCO, INTC, QCOM, ORCL, MSFT]}
+        - {name: "India IT (vs Sensex)", index: "^BSESN", day0: next, members: [INFY.NS, WIPRO.NS]}
+        - {name: "India ADRs (vs S&P 500)", index: "^GSPC", day0: same, members: [INFY, SIFY]}
+    - id: es_worldcom
+      label: "SEC charges WorldCom (26-Jun-2002)"
+      date: "2002-06-26"
+      crash_types: [fraud_trust, credit_liquidity]
+      src: [hist_sec_lr17588, hist_yahoo]
+      groups:
+        - {name: "Telecom equipment & fiber", index: "^GSPC", day0: same, members: [GLW, CIEN, VIAV, NOK, ERIC, CSCO, QCOM]}
+        - {name: "India (vs Sensex)", index: "^BSESN", day0: next, members: [STLTECH.NS, INFY.NS, WIPRO.NS]}
+    - id: es_satyam
+      label: "Satyam confession (7-Jan-2009)"
+      date: "2009-01-07"
+      crash_types: [fraud_trust]
+      src: [hist_wiki_satyam, hist_dandodiary_satyam, hist_yahoo]
+      groups:
+        - {name: "Indian IT peers (vs Nifty)", index: "^NSEI", day0: same, members: [INFY.NS, TCS.NS, WIPRO.NS, HCLTECH.NS, TECHM.NS]}
+        - {name: "Indian IT ADRs (vs S&P 500)", index: "^GSPC", day0: same, members: [INFY, WIT]}
+    - id: es_2022
+      label: "Nasdaq-100 peak before the 2022 bear (19-Nov-2021)"
+      date: "2021-11-19"
+      crash_types: [multiple_compression]
+      src: [hist_fed_openmarket, hist_yahoo]
+      groups:
+        - {name: "US AI/tech", index: "^GSPC", day0: same, members: [NVDA, MSFT, ADBE, CRM, AMD]}
+        - {name: "India Tier B (vs Nifty)", index: "^NSEI", day0: next, members: ["@tier:B"]}
+    - id: es_smci_hindenburg
+      label: "Super Micro 10-K delay after Hindenburg (28-Aug-2024)"
+      date: "2024-08-28"
+      crash_types: [fraud_trust]
+      src: [hist_bs_hindenburg_smci, hist_fool_smci, hist_yahoo]
+      groups:
+        - {name: "US AI hardware", index: "^GSPC", day0: same, members: [SMCI, "@origins:chips"]}
+        - {name: "India AI/DC (vs Nifty)", index: "^NSEI", day0: next, members: [NETWEB.NS, E2E.NS, ANANTRAJ.NS]}
+    - id: es_smci_ey
+      label: "Super Micro auditor resigns (30-Oct-2024)"
+      date: "2024-10-30"
+      crash_types: [fraud_trust]
+      src: [hist_siliconangle_smci_ey, hist_yahoo]
+      groups:
+        - {name: "US AI hardware", index: "^GSPC", day0: same, members: [SMCI, "@origins:chips"]}
+        - {name: "India AI/DC (vs Nifty)", index: "^NSEI", day0: next, members: [NETWEB.NS, E2E.NS, ANANTRAJ.NS]}
+    - id: es_deepseek
+      label: "DeepSeek shock (27-Jan-2025)"
+      date: "2025-01-27"
+      crash_types: [multiple_compression]
+      src: [hist_bs_deepseek, hist_yahoo]
+      groups:
+        - {name: "US AI compute & power", index: "^GSPC", day0: same, members: [NVDA, AVGO, TSM, ASML, MU, AMD, MRVL, ARM, VRT, CEG, VST, GEV, ORCL]}
+        - {name: "India AI, power & data centre (vs Nifty)", index: "^NSEI", day0: same, members: [NETWEB.NS, E2E.NS, ANANTRAJ.NS, TECHNOE.NS, POWERINDIA.NS, "GVT&D.NS", ABB.NS, SCHNEIDER.NS, CGPOWER.NS, TARIL.NS, KEI.NS, POLYCAB.NS, STLTECH.NS, HFCL.NS, KAYNES.NS, DIXON.NS]}
+        - {name: "India IT (vs Nifty)", index: "^NSEI", day0: same, members: ["@tier:B"]}
+    - id: es_nvda_nov2025
+      label: "NVIDIA earnings reversal (20-Nov-2025)"
+      date: "2025-11-20"
+      crash_types: [multiple_compression]
+      src: [hist_fortune_nvda_nov2025, hist_yahoo]
+      groups:
+        - {name: "US chips", index: "^GSPC", day0: same, members: ["@origins:chips"]}
+        - {name: "India all tiers (vs Nifty)", index: "^NSEI", day0: next, members: ["@tier:ALL"]}
+    - id: es_anthropic
+      label: "Anthropic plugins / Indian IT rout (4-Feb-2026)"
+      date: "2026-02-04"
+      crash_types: [multiple_compression]
+      src: [hist_moneylife_anthropic, hist_bt_anthropic, hist_yahoo]
+      groups:
+        - {name: "India Tier B (vs Nifty)", index: "^NSEI", day0: same, members: ["@tier:B"]}
+        - {name: "US software (3-Feb US session)", index: "^GSPC", day0: same, date: "2026-02-03", members: [CRM, NOW, ADBE, PLTR]}
+    - id: es_openai_apr2026
+      label: "OpenAI growth-miss report (28-Apr-2026)"
+      date: "2026-04-28"
+      crash_types: [credit_liquidity]
+      src: [hist_reuters_openai_apr2026, hist_yahoo]
+      groups:
+        - {name: "US AI credit-exposed", index: "^GSPC", day0: same, members: [ORCL, CRWV, ARM, NVDA, AMD, AVGO]}
+        - {name: "India all tiers (vs Nifty)", index: "^NSEI", day0: next, members: ["@tier:ALL"]}
+    - id: es_tomoro
+      label: "OpenAI–Tomoro / Nifty IT (12-May-2026)"
+      date: "2026-05-12"
+      crash_types: [multiple_compression]
+      src: [hist_bs_tomoro, hist_yahoo]
+      groups:
+        - {name: "India Tier B (vs Nifty)", index: "^NSEI", day0: same, members: ["@tier:B"]}
+    - id: es_openai_oct2026
+      label: "OpenAI revenue report (8-Oct-2026)"
+      date: "2026-10-08"
+      crash_types: [credit_liquidity]
+      src: [hist_admiral_openai_oct2026, hist_yahoo]
+      groups:
+        - {name: "US AI credit-exposed", index: "^GSPC", day0: same, members: [CRWV, ORCL, NVDA, AVGO, AMD]}
+        - {name: "India all tiers (vs Nifty)", index: "^NSEI", day0: next, members: ["@tier:ALL"]}
+    - id: es_coreweave_oct2026
+      label: "CoreWeave bond scare (14-Oct-2026)"
+      date: "2026-10-14"
+      crash_types: [credit_liquidity]
+      src: [hist_siliconangle_crwv_oct2026, hist_yahoo]
+      groups:
+        - {name: "US AI credit-exposed", index: "^GSPC", day0: same, members: [CRWV, ORCL, NVDA, VRT, CEG]}
+        - {name: "India Tier C (vs Nifty)", index: "^NSEI", day0: next, members: ["@tier:C"]}
+    - id: es_lam_oct2026
+      label: "Lam Research warning (22-Oct-2026)"
+      date: "2026-10-22"
+      crash_types: [earnings_collapse]
+      src: [hist_techtimes_lam_oct2026, hist_yahoo]
+      groups:
+        - {name: "US chips", index: "^GSPC", day0: same, members: ["@origins:chips"]}
+        - {name: "India Tier C & D (vs Nifty)", index: "^NSEI", day0: next, members: ["@tier:C", "@tier:D"]}
+
+  # Named US-dated AI events added to the US-vs-India scatter (India day = next NSE session).
+  scatter_events:
+    - {id: es_smci_ey, us_date: "2024-10-30"}
+    - {id: es_deepseek, us_date: "2025-01-27"}
+    - {id: es_nvda_nov2025, us_date: "2025-11-20"}
+    - {id: es_openai_apr2026, us_date: "2026-04-28"}
+    - {id: es_openai_oct2026, us_date: "2026-10-08"}
+    - {id: es_coreweave_oct2026, us_date: "2026-10-14"}
+    - {id: es_lam_oct2026, us_date: "2026-10-22"}
+
+  # Shiller S&P Composite episodes (monthly average prices). Searches are [start, end] months.
+  shiller:
+    src: hist_shiller_ie
+    url: "http://www.econ.yale.edu/~shiller/data/ie_data.xls"
+    episodes:
+      - {id: sp1929, label: "S&P Composite 1929", peak_search: ["1929-01", "1929-12"], trough_end: "1933-12"}
+      - {id: sp1937, label: "S&P Composite 1937", peak_search: ["1936-06", "1937-12"], trough_end: "1942-12"}
+      - {id: sp1968, label: "S&P Composite 1968", peak_search: ["1968-06", "1969-06"], trough_end: "1970-12"}
+      - {id: sp1973, label: "S&P Composite 1973", peak_search: ["1972-06", "1973-06"], trough_end: "1975-06"}
+      - {id: sp1987, label: "S&P Composite 1987", peak_search: ["1987-01", "1987-10"], trough_end: "1988-06"}
+      - {id: sp2000, label: "S&P Composite 2000", peak_search: ["1999-06", "2000-12"], trough_end: "2003-12"}
+      - {id: sp2007, label: "S&P Composite 2007", peak_search: ["2007-01", "2008-06"], trough_end: "2009-12"}
+      - {id: sp2022, label: "S&P Composite 2021-22", peak_search: ["2021-06", "2022-06"], trough_end: "2023-06"}
+
+  # Non-Shiller bubble points: SOURCED P/E, drawdown COMPUTED from the Yahoo series.
+  pe_points:
+    - id: nikkei1989
+      label: "Nikkei 225, 1989"
+      market: JP
+      pe: 60
+      pe_kind: trailing
+      src: [hist_man_nikkei, hist_cme_nikkei]
+      note: "Trailing 12-month P/E at the Dec-1989 peak (Man Group); CME cites ~71x."
+      drawdown_from: {ticker: "^N225", peak_search: ["1989-06-01", "1990-03-31"], trough_end: "2012-12-31"}
+    - id: ndx2000
+      label: "Nasdaq-100, 2000"
+      market: US
+      pe: 104
+      pe_kind: trailing
+      src: [hist_nasdaq_ndx_pe]
+      note: "Imputed index P/E at 31-Dec-1999 (index provider); the March-2000 peak P/E was higher."
+      drawdown_from: {ticker: "^NDX", peak_search: ["1999-10-01", "2000-12-31"], trough_end: "2003-06-30"}
+    - id: nifty2008
+      label: "Nifty 50, 2008"
+      market: IN
+      pe: 28
+      pe_kind: trailing
+      src: [hist_primeinvestor_nifty_pe]
+      note: "Nifty P/E 'over 28' in January 2008."
+      drawdown_from: {ticker: "^NSEI", peak_search: ["2007-10-01", "2008-03-31"], trough_end: "2009-06-30"}
+
+  overlay:
+    span: 750
+    dotcom:
+      - {ticker: "^IXIC", label: "Dot-com Nasdaq Composite", peak_search: ["2000-01-01", "2000-12-31"]}
+      - {ticker: "^NDX", label: "Dot-com Nasdaq-100", peak_search: ["2000-01-01", "2000-12-31"]}
+    today:
+      - {ticker: "^SOX", label: "Today PHLX Semiconductor"}
+      - {ticker: "^NDX", label: "Today Nasdaq-100"}
+
+  worst_windows:
+    since: "1994-05-04"
+    series: {SOX: "^SOX", NDX: "^NDX"}
+
+  deepseek_next_day: {d0: "2025-01-27", d1: "2025-01-28", index_in: "^NSEI", index_us: "^GSPC"}
+
+  contagion:
+    us:
+      event: "2024-10-30"
+      company: SMCI
+      index: "^GSPC"
+      peers: "@origins:chips"       # same origin group as SMCI (the engine applies contagion to same-group peers)
+      src: [hist_siliconangle_smci_ey]
+    india:
+      event: "2009-01-07"
+      index: "^NSEI"
+      peers: [INFY.NS, TCS.NS, WIPRO.NS, HCLTECH.NS, TECHM.NS]
+      company_move: -0.77           # Satyam one-day move, SOURCED (verbatim 77%; Bloomberg 'nearly 78%')
+      src: [hist_dandodiary_satyam, hist_bloomberg_satyam]
+
+  # Used only if universe.yaml has no `replay_windows` (DATA-CORE owns the real list).
+  default_replay_windows:
+    - {id: DOTCOM, label: "Dot-com bust (Nasdaq peak → trough)", start: "2000-03-10", end: "2002-10-09"}
+    - {id: DOTCOM12M, label: "Dot-com, first 12 months", start: "2000-03-10", end: "2001-03-12"}
+    - {id: GFC, label: "GFC acute phase (Lehman → Nov-2008 low)", start: "2008-09-12", end: "2008-11-20"}
+    - {id: COVID, label: "COVID crash", start: "2020-02-19", end: "2020-03-23"}
+    - {id: Y2022, label: "2022 rate bear (NDX peak → SOX trough)", start: "2021-11-19", end: "2022-10-13"}
+    - {id: SMCI24, label: "Super Micro scare (Hindenburg → Nov low)", start: "2024-08-26", end: "2024-11-14"}
+    - {id: DEEPSEEK, label: "DeepSeek day", start: "2025-01-24", end: "2025-01-27"}
+    - {id: OCT2026, label: "Oct-2026 AI funding & credit wobble", start: "2026-10-07", end: "2026-10-22"}
