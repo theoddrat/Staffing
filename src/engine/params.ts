@@ -177,7 +177,7 @@ export interface ResolvedQuantities {
   s: Float64Array; // hyperscaler share per origin
   neo: Float64Array; // neocloud share per origin
   olO: Float64Array; // operating leverage per origin
-  sNeoAvg: number; // supplier-revenue-weighted neocloud share (credit → India capex channel)
+  sNeoAvg: number; // mcap-weighted neocloud share of AI suppliers (credit → India capex channel)
   india: {
     shares: number[];
     shareAssump: boolean[];
@@ -207,12 +207,14 @@ export function resolveQuantities(prep: Prep, overrides: Record<string, number> 
     if (ol === null && (rqNeedsOL(o.group))) warnings.push(`${o.ticker}: operating leverage missing, ${olFallbackLabel} used`);
     olO[i] = clamp(ol ?? olFallback, 0, 10);
   });
-  // supplier-revenue-weighted neocloud share (chips + infra with known revenue; mcap fallback)
+  // mcap-weighted neocloud share across AI suppliers (chips + infra): the fraction of AI-supplier
+  // value tied to neocloud / AI-cloud capex. Mcap (USD) is used rather than revenue so that
+  // statement-currency differences (e.g. ADRs reporting in TWD/EUR) cannot distort the weights.
   let num = 0;
   let den = 0;
   prep.origins.forEach((o, i) => {
     if (o.group !== 'chips' && o.group !== 'infra') return;
-    const w = o.revUsd ?? o.mcapUsd ?? 0;
+    const w = o.mcapUsd ?? 0;
     num += w * neo[i];
     den += w;
   });

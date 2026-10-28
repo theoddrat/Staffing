@@ -160,7 +160,14 @@ export function TickerLog({ bundle }: { bundle: DataBundle }) {
   );
 }
 
+const WARN_PREVIEW = 12;
+const PROBLEM_RE = /(fail|error|missing|drop|stale|short|could not|unavailable|not found|no data|invalid|nan|skipp)/i;
+export function isProblem(line: string): boolean {
+  return PROBLEM_RE.test(line);
+}
+
 export function Provenance({ bundle }: { bundle: DataBundle }) {
+  const [showAllWarn, setShowAllWarn] = useState(false);
   const m = bundle.meta;
   const settings = Object.entries(bundle.settings ?? {});
   const fx = Object.entries(m?.fx_rates_usd ?? {});
@@ -237,18 +244,31 @@ export function Provenance({ bundle }: { bundle: DataBundle }) {
             <Empty note="meta.data_sources is empty" />
           )}
         </Section>
-        <Section title={`Build warnings (${m?.warnings?.length ?? 0})`}>
+        <Section
+          title={`Build log & warnings (${m?.warnings?.length ?? 0})`}
+          right={
+            (m?.warnings?.length ?? 0) > WARN_PREVIEW ? (
+              <button className="b-chip" onClick={() => setShowAllWarn((v) => !v)}>
+                {showAllWarn ? 'show fewer' : `show all ${m!.warnings.length}`}
+              </button>
+            ) : null
+          }
+        >
           {m?.warnings?.length ? (
             <ul className="b-list">
-              {m.warnings.map((w, i) => (
-                <li key={i} className="b-warn">
-                  {w}
-                </li>
-              ))}
+              {[...m.warnings]
+                .sort((a, b) => Number(isProblem(b)) - Number(isProblem(a)))
+                .slice(0, showAllWarn ? undefined : WARN_PREVIEW)
+                .map((w, i) => (
+                  <li key={i} className={isProblem(w) ? 'b-warn' : 'muted'}>
+                    {w}
+                  </li>
+                ))}
             </ul>
           ) : (
             <span className="muted">none</span>
           )}
+          <Note>Orange = a data problem worth checking (missing, failed, dropped, stale, short history); grey = informational build log (e.g. research-overlay sources applied).</Note>
         </Section>
       </div>
       <div>

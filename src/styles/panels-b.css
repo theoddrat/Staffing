@@ -18,7 +18,7 @@
 .b-note b, .b-note strong { color: var(--amber); font-weight: 400; }
 .b-empty { padding: 6px; font-size: var(--fs-sm); }
 .b-scroll { overflow: auto; max-height: 460px; }
-.b-scroll-lg { overflow: auto; max-height: max(420px, calc(100vh - 240px)); }
+.b-scroll-lg { overflow: auto; max-height: max(380px, calc(100vh - 330px)); }
 .b-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 4px; font-size: var(--fs-sm); }
 .b-toolbar label { color: var(--amber-dim); }
 .b-search { width: 260px; padding: 2px 4px; }

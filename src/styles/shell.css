@@ -43,14 +43,13 @@
 .cmd-prompt { color: var(--amber); font-weight: 700; }
 .cmd-input-wrap { position: relative; flex: 1; min-width: 0; }
 .cmd-input {
-  width: 100%; background: #0b0b0b; color: var(--white); border: 1px solid #333; padding: 3px 6px;
+  width: 100%; background: #0b0b0b; color: var(--white); border: 1px solid #333; padding: 3px 6px 3px 18px;
   font-size: var(--fs); text-transform: uppercase; caret-color: var(--amber); outline: none;
 }
 .cmd-input:focus { border-color: var(--amber); }
 .cmd-input::placeholder { color: #555; }
-.cmd-cursor { position: absolute; left: 8px; top: 3px; color: var(--amber); pointer-events: none; animation: blink 1s steps(2, start) infinite; display: none; }
+.cmd-cursor { position: absolute; left: 6px; top: 3px; color: var(--amber); pointer-events: none; animation: blink 1s steps(2, start) infinite; display: none; }
 .cmd-input:not(:focus) ~ .cmd-cursor { display: inline; }
-.cmd-input:not(:focus)::placeholder { color: transparent; }
 .cmd-hints {
   position: absolute; z-index: 40; left: 0; top: 100%; margin: 0; padding: 0; list-style: none; min-width: 260px;
   background: #0d0d0d; border: 1px solid var(--amber-dim);
@@ -94,7 +93,7 @@
 .tbl th.sortable { cursor: pointer; user-select: none; }
 .tbl th.sortable:hover { color: var(--amber); }
 .tbl th.sorted { color: var(--amber); }
-.warn-list { margin: 4px 0 0; padding-left: 14px; font-size: var(--fs-xs); }
+.warn-list { margin: 4px 0 0; padding-left: 0; list-style: none; font-size: var(--fs-xs); }
 .conf-high { color: var(--green); }
 .conf-med { color: var(--amber); }
 .conf-low { color: var(--red); }
@@ -139,3 +138,4 @@
 .drivers { margin: 0; padding-left: 14px; }
 .qty-parts { color: var(--grey); }
 .qty-part { white-space: normal; }
+.sub-header { border-top: 1px solid var(--line-hi); }

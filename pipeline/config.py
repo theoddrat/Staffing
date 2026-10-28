@@ -112,6 +112,9 @@ def apply_overlay(cfg: dict[str, Any], ov: dict[str, Any]) -> list[str]:
                     log.append(f"overlay: unknown quantity id {qid} (ignored)")
             else:
                 log.append(f"overlay: unknown quantity id {qid} (ignored)")
+    if ov.get("context"):
+        cfg["research_context"] = ov["context"]
+        log.append("overlay: context block loaded (" + ", ".join(sorted(ov["context"].keys())) + ")")
     if ov.get("history_notes"):
         cfg.setdefault("history", {}).setdefault("history_notes", {}).update(ov["history_notes"])
         log.append("overlay: history_notes merged")

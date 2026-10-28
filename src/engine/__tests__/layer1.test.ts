@@ -51,8 +51,18 @@ describe('Layer 1 — valuation math and waterfall', () => {
   it('capex_absorbed_share = Σ revenue_hit·revenue / (c·Σ capex)', () => {
     const r = runScenario(b, params('capex', { c: 0.3 }));
     const lost = 0.15 * 300e9 + 0.3 * 0.29 * 40e9 + 0.3 * 0.67 * 6e9 + 0.3 * 0.75 * 10e9;
-    close(r.factors.capex_cut_usd!, 0.3 * (100e9 + 40e9), 1);
-    close(r.factors.capex_absorbed_share!, lost / (0.3 * 140e9), 1e-9);
+    close(r.factors.capex_cut_usd!, 0.3 * (300e9 + 100e9), 1);
+    close(r.factors.capex_absorbed_share!, lost / (0.3 * 400e9), 1e-9);
+  });
+
+  it('capex sanity: a supplier whose revenue loss exceeds the whole cut is flagged and excluded', () => {
+    const bad = makeBundle();
+    bad.securities['NVDA'].revenue_ttm = 300e9 * 32; // e.g. statement currency mistaken for USD
+    const p = defaultParams(bad, 'capex', '1M');
+    const r = runScenario(bad, { ...p, values: { ...p.values, c: 0.3 } });
+    expect(r.warnings.some((w) => w.includes('capex sanity') && w.includes('NVDA'))).toBe(true);
+    const lost = 0.3 * 0.29 * 40e9 + 0.3 * 0.67 * 6e9 + 0.3 * 0.75 * 10e9;
+    close(r.factors.capex_absorbed_share!, lost / (0.3 * 400e9), 1e-9);
   });
 
   it('guidance: target hit with κ de-rating, peers move via peer beta (sympathy)', () => {

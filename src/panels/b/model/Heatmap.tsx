@@ -29,7 +29,7 @@ export default function Heatmap({ bundle, onSelect }: { bundle: DataBundle; onSe
     });
     const bound = metric === 'corr' ? Math.min(1, symmetricBound(vals, 0.98)) : symmetricBound(vals, 0.98);
     return {
-      grid: { left: 110, right: 70, top: 10, bottom: 70 },
+      grid: { left: 110, right: 96, top: 10, bottom: 70 },
       tooltip: {
         trigger: 'item',
         formatter: (p: any) => {
@@ -61,7 +61,7 @@ export default function Heatmap({ bundle, onSelect }: { bundle: DataBundle; onSe
         max: bound,
         calculable: true,
         orient: 'vertical',
-        right: 4,
+        right: 14,
         top: 'middle',
         itemHeight: 220,
         text: ['+', '−'],

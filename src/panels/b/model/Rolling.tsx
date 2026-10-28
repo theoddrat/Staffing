@@ -58,7 +58,7 @@ export default function Rolling({
       data: rolling.dates.map((d, k) => [d, isNum(rolling.r2?.[k]) ? rolling.r2[k] : null]),
     });
     return {
-      grid: { left: 52, right: 52, top: 30, bottom: 36 },
+      grid: { left: 52, right: 52, top: 50, bottom: 36 },
       legend: { top: 0 },
       tooltip: {
         trigger: 'axis',

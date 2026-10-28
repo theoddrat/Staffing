@@ -22,6 +22,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--offline", action="store_true", help="never touch the network; use .cache only")
     ap.add_argument("--skip-fund", action="store_true", help="fundamentals from cache only")
     ap.add_argument("--only-prices", action="store_true", help="skip fundamentals entirely")
+    ap.add_argument("--refresh", action="store_true", help="force re-download of every price history")
     ap.add_argument("--out", default=str(Path(__file__).resolve().parent / "public" / "data.json"))
     args = ap.parse_args(argv)
     if args.offline:
@@ -29,7 +30,8 @@ def main(argv: list[str] | None = None) -> int:
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     from pipeline.build import build  # imported after env so the cache modules see ACM_OFFLINE
 
-    build(skip_fund=args.skip_fund or args.offline, only_prices=args.only_prices, out=Path(args.out))
+    build(skip_fund=args.skip_fund or args.offline, only_prices=args.only_prices, out=Path(args.out),
+          refresh=args.refresh and not args.offline)
     from pipeline.validate import main as validate_main
 
     return validate_main([args.out])

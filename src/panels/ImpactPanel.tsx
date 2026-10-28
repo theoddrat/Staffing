@@ -44,17 +44,17 @@ type Col =
   | 'mcap'
   | 'conf';
 
-/** Red (loss) ↔ green (gain) colour for a simple move. */
-export function moveColor(m: number | null | undefined): string {
+/** Red (loss) ↔ green (gain) colour for a simple move; `scale` = |move| that maps to full colour. */
+export function moveColor(m: number | null | undefined, scale = 0.4): string {
   if (!isNum(m)) return '#333';
   const clamp = (x: number, a: number, b: number) => Math.max(a, Math.min(b, x));
   if (m < 0) {
-    const t = clamp(-m / 0.4, 0, 1);
+    const t = clamp(-m / scale, 0, 1);
     const r = Math.round(60 + 195 * t);
     const g = Math.round(20 + 40 * (1 - t));
     return `rgb(${r},${g},${Math.round(20 + 20 * (1 - t))})`;
   }
-  const t = clamp(m / 0.2, 0, 1);
+  const t = clamp(m / scale, 0, 1);
   return `rgb(${Math.round(20 + 20 * (1 - t))},${Math.round(70 + 140 * t)},${Math.round(40 + 66 * t)})`;
 }
 
@@ -104,6 +104,8 @@ function sortValue(r: IndiaResult, col: Col, idx: number, stale: MCResult | null
 
 function Treemap({ rows, onPick }: { rows: IndiaResult[]; onPick: (t: string) => void }) {
   const option = useMemo(() => {
+    // Colour scale adapts to the scenario: the largest |move| on screen gets full red / green.
+    const scale = Math.max(0.02, ...rows.map((r) => (isNum(r.market_move) ? Math.abs(r.market_move) : 0)));
     const byTier = new Map<Tier, IndiaResult[]>();
     for (const r of rows) {
       if (!isNum(r.mcap_change_inr_cr) || Math.abs(r.mcap_change_inr_cr) < 1e-6) continue;
@@ -121,7 +123,7 @@ function Treemap({ rows, onPick }: { rows: IndiaResult[]; onPick: (t: string) =>
           ticker: r.ticker,
           move: r.market_move,
           signed: r.mcap_change_inr_cr,
-          itemStyle: { color: moveColor(r.market_move) },
+          itemStyle: { color: moveColor(r.market_move, scale) },
         })),
       }));
     return {
@@ -190,32 +192,40 @@ function FanChart({ mc, ticker, display }: { mc: MCResult | null; ticker: string
       xAxis: { type: 'category', data: x, name: 'trading days', nameLocation: 'middle', nameGap: 20, ...axisStyle() },
       yAxis: { type: 'value', name: '%', ...axisStyle(), axisLabel: { color: CHART_COLORS.amber, formatter: '{value}%' } },
       series: [
-        { name: 'p5', type: 'line', data: p5, stack: 'outer', symbol: 'none', lineStyle: { opacity: 0 }, tooltip: { show: true } },
+        // Bands: invisible base + stacked width. stackStrategy 'all' stacks across signs (p5 is usually < 0).
+        { name: 'band5', type: 'line', data: p5, stack: 'outer', stackStrategy: 'all', symbol: 'none', lineStyle: { opacity: 0 }, tooltip: { show: false }, silent: true },
         {
-          name: 'p5–p95',
+          name: 'P5–P95',
           type: 'line',
           data: diff(p95, p5),
           stack: 'outer',
+          stackStrategy: 'all',
           symbol: 'none',
           lineStyle: { opacity: 0 },
+          itemStyle: { color: 'rgba(255,176,0,0.35)' },
           areaStyle: { color: 'rgba(255,176,0,0.12)' },
           tooltip: { show: false },
+          silent: true,
         },
-        { name: 'p25', type: 'line', data: p25, stack: 'inner', symbol: 'none', lineStyle: { opacity: 0 } },
+        { name: 'band25', type: 'line', data: p25, stack: 'inner', stackStrategy: 'all', symbol: 'none', lineStyle: { opacity: 0 }, tooltip: { show: false }, silent: true },
         {
-          name: 'p25–p75',
+          name: 'P25–P75',
           type: 'line',
           data: diff(p75, p25),
           stack: 'inner',
+          stackStrategy: 'all',
           symbol: 'none',
           lineStyle: { opacity: 0 },
+          itemStyle: { color: 'rgba(255,176,0,0.6)' },
           areaStyle: { color: 'rgba(255,176,0,0.28)' },
           tooltip: { show: false },
+          silent: true,
         },
-        { name: 'p50', type: 'line', data: p50, symbol: 'none', lineStyle: { color: CHART_COLORS.amber, width: 2 } },
-        { name: 'p95', type: 'line', data: p95, symbol: 'none', lineStyle: { color: CHART_COLORS.green, width: 1, type: 'dashed' } },
-        { name: 'p75', type: 'line', data: p75, symbol: 'none', lineStyle: { color: CHART_COLORS.amberDim, width: 1 } },
+        { name: 'P5', type: 'line', data: p5, symbol: 'none', itemStyle: { color: CHART_COLORS.red }, lineStyle: { color: CHART_COLORS.red, width: 1, type: 'dashed' } },
+        { name: 'P50', type: 'line', data: p50, symbol: 'none', itemStyle: { color: CHART_COLORS.amber }, lineStyle: { color: CHART_COLORS.amber, width: 2 } },
+        { name: 'P95', type: 'line', data: p95, symbol: 'none', itemStyle: { color: CHART_COLORS.green }, lineStyle: { color: CHART_COLORS.green, width: 1, type: 'dashed' } },
       ],
+      legend: { top: 0, data: ['P5', 'P50', 'P95', 'P25–P75', 'P5–P95'], textStyle: { color: CHART_COLORS.amber, fontSize: 10 } },
     };
   }, [fan]);
   if (!option) {

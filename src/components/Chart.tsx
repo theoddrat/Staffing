@@ -53,27 +53,29 @@ export default function Chart({ option, height = 280, className, onClick, themed
   useEffect(() => {
     if (!ref.current) return;
     inst.current = echarts.init(ref.current, undefined, { renderer: 'canvas' });
-    const ro = new ResizeObserver(() => inst.current?.resize());
+    const ro = new ResizeObserver(() => {
+      if (inst.current && !inst.current.isDisposed()) inst.current.resize();
+    });
     ro.observe(ref.current);
     return () => {
       ro.disconnect();
-      inst.current?.dispose();
+      if (inst.current && !inst.current.isDisposed()) inst.current.dispose();
       inst.current = null;
     };
   }, []);
 
   useEffect(() => {
-    if (!inst.current) return;
+    if (!inst.current || inst.current.isDisposed()) return;
     const merged = themed ? { ...baseOption, ...option } : option;
     inst.current.setOption(merged as echarts.EChartsCoreOption, { notMerge: true, lazyUpdate: true });
   }, [option, themed]);
 
   useEffect(() => {
     const chart = inst.current;
-    if (!chart || !onClick) return;
+    if (!chart || chart.isDisposed() || !onClick) return;
     chart.on('click', onClick);
     return () => {
-      chart.off('click', onClick);
+      if (!chart.isDisposed()) chart.off('click', onClick);
     };
   }, [onClick]);
 

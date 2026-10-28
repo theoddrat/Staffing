@@ -153,8 +153,8 @@ export default function FactorsFx({ bundle }: { bundle: DataBundle }) {
                         <td className="lbl" title={e.id}>
                           {e.label}
                         </td>
-                        <td>{e.start}</td>
-                        <td>{e.end}</td>
+                        <td className="nowrap">{e.start}</td>
+                        <td className="nowrap">{e.end}</td>
                         <td className={`num ${isNum(e.inr_depr) && e.inr_depr > 0 ? 'down' : 'up'}`}>{isNum(e.inr_depr) ? `${e.inr_depr > 0 ? '+' : ''}${pct(e.inr_depr, 1)}` : '—'}</td>
                         <MoveCell v={isNum(e.ndx) ? Math.expm1(e.ndx) : null} />
                         <MoveCell v={isNum(e.sox) ? Math.expm1(e.sox) : null} />

@@ -99,7 +99,9 @@ export interface Security {
   ret_since_chatgpt: number | null;
   ret_since_chatgpt_vs_bench: number | null;
   bench: string | null; // benchmark ticker used for the line above
-  revenue_ttm: number | null; // local currency
+  revenue_ttm: number | null; // in financial_currency (the company's reporting currency)
+  financial_currency: string | null; // reporting currency of revenue_ttm / statements (may differ from `currency`)
+  revenue_ttm_usd?: number | null; // OPTIONAL: revenue_ttm converted with meta.fx_rates_usd (engine converts itself if absent)
   ebit_margin: number | null;
   gross_margin: number | null;
   op_leverage: Quantity;
@@ -333,6 +335,7 @@ export interface DataBundle {
   india: IndiaTarget[];
   benchmarks: { nifty: string; nifty_it: string; adrs: string[] };
   nifty_model: RegressionResult;
+  nifty_model_down?: RegressionResult | null; // OPTIONAL: Nifty model on worst-5% SOX days
   nifty_resid: (number | null)[]; // aligned to resid_dates
   resid_dates: string[];
   factor_map: {
@@ -369,6 +372,7 @@ export interface DataBundle {
     us_vs_india: UsVsIndiaPoint[];
     pe_vs_drawdown: PeDrawdownPoint[];
     pe_fit: { slope: number; intercept: number; r2: number; n: number };
+    // implied_drawdown = pe_fit.intercept + pe_fit.slope * now (negative); drives shock-4 mode 'calibrated'
     ai_basket_pe: { now: number | null; pre_chatgpt_median: number | null; implied_drawdown: number | null };
     overlay: OverlaySeries[];
     worst_windows: Record<'SOX' | 'NDX', { d1: number; d1_date: string; d21: number; d21_end: string; d252: number; d252_end: string }>;

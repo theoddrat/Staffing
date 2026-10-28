@@ -264,6 +264,65 @@ sources:
   verification: SECONDARY
   accessed: '2026-10-28'
   note: RPT = related-party transaction (order routed via GE Vernova group entities for a US data-centre end customer). Q1 FY27 export orders Rs 550 cr of ~Rs 1,140 cr inflow.
+- id: meta_q2_2026_pr
+  title: Meta Reports Second Quarter 2026 Results
+  publisher: Meta Platforms (press release)
+  url: https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Second-Quarter-2026-Results/
+  date: '2026-07-29'
+  quote: Capital expenditures, including principal payments on finance leases, were $31.08 billion ... full-year 2026 capital expenditures, including principal payments on finance leases, in the range of
+    $130-145 billion (narrowed from $125-145 billion)
+  verification: SECONDARY
+  accessed: '2026-10-28'
+  note: Wording as summarised by the search index from the Meta release / Exhibit 99.1 (https://s21.q4cdn.com/399680738/files/doc_financials/2026/q2/Meta-06-30-2026-Exhibit-99-1-FINAL.pdf); direct fetch
+    not completed.
+- id: googl_q2_2026_spglobal
+  title: 'Alphabet post-Q: AI growth accelerates as spending weighs on cash flow'
+  publisher: S&P Global Market Intelligence
+  url: https://www.spglobal.com/market-intelligence/en/news-insights/research/2026/07/alphabet-postq-ai-growth-accelerates-as-spending-weighs-on-cash-flow
+  date: 2026-07
+  quote: Alphabet has raised its FY2026 CapEx guidance to $195 billion–$205 billion, from the previous $180 billion–$190 billion, and well above the pre-results Visible Alpha consensus of $187.8 billion.
+    Management also indicated that CapEx is expected to increase further in 2027
+  verification: SECONDARY
+  accessed: '2026-10-28'
+  note: Direct fetch 403; quote via search index. Q2 2026 capex $44.9B.
+- id: amzn_q2_2026_spglobal
+  title: 'Amazon post-Q: AWS reaccelerates as AI investment pushes capex higher'
+  publisher: S&P Global Market Intelligence / multiple outlets
+  url: https://www.spglobal.com/market-intelligence/en/news-insights/research/2026/08/amazon-postq-aws-reaccelerates-as-ai-investment-pushes-capex-higher
+  date: '2026-07-30'
+  quote: Amazon raised 2026 capital expenditure guidance to $220 billion from the $200 billion previously indicated ... above Visible Alpha preQ consensus of $206.1 billion
+  verification: SECONDARY
+  accessed: '2026-10-28'
+  note: Consistent across outlets (KuCoin, Shopifreaks, S&P). Q2 2026 capex reported as $53.1B (cash) or $54.2B depending on definition.
+- id: msft_fy27_capex_cfodive
+  title: Microsoft holds the line on AI spending plans
+  publisher: CFO Dive
+  url: https://www.cfodive.com/news/microsoft-holds-line-ai-spending-plans/826648/
+  date: 2026-07
+  quote: demand signals ... point to higher capital spending in fiscal 2027 ... capex, including finance leases, to top $50 billion in the first fiscal quarter
+  verification: SECONDARY
+  accessed: '2026-10-28'
+  note: An accounting change (data-centre useful life 15->25 years) moves future leases from finance to operating treatment, lowering reported calendar-2026 capex to ~$175B from ~$190B (cryptobriefing/TIKR).
+    Q4 FY26 capex incl. finance leases ~$41B.
+- id: orcl_q1fy27_capex
+  title: Oracle forecasts $95 bn in capex for FY27, plans to raise $40 bn in debt and equity
+  publisher: Outlook Business
+  url: https://www.outlookbusiness.com/corporate/oracle-forecasts-95-bn-in-capex-for-fy27-plans-to-raise-40-bn-in-debt-and-equity
+  date: '2026-09-10'
+  quote: Oracle reiterated fiscal 2027 capex of $90-$95 billion, with net cash capex capped at $70 billion (as summarised across coverage of the Q1 FY27 results)
+  verification: SECONDARY
+  accessed: '2026-10-28'
+  note: 'Q1 FY27 capex ~$28.5B (slides: ~$28B total, ~$18B net cash); FY2026 capex ~$55.7B; slides: https://s23.q4cdn.com/440135859/files/content_files/Q1-FY27-Oracle-Earnings-Slides.pdf'
+- id: orcl_q1fy27_slides
+  title: Oracle Q1 FY27 Earnings Slides
+  publisher: Oracle (investor relations)
+  url: https://s23.q4cdn.com/440135859/files/content_files/Q1-FY27-Oracle-Earnings-Slides.pdf
+  date: '2026-09-10'
+  quote: $23B Operating Cash Flow ... $28B Total Capital Expenditures ... - $5B Free Cash Flow ... $18B Net Cash Outlay ... $20B ATM Equity Issuance Completed in Q1 ... $664B RPO +$209B Y/Y and +$26B Q/Q
+    ... Majority of Q1 RPO growth via Pre-Pay or Bring-Your-Own-Hardware ... FY27 Guidance $90B+ Total Revenue (+34% y/y in constant currency), $8.10 Non-GAAP EPS
+  verification: PRIMARY
+  accessed: '2026-10-28'
+  note: Text extracted with pdftotext. The FY27 capex range ($90-95B, net cash <= $70B) is from call coverage (orcl_q1fy27_capex), not the slides.
 quantities:
   TCS.NS.exposure.revenue:
     label: Technology & Services vertical share of revenue (Q2 FY27)
@@ -497,6 +556,11 @@ context:
         commitments $36B; receivables $63.1B (DSO 60 days, extended terms with large investment-grade customers).
       src:
       - nvda_q2fy27_cfo_commitments
+    ORCL:
+    - text: 'Q1 FY27: operating cash flow $23B vs capex $28B -> free cash flow -$5B; $20B at-the-market equity issuance completed; RPO $664B (majority of Q1 RPO growth via pre-pay or bring-your-own-hardware);
+        FY27 revenue guide $90B+.'
+      src:
+      - orcl_q1fy27_slides
   power_contracts:
     CEG:
     - text: '20-year PPAs: Microsoft ~835 MW (Crane/TMI-1 restart, 2027-28 start); Meta ~1,121 MW (Clinton, from June 2027); CyrusOne Texas 380 MW (2026). Not disclosed as a share of revenue.'
@@ -517,3 +581,36 @@ context:
         ex-HVDC. No numeric share -> exposure stays USER_ASSUMPTION.'
       src:
       - powerindia_q1fy27_pr
+  capex_guidance_2026:
+    META:
+      text: FY2026 capex incl. principal payments on finance leases $130-145B (Q2-2026 release, 29-Jul-2026)
+      low: 130000000000.0
+      high: 145000000000.0
+      src:
+      - meta_q2_2026_pr
+    GOOGL:
+      text: FY2026 capex $195-205B, raised from $180-190B; further increase expected in 2027 (Q2-2026 call)
+      low: 195000000000.0
+      high: 205000000000.0
+      src:
+      - googl_q2_2026_spglobal
+    AMZN:
+      text: 2026 capex ~$220B, raised from ~$200B (Q2-2026 call, 30-Jul-2026)
+      low: 220000000000.0
+      high: 220000000000.0
+      src:
+      - amzn_q2_2026_spglobal
+    MSFT:
+      text: Higher capex in FY2027 (Jul-2026 to Jun-2027); Q1 FY27 capex incl. finance leases > $50B; calendar-2026 ~$175B after a lease-accounting change (~$190B before)
+      low: 175000000000.0
+      high: 190000000000.0
+      src:
+      - msft_fy27_capex_cfodive
+    ORCL:
+      text: FY2027 (Jun-2026 to May-2027) capex $90-95B, net cash capex <= $70B (Q1 FY27, 10-Sep-2026)
+      low: 90000000000.0
+      high: 95000000000.0
+      src:
+      - orcl_q1fy27_capex
+    note: Calendar-2026 guidance for the four US hyperscalers sums to roughly $720-760B (MSFT counted at $175-190B); Oracle reports on a May fiscal year. MSFT, GOOGL and AMZN Q3-2026 results (28-29 Oct
+      2026) were not yet available when this was compiled.

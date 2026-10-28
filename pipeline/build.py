@@ -6,6 +6,7 @@ behind a guard so the core bundle is always produced.
 from __future__ import annotations
 
 import math
+import os
 import time
 import traceback
 from datetime import datetime, timezone
@@ -20,7 +21,7 @@ from pipeline.align import align_series, close_timestamps
 from pipeline.config import ROOT, build_quantity, computed_quantity, load_universe
 from pipeline.export import sanitize, write_json
 from pipeline.fundamentals import compute_security_fundamentals, fnum, ret_since
-from pipeline.prices import get_history, log_returns
+from pipeline.prices import cache_path, get_history, log_returns
 from pipeline.validate import validate_bundle
 
 SCHEMA_VERSION = 1
@@ -47,8 +48,10 @@ def infer_market(ticker: str) -> str:
 class CoreContext:
     """Concrete BuildContext (pipeline/context.py)."""
 
-    def __init__(self, cfg: dict[str, Any], market_map: dict[str, str], now_utc: pd.Timestamp):
+    def __init__(self, cfg: dict[str, Any], market_map: dict[str, str], now_utc: pd.Timestamp, refresh: bool = False):
         self.cfg = cfg
+        self._refresh = refresh
+        self.refreshed: list[str] = []
         self._market_map = market_map
         self._now = now_utc
         self._prices: dict[str, pd.DataFrame | None] = {}
@@ -67,15 +70,30 @@ class CoreContext:
         return self._market_map.get(ticker) or infer_market(ticker)
 
     def prices(self, ticker: str) -> pd.DataFrame | None:
+        """Cached daily bars with any not-yet-final last session removed.
+
+        A last bar is final only if it was downloaded >= 20 min after that session's close. If the
+        cached copy was captured intraday and the session has since closed, it is re-downloaded
+        (online) or dropped (offline / still trading)."""
         if ticker not in self._prices:
-            df = get_history(ticker)
+            df = get_history(ticker, refresh=self._refresh)
             if df is not None and len(df) > 1:
                 mk = self.cfg["markets"].get(self.market_of(ticker))
                 if mk is not None:
-                    close_ts = close_timestamps([df.index[-1]], mk)[0]
-                    if self._now < close_ts + pd.Timedelta(minutes=20):
-                        df = df.iloc[:-1]
-                        self.dropped_partial.append(ticker)
+                    settle = close_timestamps([df.index[-1]], mk)[0] + pd.Timedelta(minutes=20)
+                    path = cache_path(ticker)
+                    fetched = pd.Timestamp(path.stat().st_mtime, unit="s", tz="UTC") if path.exists() else self._now
+                    if fetched < settle:
+                        if self._now >= settle and os.environ.get("ACM_OFFLINE", "0") != "1":
+                            fresh = get_history(ticker, refresh=True)
+                            if fresh is not None and len(fresh) > 1:
+                                df = fresh
+                                self.refreshed.append(ticker)
+                        settle2 = close_timestamps([df.index[-1]], mk)[0] + pd.Timedelta(minutes=20)
+                        fetched2 = pd.Timestamp(path.stat().st_mtime, unit="s", tz="UTC") if path.exists() else self._now
+                        if fetched2 < settle2:
+                            df = df.iloc[:-1]
+                            self.dropped_partial.append(ticker)
             self._prices[ticker] = df
         return self._prices[ticker]
 
@@ -183,12 +201,17 @@ def _worst_windows(r: pd.Series | None) -> dict[str, Any]:
 
 
 # ============================================================================ main build
-def build(skip_fund: bool = False, only_prices: bool = False, out: Path = OUT, log=print) -> dict[str, Any]:
+def build(skip_fund: bool = False, only_prices: bool = False, out: Path = OUT, log=print, refresh: bool = False) -> dict[str, Any]:
     t0 = time.time()
     now = pd.Timestamp(datetime.now(timezone.utc))
     cfg, cfg_log = load_universe()
     S = cfg["settings"]
-    warnings: list[str] = [f"config: {m}" for m in cfg_log if m.startswith("overlay") or "not found" in m]
+    n_src_ov = sum(1 for m in cfg_log if m.startswith("overlay: added source") or m.startswith("overlay: replaced source"))
+    warnings: list[str] = [f"research overlay (research/addenda.yaml): {m[len('overlay: '):]}" for m in cfg_log
+                           if m.startswith("overlay: quantity") or m.startswith("overlay: added exposure") or m.startswith("overlay: unknown")]
+    if n_src_ov:
+        warnings.append(f"research overlay (research/addenda.yaml): {n_src_ov} sources added/replaced")
+    warnings += [f"config: {m}" for m in cfg_log if "not found" in m]
     for m in cfg_log:
         log(f"[config] {m}")
 
@@ -208,7 +231,7 @@ def build(skip_fund: bool = False, only_prices: bool = False, out: Path = OUT, l
     adrs = list(cfg.get("benchmarks", {}).get("adrs", []))
     for a in adrs:
         market_map[a] = "US"
-    ctx = CoreContext(cfg, market_map, now)
+    ctx = CoreContext(cfg, market_map, now, refresh=refresh)
 
     requested = list(dict.fromkeys(list(market_map.keys())))
     ticker_log: list[dict[str, Any]] = []
@@ -225,6 +248,8 @@ def build(skip_fund: bool = False, only_prices: bool = False, out: Path = OUT, l
                                "note": f"{len(df)} daily bars {df.index[0].date()}..{df.index[-1].date()}"})
     if ctx.dropped_partial:
         warnings.append("dropped an in-progress (not yet closed) session for: " + ", ".join(sorted(set(ctx.dropped_partial))))
+    if ctx.refreshed:
+        log("[prices] re-downloaded (cached last bar was intraday): " + ", ".join(sorted(set(ctx.refreshed))))
     log(f"[prices] {len(requested)} tickers checked in {time.time()-t0:.1f}s")
 
     nifty_df = ctx.prices("^NSEI")
@@ -252,9 +277,6 @@ def build(skip_fund: bool = False, only_prices: bool = False, out: Path = OUT, l
         usd_per[ccy] = (1.0 / last) if spec.get("quote") == "per_usd" else last
     usd_inr = 1.0 / usd_per["INR"]
     ctx.usd_inr = usd_inr
-    for alias, base in (("GBp", None),):
-        pass
-
     # ---------------------------------------------------------------- fundamentals
     fund: dict[str, dict[str, Any]] = {}
     fund_tickers = [o["ticker"] for o in cfg["origins"]] + [t["ticker"] for t in cfg["india"]] + \
@@ -354,6 +376,31 @@ def build(skip_fund: bool = False, only_prices: bool = False, out: Path = OUT, l
         extra[t] = fb or {}
     ctx.securities = securities
 
+    # research-overlay context (optional): sourced text notes attached to the relevant securities
+    rc = cfg.get("research_context") or {}
+    src_ver = {s_["id"]: s_.get("verification", "SECONDARY") for s_ in cfg.get("sources", [])}
+
+    def _st(ids: list[str]) -> str:
+        vs = [src_ver.get(i) for i in ids]
+        if not ids or any(v is None for v in vs):
+            return "UNVERIFIED"
+        return "UNVERIFIED" if any(v == "UNVERIFIED" for v in vs) else "SOURCED"
+
+    def _note(t: str, text: str, ids: list[str]) -> None:
+        if t in securities:
+            securities[t]["notes"].append(f"{text} [{_st(ids)}: {', '.join(ids)}]")
+
+    for t, d in (rc.get("na_revenue_share") or {}).items():
+        if isinstance(d, dict) and d.get("value") is not None:
+            _note(t, f"{d.get('basis', 'North America share of revenue')}: {float(d['value']) * 100:.1f}%", list(d.get("src", [])))
+    for key in ("credit_links", "power_contracts", "tier_a_notes"):
+        for t, items in (rc.get(key) or {}).items():
+            for it in items or []:
+                _note(t, str(it.get("text", "")), list(it.get("src", [])))
+    for t, d in (rc.get("capex_guidance_2026") or {}).items():
+        if isinstance(d, dict) and d.get("text"):
+            _note(t, "Capex guidance: " + str(d["text"]), list(d.get("src", [])))
+
     # ---------------------------------------------------------------- origins & basket weights
     mc = {o["ticker"]: securities.get(o["ticker"], {}).get("mcap_usd") for o in cfg["origins"]}
     chips = [o["ticker"] for o in cfg["origins"] if o["group"] == "chips"]
@@ -396,6 +443,11 @@ def build(skip_fund: bool = False, only_prices: bool = False, out: Path = OUT, l
             "concentration": [{"text": c_["text"], "status": c_.get("status", "SOURCED"), "src": list(c_.get("src", []))}
                               for c_ in (o.get("concentration") or [])],
         })
+        cited = {sid for c_ in origins_out[-1]["concentration"] for sid in c_["src"]}
+        for c_ in ((cfg.get("research_context") or {}).get("concentration") or {}).get(t, []) or []:
+            ids = list(c_.get("src", []))
+            if ids and not (set(ids) & cited):
+                origins_out[-1]["concentration"].append({"text": str(c_["text"]), "status": _st(ids), "src": ids})
     ctx.origins = [{"ticker": o["ticker"], "name": o["name"], "group": o["group"], "market": "US"} for o in cfg["origins"]]
     ctx.targets = [{"ticker": t["ticker"], "display": t.get("display", t["ticker"]), "name": t["name"], "tier": t["tier"],
                     "parent": t.get("parent"), "market": ctx.market_of(t["ticker"])} for t in cfg["india"]]

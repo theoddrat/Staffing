@@ -95,11 +95,12 @@ export function paramsKey(p: ScenarioParams): string {
   return `${p.preset}|${p.horizon}|${sortObj(p.values)}|${sortObj(p.overrides)}|${p.premiumFloorZero ? 1 : 0}`;
 }
 
-function freshParams(bundle: DataBundle, preset: PresetId, horizon: Horizon, keep?: ScenarioParams): ScenarioParams {
+function freshParams(bundle: DataBundle, preset: PresetId, horizon: Horizon | undefined, keep?: ScenarioParams): ScenarioParams {
+  // horizon undefined -> the preset's own default (fullpop 12M, replay = window length, others 1M)
   const p = defaultParams(bundle, preset, horizon);
   return {
     ...p,
-    horizon: p.horizon ?? horizon,
+    horizon: p.horizon ?? horizon ?? '1M',
     overrides: keep ? { ...keep.overrides } : { ...(p.overrides ?? {}) },
     premiumFloorZero: keep ? keep.premiumFloorZero : p.premiumFloorZero ?? true,
   };
@@ -215,7 +216,7 @@ export function useTerminal(bundle: DataBundle): { state: ExtState; actions: App
       openHelp: (open) => dispatch({ type: 'help', open }),
       setPreset: (id: PresetId, horizon?: Horizon) => {
         const cur = paramsRef.current;
-        setParams(freshParams(bundle, id, horizon ?? cur.horizon, cur));
+        setParams(freshParams(bundle, id, horizon, cur));
       },
       setHorizon: (h: Horizon) => setParams(withHorizon(bundle, paramsRef.current, h)),
       setValue: (k: string, v: ParamValue) => {
@@ -283,7 +284,7 @@ export function useTerminal(bundle: DataBundle): { state: ExtState; actions: App
             }
             const cur = paramsRef.current;
             const win = typeof c.values.window === 'string' ? c.values.window : null;
-            const h = c.horizon ?? (c.preset === 'replay' && win ? horizonForWindow(bundle, win) : cur.horizon);
+            const h = c.horizon ?? (c.preset === 'replay' && win ? horizonForWindow(bundle, win) : undefined);
             const p = freshParams(bundle, c.preset, h, cur);
             setParams({ ...p, values: { ...p.values, ...c.values } });
             dispatch({ type: 'navigate', panel: ['F1', 'F2', 'F3'].includes(sRef.current.panel) ? sRef.current.panel : 'F2' });

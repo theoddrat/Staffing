@@ -30,8 +30,7 @@ export default function OpLeverage({ bundle }: { bundle: DataBundle }) {
               <th className="wrap">METHOD / NOTE</th>
               <th className="num">EBIT MARGIN</th>
               <th className="num">GROSS MARGIN</th>
-              <th className="num">REVENUE TTM</th>
-              <th>CCY</th>
+              <th className="num" title="as reported to Yahoo Finance; the reporting currency can differ from the listing currency (e.g. INFY reports in USD, TSM in TWD)">REVENUE TTM*</th>
             </tr>
           </thead>
           <tbody>
@@ -49,7 +48,6 @@ export default function OpLeverage({ bundle }: { bundle: DataBundle }) {
                   <td className="num">{pct(s?.ebit_margin, 1)}</td>
                   <td className="num">{pct(s?.gross_margin, 1)}</td>
                   <td className="num">{compact(s?.revenue_ttm, 1)}</td>
-                  <td className="muted">{s?.currency ?? ''}</td>
                 </tr>
               );
             })}
@@ -59,7 +57,8 @@ export default function OpLeverage({ bundle }: { bundle: DataBundle }) {
       <Note>
         OL = (ΔEBIT/ΔRevenue) ÷ (EBIT/Revenue) over the last two fiscal years, clamped to [1, 4]; when revenue barely moved or EBIT ≤ 0 the
         fallback is gross margin ÷ operating margin (fixed-opex approximation); otherwise a labelled USER ASSUMPTION of 1.5. Margins are trailing
-        four quarters where available. All from company statements via Yahoo Finance (COMPUTED).
+        four quarters where available. All from company statements via Yahoo Finance (COMPUTED). *Revenue is in the company's reporting
+        currency (e.g. Infosys reports in USD, TSMC in TWD, ASML in EUR) — OL and margins are currency-free.
       </Note>
     </Section>
   );

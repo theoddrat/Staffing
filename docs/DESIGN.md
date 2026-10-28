@@ -191,6 +191,10 @@ Combination across shock components: `(1-e) = Π(1-e_k)`, `(1-d) = Π(1-d_k)`.
    `target_pe` (`mode='multiple'`): `PE_target = PE_now + λ(PE_pre − PE_now)` or `target_pe`;
    `d_basket = 1 − PE_target/PE_now`; apply `d_j = d_basket` to all origins (`per_name=false`) or
    per name with own medians (fallback to basket). `floor_zero` (default true) clamps d at ≥ 0.
+   `mode='calibrated'` (the P/E-vs-drawdown scatter calibrates this shock): `d_basket = λ · max(0, −(pe_fit.intercept + pe_fit.slope · PE_now))`, i.e. λ = share of the
+   historically implied peak-to-trough drawdown realised as pure de-rating. Data finding (Oct-2026):
+   basket trailing P/E (~25x) is BELOW its pre-ChatGPT median (~32x), so `median` mode implies no
+   compression — the engine must emit a warning saying so; Full bubble pop defaults to `calibrated`.
 5. **credit** (LOW CONFIDENCE) — stressed origins (`credit.stressed=true`, e.g. CRWV, ORCL):
    `e_j = min(Δs·duration·max(net_debt,0)/mcap, 0.9)` (Δs = `ds_bps`/1e4), `d_j = d_credit`.
    Suppliers: `revenue_hit_j = k·ψ_supplier·neocloud_share_j`, `e_j = min(revenue_hit_j·OL_j,0.95)`.

@@ -23,6 +23,19 @@ export default function TransmissionPanel({ state, actions }: PanelProps) {
   const prep = useMemo(() => prepareGraph(g, topN, (id) => tierById.get(id) ?? null), [g, topN, tierById]);
   const labelById = useMemo(() => new Map(prep.nodes.map((n) => [n.id, n.label])), [prep]);
   const nTargets = prep.nodes.filter((n) => n.kind === 'target').length;
+  const nSources = prep.nodes.filter((n) => n.kind === 'origin' || n.kind === 'macro').length;
+  // Hide labels of slivers (< 0.6% of the largest node) so tiny nodes don't overprint each other.
+  const tiny = useMemo(() => {
+    const inV = new Map<string, number>();
+    const outV = new Map<string, number>();
+    for (const l of prep.links) {
+      outV.set(l.source, (outV.get(l.source) ?? 0) + l.value);
+      inV.set(l.target, (inV.get(l.target) ?? 0) + l.value);
+    }
+    const val = (id: string) => Math.max(inV.get(id) ?? 0, outV.get(id) ?? 0);
+    const max = Math.max(1e-9, ...prep.nodes.map((n) => val(n.id)));
+    return new Set(prep.nodes.filter((n) => n.kind !== 'channel' && val(n.id) < max * 0.006).map((n) => n.id));
+  }, [prep]);
 
   const option = useMemo(
     () => ({
@@ -53,7 +66,7 @@ export default function TransmissionPanel({ state, actions }: PanelProps) {
             color: CHART_COLORS.white,
             fontFamily: "'JetBrains Mono', monospace",
             fontSize: 10,
-            formatter: (p: any) => labelById.get(p.name) ?? p.name,
+            formatter: (p: any) => (tiny.has(p.name) ? '' : labelById.get(p.name) ?? p.name),
           },
           data: prep.nodes.map((n) => ({ name: n.id, itemStyle: { color: n.color, borderColor: n.color } })),
           links: prep.links.map((l) => ({
@@ -66,7 +79,7 @@ export default function TransmissionPanel({ state, actions }: PanelProps) {
         },
       ],
     }),
-    [prep, labelById],
+    [prep, labelById, tiny],
   );
 
   const totalLoss = prep.channelTotals.reduce((a, c) => a + c.loss, 0);
@@ -96,7 +109,7 @@ export default function TransmissionPanel({ state, actions }: PanelProps) {
             {prep.links.length ? (
               <Chart
                 option={option}
-                height={Math.max(460, nTargets * 22 + 60)}
+                height={Math.max(480, Math.max(nTargets, nSources) * 26 + 70)}
                 onClick={(p: any) => {
                   if (p?.dataType === 'node') {
                     const id = String(p.name);

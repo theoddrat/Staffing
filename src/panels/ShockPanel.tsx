@@ -29,7 +29,15 @@ function FactorBox({ state }: PanelProps) {
     },
     { k: 'US TECH REVENUE SHOCK R_tech', v: pct(f.tech_revenue_shock), cls: f.tech_revenue_shock > 0 ? 'down' : 'flat' },
     { k: 'HYPERSCALER CAPEX CUT ($)', v: isNum(f.capex_cut_usd) ? usd(f.capex_cut_usd) : '—', cls: 'white' },
-    { k: 'CAPEX ABSORBED BY MODELLED SUPPLIERS', v: isNum(f.capex_absorbed_share) ? pct(f.capex_absorbed_share) : '—', cls: 'white' },
+    {
+      k: 'CAPEX ABSORBED BY MODELLED SUPPLIERS',
+      v: isNum(f.capex_absorbed_share) ? pct(f.capex_absorbed_share) : '—',
+      cls: isNum(f.capex_absorbed_share) && f.capex_absorbed_share > 1 ? 'down' : 'white',
+      note:
+        isNum(f.capex_absorbed_share) && f.capex_absorbed_share > 1
+          ? '> 100%: modelled supplier revenue loss exceeds the capex cut — review exposures (F5)'
+          : 'Σ supplier revenue lost ÷ capex cut (sanity check)',
+    },
   ];
   return (
     <div className="panel">
@@ -48,6 +56,55 @@ function FactorBox({ state }: PanelProps) {
               </td>
             </tr>
           ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function CapexBox({ state }: PanelProps) {
+  const hs = state.bundle.origins.filter((o) => isNum(o.capex_ttm_usd));
+  if (!hs.length) return null;
+  const total = hs.reduce((a, o) => a + (o.capex_ttm_usd as number), 0);
+  const c = state.params.values.c;
+  const cut = typeof c === 'number' && Number.isFinite(c) ? c : null;
+  return (
+    <div className="panel">
+      <div className="panel-header">
+        HYPERSCALER CAPEX — TTM FROM FILINGS <StatusBadge status="COMPUTED" title="Sum of the last 4 quarterly capital expenditures (cash-flow statements via Yahoo Finance)" />
+        <span className="spacer" />
+        {cut != null && <span className="down">CUT {pct(cut, 0)} = {usd(cut * total)}</span>}
+      </div>
+      <table className="tbl">
+        <thead>
+          <tr>
+            <th>COMPANY</th>
+            <th className="num">CAPEX TTM</th>
+            <th className="num">SHARE</th>
+            <th>LAST 4 QUARTERS</th>
+          </tr>
+        </thead>
+        <tbody>
+          {hs.map((o) => (
+            <tr key={o.ticker}>
+              <td className="lbl">{o.ticker}</td>
+              <td className="num white">{usd(o.capex_ttm_usd)}</td>
+              <td className="num">{pct((o.capex_ttm_usd as number) / total, 0)}</td>
+              <td className="muted">
+                {[...(o.capex_quarters ?? [])]
+                  .sort((x, y) => x.period.localeCompare(y.period))
+                  .slice(-4)
+                  .map((q) => `${q.period} ${usd(q.value_usd)}`)
+                  .join(' · ')}
+              </td>
+            </tr>
+          ))}
+          <tr>
+            <td className="lbl">TOTAL</td>
+            <td className="num white">{usd(total)}</td>
+            <td className="num">100%</td>
+            <td className="muted">Reported total capex; the AI share is not separately disclosed.</td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -80,7 +137,7 @@ function OriginTable({ state, actions }: PanelProps) {
     return r;
   }, [state.result.origins, sort]);
   const th = (k: SortKey, label: string, title?: string) => (
-    <th className={`sortable ${sort === k ? 'sorted' : ''}`} onClick={() => setSort(k)} title={title}>
+    <th className={`sortable ${k === 'ticker' ? '' : 'num'} ${sort === k ? 'sorted' : ''}`} onClick={() => setSort(k)} title={title}>
       {label}
     </th>
   );
@@ -235,16 +292,22 @@ export default function ShockPanel(props: PanelProps) {
             )}
             {result.warnings.length > 0 && (
               <ul className="warn-list">
-                {result.warnings.map((w, i) => (
-                  <li key={i} className="down">
-                    ⚠ {w}
-                  </li>
-                ))}
+                {result.warnings.map((w, i) => {
+                  const info = /^info\b/i.test(w.trim());
+                  return (
+                    <li key={i} className={info ? 'cyan' : 'down'}>
+                      {info ? 'ℹ' : '⚠'} {w}
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>
         </div>
-        <FactorBox {...props} />
+        <div>
+          <FactorBox {...props} />
+          <CapexBox {...props} />
+        </div>
       </div>
       <OriginTable {...props} />
     </div>

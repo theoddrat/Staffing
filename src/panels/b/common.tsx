@@ -130,10 +130,13 @@ export function CoefCell({ c, digits = 2 }: { c: { b: number; t: number } | null
 
 /** Signed simple-return cell with up/down colouring. */
 export function MoveCell({ v, digits = 1, title }: { v: number | null | undefined; digits?: number; title?: string }) {
-  const cls = !isNum(v) ? 'muted' : v > 0 ? 'up' : v < 0 ? 'down' : 'flat';
+  // Round first so a tiny negative never renders as "-0.0%".
+  const r = isNum(v) ? Math.round(v * 10 ** (digits + 2)) / 10 ** (digits + 2) : v;
+  const shown = isNum(r) && r === 0 ? 0 : r;
+  const cls = !isNum(shown) ? 'muted' : shown > 0 ? 'up' : shown < 0 ? 'down' : 'flat';
   return (
     <td className={`num ${cls}`} title={title}>
-      {spct(v, digits)}
+      {spct(shown, digits)}
     </td>
   );
 }

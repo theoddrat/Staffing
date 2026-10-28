@@ -84,12 +84,22 @@ export function factors(
       capexCutUsd = cCapex * prep.capexTotalUsd;
       let lost = 0;
       let known = false;
+      const implausible: string[] = [];
       prep.origins.forEach((po, j) => {
         if (o[j].rhCapex > 0 && po.revUsd !== null) {
-          lost += o[j].rhCapex * po.revUsd;
+          const l = o[j].rhCapex * po.revUsd;
+          // a single supplier cannot lose more revenue than the whole capex cut: flag as a units /
+          // statement-currency problem in revenue_ttm and keep it out of the sanity ratio
+          if (capexCutUsd !== null && capexCutUsd > 0 && l > capexCutUsd) {
+            implausible.push(po.ticker);
+            return;
+          }
+          lost += l;
           known = true;
         }
       });
+      if (implausible.length)
+        warn(`capex sanity: revenue_ttm of ${implausible.join(', ')} implies a revenue loss larger than the whole capex cut (statement-currency or units mismatch?); excluded from capex_absorbed_share`);
       capexAbsorbed = capexCutUsd > 0 && known ? lost / capexCutUsd : null;
     } else warn('hyperscaler capex (capex_ttm_usd) missing: capex_cut_usd unavailable');
   }

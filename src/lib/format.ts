@@ -40,13 +40,15 @@ export function compact(x: number | null | undefined, digits = 1): string {
 }
 
 export function usd(x: number | null | undefined, digits = 1): string {
-  return isNum(x) ? `$${compact(x, digits)}` : DASH;
+  if (!isNum(x)) return DASH;
+  return `${x < 0 ? '-' : ''}$${compact(Math.abs(x), digits)}`;
 }
 
 /** INR crore with Indian grouping: 123456.7 -> "₹1,23,457 cr" */
 export function crore(x: number | null | undefined, digits = 0): string {
   if (!isNum(x)) return DASH;
-  return `₹${x.toLocaleString('en-IN', { maximumFractionDigits: digits, minimumFractionDigits: digits })} cr`;
+  const body = Math.abs(x).toLocaleString('en-IN', { maximumFractionDigits: digits, minimumFractionDigits: digits });
+  return `${x < 0 ? '-' : ''}₹${body} cr`;
 }
 
 export function times(x: number | null | undefined, digits = 1): string {

@@ -3,10 +3,11 @@ import { memo, useMemo } from 'react';
 import type { DataBundle } from '../types/data';
 import { isNum, signClass, spct } from '../lib/format';
 
-function fmtPrice(x: number | null, ccy: string): string {
+function fmtPrice(x: number | null, ccy: string, ticker: string): string {
   if (!isNum(x)) return '—';
   const digits = x >= 1000 ? 0 : x >= 10 ? 2 : 3;
-  const sym = ccy === 'USD' ? '$' : ccy === 'INR' ? '₹' : ccy === 'EUR' ? '€' : ccy === 'JPY' ? '¥' : ccy === 'CHF' ? 'CHF ' : '';
+  const level = ticker.startsWith('^') || ticker.includes('=X'); // index levels / FX rates carry no currency sign
+  const sym = level ? '' : ccy === 'USD' ? '$' : ccy === 'INR' ? '₹' : ccy === 'EUR' ? '€' : ccy === 'JPY' ? '¥' : ccy === 'CHF' ? 'CHF ' : '';
   return `${sym}${x.toLocaleString('en-US', { minimumFractionDigits: digits, maximumFractionDigits: digits })}`;
 }
 
@@ -19,7 +20,7 @@ function TickerTapeInner({ bundle, onPick }: { bundle: DataBundle; onPick: (tick
       .map((s) => ({
         ticker: s.ticker,
         label: disp.get(s.ticker) ?? s.ticker,
-        px: fmtPrice(s.last_close, s.currency),
+        px: fmtPrice(s.last_close, s.currency, s.ticker),
         chg: s.chg_1d,
       }));
   }, [bundle]);

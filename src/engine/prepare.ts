@@ -125,7 +125,9 @@ export function prepare(bundle: DataBundle): Prep {
       eps0,
       pePre: posOrNull(sec?.pe_pre_chatgpt_median),
       mcapUsd,
-      revUsd: toUsd(bundle, sec?.revenue_ttm ?? null, sec?.currency),
+      // revenue_ttm is converted from the statement currency when the bundle provides it
+      // (optional `financial_currency`), else from the listing currency
+      revUsd: toUsd(bundle, sec?.revenue_ttm ?? null, (sec as { financial_currency?: string } | undefined)?.financial_currency ?? sec?.currency),
       capexUsd: posOrNull(info.capex_ttm_usd),
       stressed: !!info.credit?.stressed,
       netDebtUsd: isFiniteNum(info.credit?.net_debt_usd) ? (info.credit.net_debt_usd as number) : null,

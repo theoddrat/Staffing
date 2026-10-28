@@ -33,9 +33,11 @@ function NumEditor({
   onReset: () => void;
 }) {
   const scale = unit === 'frac' ? 100 : 1;
-  const [text, setText] = useState(isNum(value) ? String(+(value * scale).toFixed(4)) : '');
+  const show = (v: number | null) => (isNum(v) ? String(+(v * scale).toFixed(unit === 'frac' ? 2 : 4)) : '');
+  const [text, setText] = useState(show(value));
   useEffect(() => {
-    setText(isNum(value) ? String(+(value * scale).toFixed(4)) : '');
+    setText(show(value));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value, scale]);
   const commitText = () => {
     const v = parseFloat(text);

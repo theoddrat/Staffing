@@ -220,8 +220,7 @@ origins:
       parts:
         - {label: "Neocloud / AI-cloud customer share", value: 0.3, status: USER_ASSUMPTION}
     concentration:
-      - {text: "\"We had one customer account for 10% or more of our net sales in fiscal year 2026\" (FY2026 10-K).", status: SOURCED, src: [smci_10k_fy26]}
-      - {text: "One large data center and cloud service provider customer accounted for 28% of fiscal 2026 revenue (third-party analysis of the 10-K).", status: UNVERIFIED, src: [smci_secapi_fy26]}
+      - {text: "Largest customer (\"Customer One\") = 28.1% of FY2026 net sales (FY2025: 20.9%; FY2024: 20.0%) per the FY2026 10-K XBRL segment note; \"We had one customer account for 10% or more of our net sales in fiscal year 2026\" (10-K text); United States 70.9% of net sales.", status: SOURCED, src: [smci_10k_fy26_r53, smci_10k_fy26]}
 
   # ---------------- Hyperscalers / big AI spenders (capex spenders, not suppliers) ----------------
   - {ticker: MSFT, name: Microsoft, group: hyperscalers, market: US, capex_spender: true}
@@ -1128,6 +1127,14 @@ sources:
     date: "2026-08"
     quote: "We had one customer account for 10% or more of our net sales in fiscal year 2026"
     verification: PRIMARY
+  - id: smci_10k_fy26_r53
+    title: "Super Micro Computer, Inc. Form 10-K FY2026 (period ended 30-Jun-2026), XBRL R53: Segment Information - Narrative (Details)"
+    publisher: SEC EDGAR
+    url: https://www.sec.gov/Archives/edgar/data/1375365/000137536526000022/R53.htm
+    date: "2026-08-31"
+    quote: "Customer One ... 28.10% [FY2026] ... 20.90% [FY2025] ... 20.00% [FY2024]; United States geographic concentration (% of net sales) 70.90%; Net sales 39,063,072 ($ thousands)"
+    verification: PRIMARY
+    note: "duplicated from research/addenda.yaml so universe.yaml resolves without the overlay"
   - id: smci_secapi_fy26
     title: "Financial analysis of Super Micro Computer fiscal 2026"
     publisher: sec-api.io

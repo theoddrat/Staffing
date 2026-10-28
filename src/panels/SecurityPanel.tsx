@@ -66,7 +66,7 @@ function ValuationTable({ sec, state }: { sec: Security } & Pick<PanelProps, 'st
         </KV>
         <KV k="RETURN SINCE 30-NOV-2022">
           <span className={signClass(sec.ret_since_chatgpt)}>{spct(sec.ret_since_chatgpt, 0)}</span>{' '}
-          <span className="muted">vs {sec.bench ?? 'bench'}:</span>{' '}
+          <span className="muted">· excess vs {sec.bench ?? 'benchmark'}:</span>{' '}
           <span className={signClass(sec.ret_since_chatgpt_vs_bench)}>{spct(sec.ret_since_chatgpt_vs_bench, 0)}</span>
         </KV>
         <KV k="OPERATING LEVERAGE">
@@ -110,6 +110,12 @@ function WaterfallChart({ wf }: { wf: Waterfall | null }) {
     }
     const base = bars.map((b) => (b.total ? 0 : Math.min(b.from, b.to)));
     const val = bars.map((b) => Math.abs(b.to - b.from));
+    // Zoom the value axis onto the price range so small steps stay visible (totals are clipped at the floor).
+    const lo = Math.min(...p);
+    const hi = Math.max(...p);
+    const floor = Math.max(0, lo - Math.max((hi - lo) * 1.5, lo * 0.02));
+    const nice = floor > 0 ? Math.pow(10, Math.floor(Math.log10(floor))) / 10 : 1;
+    const yMin = floor > 0 ? Math.floor(floor / nice) * nice : 0;
     return {
       grid: { left: 60, right: 16, top: 22, bottom: 52 },
       tooltip: {
@@ -126,7 +132,7 @@ function WaterfallChart({ wf }: { wf: Waterfall | null }) {
         ...axisStyle(),
         axisLabel: { color: CHART_COLORS.amber, fontSize: 9, interval: 0, width: 90, overflow: 'break' },
       },
-      yAxis: { type: 'value', ...axisStyle() },
+      yAxis: { type: 'value', min: yMin, ...axisStyle() },
       series: [
         { type: 'bar', stack: 'w', data: base, itemStyle: { color: 'transparent' }, emphasis: { disabled: true }, tooltip: { show: false } },
         {
@@ -168,7 +174,15 @@ function OriginBlock({ info, res, state }: { info: OriginInfo; res: OriginResult
             {isNum(info.capex_ttm_usd) && (
               <KV k="CAPEX TTM (FILINGS)">
                 <span className="white">{usd(info.capex_ttm_usd)}</span> <StatusBadge status="COMPUTED" />
-                <span className="muted"> {(info.capex_quarters ?? []).map((q) => `${q.period}: ${usd(q.value_usd)}`).join(' · ')}</span>
+                <span className="muted">
+                  {' '}
+                  last 4 quarters:{' '}
+                  {[...(info.capex_quarters ?? [])]
+                    .sort((x, y) => x.period.localeCompare(y.period))
+                    .slice(-4)
+                    .map((q) => `${q.period}: ${usd(q.value_usd)}`)
+                    .join(' · ')}
+                </span>
               </KV>
             )}
             <KV k="CREDIT">
@@ -289,14 +303,14 @@ function RollingChart({ t }: { t: IndiaTarget }) {
       series[0].markLine = {
         symbol: 'none',
         lineStyle: { color: CHART_COLORS.red, type: 'dashed' },
-        label: { color: CHART_COLORS.red, formatter: 'ChatGPT 30-Nov-2022', fontSize: 9 },
+        label: { color: CHART_COLORS.red, formatter: 'ChatGPT 30-Nov-2022', fontSize: 9, position: 'insideStartTop' },
         data: [{ xAxis: mark }],
       };
     }
     return {
-      grid: { left: 44, right: 14, top: 26, bottom: 30 },
+      grid: { left: 44, right: 14, top: 30, bottom: 30 },
       tooltip: { trigger: 'axis', valueFormatter: (v: number) => (isNum(v) ? v.toFixed(3) : '—') },
-      legend: { top: 0, textStyle: { color: CHART_COLORS.amber, fontSize: 10 } },
+      legend: { top: 0, left: 44, textStyle: { color: CHART_COLORS.amber, fontSize: 10 } },
       xAxis: { type: 'category', data: r.dates, ...axisStyle() },
       yAxis: { type: 'value', ...axisStyle() },
       series,
@@ -327,7 +341,7 @@ function PriceChart({ sec }: { sec: Security }) {
             ? {
                 symbol: 'none',
                 lineStyle: { color: CHART_COLORS.red, type: 'dashed' },
-                label: { color: CHART_COLORS.red, formatter: 'ChatGPT 30-Nov-2022', fontSize: 9 },
+                label: { color: CHART_COLORS.red, formatter: 'ChatGPT 30-Nov-2022', fontSize: 9, position: 'insideStartTop' },
                 data: [{ xAxis: mark }],
               }
             : undefined,
@@ -538,6 +552,12 @@ export default function SecurityPanel({ state, actions }: PanelProps) {
         <div className="panel">
           <div className="panel-header">VALUATION & PROVENANCE</div>
           <ValuationTable sec={sec} state={state} />
+          {!india && (
+            <>
+              <div className="panel-header sub-header">PRICE SINCE 2021</div>
+              <PriceChart sec={sec} />
+            </>
+          )}
           {childOf.length > 0 && (
             <div className="panel-body">
               INDIAN ARMS:{' '}
@@ -557,8 +577,19 @@ export default function SecurityPanel({ state, actions }: PanelProps) {
           <IndiaLinks t={india} state={state} />
         ) : (
           <div className="panel">
-            <div className="panel-header">PRICE SINCE 2021</div>
-            <PriceChart sec={sec} />
+            <div className="panel-header">ROLE IN THE MODEL</div>
+            <div className="panel-body white">
+              {sec.role === 'parent'
+                ? 'Parent of an Indian Tier-A arm: its scenario move comes from Dimson betas on SOX/NDX (F5 MODEL → factor maps).'
+                : sec.role === 'factor'
+                  ? 'US / FX factor used in the Layer-2 regressions (aligned to the NSE close: US t−1).'
+                  : sec.role === 'benchmark'
+                    ? 'Indian benchmark index (Nifty regression / event-study market index).'
+                    : sec.role === 'adr'
+                      ? 'US ADR cross-check for an Indian IT exporter.'
+                      : 'Reference series (history / FX).'}
+              {(sec.notes ?? []).length > 0 && <p className="muted">{sec.notes.join(' · ')}</p>}
+            </div>
           </div>
         )}
       </div>

@@ -212,8 +212,9 @@ export function PeDrawdownScatter({ bundle }: { bundle: DataBundle }) {
               lineStyle: { color: CHART_COLORS.red, width: 2 },
               label: {
                 color: CHART_COLORS.red,
-                formatter: `AI basket P/E now ${times(basket!.now, 1)}${isNum(basket?.implied_drawdown) ? ` → fit-implied ${pct(basket!.implied_drawdown, 0)}` : ''}`,
-                position: 'insideEndTop',
+                formatter: `AI basket now ${times(basket!.now, 1)}${isNum(basket?.implied_drawdown) ? `\nfit-implied ${pct(basket!.implied_drawdown, 0)}` : ''}`,
+                position: 'end',
+                fontSize: 10,
               },
               data: [{ xAxis: basket!.now }],
             }
@@ -221,7 +222,7 @@ export function PeDrawdownScatter({ bundle }: { bundle: DataBundle }) {
       });
     }
     return {
-      grid: { left: 60, right: 24, top: 30, bottom: 46 },
+      grid: { left: 60, right: 24, top: 52, bottom: 46 },
       legend: { top: 0 },
       tooltip: {
         trigger: 'item',
