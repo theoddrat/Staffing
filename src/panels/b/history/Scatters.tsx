@@ -13,7 +13,7 @@ export function UsIndiaScatter({ bundle }: { bundle: DataBundle }) {
   const pts = bundle.history?.us_vs_india ?? [];
   const [tiers, setTiers] = useState<Set<Tier>>(new Set(TIERS));
   const [namedOnly, setNamedOnly] = useState(false);
-  const names = useMemo(() => new Map(bundle.india.map((t) => [t.ticker, t.display || t.ticker])), [bundle.india]);
+  const names = useMemo(() => new Map((bundle.india ?? []).map((t) => [t.ticker, t.display || t.ticker])), [bundle.india]);
 
   const { option, fits } = useMemo(() => {
     const visible = pts.filter((p) => tiers.has(p.tier) && (!namedOnly || p.event));
@@ -176,7 +176,7 @@ export function PeDrawdownScatter({ bundle }: { bundle: DataBundle }) {
           symbol: p.pe_status === 'COMPUTED' ? 'rect' : 'circle',
           pt: p,
         })),
-    }));
+    })).filter((s) => s.data.length > 0);
     if (fit && isNum(fit.slope) && isNum(fit.intercept)) {
       const lo = Math.max(0, xmin * 0.9);
       const hi = xmax * 1.05;

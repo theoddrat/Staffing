@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import type { PanelProps } from './types';
 import type { Horizon, OriginResult } from '../types/engine';
 import ParamControl from '../components/ParamControl';
+import { paramSpecs } from '../engine';
 import { StatusBadge } from '../components/StatusBadge';
 import { crore, isNum, num, pct, signClass, spct, usd } from '../lib/format';
 import type { ExtState } from '../state/store';
@@ -157,6 +158,7 @@ export default function ShockPanel(props: PanelProps) {
   const { state, actions } = props;
   const { bundle, params, result } = state;
   const preset = result.preset;
+  const specs = useMemo(() => paramSpecs(bundle, params.preset, params.horizon), [bundle, params.preset, params.horizon]);
   return (
     <div className="shock-panel">
       <div className="panel">
@@ -195,7 +197,7 @@ export default function ShockPanel(props: PanelProps) {
             ))}
           </div>
           <div className="panel-body params">
-            {preset.params.map((spec) => (
+            {specs.map((spec) => (
               <ParamControl
                 key={spec.key}
                 spec={spec}

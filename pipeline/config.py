@@ -42,7 +42,11 @@ def load_universe(path: Path | str = UNIVERSE, overlay: Path | str | None = OVER
             continue
         sub = _read_yaml(inc_path)
         for key, val in sub.items():
-            if key == "sources":
+            if key == "history" and isinstance(val, dict):
+                # history.yaml keeps everything under one `history:` key (its own sources included);
+                # it is consumed by pipeline/history.py via cfg["history"].
+                cfg["history"] = {**(cfg.get("history") or {}), **val}
+            elif key == "sources":
                 cfg.setdefault("sources", []).extend(val or [])
             elif key in cfg and isinstance(cfg[key], dict) and isinstance(val, dict):
                 cfg[key] = {**cfg[key], **val}
@@ -50,11 +54,6 @@ def load_universe(path: Path | str = UNIVERSE, overlay: Path | str | None = OVER
                 cfg[key] = cfg[key] + val
             else:
                 cfg[key] = val
-        # The history file's content is also exposed under cfg["history"] for the history module.
-        cfg.setdefault("history", {})
-        for key, val in sub.items():
-            if key != "sources":
-                cfg["history"][key] = val
         log.append(f"included {inc}")
     cfg.setdefault("history", {})
     if overlay is not None and Path(overlay).exists():

@@ -1,5 +1,5 @@
 // F5 / ASSUMPTIONS — the assumption register: every USER ASSUMPTION / UNVERIFIED input, editable live.
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type ReactElement } from 'react';
 import type { DataBundle, ParamSpec, Preset, Quantity } from '../../../types/data';
 import type { Horizon, ParamValue, ScenarioParams } from '../../../types/engine';
 import type { AppActions } from '../../types';
@@ -109,11 +109,7 @@ function QuantityRow({ q, owner, group, bundle, params, actions }: { q: Quantity
       </td>
       <td className="txt muted">{q.note ?? ''}</td>
       <td>
-        {q.editable !== false ? (
-          <NumEditor value={eff} unit={q.unit} bounds={bounds} overridden={overridden} onCommit={(v) => actions.setOverride(q.id, v)} onReset={() => actions.setOverride(q.id, null)} />
-        ) : (
-          <span className="muted">fixed</span>
-        )}
+        <NumEditor value={eff} unit={q.unit} bounds={bounds} overridden={overridden} onCommit={(v) => actions.setOverride(q.id, v)} onReset={() => actions.setOverride(q.id, null)} />
       </td>
     </tr>
   );
@@ -123,7 +119,7 @@ function ParamRow({ spec, preset, bundle, params, actions }: { spec: ParamSpec; 
   const def = paramDefault(preset, spec, params.horizon);
   const cur = params.values?.[spec.key] ?? def;
   const overridden = cur !== def;
-  let editor: JSX.Element;
+  let editor: ReactElement;
   if (spec.kind === 'number') {
     const b = sliderBounds({ min: spec.min, max: spec.max, step: spec.step, unit: spec.unit ?? '', value: typeof def === 'number' ? def : null });
     editor = (

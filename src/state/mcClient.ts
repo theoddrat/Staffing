@@ -1,6 +1,8 @@
-// Monte Carlo client: runs the engine's MC in a Web Worker (src/engine/mc.worker.ts), one request
-// in flight at a time (newer requests replace queued ones). Falls back to the main thread if the
-// worker cannot be created or errors.
+// Monte Carlo client for src/engine/mc.worker.ts.
+// Protocol: {type:'init', bundle} once per worker, then {type:'run', id, params, opts}
+//   → {type:'result', id, result, ms} | {type:'error', id, message}  ({type:'ready'} is ignored).
+// One request in flight at a time; a newer request supersedes a queued one. Falls back to the
+// main thread if the worker cannot be created or crashes.
 import type { DataBundle } from '../types/data';
 import type { MCResult, ScenarioParams } from '../types/engine';
 import { runMonteCarlo } from '../engine';
@@ -12,6 +14,7 @@ export interface McOpts {
 }
 
 interface Job {
+  id: number;
   bundle: DataBundle;
   params: ScenarioParams;
   opts: McOpts;
@@ -19,26 +22,18 @@ interface Job {
   reject: (e: unknown) => void;
 }
 
-function asResult(data: unknown): MCResult | null {
-  if (!data || typeof data !== 'object') return null;
-  const d = data as Record<string, unknown>;
-  if ('perStock' in d) return d as unknown as MCResult;
-  if (d.result && typeof d.result === 'object' && 'perStock' in (d.result as object)) return d.result as MCResult;
-  if (d.mc && typeof d.mc === 'object' && 'perStock' in (d.mc as object)) return d.mc as MCResult;
-  return null;
-}
-
 export class McClient {
   private worker: Worker | null = null;
+  private workerBundle: DataBundle | null = null;
   private workerFailed = false;
   private inflight: Job | null = null;
   private queued: Job | null = null;
+  private seq = 0;
 
   run(bundle: DataBundle, params: ScenarioParams, opts: McOpts = {}): Promise<MCResult> {
     return new Promise<MCResult>((resolve, reject) => {
-      const job: Job = { bundle, params, opts, resolve, reject };
+      const job: Job = { id: ++this.seq, bundle, params, opts, resolve, reject };
       if (this.inflight) {
-        // Supersede any queued job: its caller gets a rejection it can ignore.
         this.queued?.reject(new Error('superseded'));
         this.queued = job;
         return;
@@ -50,42 +45,52 @@ export class McClient {
   dispose() {
     this.worker?.terminate();
     this.worker = null;
+    this.workerBundle = null;
   }
 
-  private ensureWorker(): Worker | null {
-    if (this.workerFailed) return null;
-    if (this.worker) return this.worker;
+  private ensureWorker(bundle: DataBundle): Worker | null {
+    if (this.workerFailed || typeof Worker === 'undefined') return null;
     try {
-      this.worker = new Worker(new URL('../engine/mc.worker.ts', import.meta.url), { type: 'module' });
-      this.worker.onmessage = (ev: MessageEvent) => this.finish(ev.data);
-      this.worker.onerror = (ev: ErrorEvent) => {
-        ev.preventDefault?.();
-        this.workerFailed = true;
-        this.worker?.terminate();
-        this.worker = null;
-        const job = this.inflight;
-        this.inflight = null;
-        if (job) this.runOnMain(job);
-      };
+      if (!this.worker) {
+        this.worker = new Worker(new URL('../engine/mc.worker.ts', import.meta.url), { type: 'module' });
+        this.worker.onmessage = (ev: MessageEvent) => this.onMessage(ev.data);
+        this.worker.onerror = (ev: ErrorEvent) => {
+          ev.preventDefault?.();
+          this.failWorker();
+        };
+        this.workerBundle = null;
+      }
+      if (this.workerBundle !== bundle) {
+        this.worker.postMessage({ type: 'init', bundle });
+        this.workerBundle = bundle;
+      }
       return this.worker;
     } catch {
-      this.workerFailed = true;
+      this.failWorker();
       return null;
     }
   }
 
+  private failWorker() {
+    this.workerFailed = true;
+    this.worker?.terminate();
+    this.worker = null;
+    this.workerBundle = null;
+    const job = this.inflight;
+    if (job) this.runOnMain(job);
+  }
+
   private start(job: Job) {
     this.inflight = job;
-    const w = this.ensureWorker();
+    const w = this.ensureWorker(job.bundle);
     if (!w) {
       this.runOnMain(job);
       return;
     }
     try {
-      w.postMessage({ bundle: job.bundle, params: job.params, opts: job.opts });
+      w.postMessage({ type: 'run', id: job.id, params: job.params, opts: job.opts });
     } catch {
-      this.workerFailed = true;
-      this.runOnMain(job);
+      this.failWorker();
     }
   }
 
@@ -93,25 +98,26 @@ export class McClient {
     this.inflight = job;
     setTimeout(() => {
       try {
-        const r = runMonteCarlo(job.bundle, job.params, job.opts);
-        this.finish(r);
+        this.complete(job.id, runMonteCarlo(job.bundle, job.params, job.opts), null);
       } catch (e) {
-        this.finish({ error: String(e) });
+        this.complete(job.id, null, e instanceof Error ? e.message : String(e));
       }
     }, 0);
   }
 
-  private finish(data: unknown) {
+  private onMessage(data: unknown) {
+    if (!data || typeof data !== 'object') return;
+    const d = data as { type?: string; id?: number | string | null; result?: MCResult; message?: string };
+    if (d.type === 'result' && d.result) this.complete(d.id ?? null, d.result, null);
+    else if (d.type === 'error') this.complete(d.id ?? null, null, d.message ?? 'MC worker error');
+  }
+
+  private complete(id: number | string | null, result: MCResult | null, error: string | null) {
     const job = this.inflight;
+    if (!job || (id !== null && id !== job.id)) return; // stale reply
     this.inflight = null;
-    if (job) {
-      const r = asResult(data);
-      if (r) job.resolve(r);
-      else {
-        const msg = data && typeof data === 'object' && 'error' in (data as object) ? String((data as { error: unknown }).error) : 'bad MC response';
-        job.reject(new Error(msg));
-      }
-    }
+    if (result) job.resolve(result);
+    else job.reject(new Error(error ?? 'MC failed'));
     const next = this.queued;
     this.queued = null;
     if (next) this.start(next);

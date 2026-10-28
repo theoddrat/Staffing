@@ -107,7 +107,7 @@ export default function Heatmap({ bundle, onSelect }: { bundle: DataBundle; onSe
       />
       <Note>
         Each cell: OLS of the Indian stock's daily log return on the origin's information-set-aligned return (US close before the NSE session) over
-        the regression window — COMPUTED. Colour scale is symmetric around 0 and clipped at the 98th percentile of |value|; grey = no overlap.
+        the regression window — COMPUTED. Colour scale is symmetric around 0 and clipped at the 98th percentile of |value|; blank cell = no overlapping history.
         Click a row to select that stock.
       </Note>
     </Section>

@@ -12,8 +12,8 @@ function fmtPrice(x: number | null, ccy: string): string {
 
 function TickerTapeInner({ bundle, onPick }: { bundle: DataBundle; onPick: (ticker: string) => void }) {
   const items = useMemo(() => {
-    const disp = new Map(bundle.india.map((t) => [t.ticker, t.display]));
-    return bundle.tape
+    const disp = new Map((bundle.india ?? []).map((t) => [t.ticker, t.display]));
+    return (bundle.tape?.length ? bundle.tape : Object.keys(bundle.securities ?? {}))
       .map((t) => bundle.securities[t])
       .filter((s): s is NonNullable<typeof s> => !!s)
       .map((s) => ({

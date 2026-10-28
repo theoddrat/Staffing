@@ -103,11 +103,12 @@ export function runMonteCarlo(
     const rp = specs.length ? sample(rp0, specs, rng) : rp0;
     const core = evaluate(prep, rq, rp, false);
 
-    // joint block bootstrap of residual dates (shared by every stock and the Nifty)
+    // joint circular block bootstrap of residual dates (shared by every stock and the Nifty);
+    // circular blocks give every date the same inclusion probability, so the sum stays centred
     if (R > 0) {
       let filled = 0;
       while (filled < h) {
-        const start = R >= B ? rng.int(R - B + 1) : 0;
+        const start = rng.int(R);
         for (let q = 0; q < B && filled < h; q++) idx[filled++] = (start + q) % R;
       }
     }

@@ -1,75 +1,12 @@
 // F3 TRANSMISSION MAP — Sankey: shock origin → channel → Indian stock (₹ crore), market or fundamental mode.
 import { useMemo, useState } from 'react';
 import type { PanelProps } from './types';
-import type { SankeyGraph, SankeyLink } from '../types/engine';
 import Chart, { CHART_COLORS } from '../components/Chart';
+import { prepareGraph } from './TransmissionPanel.graph';
 import { crore, isNum } from '../lib/format';
 
 type Mode = 'market' | 'fundamental';
 const TOPN: (number | 'ALL')[] = [10, 15, 25, 'ALL'];
-const OTHER_ID = '__other_india__';
-
-interface Prepared {
-  nodes: { id: string; label: string; kind: string; color: string }[];
-  links: SankeyLink[];
-  channelTotals: { id: string; label: string; loss: number; benefit: number }[];
-  collapsed: number;
-}
-
-export function prepareGraph(
-  g: SankeyGraph,
-  topN: number | 'ALL',
-  tierOf: (id: string) => string | null,
-  minValue = 0.5,
-): Prepared {
-  const targets = g.nodes.filter((n) => n.kind === 'target');
-  const inflow = new Map<string, number>();
-  for (const l of g.links) inflow.set(l.target, (inflow.get(l.target) ?? 0) + Math.abs(l.value));
-  const ranked = [...targets].sort((a, b) => (inflow.get(b.id) ?? 0) - (inflow.get(a.id) ?? 0));
-  const keep = new Set((topN === 'ALL' ? ranked : ranked.slice(0, topN)).map((n) => n.id));
-  const collapsedIds = new Set(ranked.filter((n) => !keep.has(n.id)).map((n) => n.id));
-
-  const agg = new Map<string, SankeyLink>();
-  for (const l of g.links) {
-    if (!isNum(l.value) || l.value <= 0) continue;
-    const target = collapsedIds.has(l.target) ? OTHER_ID : l.target;
-    const k = `${l.source}→${target}|${l.sign}`;
-    const prev = agg.get(k);
-    if (prev) prev.value += l.value;
-    else agg.set(k, { source: l.source, target, value: l.value, sign: l.sign });
-  }
-  const links = Array.from(agg.values()).filter((l) => l.value >= minValue);
-  const used = new Set<string>();
-  for (const l of links) {
-    used.add(l.source);
-    used.add(l.target);
-  }
-  const colorFor = (id: string, kind: string) => {
-    if (kind === 'origin') return CHART_COLORS.cyan;
-    if (kind === 'macro') return CHART_COLORS.grey;
-    if (kind === 'channel') return CHART_COLORS.amber;
-    const t = tierOf(id);
-    return t ? CHART_COLORS.tiers[t] ?? CHART_COLORS.white : CHART_COLORS.white;
-  };
-  const nodes = g.nodes
-    .filter((n) => used.has(n.id) && !collapsedIds.has(n.id))
-    .map((n) => ({ id: n.id, label: n.label, kind: n.kind, color: colorFor(n.id, n.kind) }));
-  if (used.has(OTHER_ID)) nodes.push({ id: OTHER_ID, label: `OTHER INDIA (${collapsedIds.size})`, kind: 'target', color: CHART_COLORS.grey });
-
-  const channelTotals = g.nodes
-    .filter((n) => n.kind === 'channel')
-    .map((n) => {
-      let loss = 0;
-      let benefit = 0;
-      for (const l of g.links) {
-        if (l.target !== n.id) continue;
-        if (l.sign < 0) loss += l.value;
-        else benefit += l.value;
-      }
-      return { id: n.id, label: n.label, loss, benefit };
-    });
-  return { nodes, links, channelTotals, collapsed: collapsedIds.size };
-}
 
 export default function TransmissionPanel({ state, actions }: PanelProps) {
   const [mode, setMode] = useState<Mode>('market');

@@ -5,11 +5,11 @@ import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
 import type { DataBundle, Tier } from '../types/data';
 import type { Horizon, MCResult, ParamValue, PresetId, ScenarioParams, ScenarioResult } from '../types/engine';
 import type { AppActions, AppState, PanelId } from '../panels/types';
-import { defaultParams, runScenario, withRanges } from '../engine';
+import { DEFAULT_MC_RUNS, DEFAULT_MC_SEED, defaultParams, horizonForWindow, runScenario, withHorizon, withRanges } from '../engine';
 import { contextFromBundle, parseCommand, type ParseContext } from '../commands/parse';
 import { McClient } from './mcClient';
 
-export const MC_RUNS = 5000;
+export const MC_RUNS = DEFAULT_MC_RUNS;
 const MC_DEBOUNCE_MS = 400;
 const INITIAL_PRESET: PresetId = 'fullpop';
 const INITIAL_HORIZON: Horizon = '12M';
@@ -175,7 +175,7 @@ export function useTerminal(bundle: DataBundle): { state: ExtState; actions: App
       const fan = isIndia(bundle, sel) ? sel! : resultRef.current?.india[0]?.ticker;
       dispatch({ type: 'mcStart' });
       client.current!
-        .run(bundle, params, { runs: MC_RUNS, seed: 20221130, fanTicker: fan })
+        .run(bundle, params, { runs: MC_RUNS, seed: DEFAULT_MC_SEED, fanTicker: fan })
         .then((r) => dispatch({ type: 'mcDone', result: r, key: k }))
         .catch((e) => {
           if (e instanceof Error && e.message === 'superseded') return;
@@ -217,18 +217,13 @@ export function useTerminal(bundle: DataBundle): { state: ExtState; actions: App
         const cur = paramsRef.current;
         setParams(freshParams(bundle, id, horizon ?? cur.horizon, cur));
       },
-      setHorizon: (h: Horizon) => {
-        const cur = paramsRef.current;
-        const preset = bundle.presets.find((p) => p.id === cur.preset);
-        if (preset?.horizon_overrides && preset.horizon_overrides[h]) {
-          setParams(freshParams(bundle, cur.preset, h, cur));
-        } else {
-          setParams({ ...cur, horizon: h });
-        }
-      },
+      setHorizon: (h: Horizon) => setParams(withHorizon(bundle, paramsRef.current, h)),
       setValue: (k: string, v: ParamValue) => {
         const cur = paramsRef.current;
-        setParams({ ...cur, values: { ...cur.values, [k]: v } });
+        const next = { ...cur, values: { ...cur.values, [k]: v } };
+        // A replay window implies its own horizon (MC residuals accumulate over the window length).
+        if (cur.preset === 'replay' && k === 'window' && typeof v === 'string') next.horizon = horizonForWindow(bundle, v);
+        setParams(next);
       },
       setOverride: (id: string, v: number | null) => {
         const cur = paramsRef.current;
@@ -287,7 +282,8 @@ export function useTerminal(bundle: DataBundle): { state: ExtState; actions: App
               return;
             }
             const cur = paramsRef.current;
-            const h = c.horizon ?? cur.horizon;
+            const win = typeof c.values.window === 'string' ? c.values.window : null;
+            const h = c.horizon ?? (c.preset === 'replay' && win ? horizonForWindow(bundle, win) : cur.horizon);
             const p = freshParams(bundle, c.preset, h, cur);
             setParams({ ...p, values: { ...p.values, ...c.values } });
             dispatch({ type: 'navigate', panel: ['F1', 'F2', 'F3'].includes(sRef.current.panel) ? sRef.current.panel : 'F2' });

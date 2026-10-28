@@ -47,18 +47,18 @@ export interface ParseContext {
 
 export function contextFromBundle(bundle: DataBundle): ParseContext {
   const indiaDisplay: Record<string, string> = {};
-  for (const t of bundle.india) indiaDisplay[(t.display || t.ticker).toUpperCase()] = t.ticker;
+  for (const t of bundle.india ?? []) indiaDisplay[(t.display || t.ticker).toUpperCase()] = t.ticker;
   const historyIds = [
-    ...bundle.history.cases.map((c) => c.id),
-    ...bundle.history.event_studies.map((e) => e.id),
+    ...(bundle.history?.cases ?? []).map((c) => c.id),
+    ...(bundle.history?.event_studies ?? []).map((e) => e.id),
   ];
   return {
-    securities: Object.keys(bundle.securities),
+    securities: Object.keys(bundle.securities ?? {}),
     indiaDisplay,
-    indiaTickers: bundle.india.map((t) => t.ticker),
-    origins: bundle.origins.map((o) => o.ticker),
-    chips: bundle.origins.filter((o) => o.group === 'chips').map((o) => o.ticker),
-    replayWindows: bundle.history.replay_windows.map((w) => w.id),
+    indiaTickers: (bundle.india ?? []).map((t) => t.ticker),
+    origins: (bundle.origins ?? []).map((o) => o.ticker),
+    chips: (bundle.origins ?? []).filter((o) => o.group === 'chips').map((o) => o.ticker),
+    replayWindows: (bundle.history?.replay_windows ?? []).map((w) => w.id),
     historyIds: Array.from(new Set(historyIds)),
   };
 }

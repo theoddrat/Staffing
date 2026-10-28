@@ -60,7 +60,7 @@ export function DotcomOverlay({ bundle }: { bundle: DataBundle }) {
 
 export function DeepSeekTable({ bundle }: { bundle: DataBundle }) {
   const rows = bundle.history?.deepseek_next_day ?? [];
-  const names = new Map(bundle.india.map((t) => [t.ticker, t.display || t.ticker]));
+  const names = new Map((bundle.india ?? []).map((t) => [t.ticker, t.display || t.ticker]));
   const sorted = [...rows].sort((a, b) => (a.r_jan28 ?? Infinity) - (b.r_jan28 ?? Infinity));
   const option = useMemo(
     () => ({

@@ -62,15 +62,6 @@ sources:
   accessed: '2026-10-28'
   note: 'Segments: Financial Services ₹4,091.9 cr (34.7%), Consumer ₹3,125.0 cr, Production ₹2,354.6 cr, Technology & Services ₹2,236.1 cr; the four sum to ₹11,807.6 cr = revenue from operations reported
     by Kotak Neo. LTM fact sheet not reachable.'
-- id: ltm_q2fy27_kotakneo
-  title: 'LTM Q2 FY27 Results: Revenue Grows in Double Digits, Net Profit Stays Flat and Order Inflow Stands at $1.26 Billion'
-  publisher: Kotak Neo
-  url: https://www.kotakneo.com/news/stocks/ltm-share-price-and-q2-fy-27-results/
-  date: '2026-10-16'
-  quote: Revenue from operations was ₹11,807.6 crore, up 13.6% year on year
-  verification: SECONDARY
-  accessed: '2026-10-28'
-  note: Wording as surfaced by the search index; used only to confirm the segment total.
 - id: coforge_q2fy27_investing_slides
   title: 'Coforge Q2 FY27 slides: margins upgraded as order intake tops $1B'
   publisher: Investing.com
@@ -155,24 +146,6 @@ sources:
   verification: PRIMARY
   accessed: '2026-10-28'
   note: Taiwan = 25.5% of 2025 net sales.
-- id: asml_concentration_fool
-  title: 'ASML vs. Taiwan Semiconductor Manufacturing: Which Technology Stock Is a Better Buy in 2026?'
-  publisher: The Motley Fool
-  url: https://www.fool.com/coverage/better-buy/2026/10/12/asml-vs-taiwan-semiconductor-manufacturing-which-technology-stock-is-a-better-buy-in-2026/
-  date: '2026-10-12'
-  quote: According to ASML's 2025 annual report, four customers accounted for about 61% of ASML's 2025 net sales.
-  verification: SECONDARY
-  accessed: '2026-10-28'
-  note: null
-- id: asml_largest_customer_substack
-  title: ASML Built a $400 Million Machine. TSMC Isn't Using It.
-  publisher: The Dutch Investors (Substack)
-  url: https://thedutchinvestors.substack.com/p/asml-built-a-400-million-machine
-  date: '2026'
-  quote: Although ASML does not publicly name its largest customer, we do know its largest customer accounted for 24% of 2025 sales.
-  verification: UNVERIFIED
-  accessed: '2026-10-28'
-  note: Blog; the 20-F text contains the phrase 'largest customer' (EDGAR full-text search) but the 24.9 MB document could not be read in full.
 - id: mu_10k_fy26_r82
   title: 'Micron Technology Form 10-K FY2026 (FY ended 3-Sep-2026), XBRL R82: Segment and Other Information - Results by Segment (Details)'
   publisher: SEC EDGAR
@@ -202,6 +175,56 @@ sources:
   accessed: '2026-10-28'
   note: 'Largest customer is Arm China per the 20-F text (secondary summaries). Revenue FY2026 $4,920M; royalty $2,613M; related-party revenue $1,499M (R56). Data-centre share of royalties not disclosed
     (Q1 FY27: data-centre royalties ''more than doubled'' y/y).'
+- id: gev_3q26_pr
+  title: GE Vernova reports strong third quarter 2026 financial performance (Form 8-K exhibit)
+  publisher: GE Vernova via SEC EDGAR
+  url: https://www.sec.gov/Archives/edgar/data/0001996810/000199681026000162/gevpressrelease3q26.htm
+  date: 2026-10
+  quote: Revenue of $12.6B, +27%, +18% organically ... Power ... revenues of $6.1 billion increased +25% ... Electrification ... Revenues of $3.9 billion ... Gas equipment backlog and slot reservation agreements
+    grew from 116 to 122 GW
+  verification: PRIMARY
+  accessed: '2026-10-28'
+  note: FY2026 revenue guidance $46.5-$47.5B. The release itself does not quantify data-centre orders.
+- id: gev_3q26_call_investing
+  title: 'Earnings call transcript: GE Vernova tops Q3 2026 forecasts on orders and cash'
+  publisher: Investing.com
+  url: https://za.investing.com/news/stock-market-news/earnings-call-transcript-ge-vernova-tops-q3-2026-forecasts-on-orders-and-cash-93CH-4531510
+  date: 2026-10
+  quote: Total segment data center orders are now more than $6 billion year to date, including roughly $1.4 billion in Q3. ... of which approximately 80% are traditional customers and 20% are for data centers.
+  verification: SECONDARY
+  accessed: '2026-10-28'
+  note: 'CEO Scott Strazik. The same 80/20 split of gas gigawatts under contract was stated on the Q1 (22-Apr-2026) and Q2 (22-Jul-2026) calls: ''Approximately 80% of our total gigawatts under contract
+    are with traditional customers with the remaining 20% explicitly supporting data centers.'''
+- id: nvda_q2fy27_cfo_commitments
+  title: NVIDIA CFO Commentary on Second Quarter Fiscal 2027 Results — commitments and guarantees
+  publisher: NVIDIA
+  url: https://s201.q4cdn.com/141608511/files/doc_financials/2027/Q227/Q2FY27-CFO-Commentary.pdf
+  date: '2026-08-26'
+  quote: We have land, power, and shell guarantees for certain AI cloud partners' data center lease obligations in the event of their default. The maximum gross exposure under all agreements is $3.5 billion.
+    ... Our guarantee obligations are capped at a total of $105 billion and become effective in phases ... AI cloud agreements ... Total $36 [billion] ... Accounts receivable was $63.1 billion with 60 days
+    sales outstanding (DSO), up from 45 days sequentially, due to extended payment terms on large, multi-quarter agreements with certain investment-grade customers.
+  verification: PRIMARY
+  accessed: '2026-10-28'
+  note: SB Energy PORTS-Pike (Ohio) guarantees support ~4.25 GW leased to OpenAI under 20-year leases, first effective in fiscal 2029. Text extracted with pdftotext.
+- id: ceg_dc_ppas
+  title: Constellation to Launch Crane Clean Energy Center, Restoring Jobs and Carbon-Free Power to the Grid (20-year PPA with Microsoft)
+  publisher: Constellation Energy via Business Wire
+  url: https://www.businesswire.com/news/home/20240920487805/en
+  date: '2024-09-20'
+  quote: 20-year power purchase agreement with Microsoft ... approximately 835 megawatts (MW) ... expected to be online in 2028 (as summarised by the search index; PPA described as Constellation's largest-ever)
+  verification: SECONDARY
+  accessed: '2026-10-28'
+  note: Meta 20-year PPA for the full output of Clinton (~1,121 MW per DCD; 1,092 MW per Foley) from June 2027 could not be fetched directly (DCD 403) -> UNVERIFIED context only.
+- id: vst_aws_ppa
+  title: Vistra backs Texas data center pause; Comanche Peak deal with Amazon on track
+  publisher: Utility Dive
+  url: https://www.utilitydive.com/news/vistra-texas-data-center-pause-comanche-amazon-earnings/827434/
+  date: 2026-08
+  quote: a 1.2-GW deal to serve an Amazon data center from Vistra's Comanche Peak nuclear plant ... is set to begin delivering power to Amazon in 2027 under a 20-year power purchase agreement
+  verification: SECONDARY
+  accessed: '2026-10-28'
+  note: 'Original Sept-2025 announcement named an undisclosed customer (Power Engineering): ''20-year power purchase agreement ... to supply 1,200 megawatts (MW) of power from the Comanche Peak Nuclear
+    Power Plant''.'
 quantities:
   TCS.NS.exposure.revenue:
     label: Technology & Services vertical share of revenue (Q2 FY27)
@@ -240,42 +263,6 @@ quantities:
       - hcl_q2fy27_investing_slides
       note: Converts the services-basis mix to a total-revenue basis.
     note: Effective value 14.3% x 92.1% = 13.2% of total revenue; stays UNVERIFIED until the investor release (NSE 503) can be read.
-  LTM.NS.exposure.revenue:
-    label: Technology & Services segment share of revenue (Q2 FY27)
-    parts:
-    - label: Technology & Services ₹2,236.1 cr / revenue from operations ₹11,807.6 cr
-      value: 0.1894
-      status: SOURCED
-      src:
-      - ltm_q2fy27_angelone
-      - ltm_q2fy27_kotakneo
-      note: LTM re-segmented into Financial Services / Consumer / Production / Technology & Services in FY27. North America 74.3% of revenue.
-    note: Upgraded from Q4 FY26 TMC 23.7% (old segment) to the current Q2 FY27 Technology & Services segment.
-  COFORGE.NS.exposure.revenue:
-    label: Hi-Tech share of revenue (Q2 FY27)
-    parts:
-    - label: Healthcare & HiTech combined vertical share of revenue
-      value: 0.176
-      status: SOURCED
-      src:
-      - coforge_q2fy27_investing_slides
-      note: Combined vertical; Coforge does not break out HiTech alone.
-    - label: HiTech fraction of the combined Healthcare & HiTech vertical
-      value: 0.5
-      status: USER_ASSUMPTION
-      src: []
-      note: No disclosure; 50/50 split assumed. Set to 1.0 for an upper bound.
-    note: Effective 8.8% of revenue. Americas 63.1%.
-  MPHASIS.NS.exposure.revenue:
-    label: 'TMT vertical share of revenue (latest reported: Q1 FY27)'
-    parts:
-    - label: TMT share of mix, quarter ended 30-Jun-2026
-      value: 0.18
-      status: SOURCED
-      src:
-      - mphasis_q1fy27_icicisec
-      note: Q2 FY27 not yet reported as of 2026-10-28. Americas 85% of mix.
-    note: Verbatim broker figure (18%) replaces the computed 86/471.
   TATAELXSI.NS.exposure.revenue:
     label: Media & Communications vertical share of revenue (Q2 FY27)
     parts:
@@ -304,7 +291,7 @@ quantities:
       note: Networks & Infrastructure ($52.8M, 22.6%) is telecom/utility engineering and is not counted as AI/hi-tech exposure. Americas 53.9%.
     note: Replaces the earlier semis/(DET+semis) = 10.0% with the group-revenue denominator.
   SMCI.hyperscaler_share:
-    label: Share of revenue tied to hyperscaler / large-CSP AI capex
+    label: Share of revenue from hyperscalers / large CSPs
     parts:
     - label: Largest customer (a large data-centre / cloud customer) share of FY2026 net sales
       value: 0.281
@@ -312,8 +299,13 @@ quantities:
       src:
       - smci_10k_fy26_r53
       - smci_fy26_secapi
-      note: 'Lower bound: only one customer is >=10% of net sales; other CSP/neocloud sales are not disclosed.'
-    note: Replaces the USER_ASSUMPTION 0.5. Treat as a floor; raise via slider for an all-CSP view.
+      note: PRIMARY 10-K XBRL (R53). Only one customer is >=10% of FY2026 net sales; customer type per secondary analysis.
+    - label: Scale-up for other hyperscaler / large-CSP customers below the 10% disclosure threshold
+      value: 1.78
+      status: USER_ASSUMPTION
+      src: []
+      note: Not disclosed; 1.78 keeps the effective share at ~0.50 (prior universe default). Set to 1.0 to use the disclosed floor only.
+    note: Anchors the former pure USER_ASSUMPTION (0.5) on the disclosed 28.1% largest-customer share.
   ASML.hyperscaler_share:
     label: Share of revenue tied to hyperscaler AI capex
     parts:
@@ -358,6 +350,27 @@ quantities:
       src: []
       note: Not disclosed.
     note: Effective 0.071.
+  GEV.hyperscaler_share:
+    label: Share of revenue tied to data-centre power demand
+    parts:
+    - label: Power segment share of Q3 2026 revenue ($6.1B / $12.6B)
+      value: 0.484
+      status: SOURCED
+      src:
+      - gev_3q26_pr
+      note: Gas turbines sit in Power.
+    - label: Share of gas gigawatts under contract explicitly supporting data centres
+      value: 0.2
+      status: SOURCED
+      src:
+      - gev_3q26_call_investing
+      note: CEO statement repeated on the Q1/Q2/Q3 2026 calls (forward backlog, not current revenue).
+    - label: Uplift for Electrification data-centre orders (>$6B YTD 2026) and other segments
+      value: 1.5
+      status: USER_ASSUMPTION
+      src: []
+      note: Electrification data-centre orders are disclosed only in dollars (no share of segment orders/revenue).
+    note: Effective 0.145 vs the prior pure USER_ASSUMPTION 0.15; two of three factors now sourced.
 history_notes: {}
 context:
   na_revenue_share:
@@ -404,3 +417,19 @@ context:
     - text: 'Customer One 28.1% of FY2026 net sales (FY2025: 20.9%, 11.5%, 11.3%, 11.1% for four customers); US 70.9% of net sales'
       src:
       - smci_10k_fy26_r53
+  credit_links:
+    NVDA:
+    - text: NVIDIA guarantees AI-cloud partners' data-centre lease obligations up to $3.5B and SB Energy/OpenAI PORTS-Pike land, power and shell obligations up to $105B (phased from FY2029); AI-cloud agreements
+        commitments $36B; receivables $63.1B (DSO 60 days, extended terms with large investment-grade customers).
+      src:
+      - nvda_q2fy27_cfo_commitments
+  power_contracts:
+    CEG:
+    - text: '20-year PPAs: Microsoft ~835 MW (Crane/TMI-1 restart, 2027-28 start); Meta ~1,121 MW (Clinton, from June 2027); CyrusOne Texas 380 MW (2026). Not disclosed as a share of revenue.'
+      src:
+      - ceg_dc_ppas
+    VST:
+    - text: 20-year PPA to supply AWS 1,200 MW from Comanche Peak (deliveries from Q4 2027, full by 2032; ~50% of the 2.4 GW plant); solar PPAs 200 MW Amazon (TX) and 405 MW Microsoft (IL). Not disclosed
+        as a share of revenue.
+      src:
+      - vst_aws_ppa

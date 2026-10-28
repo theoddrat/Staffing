@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import type { PanelProps } from './types';
 import type { IndiaTarget, OriginInfo, RegressionResult, Security } from '../types/data';
 import type { IndiaResult, OriginResult } from '../types/engine';
+import { securityWaterfall, type Waterfall } from '../engine';
 import Chart, { axisStyle, CHART_COLORS } from '../components/Chart';
 import QuantityView from '../components/QuantityView';
 import { StatusBadge, SourceLinks } from '../components/StatusBadge';
@@ -80,9 +81,9 @@ function ValuationTable({ sec, state }: { sec: Security } & Pick<PanelProps, 'st
             {compact(sec.revenue_ttm)} {sec.currency}
           </span>
         </KV>
-        {sec.notes.length > 0 && (
+        {(sec.notes ?? []).length > 0 && (
           <KV k="NOTES">
-            <span className="muted">{sec.notes.join(' · ')}</span>
+            <span className="muted">{(sec.notes ?? []).join(' · ')}</span>
           </KV>
         )}
       </tbody>
@@ -90,59 +91,60 @@ function ValuationTable({ sec, state }: { sec: Security } & Pick<PanelProps, 'st
   );
 }
 
-function Waterfall({ o }: { o: OriginResult }) {
+function WaterfallChart({ wf }: { wf: Waterfall | null }) {
   const option = useMemo(() => {
-    if (!isNum(o.price0) || o.price0 <= 0) return null;
-    const p0 = o.price0;
-    const pEps = isNum(o.price_after_eps) ? o.price_after_eps : p0 * (1 - o.e);
-    const pDirect = p0 * (1 + o.move_direct);
-    const pNew = isNum(o.price_new) ? o.price_new : p0 * (1 + o.move);
-    const steps: { name: string; from: number; to: number; total?: boolean }[] = [
-      { name: 'PRICE', from: 0, to: p0, total: true },
-      { name: `EPS CUT −${(o.e * 100).toFixed(1)}%`, from: p0, to: pEps },
-      { name: `DE-RATING −${(o.d * 100).toFixed(1)}%`, from: pEps, to: pDirect },
-    ];
-    if (Math.abs(pNew - pDirect) > 1e-9) steps.push({ name: 'SYMPATHY', from: pDirect, to: pNew });
-    steps.push({ name: 'NEW PRICE', from: 0, to: pNew, total: true });
-    const base = steps.map((s) => (s.total ? 0 : Math.min(s.from, s.to)));
-    const val = steps.map((s) => Math.abs(s.to - s.from));
+    if (!wf || !wf.steps.length || wf.steps.some((st) => !isNum(st.price))) return null;
+    const p = wf.steps.map((st) => st.price as number);
+    type Bar = { name: string; from: number; to: number; total: boolean; color?: string; note: string };
+    const bars: Bar[] = [{ name: wf.steps[0].label.toUpperCase(), from: 0, to: p[0], total: true, note: wf.steps[0].note }];
+    const lastDelta = wf.kind === 'india' ? wf.steps.length - 2 : wf.steps.length - 1;
+    for (let i = 1; i <= lastDelta; i++) {
+      bars.push({ name: wf.steps[i].label.toUpperCase(), from: p[i - 1], to: p[i], total: false, note: wf.steps[i].note });
+    }
+    if (wf.kind === 'india') {
+      bars.push({ name: 'FUNDAMENTAL PRICE', from: 0, to: p[lastDelta], total: true, note: 'Layer 3 + FX' });
+      const last = wf.steps[wf.steps.length - 1];
+      bars.push({ name: last.label.toUpperCase(), from: 0, to: p[p.length - 1], total: true, color: CHART_COLORS.cyan, note: last.note });
+    } else {
+      bars.push({ name: 'NEW PRICE', from: 0, to: p[p.length - 1], total: true, note: `move ${spct(wf.move)}` });
+    }
+    const base = bars.map((b) => (b.total ? 0 : Math.min(b.from, b.to)));
+    const val = bars.map((b) => Math.abs(b.to - b.from));
     return {
-      grid: { left: 60, right: 16, top: 20, bottom: 40 },
+      grid: { left: 60, right: 16, top: 22, bottom: 52 },
       tooltip: {
         trigger: 'axis',
         axisPointer: { type: 'shadow' },
         formatter: (ps: any[]) => {
-          const i = ps[0]?.dataIndex ?? 0;
-          const s = steps[i];
-          return `${s.name}<br/>${s.total ? num(s.to, 2) : `${num(s.from, 2)} → ${num(s.to, 2)}`}`;
+          const b = bars[ps[0]?.dataIndex ?? 0];
+          return `${b.name}<br/>${b.total ? num(b.to, 2) : `${num(b.from, 2)} → ${num(b.to, 2)}`}<br/><span style="color:#999">${b.note}</span>`;
         },
       },
-      xAxis: { type: 'category', data: steps.map((s) => s.name), ...axisStyle(), axisLabel: { color: CHART_COLORS.amber, fontSize: 9, interval: 0 } },
+      xAxis: {
+        type: 'category',
+        data: bars.map((b) => b.name),
+        ...axisStyle(),
+        axisLabel: { color: CHART_COLORS.amber, fontSize: 9, interval: 0, width: 90, overflow: 'break' },
+      },
       yAxis: { type: 'value', ...axisStyle() },
       series: [
-        { type: 'bar', stack: 'w', data: base, itemStyle: { color: 'transparent' }, emphasis: { disabled: true } },
+        { type: 'bar', stack: 'w', data: base, itemStyle: { color: 'transparent' }, emphasis: { disabled: true }, tooltip: { show: false } },
         {
           type: 'bar',
           stack: 'w',
           data: val.map((v, i) => ({
             value: v,
             itemStyle: {
-              color: steps[i].total ? CHART_COLORS.amber : steps[i].to < steps[i].from ? CHART_COLORS.red : CHART_COLORS.green,
+              color: bars[i].color ?? (bars[i].total ? CHART_COLORS.amber : bars[i].to < bars[i].from ? CHART_COLORS.red : CHART_COLORS.green),
             },
           })),
-          label: {
-            show: true,
-            position: 'top',
-            color: CHART_COLORS.white,
-            fontSize: 10,
-            formatter: (p: any) => num(steps[p.dataIndex].to, 2),
-          },
+          label: { show: true, position: 'top', color: CHART_COLORS.white, fontSize: 10, formatter: (q: any) => num(bars[q.dataIndex].to, 2) },
         },
       ],
     };
-  }, [o]);
+  }, [wf]);
   if (!option) return <div className="panel-body muted">NO PRICE / P/E — WATERFALL NOT AVAILABLE.</div>;
-  return <Chart option={option} height={240} />;
+  return <Chart option={option} height={250} />;
 }
 
 function OriginBlock({ info, res, state }: { info: OriginInfo; res: OriginResult | undefined } & Pick<PanelProps, 'state'>) {
@@ -166,16 +168,16 @@ function OriginBlock({ info, res, state }: { info: OriginInfo; res: OriginResult
             {isNum(info.capex_ttm_usd) && (
               <KV k="CAPEX TTM (FILINGS)">
                 <span className="white">{usd(info.capex_ttm_usd)}</span> <StatusBadge status="COMPUTED" />
-                <span className="muted"> {info.capex_quarters.map((q) => `${q.period}: ${usd(q.value_usd)}`).join(' · ')}</span>
+                <span className="muted"> {(info.capex_quarters ?? []).map((q) => `${q.period}: ${usd(q.value_usd)}`).join(' · ')}</span>
               </KV>
             )}
             <KV k="CREDIT">
-              {info.credit.stressed ? <span className="down">STRESSED BORROWER (SHOCK 5) </span> : <span className="muted">not stressed · </span>}
-              net debt {usd(info.credit.net_debt_usd)} · EBITDA TTM {usd(info.credit.ebitda_ttm_usd)} · ND/EBITDA{' '}
-              {isNum(info.credit.nd_ebitda) ? `${info.credit.nd_ebitda.toFixed(1)}x` : '—'}
+              {info.credit?.stressed ? <span className="down">STRESSED BORROWER (SHOCK 5) </span> : <span className="muted">not stressed · </span>}
+              net debt {usd(info.credit?.net_debt_usd)} · EBITDA TTM {usd(info.credit?.ebitda_ttm_usd)} · ND/EBITDA{' '}
+              {isNum(info.credit?.nd_ebitda) ? `${info.credit.nd_ebitda.toFixed(1)}x` : '—'}
               <StatusBadge status="COMPUTED" />
             </KV>
-            {info.concentration.map((c, i) => (
+            {(info.concentration ?? []).map((c, i) => (
               <KV key={i} k={i === 0 ? 'CUSTOMER CONCENTRATION' : ''}>
                 <span className="white">{c.text}</span>
                 <StatusBadge status={c.status} />
@@ -192,7 +194,7 @@ function OriginBlock({ info, res, state }: { info: OriginInfo; res: OriginResult
         </div>
         {res ? (
           <>
-            <Waterfall o={res} />
+            <WaterfallChart wf={securityWaterfall(bundle, state.result, info.ticker)} />
             <table className="tbl">
               <tbody>
                 <KV k="REVENUE HIT / e / d">
@@ -357,12 +359,12 @@ function IndiaLinks({ t, state }: { t: IndiaTarget } & Pick<PanelProps, 'state'>
               </KV>
             )}
             {t.adr && <KV k="ADR CROSS-CHECK">{t.adr}</KV>}
-            {t.exposures.length === 0 && (
+            {(t.exposures ?? []).length === 0 && (
               <KV k="EXPOSURES">
                 <span className="muted">No fundamental exposure defined — sentiment/market channel only.</span>
               </KV>
             )}
-            {t.exposures.map((e, i) => (
+            {(t.exposures ?? []).map((e, i) => (
               <KV key={i} k={`EXPOSURE · ${e.channel.toUpperCase()}`}>
                 <QuantityView q={e.share} bundle={bundle} showParts override={state.params.overrides[e.share.id]} />
                 {e.driver && <span className="muted"> — {e.driver}</span>}
@@ -377,12 +379,12 @@ function IndiaLinks({ t, state }: { t: IndiaTarget } & Pick<PanelProps, 'state'>
               <StatusBadge status="COMPUTED" />
               <span className="muted">
                 {' '}
-                slopes: NDX|SOX {num(t.slopes.ndx_on_sox, 2)} · P|SOX {num(t.slopes.parent_on_sox, 2)}
+                slopes: NDX|SOX {num(t.slopes?.ndx_on_sox, 2)} · P|SOX {num(t.slopes?.parent_on_sox, 2)}
               </span>
             </KV>
-            {t.notes.length > 0 && (
+            {(t.notes ?? []).length > 0 && (
               <KV k="NOTES">
-                <span className="muted">{t.notes.join(' · ')}</span>
+                <span className="muted">{(t.notes ?? []).join(' · ')}</span>
               </KV>
             )}
           </tbody>
@@ -412,6 +414,7 @@ function IndiaDetail({ t, res, state }: { t: IndiaTarget; res: IndiaResult | und
             </>
           )}
         </div>
+        {res && <WaterfallChart wf={securityWaterfall(state.bundle, state.result, t.ticker)} />}
         {res ? (
           <div className="grid-2">
             <table className="tbl">

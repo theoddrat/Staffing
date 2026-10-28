@@ -193,6 +193,8 @@ export default function App() {
     fetch('/data.json', { cache: 'no-cache' })
       .then((r) => {
         if (!r.ok) throw new Error(`GET /data.json → HTTP ${r.status}`);
+        const ct = r.headers.get('content-type') ?? '';
+        if (!ct.includes('json')) throw new Error('public/data.json not found (the server returned a web page instead of JSON).');
         return r.json();
       })
       .then((b: unknown) => {

@@ -712,7 +712,8 @@ def _summary(section: dict, calib: dict) -> str:
         dd = [f"{r['label']}: {r['drawdown'] * 100:.1f}%" for r in c["drawdowns"] if r.get("drawdown") is not None]
         lines.append(f"[{c['id']}] " + " | ".join(dd[:8]))
     for k, q in calib.items():
-        lines.append(f"{k} = {q['value']:+.4f} ({q['status']})")
+        v = q.get("value")
+        lines.append(f"{k} = {v:+.4f} ({q['status']})" if v is not None else f"{k} = None ({q['status']})")
     f = section["pe_fit"]
     if f.get("slope") is not None:
         lines.append(f"pe_fit: drawdown = {f['intercept']:+.3f} {f['slope']:+.5f}*PE  r2={f['r2']:.3f} n={f['n']}")

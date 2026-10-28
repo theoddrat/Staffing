@@ -15,7 +15,8 @@ export function Banner({ lowConfidence }: { lowConfidence: boolean }) {
 
 export function HeaderBar({ bundle, result }: { bundle: DataBundle; result: ScenarioResult | null }) {
   const m = bundle.meta;
-  const sources = m.data_sources.map((d) => d.name).join(' · ');
+  const ds = m.data_sources ?? [];
+  const sources = ds.map((d) => d.name).join(' · ');
   return (
     <div className="header-bar">
       <span className="app-title">{m.app || 'AI CRASH MONITOR'}</span>
@@ -31,7 +32,7 @@ export function HeaderBar({ bundle, result }: { bundle: DataBundle; result: Scen
         </span>
       )}
       <span className="spacer" />
-      <span className="hdr-item muted" title={m.data_sources.map((d) => `${d.name}: ${d.url} — ${d.note}`).join('\n')}>
+      <span className="hdr-item muted" title={ds.map((d) => `${d.name}: ${d.url} — ${d.note}`).join('\n')}>
         DATA: {sources || '—'} · BUILT {m.built_at?.slice(0, 16).replace('T', ' ')}
       </span>
     </div>

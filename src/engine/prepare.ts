@@ -188,7 +188,24 @@ export function prepare(bundle: DataBundle): Prep {
     for (let t = 0; t < a.length; t++) if (!Number.isNaN(a[t])) idx.push(t);
     return Int32Array.from(idx);
   };
-  const niftyResid = toArr(bundle.nifty_resid);
+  // Centre residual series on zero (standard residual-bootstrap practice; OLS residuals are already
+  // ~mean-zero, this only removes the drift that missing cells can introduce).
+  const demean = (a: Float64Array): Float64Array => {
+    let s = 0;
+    let n = 0;
+    for (let t = 0; t < a.length; t++) {
+      if (!Number.isNaN(a[t])) {
+        s += a[t];
+        n++;
+      }
+    }
+    if (n > 0) {
+      const m = s / n;
+      for (let t = 0; t < a.length; t++) if (!Number.isNaN(a[t])) a[t] -= m;
+    }
+    return a;
+  };
+  const niftyResid = demean(toArr(bundle.nifty_resid));
   const niftyNonNull = nonNullOf(niftyResid);
 
   // ---- India targets
@@ -205,6 +222,7 @@ export function prepare(bundle: DataBundle): Prep {
       const en = niftyResid[i];
       comb[i] = Number.isNaN(e) ? NaN : e + (Number.isNaN(en) ? 0 : bN * en);
     }
+    demean(comb);
     const pm = t.parent ? parentMaps[t.parent] : undefined;
     const mcapInr = isFiniteNum(sec?.mcap_inr)
       ? (sec!.mcap_inr as number)

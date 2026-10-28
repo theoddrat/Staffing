@@ -221,7 +221,7 @@ function FanChart({ mc, ticker, display }: { mc: MCResult | null; ticker: string
   if (!option) {
     return (
       <div className="panel-body muted">
-        {mc ? `FAN CHART PENDING FOR ${display} (MONTE CARLO RE-RUNNING)…` : 'MONTE CARLO NOT RUN YET — TYPE MC <GO> OR WAIT A MOMENT.'}
+        {mc ? `NO FAN FOR ${display} IN THE LAST MONTE CARLO RUN.` : 'MONTE CARLO NOT RUN YET — TYPE MC <GO> OR WAIT A MOMENT.'}
       </div>
     );
   }
@@ -251,8 +251,9 @@ export default function ImpactPanel(props: PanelProps) {
     return r;
   }, [filtered, sort, rankOf, staleMc]);
 
-  const sel = rows.find((r) => r.ticker === state.selected) ?? rows[0] ?? null;
   const mcForFan = state.mc ?? ext.lastMc;
+  const fanTicker = mcForFan?.fan?.ticker ?? null;
+  const sel = rows.find((r) => r.ticker === state.selected) ?? rows.find((r) => r.ticker === fanTicker) ?? rows[0] ?? null;
   const selMc = sel ? (state.mc ?? ext.lastMc)?.perStock[sel.ticker] : undefined;
 
   const totals = useMemo(() => {
@@ -271,7 +272,13 @@ export default function ImpactPanel(props: PanelProps) {
     <th
       className={`sortable ${cls} ${sort.col === col ? 'sorted' : ''}`}
       title={title}
-      onClick={() => setSort((s) => ({ col, dir: s.col === col ? ((-s.dir) as 1 | -1) : col === 'display' || col === 'tier' ? 1 : 1 }))}
+      onClick={() =>
+        setSort((s) => ({
+          col,
+          // first click: losses / exposure first (ascending moves, descending betas, premia, confidence)
+          dir: s.col === col ? ((-s.dir) as 1 | -1) : col === 'beta' || col === 'beta_dn' || col === 'prem' || col === 'conf' ? -1 : 1,
+        }))
+      }
     >
       {label}
       {sort.col === col ? (sort.dir === 1 ? ' ▲' : ' ▼') : ''}
@@ -339,7 +346,7 @@ export default function ImpactPanel(props: PanelProps) {
                     className={sel?.ticker === r.ticker ? 'sel' : ''}
                     onClick={() => actions.select(r.ticker)}
                     onDoubleClick={() => actions.go(r.display)}
-                    title={r.notes.join('\n') || undefined}
+                    title={(r.notes ?? []).join('\n') || undefined}
                   >
                     <td className="num muted">{rankOf.get(r.ticker)}</td>
                     <td className="lbl">{r.display}</td>
@@ -386,6 +393,13 @@ export default function ImpactPanel(props: PanelProps) {
             {mcForFan && !state.mc && <span className="muted">STALE</span>}
           </div>
           <FanChart mc={mcForFan} ticker={sel?.ticker ?? null} display={sel?.display ?? ''} />
+          {sel && fanTicker !== sel.ticker && !state.mcRunning && (
+            <div className="panel-body">
+              <button className="btn" onClick={() => actions.runMC(sel.ticker)}>
+                RUN MONTE CARLO FAN FOR {sel.display}
+              </button>
+            </div>
+          )}
           {sel && (
             <table className="tbl">
               <tbody>

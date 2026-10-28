@@ -76,7 +76,7 @@ export function fmtUnit(v: number | null | undefined, unit: string | null | unde
     case 'bps':
       return bps(v);
     case 'x':
-      return times(v, 2);
+      return times(v, Math.abs(v) < 1 ? 3 : 2);
     case 'usd':
       return `$${compact(v)}`;
     case 'inr':

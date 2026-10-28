@@ -304,7 +304,7 @@ history:
     - id: railway
       name: "British Railway Mania"
       period: "1844–1850"
-      what_broke: "A promotion boom in new railway lines peaked in 1845; railway share indices then fell for about four and a half years while lines authorised during the mania were still being built — capex committed far ahead of traffic and revenue."
+      what_broke: "A promotion boom in new railway lines peaked in 1845; railway share indices then fell about 64% over roughly four and a half years (Odlyzko; Campbell). The analogy: capital committed to a build-out ahead of the revenue it would earn."
       crash_types: [capex_overbuild]
       linked: "Qualitative overbuild analogy only: the real assets (track) survived and were used; the equity that financed the build-out did not earn its expected return. Analogy to GPUs/data centres financed ahead of AI revenue."
       india: "No comparable listed Indian market; included for the overbuild analogy only."
@@ -323,10 +323,10 @@ history:
     - id: dotcom
       name: "Dot-com bust"
       period: "Mar-2000 – Oct-2002"
-      what_broke: "Internet and telecom-equipment valuations priced in growth that did not arrive; earnings guidance cuts and rate rises turned a multiple-compression bear market into an earnings collapse for the 'picks and shovels' (networking gear) suppliers."
+      what_broke: "Internet and telecom-equipment valuations priced in growth that did not arrive; once customers stopped buying, the 'picks and shovels' (networking gear) suppliers saw multiple compression turn into an earnings collapse."
       crash_types: [multiple_compression, earnings_collapse, capex_overbuild]
       linked: "Cisco — the networking 'picks and shovels' of the internet build-out — is the closest analogue to Nvidia in the AI build-out; Intel and Qualcomm shown for breadth."
-      india: "Indian IT exporters and the Ketan Parekh 'K-10' new-economy stocks fell with Nasdaq; Sify (then Satyam Infoway, Nasdaq-listed) and Zee shown as computed series, K-10 and HFCL figures are sourced because Yahoo has no prices for DSQ, Pentamedia or pre-2002 HFCL."
+      india: "Indian IT exporters and the Ketan Parekh 'K-10' new-economy stocks fell with Nasdaq; Sify (Nasdaq ADR) and Zee are computed series, K-10 and HFCL figures are sourced because Yahoo has no prices for DSQ, Pentamedia or pre-2002 HFCL."
       src: [hist_icmr_k10, hist_outlook_hfcl, hist_moneylife_k10, hist_wiki_ketan, hist_yahoo]
       drawdowns:
         - {ticker: "^IXIC", label: "Nasdaq Composite", peak_search: ["1999-10-01", "2000-12-31"], trough_end: "2003-06-30"}
@@ -339,7 +339,7 @@ history:
         - {ticker: "INFY.NS", label: "Infosys (NSE)", peak_search: ["1999-10-01", "2000-12-31"], trough_end: "2003-06-30"}
         - {ticker: "WIPRO.NS", label: "Wipro (NSE)", peak_search: ["1999-10-01", "2000-12-31"], trough_end: "2003-06-30"}
         - {ticker: "INFY", label: "Infosys ADR", peak_search: ["1999-10-01", "2000-12-31"], trough_end: "2003-06-30"}
-        - {ticker: "SIFY", label: "Sify / Satyam Infoway ADR", peak_search: ["1999-10-01", "2000-12-31"], trough_end: "2003-06-30"}
+        - {ticker: "SIFY", label: "Sify ADR", peak_search: ["1999-10-01", "2000-12-31"], trough_end: "2003-06-30"}
         - {ticker: "ZEEL.BO", label: "Zee (BSE; series starts 2000-01-03)", peak_search: ["1999-10-01", "2000-12-31"], trough_end: "2003-06-30"}
         - label: "K-10 stocks (two months after Apr-2000)"
           src: [hist_icmr_k10]
@@ -357,7 +357,7 @@ history:
       what_broke: "Carriers financed a fiber and equipment build-out with debt ahead of demand; when traffic and pricing disappointed, over-levered networks went bankrupt (Global Crossing, WorldCom), equipment orders collapsed and accounting fraud surfaced — the closest analogue to a data-centre / GPU glut financed with debt."
       crash_types: [capex_overbuild, credit_liquidity, fraud_trust]
       linked: "Equipment makers (Lucent, Nortel, Corning fiber, Ciena, JDS Uniphase/Viavi, Nokia, Ericsson) lost most of their value as carrier capex was cut."
-      india: "Sterlite Optical Technologies (today STL, a Tier C fiber name) shown from Dec-2000 when its Yahoo series starts (after the global telecom peak, so the drawdown understates the fall); HFCL had no Yahoo data before 2002."
+      india: "STL (STLTECH.NS, a Tier C optical-fiber name) is shown from Dec-2000 when its Yahoo series starts (after the global telecom peak, so the drawdown understates the fall); HFCL has no Yahoo data before Aug-2002."
       src: [hist_ii_lucent, hist_wiki_nortel, hist_infoage_gx, hist_sec_lr17588, hist_breeden_worldcom, hist_cnn_worldcom_ch11, hist_yahoo]
       drawdowns:
         - label: "Lucent"
@@ -382,7 +382,7 @@ history:
         - {ticker: "NOK", label: "Nokia ADR", peak_search: ["2000-01-01", "2001-06-30"], trough_end: "2003-06-30"}
         - {ticker: "ERIC", label: "Ericsson ADR", peak_search: ["2000-01-01", "2001-06-30"], trough_end: "2003-06-30"}
         - {ticker: "^IXTC", label: "Nasdaq Telecommunications", peak_search: ["2000-01-01", "2001-06-30"], trough_end: "2003-06-30"}
-        - {ticker: "STLTECH.NS", label: "Sterlite Optical / STL (series starts 2000-12-08)", peak_search: ["2000-12-01", "2001-06-30"], trough_end: "2003-06-30"}
+        - {ticker: "STLTECH.NS", label: "STL (series starts 2000-12-08)", peak_search: ["2000-12-01", "2001-06-30"], trough_end: "2003-06-30"}
       computed_moves:
         - {ticker: "GLW", date: "2002-06-26", label: "Corning on SEC-WorldCom action day"}
         - {ticker: "^IXTC", date: "2002-06-26", label: "Nasdaq Telecom on SEC-WorldCom action day"}
@@ -390,7 +390,7 @@ history:
     - id: satyam
       name: "Satyam accounting fraud"
       period: "7-Jan-2009"
-      what_broke: "Founder-chairman Ramalinga Raju confessed to years of fabricated cash and profits at India's fourth-largest IT exporter; trust in Indian IT disclosures was questioned in the middle of the global financial crisis."
+      what_broke: "Founder-chairman Ramalinga Raju resigned, confessing that he had manipulated the accounts (Rs 7,000 crore, sourced); trust in Indian IT disclosures was questioned in the middle of the global financial crisis."
       crash_types: [fraud_trust]
       linked: "Peers Infosys, TCS, Wipro, HCLTech and Tech Mahindra (which later bought Satyam) — the event study measures whether the trust shock spread."
       india: "The 7-Jan-2009 contagion ratio (peer abnormal return ÷ Satyam's move) calibrates the India restatement shock (calib.contagion_india)."
@@ -415,7 +415,7 @@ history:
     - id: bear2022
       name: "2022 tech bear market"
       period: "Nov-2021 – Dec-2022"
-      what_broke: "Inflation forced the fastest Fed tightening in decades (target range 0.00-0.25 → 4.25-4.50 during 2022); long-duration tech multiples compressed even where earnings held up."
+      what_broke: "The Fed raised its target range from 0.00-0.25 to 4.25-4.50 in seven steps during 2022 (sourced); long-duration tech multiples compressed even where earnings held up."
       crash_types: [multiple_compression]
       linked: "Nasdaq-100 and the semiconductor index; hyperscaler and software multiples de-rated."
       india: "Nifty IT de-rated alongside Nasdaq while the Nifty 50 held up far better (computed drawdowns)."
@@ -456,8 +456,8 @@ history:
       india: "Next-day table: Indian AI, power-equipment and data-centre names on 27-Jan (news broke over the weekend) and 28-Jan (after the US close)."
       src: [hist_bs_deepseek, hist_yahoo]
       drawdowns:
-        - {ticker: "NVDA", label: "NVIDIA (event window)", peak_search: ["2025-01-21", "2025-01-24"], trough_end: "2025-01-31"}
-        - {ticker: "^SOX", label: "PHLX Semiconductor (event window)", peak_search: ["2025-01-21", "2025-01-24"], trough_end: "2025-01-31"}
+        - {ticker: "NVDA", label: "NVIDIA (24-Jan close → low by 31-Jan)", peak_search: ["2025-01-24", "2025-01-24"], trough_end: "2025-01-31"}
+        - {ticker: "^SOX", label: "PHLX Semiconductor (24-Jan close → low by 31-Jan)", peak_search: ["2025-01-24", "2025-01-24"], trough_end: "2025-01-31"}
       computed_moves:
         - {ticker: "NVDA", date: "2025-01-27", label: "NVIDIA"}
         - {ticker: "^SOX", date: "2025-01-27", label: "PHLX SOX"}
@@ -468,7 +468,7 @@ history:
     - id: nvda_nov2025
       name: "NVIDIA earnings reversal"
       period: "20-Nov-2025"
-      what_broke: "A strong quarter failed to calm 'AI bubble' worries about circular financing; NVIDIA reversed from an early gain to a loss and AI-linked tech sold off."
+      what_broke: "A strong quarter failed to calm 'AI bubble' worries; NVIDIA reversed from an early gain of as much as 5% to a ~3% loss (sourced) and AI-linked tech sold off."
       crash_types: [multiple_compression]
       linked: "Chips and AI infrastructure."
       india: "See US-vs-India scatter / event study for the next NSE session."

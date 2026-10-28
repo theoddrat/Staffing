@@ -55,7 +55,7 @@ function DrawdownTable({ rows, bundle }: { rows: Drawdown[]; bundle: DataBundle 
             <td className="num">{num(d.trough, 2)}</td>
             <td className={`num ${isNum(d.drawdown) && d.drawdown < 0 ? 'down' : ''}`}>{pct(d.drawdown, 1)}</td>
             <td className="num">{isNum(d.days_to_bottom) ? `${num(d.days_to_bottom, 0)} d` : '—'}</td>
-            <td>{recoverText(d, bundle.meta.as_of)}</td>
+            <td>{recoverText(d, bundle.meta?.as_of ?? "the data date")}</td>
             <td>
               <StatusBadge status={d.status} />
               <SourceLinks ids={d.src ?? []} bundle={bundle} />
@@ -122,10 +122,10 @@ export default function CasesTable({
     const keyed = cases.map((c, i) => ({ c, i, key: caseStartKey(c.period) }));
     const hist = keyed.filter((k) => k.key <= LATER_EVENTS_AFTER);
     const later = keyed.filter((k) => k.key > LATER_EVENTS_AFTER);
-    const byKey = (a: { key: string; i: number }, b: { key: string; i: number }) => (a.key === b.key ? a.i - b.i : a.key < b.key ? -1 : 1);
+    // Keep the universe/history.yaml order inside each group; split only by start date.
     return [
-      { title: 'HISTORICAL BUBBLE CRASHES & ACCOUNTING SCANDALS', rows: hist.sort(byKey).map((k) => k.c) },
-      { title: 'LATER AI DRAWDOWN EVENTS (AFTER THE DEEPSEEK SHOCK, FROM NEWS UP TO THE DATA DATE)', rows: later.sort(byKey).map((k) => k.c) },
+      { title: 'HISTORICAL BUBBLE CRASHES & ACCOUNTING SCANDALS', rows: hist.map((k) => k.c) },
+      { title: 'LATER AI DRAWDOWN EVENTS (AFTER THE DEEPSEEK SHOCK, FROM NEWS UP TO THE DATA DATE)', rows: later.map((k) => k.c) },
     ].filter((g) => g.rows.length);
   }, [cases]);
 
@@ -194,7 +194,7 @@ export default function CasesTable({
                         <DrawdownCell d={head} />
                         {worst && worst !== head ? <DrawdownCell d={worst} /> : <td className="num muted">—</td>}
                         <td className="num">{head && isNum(head.days_to_bottom) ? `${num(head.days_to_bottom, 0)} d` : '—'}</td>
-                        <td>{recoverText(head, bundle.meta.as_of)}</td>
+                        <td>{recoverText(head, bundle.meta?.as_of ?? "the data date")}</td>
                         <td className="txt">{c.india || '—'}</td>
                       </tr>
                       {isOpen ? (

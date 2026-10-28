@@ -21,7 +21,7 @@ export function caseStartKey(period: string | null | undefined): string {
   if (dMonY && MONTHS[dMonY[2].toLowerCase()]) {
     return `${dMonY[3]}-${MONTHS[dMonY[2].toLowerCase()]}-${dMonY[1].padStart(2, '0')}`;
   }
-  const monY = period.match(/([A-Za-z]{3})[A-Za-z]*\.?\s+(\d{4})/);
+  const monY = period.match(/([A-Za-z]{3})[A-Za-z]*\.?[\s-]+(\d{4})/);
   if (monY && MONTHS[monY[1].toLowerCase()]) return `${monY[2]}-${MONTHS[monY[1].toLowerCase()]}-01`;
   const y = period.match(/(\d{4})/);
   if (y) return `${y[1]}-01-01`;
