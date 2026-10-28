@@ -9,6 +9,7 @@ import {
   needsAttention,
   olsLine,
   prePostAverages,
+  robustRange,
   sliderBounds,
   sourceUsage,
   symmetricBound,
@@ -195,5 +196,18 @@ describe('matchFocus', () => {
     expect(matchFocus('dot com', cases, events)).toEqual({ caseId: 'dotcom', eventId: null });
     expect(matchFocus('SATYAM', cases, events)).toEqual({ caseId: 'satyam', eventId: 'satyam_2009' });
     expect(matchFocus(null, cases, events)).toEqual({ caseId: null, eventId: null });
+  });
+});
+
+describe('robustRange', () => {
+  it('ignores a single extreme value, pads, includes zero, and counts outliers', () => {
+    const vals = [...Array.from({ length: 199 }, (_, i) => -0.1 + (0.2 * i) / 198), 0.69];
+    const r = robustRange(vals, 0.005, 0.995, 0.15)!;
+    expect(r.max).toBeLessThan(0.69);
+    expect(r.min).toBeLessThan(-0.1);
+    expect(r.outside).toBe(1);
+    expect(robustRange([], 0.005, 0.995)).toBeNull();
+    const pos = robustRange([0.1, 0.2, 0.3])!;
+    expect(pos.min).toBeLessThanOrEqual(0);
   });
 });

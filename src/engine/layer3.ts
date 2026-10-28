@@ -40,7 +40,7 @@ export function layer3(
   let premFallback = false;
   let premStatus: Status = 'COMPUTED';
   if (prem === null) {
-    const tm = prep.tierMedianPremium[t.tier];
+    const tm = rp.premiumFallback ? prep.tierMedianPremium[t.tier] : null;
     if (tm !== null) {
       prem = tm;
       premFallback = true;

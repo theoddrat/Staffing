@@ -10,9 +10,11 @@ function DrawdownCell({ d }: { d: Drawdown | undefined }) {
   if (!d) return <td className="num muted">—</td>;
   return (
     <td className="num">
-      <span className={isNum(d.drawdown) && d.drawdown < 0 ? 'down' : 'white'}>{pct(d.drawdown, 1)}</span>
-      <span className="muted"> {d.label}</span>
-      <StatusBadge status={d.status} />
+      <span className="b-dd">
+        <span className={isNum(d.drawdown) && d.drawdown < 0 ? 'down' : 'white'}>{pct(d.drawdown, 1)}</span>
+        <StatusBadge status={d.status} />
+      </span>
+      <span className="b-dd-label">{d.label}</span>
     </td>
   );
 }
@@ -20,7 +22,8 @@ function DrawdownCell({ d }: { d: Drawdown | undefined }) {
 function recoverText(d: Drawdown | undefined, asOf: string): string {
   if (!d) return '—';
   if (isNum(d.days_to_recover)) return `${num(d.days_to_recover, 0)} d${d.recovered_date ? ` (${d.recovered_date})` : ''}`;
-  if (d.trough_date) return `not recovered (as of ${asOf})`;
+  // Only a COMPUTED series can show that a recovery has not happened; for sourced figures it is simply unknown.
+  if (d.status === 'COMPUTED' && d.trough_date) return `not recovered (as of ${asOf})`;
   return '—';
 }
 
@@ -49,9 +52,9 @@ function DrawdownTable({ rows, bundle }: { rows: Drawdown[]; bundle: DataBundle 
               {d.label}
               {d.ticker && d.ticker !== d.label ? <span className="muted"> {d.ticker}</span> : null}
             </td>
-            <td>{d.peak_date ?? '—'}</td>
+            <td className="nowrap">{d.peak_date ?? '—'}</td>
             <td className="num">{num(d.peak, 2)}</td>
-            <td>{d.trough_date ?? '—'}</td>
+            <td className="nowrap">{d.trough_date ?? '—'}</td>
             <td className="num">{num(d.trough, 2)}</td>
             <td className={`num ${isNum(d.drawdown) && d.drawdown < 0 ? 'down' : ''}`}>{pct(d.drawdown, 1)}</td>
             <td className="num">{isNum(d.days_to_bottom) ? `${num(d.days_to_bottom, 0)} d` : '—'}</td>
@@ -186,11 +189,11 @@ export default function CasesTable({
                           {c.name}
                           <span className="muted"> [{c.id}]</span>
                         </td>
-                        <td>{c.period}</td>
+                        <td className="nowrap">{c.period}</td>
                         <td>
                           <CrashTags types={c.crash_types} />
                         </td>
-                        <td className="txt">{c.what_broke}</td>
+                        <td className="txt whatbroke">{c.what_broke}</td>
                         <DrawdownCell d={head} />
                         {worst && worst !== head ? <DrawdownCell d={worst} /> : <td className="num muted">—</td>}
                         <td className="num">{head && isNum(head.days_to_bottom) ? `${num(head.days_to_bottom, 0)} d` : '—'}</td>

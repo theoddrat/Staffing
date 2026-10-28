@@ -5,7 +5,7 @@ import Chart, { axisStyle, CHART_COLORS } from '../../../components/Chart';
 import { SourceLinks, StatusBadge } from '../../../components/StatusBadge';
 import { isNum, num, pct, spct, times } from '../../../lib/format';
 import { Empty, Note, Section } from '../common';
-import { olsLine, TIERS } from '../util';
+import { olsLine, robustRange, TIERS } from '../util';
 
 const pctAxis = (v: number) => `${(v * 100).toFixed(0)}%`;
 
@@ -15,7 +15,7 @@ export function UsIndiaScatter({ bundle }: { bundle: DataBundle }) {
   const [namedOnly, setNamedOnly] = useState(false);
   const names = useMemo(() => new Map((bundle.india ?? []).map((t) => [t.ticker, t.display || t.ticker])), [bundle.india]);
 
-  const { option, fits } = useMemo(() => {
+  const { option, fits, outside } = useMemo(() => {
     const visible = pts.filter((p) => tiers.has(p.tier) && (!namedOnly || p.event));
     const series: any[] = [];
     const fitRows: { tier: Tier; n: number; b: number | null; r2: number | null }[] = [];
@@ -65,9 +65,14 @@ export function UsIndiaScatter({ bundle }: { bundle: DataBundle }) {
         });
       }
     }
+    const yr = robustRange(visible.map((p) => p.r));
     const opt = {
       grid: { left: 60, right: 18, top: 30, bottom: 46 },
       legend: { top: 0, data: TIERS.filter((t) => tiers.has(t)).map((t) => `Tier ${t}`) },
+      dataZoom: [
+        { type: 'inside', xAxisIndex: 0, filterMode: 'none' },
+        { type: 'inside', yAxisIndex: 0, filterMode: 'none' },
+      ],
       tooltip: {
         trigger: 'item',
         formatter: (p: any) => {
@@ -84,18 +89,21 @@ export function UsIndiaScatter({ bundle }: { bundle: DataBundle }) {
       xAxis: {
         type: 'value',
         name: 'US shock: aligned SOX log return (US close before the NSE session)',
+        scale: true,
         nameLocation: 'middle',
         nameGap: 28,
-        ...axisStyle({ axisLabel: { color: CHART_COLORS.amber, fontSize: 10, formatter: pctAxis } }),
+        ...axisStyle({ axisLabel: { color: CHART_COLORS.amber, fontSize: 10, formatter: pctAxis }, axisLine: { onZero: false, lineStyle: { color: CHART_COLORS.grey } } }),
       },
       yAxis: {
         type: 'value',
         name: 'Indian stock log return',
-        ...axisStyle({ axisLabel: { color: CHART_COLORS.amber, fontSize: 10, formatter: pctAxis } }),
+        min: yr ? yr.min : undefined,
+        max: yr ? yr.max : undefined,
+        ...axisStyle({ axisLabel: { color: CHART_COLORS.amber, fontSize: 10, formatter: pctAxis }, axisLine: { onZero: false, lineStyle: { color: CHART_COLORS.grey } } }),
       },
       series,
     };
-    return { option: opt, fits: fitRows };
+    return { option: opt, fits: fitRows, outside: yr?.outside ?? 0 };
   }, [pts, tiers, namedOnly, names]);
 
   if (!pts.length) return <Empty note="history.us_vs_india is empty in data.json" />;
@@ -120,6 +128,12 @@ export function UsIndiaScatter({ bundle }: { bundle: DataBundle }) {
         </label>
       </div>
       <Chart option={option} height={360} />
+      {outside > 0 ? (
+        <div className="b-chart-caption">
+          {outside} point{outside === 1 ? '' : 's'} lie outside the default y-range (0.5th–99.5th percentile, padded) — scroll on the chart to zoom out;
+          they are still included in the fitted slopes.
+        </div>
+      ) : null}
       <table className="tbl b-tbl" style={{ marginTop: 4 }}>
         <thead>
           <tr>
@@ -168,6 +182,7 @@ export function PeDrawdownScatter({ bundle }: { bundle: DataBundle }) {
       symbolSize: 9,
       itemStyle: { color: kind === 'CAPE' ? CHART_COLORS.cyan : CHART_COLORS.amber },
       label: { show: true, formatter: (p: any) => p.data?.label ?? '', position: 'right', color: CHART_COLORS.white, fontSize: 9 },
+      labelLayout: { moveOverlap: 'shiftY' },
       data: pts
         .filter((p) => p.pe_kind === kind && isNum(p.pe) && isNum(p.drawdown))
         .map((p) => ({
@@ -238,6 +253,7 @@ export function PeDrawdownScatter({ bundle }: { bundle: DataBundle }) {
   return (
     <Section title="Pre-crash P/E vs peak-to-trough drawdown — calibration for shock 4 (multiple compression)">
       <Chart option={option} height={360} />
+      <div className="b-chart-caption">■ = P/E COMPUTED from Shiller's data · ● = P/E SOURCED (hover for the source) · dashed = OLS fit · red line = today's AI-basket P/E.</div>
       <div className="b-kv" style={{ margin: '4px 0' }}>
         <span className="k">FIT</span>
         <span className="v">

@@ -15,18 +15,18 @@ export function DotcomOverlay({ bundle }: { bundle: DataBundle }) {
   const series = bundle.history?.overlay ?? [];
   const option = useMemo(
     () => ({
-      grid: { left: 56, right: 18, top: 34, bottom: 46 },
-      legend: { top: 0 },
+      grid: { left: 56, right: 24, top: 58, bottom: 46 },
+      legend: { top: 0, type: 'scroll' },
       tooltip: {
         trigger: 'axis',
         formatter: (ps: any[]) =>
           [`<b>day ${ps?.[0]?.value?.[0]} vs peak</b>`, ...(ps ?? []).filter((p) => isNum(p.value?.[1])).map((p) => `${p.marker} ${p.seriesName}: ${num(p.value[1], 1)}`)].join('<br/>'),
       },
-      xAxis: { type: 'value', name: 'trading days relative to each series’ peak', nameLocation: 'middle', nameGap: 28, ...axisStyle() },
-      yAxis: { type: 'value', name: 'index (peak = 100)', ...axisStyle() },
+      xAxis: { type: 'value', min: 'dataMin', max: 'dataMax', name: 'trading days relative to each series’ peak', nameLocation: 'middle', nameGap: 28, ...axisStyle() },
+      yAxis: { type: 'value', name: 'index (peak = 100)', nameLocation: 'middle', nameGap: 36, ...axisStyle() },
       series: series.map((s, i) => ({
         type: 'line',
-        name: `${s.label} (peak ${s.peak_date})`,
+        name: s.label.includes(s.peak_date) ? s.label : `${s.label} (peak ${s.peak_date})`,
         data: s.t.map((t, k) => [t, isNum(s.v[k]) ? s.v[k] : null]),
         showSymbol: false,
         lineStyle: { width: /dot|2000|IXIC/i.test(s.label) ? 1.5 : 2.5, color: OVERLAY_COLORS[i % OVERLAY_COLORS.length] },
@@ -37,8 +37,8 @@ export function DotcomOverlay({ bundle }: { bundle: DataBundle }) {
                 symbol: 'none',
                 silent: true,
                 lineStyle: { color: CHART_COLORS.red, type: 'dashed' },
-                label: { color: CHART_COLORS.red, formatter: 'peak' },
-                data: [{ xAxis: 0 }, { yAxis: 100 }],
+                label: { color: CHART_COLORS.red, formatter: 'peak', position: 'end' },
+                data: [{ xAxis: 0 }, { yAxis: 100, label: { show: false } }],
               }
             : undefined,
       })),
@@ -129,6 +129,9 @@ export function CalibrationCheck({ bundle, result }: { bundle: DataBundle; resul
   const replays = bundle.history?.replay_windows ?? [];
   const horizon = result?.params?.horizon ?? '1D';
   const moveCols = ['SOX', 'NDX', 'SPX', 'IXIC', 'NIFTY', 'SENSEX', 'NIFTYIT'];
+  const distinctNotes = new Set(replays.map((w) => w.note ?? ''));
+  const perRowNotes = distinctNotes.size > 1;
+  const commonNote = replays[0]?.note ?? null;
   return (
     <div>
       <Section title={`Scenario factor moves vs historical worst windows (current preset: ${result?.preset?.label ?? '—'}, horizon ${horizon})`}>
@@ -158,11 +161,11 @@ export function CalibrationCheck({ bundle, result }: { bundle: DataBundle; resul
                     <td className="lbl">{f}</td>
                     <MoveCell v={scen} />
                     <MoveCell v={logToSimple(w?.d1)} />
-                    <td>{w?.d1_date ?? '—'}</td>
+                    <td className="nowrap">{w?.d1_date ?? '—'}</td>
                     <MoveCell v={logToSimple(w?.d21)} />
-                    <td>{w?.d21_end ?? '—'}</td>
+                    <td className="nowrap">{w?.d21_end ?? '—'}</td>
                     <MoveCell v={logToSimple(w?.d252)} />
-                    <td>{w?.d252_end ?? '—'}</td>
+                    <td className="nowrap">{w?.d252_end ?? '—'}</td>
                     <td className={`num ${isNum(ratio) && ratio > 1 ? 'b-warn' : 'white'}`}>{isNum(ratio) ? `${num(ratio, 2)}×` : '—'}</td>
                   </tr>
                 );
@@ -194,7 +197,7 @@ export function CalibrationCheck({ bundle, result }: { bundle: DataBundle; resul
                     </th>
                   ))}
                   <th>STATUS</th>
-                  <th className="wrap">NOTE</th>
+                  {perRowNotes ? <th className="wrap">NOTE</th> : null}
                 </tr>
               </thead>
               <tbody>
@@ -202,8 +205,8 @@ export function CalibrationCheck({ bundle, result }: { bundle: DataBundle; resul
                   <tr key={w.id}>
                     <td className="lbl">{w.id}</td>
                     <td className="txt">{w.label}</td>
-                    <td>{w.start}</td>
-                    <td>{w.end}</td>
+                    <td className="nowrap">{w.start}</td>
+                    <td className="nowrap">{w.end}</td>
                     {moveCols.map((c) => (
                       <MoveCell key={c} v={logToSimple(w.moves?.[c])} />
                     ))}
@@ -211,7 +214,7 @@ export function CalibrationCheck({ bundle, result }: { bundle: DataBundle; resul
                       <StatusBadge status={w.status} />
                       <SourceLinks ids={w.src ?? []} bundle={bundle} />
                     </td>
-                    <td className="txt muted">{w.note ?? ''}</td>
+                    {perRowNotes ? <td className="txt muted">{w.note ?? ''}</td> : null}
                   </tr>
                 ))}
               </tbody>
@@ -220,6 +223,7 @@ export function CalibrationCheck({ bundle, result }: { bundle: DataBundle; resul
         ) : (
           <Empty note="history.replay_windows is empty in data.json" />
         )}
+        {!perRowNotes && commonNote ? <Note>{commonNote}</Note> : null}
         <Note>Close-to-close moves over each window, COMPUTED and shown as simple returns. "—" = the series did not exist yet (e.g. Nifty before Sep-2007 on Yahoo).</Note>
       </Section>
     </div>

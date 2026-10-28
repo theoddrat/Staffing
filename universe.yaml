@@ -1416,3 +1416,29 @@ sources:
     date: "2026-10-23"
     quote: "The index fell 6.72% (773.58 points) to close at 10,731.98"
     verification: SECONDARY
+
+  - id: rupee_mar2026
+    title: "Rupee breaches 93 against dollar for the first time"
+    publisher: Kashmir Reader (PTI)
+    url: https://kashmirreader.com/2026/03/20/rupee-breaches-93-dollar-for-the-first-time-down-19-paise-to-93-08-against-us-dollar-in-early-trade/
+    date: "2026-03-20"
+    quote: "the rupee fell 19 paise to its record intra-day low of 93.08 against the US dollar in early trade"
+    verification: SECONDARY
+
+# -------------------------------------------------------------------------------------
+# FX CALIBRATION EPISODES (Layer 4). Risk-off windows; boundaries are definitional choices;
+# INR / NDX / SOX / Nifty moves over each window are COMPUTED from Yahoo closes.
+# The default INR depreciation f = median INR move over the episodes in which the NDX fell.
+# -------------------------------------------------------------------------------------
+fx_episodes:
+  - {id: GFC, label: "GFC (Lehman -> Nov-2008 low)", start: "2008-09-12", end: "2008-11-20"}
+  - {id: EZ2011, label: "Aug-2011 US downgrade / euro crisis", start: "2011-07-22", end: "2011-10-03"}
+  - {id: TAPER, label: "Taper tantrum", start: "2013-05-22", end: "2013-08-28"}
+  - {id: CHINA2015, label: "China devaluation selloff", start: "2015-08-10", end: "2015-08-25"}
+  - {id: COVID, label: "COVID crash", start: "2020-02-19", end: "2020-03-23"}
+  - {id: Y2022, label: "2022 rate bear (NDX peak -> Oct low)", start: "2021-11-19", end: "2022-10-13"}
+  - {id: CARRY2024, label: "Yen-carry unwind", start: "2024-07-10", end: "2024-08-05"}
+  - {id: DEEPSEEK, label: "DeepSeek shock", start: "2025-01-24", end: "2025-01-28"}
+  - {id: TARIFF2025, label: "Apr-2025 US tariff shock", start: "2025-04-02", end: "2025-04-08"}
+  - {id: MAR2026, label: "Mar-2026 FII outflows / West Asia (rupee record low 93.08 on 20-Mar-2026)", start: "2026-02-27", end: "2026-03-20", src: [rupee_mar2026]}
+  - {id: OCT2026, label: "Oct-2026 AI funding / credit scare", start: "2026-10-07", end: "2026-10-22", src: [oct2026_openai_admiral]}

@@ -42,7 +42,7 @@ function EventChart({ ev, groupIdx }: { ev: EventStudy; groupIdx: number }) {
         symbol: 'none',
         silent: true,
         lineStyle: { color: CHART_COLORS.red, type: 'dashed' },
-        label: { color: CHART_COLORS.red, formatter: 'day 0', position: 'insideEndTop' },
+        label: { color: CHART_COLORS.red, formatter: 'day 0', position: 'end' },
         data: [{ xAxis: 0 }],
       },
     };
@@ -74,6 +74,8 @@ function EventChart({ ev, groupIdx }: { ev: EventStudy; groupIdx: number }) {
       yAxis: {
         type: 'value',
         name: 'CAR',
+        nameLocation: 'middle',
+        nameGap: 44,
         ...axisStyle({ axisLabel: { color: CHART_COLORS.amber, fontSize: 10, formatter: (v: number) => `${(v * 100).toFixed(0)}%` } }),
       },
       series: [...memberSeries, meanSeries],

@@ -52,8 +52,6 @@ def contagion_fallback(logret: Any) -> dict[str, Any]:
         "calib.contagion_india", "Contagion ratio: mean Indian IT peer abnormal return / Satyam move (7-Jan-2009)",
         ratio_in, "x", note="peers INFY/TCS/WIPRO/HCLTECH/TECHM vs Nifty 50; Satyam fell ~78% on the day (SOURCED); fallback computed by core",
         bounds=(0.0, 1.0, 0.01))
-    if ratio_in is not None:
-        out["contagion_india"]["status"] = "SOURCED"
     return out
 
 

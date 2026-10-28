@@ -289,6 +289,28 @@ export function windowDays(win: [number, number] | null | undefined, len: number
   return Array.from({ length: len }, (_, i) => start + i);
 }
 
+/**
+ * Robust axis range: [q_lo, q_hi] quantiles of the finite values, padded by `pad` of the span and
+ * widened to include 0. Returns the number of values outside the range (shown as a caption).
+ */
+export function robustRange(
+  values: (number | null | undefined)[],
+  qlo = 0.005,
+  qhi = 0.995,
+  pad = 0.15,
+): { min: number; max: number; outside: number } | null {
+  const xs = values.filter(isFiniteNum).sort((a, b) => a - b);
+  if (!xs.length) return null;
+  const at = (q: number) => xs[Math.min(xs.length - 1, Math.max(0, Math.round(q * (xs.length - 1))))];
+  let lo = Math.min(at(qlo), 0);
+  let hi = Math.max(at(qhi), 0);
+  const span = hi - lo || Math.abs(hi) || 1;
+  lo -= pad * span;
+  hi += pad * span;
+  const outside = xs.filter((v) => v < lo || v > hi).length;
+  return { min: lo, max: hi, outside };
+}
+
 /** Hostname for a URL, or the raw string when it does not parse. */
 export function hostOf(url: string | null | undefined): string {
   if (!url) return '';

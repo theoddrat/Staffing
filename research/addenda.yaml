@@ -225,6 +225,45 @@ sources:
   accessed: '2026-10-28'
   note: 'Original Sept-2025 announcement named an undisclosed customer (Power Engineering): ''20-year power purchase agreement ... to supply 1,200 megawatts (MW) of power from the Comanche Peak Nuclear
     Power Plant''.'
+- id: abbindia_q2cy26_icicisec
+  title: ABB India (ABB) Q2CY26 result update
+  publisher: ICICI Securities
+  url: https://mailcontent.icicidirect.com/mailcontent/idirect_abbindia_q2cy26.pdf
+  date: 2026-08
+  quote: Management highlighted data centres as one of the fastest-growing end markets, contributing 15–17% of quarterly order inflows. ... Q2CY26 order inflows were broad-based, led by Data Centres (15–17%),
+    Metals & Mining (15%), Oil & Gas (9%), Buildings & Infrastructure (8%) and Renewables (6%)
+  verification: SECONDARY
+  accessed: '2026-10-28'
+  note: Quarter Apr-Jun 2026; orders Rs 4,363 cr (record Q2). Text extracted with pdftotext.
+- id: schneider_india_dc_reuters
+  title: Schneider Electric sees India data center business outpacing core growth on AI boom
+  publisher: Reuters via Yahoo Finance
+  url: https://finance.yahoo.com/sectors/technology/articles/schneider-electric-sees-india-data-075944552.html
+  date: '2026-05-25'
+  quote: Data centers currently account for 15% to 20% of Schneider Electric's India business
+  verification: SECONDARY
+  accessed: '2026-10-28'
+  note: Interview with Sumati Sahgal (VP Secure Power and Data Centres, Greater India Zone). Refers to Schneider's whole India business, not specifically the listed subsidiary SEIL; SEIL's Q1 FY27 record
+    orders (Rs 915 cr) were 'mainly credited to emerging segments such as data centres and semiconductors' (The Machine Maker).
+- id: powerindia_q1fy27_pr
+  title: Hitachi Energy India Limited announces Q1 FY27 results
+  publisher: Hitachi Energy
+  url: https://www.hitachienergy.com/news-and-events/press-releases/2026/08/hitachi-energy-india-limited-announces-q1-fy27-results
+  date: 2026-08
+  quote: data centers contributed significantly, followed by industries and renewables ... accounting for 33.6% of total orders (without HVDC) booked for the quarter
+  verification: PRIMARY
+  accessed: '2026-10-28'
+  note: Orders Rs 5,096.5 cr (+26.1% y/y ex-HVDC); revenue Rs 2,493.7 cr; backlog Rs 32,222.1 cr. Data-centre share of orders not quantified.
+- id: gvtd_q1fy27_call_cofacto
+  title: 'GE Vernova T&D India Q1 FY27 Earnings Call: Record Backlog at Rs. 20,900 Cr, EBITDA Margin Holds at 25.1%'
+  publisher: Cofacto (formerly CompoundingAI)
+  url: https://cofacto.ai/market-news/gvt-d-q1-fy27-earnings-call
+  date: 2026-08
+  quote: Rs.1,300 Cr US data center RPT order has not been booked in Q1 FY 2026-2027 ... management expects booking in Q2 or Q3 FY 2026-2027, pending group entity discussions with the end customer ... Order
+    backlog of Rs.20,900 Cr (Rs.209.3 billion) as of June 2026 ... exports constitute 10–15% of the total order backlog
+  verification: SECONDARY
+  accessed: '2026-10-28'
+  note: RPT = related-party transaction (order routed via GE Vernova group entities for a US data-centre end customer). Q1 FY27 export orders Rs 550 cr of ~Rs 1,140 cr inflow.
 quantities:
   TCS.NS.exposure.revenue:
     label: Technology & Services vertical share of revenue (Q2 FY27)
@@ -371,6 +410,41 @@ quantities:
       src: []
       note: Electrification data-centre orders are disclosed only in dollars (no share of segment orders/revenue).
     note: Effective 0.145 vs the prior pure USER_ASSUMPTION 0.15; two of three factors now sourced.
+  ABB.NS.exposure.capex:
+    label: Data-centre / AI-linked share of orders
+    parts:
+    - label: Data centres' share of quarterly order inflows, Q2 CY2026 (15-17%, midpoint)
+      value: 0.16
+      status: SOURCED
+      src:
+      - abbindia_q2cy26_icicisec
+      note: Management commentary reported by ICICI Securities; share of orders (leading indicator), not of revenue.
+    note: Replaces USER_ASSUMPTION 0.08.
+  SCHNEIDER.NS.exposure.capex:
+    label: Data-centre / AI-linked share of orders
+    parts:
+    - label: Data centres' share of Schneider Electric's India business (15-20%, midpoint)
+      value: 0.175
+      status: UNVERIFIED
+      src:
+      - schneider_india_dc_reuters
+      note: 'Proxy: figure is for Schneider''s overall India business, not the listed SEIL entity.'
+    note: Replaces USER_ASSUMPTION 0.10 with a sourced but indirect proxy (hence UNVERIFIED).
+  GVT&D.NS.exposure.capex:
+    label: Data-centre / AI-power-linked share of orders
+    parts:
+    - label: Pending US data-centre related-party order (Rs 1,300 cr) / order backlog (Rs 20,900 cr)
+      value: 0.0622
+      status: SOURCED
+      src:
+      - gvtd_q1fy27_call_cofacto
+      note: Direct link to US hyperscaler data-centre capex via the GE Vernova parent; not yet booked as of Q1 FY27.
+    - label: Uplift for domestic data-centre grid-automation orders (unquantified)
+      value: 1.6
+      status: USER_ASSUMPTION
+      src: []
+      note: Company cites data-centre wins without values; 1.6 keeps the effective share at ~0.10 (prior default).
+    note: Effective ~0.10; now anchored on a disclosed US data-centre order.
 history_notes: {}
 context:
   na_revenue_share:
@@ -433,3 +507,13 @@ context:
         as a share of revenue.
       src:
       - vst_aws_ppa
+  tier_a_notes:
+    GVT&D.NS:
+    - text: A Rs 1,300 cr US data-centre related-party order (via GE Vernova group) was pending at Q1 FY27 (expected Q2/Q3 FY27); exports 10-15% of backlog; backlog Rs 20,900 cr (~3.5x annual revenue).
+      src:
+      - gvtd_q1fy27_call_cofacto
+    POWERINDIA.NS:
+    - text: 'Q1 FY27: data centres were the leading contributor in the segment-wise order break-up (''data centers contributed significantly, followed by industries and renewables''); exports 33.6% of orders
+        ex-HVDC. No numeric share -> exposure stays USER_ASSUMPTION.'
+      src:
+      - powerindia_q1fy27_pr

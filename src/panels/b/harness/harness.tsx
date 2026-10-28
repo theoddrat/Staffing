@@ -5,6 +5,7 @@ import '../../../styles/theme.css';
 import preview from '../../../../.cache/history_preview.json';
 import HistoryPanel from '../../HistoryPanel';
 import SourcesPanel from '../../SourcesPanel';
+import ModelPanel from '../../ModelPanel';
 
 const p = preview as any;
 const bundle: any = {
@@ -35,4 +36,6 @@ const state: any = {
   historyFocus: focus,
   message: null,
 };
-createRoot(document.getElementById('root')!).render(which === 'F6' ? <SourcesPanel state={state} actions={actions} /> : <HistoryPanel state={state} actions={actions} />);
+createRoot(document.getElementById('root')!).render(
+  which === 'F6' ? <SourcesPanel state={state} actions={actions} /> : which === 'F5' ? <ModelPanel state={state} actions={actions} /> : <HistoryPanel state={state} actions={actions} />,
+);

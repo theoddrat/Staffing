@@ -54,6 +54,8 @@ export interface ResolvedParams {
   contagion: number;
   windowId: string | null;
   premiumFloorZero: boolean;
+  /** Use the tier-median AI premium when a stock has none (assump.premium_fallback ≠ 0; default on). */
+  premiumFallback: boolean;
   comp: {
     capex: boolean;
     guidance: boolean;

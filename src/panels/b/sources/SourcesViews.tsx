@@ -172,22 +172,22 @@ export function Provenance({ bundle }: { bundle: DataBundle }) {
             <div className="b-kv">
               <span className="k">APP</span>
               <span className="v">
-                {m.app} · schema v{m.schema_version}
+                {m.app ?? '—'} · schema v{m.schema_version ?? '—'}
               </span>
               <span className="k">BUILT AT</span>
-              <span className="v">{m.built_at}</span>
+              <span className="v">{m.built_at ?? '—'}</span>
               <span className="k">DATA AS OF (NSE)</span>
-              <span className="v">{m.as_of}</span>
+              <span className="v">{m.as_of ?? '—'}</span>
               <span className="k">DATA AS OF (US)</span>
-              <span className="v">{m.as_of_us}</span>
+              <span className="v">{m.as_of_us ?? '—'}</span>
               <span className="k">REGRESSION WINDOW</span>
               <span className="v">
-                {m.regression_window?.start} → {m.regression_window?.end} · {num(m.regression_window?.years, 0)} years ·{' '}
+                {m.regression_window?.start ?? '—'} → {m.regression_window?.end ?? '—'} · {num(m.regression_window?.years, 0)} years ·{' '}
                 {num(m.regression_window?.n_india_days, 0)} NSE sessions
               </span>
               <span className="k">PRE-CHATGPT WINDOW</span>
               <span className="v">
-                {m.pre_chatgpt?.window_start} → {m.pre_chatgpt?.window_end} (ChatGPT launch {m.pre_chatgpt?.date}){' '}
+                {m.pre_chatgpt?.window_start ?? '—'} → {m.pre_chatgpt?.window_end ?? '—'} (ChatGPT launch {m.pre_chatgpt?.date ?? '—'}){' '}
                 <SourceLinks ids={m.pre_chatgpt?.src ?? []} bundle={bundle} />
               </span>
               <span className="k">USD/INR</span>

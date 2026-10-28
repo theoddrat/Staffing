@@ -48,11 +48,11 @@ const L1: Block[] = [
     tex: [
       String.raw`\text{RevHit}_j = c\cdot\psi_{\text{sup}}\cdot s_j,\qquad e_j=\min\!\left(\text{RevHit}_j\cdot OL_j,\;0.95\right),\qquad d_j=\kappa\,e_j`,
       String.raw`OL_j=\operatorname{clamp}\!\left(\frac{\Delta\text{EBIT}_j/\Delta\text{Rev}_j}{\text{EBIT}_j/\text{Rev}_j},\,1,\,4\right)\quad(\text{incremental}\,/\,\text{current margin})`,
-      String.raw`\text{CapexCut}_{USD}=c\sum_{h\in\{MSFT,GOOGL,AMZN,META,ORCL\}}K^{TTM}_h,\qquad \text{absorbed}=\frac{\sum_j\text{RevHit}_j\,\text{Rev}^{TTM}_j}{\text{CapexCut}_{USD}}`,
+      String.raw`\text{CapexCut}_{USD}=c\sum_{h\in\mathcal{H}}K^{TTM}_h,\qquad \text{absorbed}=\frac{\sum_j\text{RevHit}_j\,\text{Rev}^{TTM}_j}{\text{CapexCut}_{USD}}`,
     ],
     notes: [
       <>s<sub>j</sub> = share of j's revenue tied to hyperscaler capex, from 10-K customer-concentration / segment disclosures (F6); where only a segment share is disclosed, the hyperscaler fraction is a labelled USER ASSUMPTION.</>,
-      <>K<sup>TTM</sup> = trailing-four-quarter capital expenditure from company cash-flow statements (COMPUTED). Hyperscalers themselves get e = d = 0 in this shock.</>,
+      <>ℋ = {'{'}MSFT, GOOGL, AMZN, META, ORCL{'}'}; K<sup>TTM</sup> = trailing-four-quarter capital expenditure from company cash-flow statements (COMPUTED). Hyperscalers themselves get e = d = 0 in this shock; “absorbed” checks that modelled supplier revenue lost does not exceed the dollars cut.</>,
     ],
   },
   {

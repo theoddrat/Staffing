@@ -18,7 +18,7 @@
 .b-note b, .b-note strong { color: var(--amber); font-weight: 400; }
 .b-empty { padding: 6px; font-size: var(--fs-sm); }
 .b-scroll { overflow: auto; max-height: 460px; }
-.b-scroll-lg { overflow: auto; max-height: 640px; }
+.b-scroll-lg { overflow: auto; max-height: max(420px, calc(100vh - 240px)); }
 .b-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 4px; font-size: var(--fs-sm); }
 .b-toolbar label { color: var(--amber-dim); }
 .b-search { width: 260px; padding: 2px 4px; }
@@ -77,4 +77,11 @@
 .b-bad { color: var(--red); }
 .b-chip { display: inline-block; padding: 0 4px; border: 1px solid var(--line); margin: 1px 2px 1px 0; font-size: var(--fs-xs); color: var(--white); }
 .b-chip.active { border-color: var(--amber); color: #000; background: var(--amber); }
+button.b-chip { background: transparent; color: var(--white); font-family: var(--font); cursor: pointer; line-height: 1.4; }
+button.b-chip:hover { border-color: var(--amber-dim); color: var(--amber); }
+button.b-chip.active, button.b-chip.active:hover { background: var(--amber); color: #000; border-color: var(--amber); }
+.b-tbl td.nowrap, .b-tbl th.nowrap { white-space: nowrap; }
+.b-tbl td.whatbroke { min-width: 340px; }
+.b-dd { display: block; white-space: nowrap; }
+.b-dd-label { display: block; color: var(--grey); font-size: var(--fs-xs); white-space: normal; max-width: 260px; margin-left: auto; }
 .b-chart-caption { color: var(--grey); font-size: var(--fs-xs); margin-top: 2px; }

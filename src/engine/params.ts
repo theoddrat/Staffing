@@ -146,9 +146,11 @@ export function resolveParams(prep: Prep, params: ScenarioParams): ResolvedParam
     }
   }
 
+  const pf = effective(qIdx.get('assump.premium_fallback'), overrides, 'assump.premium_fallback').value;
   return {
     preset: params.preset,
     horizon: params.horizon,
+    premiumFallback: pf === null ? true : pf !== 0,
     v,
     mode,
     per_name: asBool(values.per_name, false),
@@ -166,6 +168,11 @@ export function resolveParams(prep: Prep, params: ScenarioParams): ResolvedParam
 }
 
 /** Quantities resolved to numbers (overrides applied) for one evaluation. */
+/** Origins whose earnings respond to the capex/credit channels (hyperscalers/software only via multiples). */
+function rqNeedsOL(group: string): boolean {
+  return group === 'chips' || group === 'infra';
+}
+
 export interface ResolvedQuantities {
   s: Float64Array; // hyperscaler share per origin
   neo: Float64Array; // neocloud share per origin
@@ -184,6 +191,11 @@ export interface ResolvedQuantities {
 
 export function resolveQuantities(prep: Prep, overrides: Record<string, number> | undefined): ResolvedQuantities {
   const warnings: string[] = [];
+  const qIdx = quantityIndex(prep.bundle);
+  // declared fallback for missing operating leverage (assump.op_leverage_default), else identity 1.0
+  const olDefault = effective(qIdx.get('assump.op_leverage_default'), overrides, 'assump.op_leverage_default').value;
+  const olFallback = olDefault !== null ? olDefault : 1;
+  const olFallbackLabel = olDefault !== null ? `assump.op_leverage_default ${olFallback}` : 'identity 1.0';
   const nO = prep.origins.length;
   const s = new Float64Array(nO);
   const neo = new Float64Array(nO);
@@ -192,8 +204,8 @@ export function resolveQuantities(prep: Prep, overrides: Record<string, number> 
     s[i] = clamp(effective(o.qS, overrides, `${o.ticker}.hyperscaler_share`).value ?? 0, 0, 1);
     neo[i] = clamp(effective(o.qNeo, overrides, `${o.ticker}.neocloud_share`).value ?? 0, 0, 1);
     const ol = effective(o.qOL, overrides, `${o.ticker}.op_leverage`).value;
-    if (ol === null) warnings.push(`${o.ticker}: operating leverage missing, identity (1.0) used`);
-    olO[i] = clamp(ol ?? 1, 0, 10);
+    if (ol === null && (rqNeedsOL(o.group))) warnings.push(`${o.ticker}: operating leverage missing, ${olFallbackLabel} used`);
+    olO[i] = clamp(ol ?? olFallback, 0, 10);
   });
   // supplier-revenue-weighted neocloud share (chips + infra with known revenue; mcap fallback)
   let num = 0;
@@ -209,12 +221,12 @@ export function resolveQuantities(prep: Prep, overrides: Record<string, number> 
   const india = prep.india.map((t) => {
     const effs = t.exposures.map((e) => effective(e.q, overrides, e.q?.id));
     const ol = effective(t.qOL, overrides, `${t.ticker}.op_leverage`);
-    if (ol.value === null && t.exposures.length) warnings.push(`${t.ticker}: operating leverage missing, identity (1.0) used`);
+    if (ol.value === null && t.exposures.length) warnings.push(`${t.ticker}: operating leverage missing, ${olFallbackLabel} used`);
     const fx = effective(t.qFx, overrides, `${t.ticker}.fx_margin_sens_bps`);
     return {
       shares: effs.map((e) => clamp(e.value ?? 0, 0, 1)),
       shareAssump: effs.map((e) => e.assumption),
-      ol: clamp(ol.value ?? 1, 0, 10),
+      ol: clamp(ol.value ?? olFallback, 0, 10),
       olAssump: ol.value === null ? true : ol.assumption,
       fxSens: fx.value ?? 0,
       fxAssump: fx.value === null ? true : fx.assumption,
