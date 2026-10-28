@@ -1,0 +1,38 @@
+# Research overlay for AI CRASH MONITOR (DESIGN.md §7). Applied on top of universe.yaml by the config loader.
+# Written by the RESEARCH agent; every figure has a source id with a verbatim quote (see docs/research_addenda.md).
+# accessed: 2026-10-28 for all sources unless stated.
+
+sources:
+  - id: tcs_q2fy27_investing_slides
+    title: "TCS Q2 FY27 slides: steady growth, margin compression to 24%"
+    publisher: "Investing.com"
+    url: "https://uk.investing.com/news/stock-market-news/tcs-q2-fy27-slides-steady-growth-margin-compression-to-24-93CH-4901629"
+    date: "2026-10-08"
+    quote: "Banking, Financial Services, and Insurance (BFSI) remains TCS's largest vertical at 32.8% of revenue ... Manufacturing (9.0% of revenue) ... Technology & Services (8.6%) ... North America, representing 48.3% of total revenue"
+    verification: SECONDARY
+    accessed: "2026-10-28"
+    note: "Summary of TCS's Q2 FY27 investor presentation; TCS fact sheet PDF returns HTTP 403 to automated fetch."
+  - id: tcs_q2fy27_multibagg
+    title: "TCS Q2 FY27: International Growth, Strategic Wins, and AI Revenue Crossing 10%"
+    publisher: "Multibagg"
+    url: "https://www.multibagg.ai/market-pulse/articles/tcs-q2fy27-1525243338"
+    date: "2026-10-08"
+    quote: "| Technology and Services | 8.6% | 3.1% | 4.8% |"
+    verification: SECONDARY
+    accessed: "2026-10-28"
+    note: "Segment table: mix 8.6%, QoQ cc +3.1%, YoY cc +4.8%. Concurs with Investing.com; the search index extraction of the TCS fact sheet shows 8.5% (Q2 FY26), 8.5% (Q1 FY27), 8.6% (Q2 FY27)."
+
+quantities:
+  TCS.NS.exposure.revenue:
+    label: "Technology & Services vertical share of revenue (Q2 FY27)"
+    parts:
+      - label: "Technology & Services share of TCS revenue, quarter ended 30-Sep-2026"
+        value: 0.086
+        status: SOURCED
+        src: [tcs_q2fy27_investing_slides, tcs_q2fy27_multibagg]
+        note: "Two independent secondary summaries of the TCS Q2 FY27 investor materials agree (8.6%). North America = 48.3% of revenue."
+    note: "Upgraded from single-source SECONDARY (finology) to two concurring sources."
+
+history_notes: {}
+
+context: {}
