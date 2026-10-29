@@ -482,14 +482,15 @@ export interface Backtest {
   events: BacktestEvent[];
   horizon_check: { h: 1 | 5 | 21; model: string; r2: number; n: number }[];
   nifty_horizons: { h: 1 | 5 | 21; SOX: number; NDX: number; r2: number; n: number }[];
+  nifty_oos_resid?: (number | null)[]; // Nifty-model OOS residuals aligned to `dates` (MC factor bands)
 }
 
 export interface Nowcast {
   us_date: string; // last US session used
   for_india_date: string; // next NSE session being predicted (may be in the future)
   note: string; // e.g. "model check, not a trading signal; the move happens at the open"
-  rows: { ticker: string; display: string; pred: number; lo90: number | null; hi90: number | null }[];
-  nifty: { pred: number; lo90: number | null; hi90: number | null } | null;
+  rows: { ticker: string; display: string; pred: number; lo90: number | null; hi90: number | null; actual?: number | null }[];
+  nifty: { pred: number; lo90: number | null; hi90: number | null; actual?: number | null } | null;
 }
 
 export interface DataBundleV2Extras {
