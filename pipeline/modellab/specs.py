@@ -5,7 +5,7 @@ SCEN = ["SOX", "NDX", "PARENT", "NIFTY (implied by the Nifty model)"]
 
 MODEL_SPECS = [
     {"id": "zero", "label": "No change", "family": "baseline", "mode": "scenario", "scenario_usable": False, "features": [],
-     "description": "Always predicts that the stock does not move. Every other model must beat this to be worth anything."},
+     "description": "Always predicts that the stock does not move. Every other model must beat this to be worth anything; inside the blend, its weight pulls the other models' predictions toward zero when they have tended to overshoot."},
     {"id": "ols", "label": "Original 3-year fit", "family": "linear", "mode": "scenario", "scenario_usable": True, "features": SCEN,
      "description": "How the stock moved the session after US chip stocks, US tech, its parent and the Nifty moved, fitted on the last 3 years (ordinary least squares)."},
     {"id": "ols_rf", "label": "Direct US link", "family": "linear", "mode": "scenario", "scenario_usable": True, "features": ["SOX", "NDX", "PARENT"],
@@ -32,7 +32,7 @@ MODEL_SPECS = [
      "description": "Uses every clue known before the Indian close: US-listed India funds, the stock's US-listed shares, US software, Taiwan and Korea, US yields, the dollar and the rupee. A model check, not a scenario tool."},
     {"id": "nowcast_pre", "label": "Before-the-open nowcast", "family": "linear", "mode": "nowcast", "scenario_usable": False,
      "features": ["SOX", "NDX", "PARENT (if it closes after India)", "INDA", "EPI", "SMIN", "IGV", "TNX", "DXY", "USDINR", "ADR", "own previous return", "Nifty previous return"],
-     "description": "The same clues minus markets that trade during Indian hours (Taiwan, Korea, Japan): only what is known before the NSE opens."},
+     "description": "Like the next-session nowcast, but only with clues available before the Indian market opens: it leaves out Taiwan, Korea and Japan, which trade during Indian hours."},
     {"id": "gbm_now", "label": "Machine-learning nowcast", "family": "nonlinear", "mode": "nowcast", "scenario_usable": False,
      "features": ["all nowcast clues", "tier", "trailing betas", "trailing volatility"],
      "description": "Gradient-boosted trees on all the nowcast clues, trained on all stocks together; checks whether non-linear patterns add anything."},

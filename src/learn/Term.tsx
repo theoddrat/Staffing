@@ -12,6 +12,7 @@ import {
   useEffect,
   useId,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
   type KeyboardEvent as ReactKeyboardEvent,
@@ -21,12 +22,17 @@ import {
 import { createPortal } from 'react-dom';
 import '../styles/guided-tokens.css';
 import '../styles/learn.css';
+import { withRanges } from '../engine/index';
+import type { AppActions, AppState } from '../panels/types';
 import type { DataBundle } from '../types/data';
 import type { ScenarioResult } from '../types/engine';
 import { Icon } from '../guided/icons';
 import { ExplainerCard } from './ExplainerCard';
 import { entry } from './glossary';
 import type { GlossaryId } from './ids';
+import { learnHash, requestTerm } from './nav';
+
+export { learnHash } from './nav';
 
 export interface LearnCtx {
   bundle: DataBundle | null;
@@ -44,19 +50,47 @@ export function useLearn(): LearnCtx {
   return useContext(LearnContext);
 }
 
-/** Hash used by the router for a term: beta_total → #learn-beta-total. */
-export function learnHash(id: GlossaryId): string {
-  return `#learn-${id.replace(/_/g, '-')}`;
-}
-
 /** Navigate to the Learn page at a term (falls back to the hash route when no handler is wired). */
 export function goLearn(ctx: LearnCtx, id: GlossaryId) {
   if (ctx.openLearn) return ctx.openLearn(id);
+  requestTerm(id);
   try {
     window.location.hash = learnHash(id);
   } catch {
     /* no window (tests) */
   }
+}
+
+/**
+ * Wraps a guided page so every <Term> inside sees the live bundle and scenario (with simulated
+ * ranges when a Monte Carlo run is current), and "More in Learn" works even if the shell has not
+ * provided its own LearnProvider.
+ */
+export function PageLearn({ state, actions, children }: { state: AppState; actions: AppActions; children: ReactNode }) {
+  const outer = useLearn();
+  const result = useMemo(() => {
+    if (!state.mc) return state.result;
+    try {
+      return withRanges(state.result, state.mc);
+    } catch {
+      return state.result;
+    }
+  }, [state.result, state.mc]);
+  const openLearn = useCallback(
+    (id: GlossaryId) => {
+      if (outer.openLearn) return outer.openLearn(id);
+      requestTerm(id);
+      actions.setView?.('learn');
+      try {
+        window.location.hash = learnHash(id);
+      } catch {
+        /* ignore */
+      }
+    },
+    [outer, actions],
+  );
+  const value = useMemo(() => ({ bundle: state.bundle, result, openLearn }), [state.bundle, result, openLearn]);
+  return <LearnProvider value={value}>{children}</LearnProvider>;
 }
 
 // Only one explainer is open at a time.

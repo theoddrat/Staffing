@@ -138,6 +138,8 @@ describe('Layer 2 with the validated ensemble', () => {
     const x = r.india.find((y) => y.ticker === 'NETWEB.NS')!;
     expect(x.model_used).toBe('ensemble');
     expect(x.notes.some((n) => n.includes('5-session coefficients'))).toBe(true);
+    expect(r.warnings.some((w) => w.includes('no 21-session fit yet') && w.includes('1 of 7 stocks'))).toBe(true);
+    expect(runScenario(bEns, defaultParams(bEns, 'fullpop', '1M')).warnings.some((w) => w.includes('fit yet'))).toBe(false);
     const c5 = nw.horizons.find((z) => z.h === 5)!;
     expect(x.market_contrib.sentiment).toBeCloseTo(c5.SOX * r.factors.x.SOX + c5.NDX * r.factors.x.NDX, 12);
     const y = r.india.find((z) => z.ticker === 'POWERINDIA.NS')!;

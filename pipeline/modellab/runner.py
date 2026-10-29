@@ -137,7 +137,7 @@ def compute(cfg: dict[str, Any], ctx: Any, P: Panel, st: LabSettings, log: Calla
     hcheck = [{"h": 1, "model": r["model"], "r2": r["r2"], "n": r["n"]} for r in summary
               if r["mode"] == "scenario" and r["subset"] == "all"]
     if horizons:
-        for h in sorted(horizons):
+        for h in sorted(k for k in horizons if isinstance(k, int)):
             nifty_h.append(horizons[h]["nifty"])
             hcheck += horizons[h]["check"]
     used = set(ex.scenario_models(wf)) | set(ex.nowcast_models(wf))

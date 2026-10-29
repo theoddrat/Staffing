@@ -15,7 +15,7 @@ from pipeline.modellab.settings import LabSettings
 from pipeline.modellab.specs import SPEC_BY_ID
 from pipeline.modellab.walkforward import LINEAR, WF, band_offsets
 
-CONTRACT_MARKETS = {"US", "IN", "JP", "DE", "CH", "FR", "TW", "NL", "FX"}
+CONTRACT_MARKETS = {"US", "IN", "JP", "DE", "CH", "FR", "TW", "KR", "NL", "FX"}
 
 
 def _num(x: Any) -> float | None:
@@ -208,6 +208,8 @@ def _h1_entry(P: Panel, wf: WF, i: int, w: np.ndarray, oos_ens: dict[str, Any] |
         s = S[m]
         components[m] = {"SOX": float(s[0]), "NDX": float(s[2]), "PARENT": _num(s[3]) if wp else None,
                          "NIFTY": float(s[4]), "weight": float(w[j])}
+    components["zero"] = {"SOX": 0.0, "NDX": 0.0, "PARENT": 0.0 if wp else None, "NIFTY": 0.0,
+                          "weight": float(max(0.0, 1.0 - float(np.sum(w))))}
     ens = {"SOX": float(sum(w[j] * S[m][0] for j, m in enumerate(comps))),
            "NDX": float(sum(w[j] * S[m][2] for j, m in enumerate(comps))),
            "PARENT": float(sum(w[j] * S[m][3] for j, m in enumerate(comps))) if wp else None,
@@ -257,7 +259,7 @@ def models_section(P: Panel, wf: WF, st: LabSettings, ms: np.ndarray, mn: np.nda
         h1, components = h
         hz = [h1]
         if horizons:
-            for hh in sorted(horizons):
+            for hh in sorted(k for k in horizons if isinstance(k, int)):
                 e = horizons[hh]["stocks"].get(i)
                 if e is not None:
                     hz.append(e)

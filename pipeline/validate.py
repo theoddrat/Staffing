@@ -57,7 +57,7 @@ STATUS = E("SOURCED", "UNVERIFIED", "USER_ASSUMPTION", "COMPUTED", "DERIVED")
 PART_STATUS = E("SOURCED", "UNVERIFIED", "USER_ASSUMPTION", "COMPUTED")
 TIER = E("A", "B", "C", "D")
 CRASH = E("earnings_collapse", "multiple_compression", "fraud_trust", "credit_liquidity", "capex_overbuild")
-MARKET = E("US", "IN", "JP", "DE", "CH", "FR", "TW", "NL", "FX", "OTHER")
+MARKET = E("US", "IN", "JP", "DE", "CH", "FR", "TW", "KR", "NL", "FX", "OTHER")
 
 SOURCE = O(id=STR, title=STR, publisher=STRN, url=STR, date=STRN, quote=STRN,
            verification=E("PRIMARY", "SECONDARY", "UNVERIFIED"), accessed=STR, note=STRN)

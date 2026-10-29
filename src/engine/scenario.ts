@@ -3,6 +3,7 @@ import type { DataBundle } from '../types/data';
 import type { Channel, FactorMoves, IndiaResult, OriginResult, ScenarioParams, ScenarioResult } from '../types/engine';
 import { assumptionShare, confidence } from './confidence';
 import { evaluate, type CoreOut } from './core';
+import { ENSEMBLE_H } from './ensemble';
 import { resolveParams, resolveQuantities } from './params';
 import { prepare, type Prep } from './prepare';
 import { presetById, stubPreset } from './presets';
@@ -232,6 +233,16 @@ export function runScenario(bundle: DataBundle, params: ScenarioParams): Scenari
         `${rp.horizon === '12M' ? ' applied to the 12-month factor move, a documented assumption' : ''}; Nifty link ${sel.model === 'ensemble' ? `ensemble h${sel.h}` : '3y OLS'})` +
         `${nEns < india.length ? `; ${india.length - nEns} fall back to the 3y OLS` : ''}`,
     );
+    // the mapped horizon (1M/12M → h21) is not in the bundle yet: say which fit stands in for it
+    const want = ENSEMBLE_H[rp.horizon];
+    const stand = prep.india.filter((t) => t.sel[rp.horizon].model === 'ensemble' && t.sel[rp.horizon].h !== want);
+    if (stand.length || (sel.model === 'ensemble' && sel.h !== want)) {
+      const used = uniq(stand.map((t) => `h${t.sel[rp.horizon].h}`)).join('/') || `h${sel.h}`;
+      warnings.push(
+        `ensemble has no ${want}-session fit yet: ${used} coefficients applied to the ${rp.horizon} factor move for ${stand.length} of ${india.length} stocks` +
+          `${sel.model === 'ensemble' && sel.h !== want ? ` and for the Nifty link (h${sel.h})` : ''}; treat ${rp.horizon} magnitudes as provisional`,
+      );
+    }
   }
   if (rp.comp.multiple && core.basket.peNow !== null) {
     const how =
