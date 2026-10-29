@@ -31,8 +31,8 @@
   --ch-capex: #ff6fd0;
   --ch-sentiment: #ffb000;
   --ch-fpi: #2dd4bf;
-  --ch-fx: #8bd450;
-  --ch-credit: #ff8a3d;
+  --ch-fx: #c4f27a; /* light lime: kept far lighter than --ch-credit for red-green colour blindness */
+  --ch-credit: #d4621a; /* deep orange */
   --ch-own: #c7c9cf;
   --ch-premium: #f5d76e;
   /* tiers */

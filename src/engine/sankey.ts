@@ -108,9 +108,6 @@ class Builder {
 export function buildSankey(prep: Prep, core: CoreOut, rp: ResolvedParams, rows: SankeyRow[], mode: 'market' | 'fundamental'): SankeyGraph {
   const b = new Builder();
   const replayLabel = rp.windowId ? prep.windows.get(rp.windowId)?.label ?? rp.windowId : 'Replay window';
-  const chipSrc: Src[] = rp.comp.replay
-    ? [{ id: 'm:replay', label: `Replay: ${replayLabel}`, kind: 'macro', w: 1 }]
-    : prep.origins.filter((o) => o.wChip > 0).map((o) => ({ id: `o:${o.ticker}`, label: o.ticker, kind: 'origin' as const, w: o.wChip * core.o[o.idx].move }));
   const aiSrc: Src[] = rp.comp.replay
     ? [{ id: 'm:replay', label: `Replay: ${replayLabel}`, kind: 'macro', w: 1 }]
     : prep.origins.map((o) => ({ id: `o:${o.ticker}`, label: o.ticker, kind: 'origin' as const, w: o.wAi * core.o[o.idx].move }));
@@ -142,8 +139,10 @@ export function buildSankey(prep: Prep, core: CoreOut, rp: ResolvedParams, rows:
         const ps: Src[] = [{ id: isOrigin ? `o:${t.parent}` : `p:${t.parent}`, label: isOrigin ? t.parent : `${t.parent} (parent)`, kind: 'origin', w: 1 }];
         b.flow('parent', tid, tl, m.parent, ps);
       }
-      b.flow('sentiment', tid, tl, m.sox, chipSrc);
-      b.flow('sentiment', tid, tl, m.ndx, aiSrc);
+      // In every scenario SOX and NDX move together and their coefficients are strongly collinear, so the
+      // split between them is not meaningful on its own (it can show chips 'cushioning' India while
+      // big tech hurts it). Attribute the combined US-AI sentiment effect to all falling origins instead.
+      b.flow('sentiment', tid, tl, m.sox + m.ndx, aiSrc);
       b.flow('sentiment', tid, tl, m.contagion, restSrc);
       b.flow('fx_fpi', tid, tl, m.fx_fpi, [{ id: 'm:riskoff', label: 'US risk-off → FPI flows', kind: 'macro', w: 1 }]);
       b.flow('own', tid, tl, m.own, restSrc);

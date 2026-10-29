@@ -50,9 +50,9 @@ export const CHANNEL_VIS: Record<Channel | 'premium', VisualDef> = {
     color: 'var(--ch-fpi)',
   },
   fx: {
-    label: 'A weaker rupee helps exporters',
-    tech: 'FX offset (margin bps per 1% INR)',
-    blurb: 'When the rupee falls, dollar revenue is worth more rupees, which cushions IT exporters’ profits.',
+    label: 'Weaker rupee: exporters gain, importers lose',
+    tech: 'FX effect (margin bps per 1% INR)',
+    blurb: 'When the rupee falls, dollar revenue is worth more rupees (good for IT exporters) while imported parts cost more (bad for electronics makers).',
     icon: 'rupee',
     color: 'var(--ch-fx)',
   },

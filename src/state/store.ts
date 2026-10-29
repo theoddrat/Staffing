@@ -275,14 +275,25 @@ export function useTerminal(bundle: DataBundle): { state: ExtState; actions: Sto
   sRef.current = s;
   const setParams = useCallback((p: ScenarioParams) => {
     if (paramsKey(p) === paramsKey(paramsRef.current)) return;
+    // keep the ref current at once, so several actions in one handler (setPreset then setValue) compose
+    paramsRef.current = p;
     dispatch({ type: 'params', params: p });
   }, []);
+  /** Panel navigation that also works from the guided UI (shows the matching guided view there). */
+  const nav = useCallback(
+    (panel: PanelId) => {
+      const cur = sRef.current;
+      if (cur.mode === 'guided') dispatch({ type: 'view', view: viewForPanel(panel, cur.selected, bundle) });
+      else dispatch({ type: 'navigate', panel });
+    },
+    [bundle],
+  );
   const onRoute = useCallback((route: Route) => dispatch({ type: 'route', route }), []);
   useRouteSync(bundle, { mode: s.mode, view: s.view, selected: s.selected, learnTerm: s.learnTerm, panel: s.panel }, onRoute);
 
   const actions = useMemo(() => {
     const a: StoreActions = {
-      navigate: (panel) => dispatch({ type: 'navigate', panel }),
+      navigate: (panel) => nav(panel),
       back: () => dispatch({ type: 'back' }),
       openHelp: (open) => dispatch({ type: 'help', open }),
       setPreset: (id: PresetId, horizon?: Horizon) => {
@@ -341,7 +352,7 @@ export function useTerminal(bundle: DataBundle): { state: ExtState; actions: Sto
             msg(c.message, 'error');
             return;
           case 'panel':
-            dispatch({ type: 'navigate', panel: c.panel });
+            nav(c.panel);
             msg(`${c.panel}`);
             return;
           case 'help':
@@ -359,17 +370,18 @@ export function useTerminal(bundle: DataBundle): { state: ExtState; actions: Sto
           }
           case 'security':
             dispatch({ type: 'select', ticker: c.ticker });
-            dispatch({ type: 'navigate', panel: 'SEC' });
+            sRef.current = { ...sRef.current, selected: c.ticker };
+            nav('SEC');
             msg(c.note ?? `${c.ticker}`);
             return;
           case 'tier':
             dispatch({ type: 'tier', tier: c.tier });
-            dispatch({ type: 'navigate', panel: 'F2' });
+            nav('F2');
             msg(`INDIA IMPACT — TIER ${c.tier}`);
             return;
           case 'hist':
             dispatch({ type: 'hist', id: c.id });
-            dispatch({ type: 'navigate', panel: 'F4' });
+            nav('F4');
             msg(c.id ? `HISTORY — ${c.id.toUpperCase()}` : 'HISTORY');
             return;
           case 'scenario': {
@@ -382,7 +394,7 @@ export function useTerminal(bundle: DataBundle): { state: ExtState; actions: Sto
             const h = c.horizon ?? (c.preset === 'replay' && win ? horizonForWindow(bundle, win) : undefined);
             const p = freshParams(bundle, c.preset, h, cur);
             setParams({ ...p, values: { ...p.values, ...c.values } });
-            dispatch({ type: 'navigate', panel: ['F1', 'F2', 'F3'].includes(sRef.current.panel) ? sRef.current.panel : 'F2' });
+            nav(['F1', 'F2', 'F3'].includes(sRef.current.panel) ? sRef.current.panel : 'F2');
             msg(c.label);
             return;
           }
@@ -390,7 +402,7 @@ export function useTerminal(bundle: DataBundle): { state: ExtState; actions: Sto
       },
     };
     return a;
-  }, [bundle, ctx, runMC, setParams]);
+  }, [bundle, ctx, runMC, setParams, nav]);
 
   const state: ExtState = {
     bundle,
