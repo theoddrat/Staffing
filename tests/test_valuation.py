@@ -122,3 +122,22 @@ def test_quantity_product_and_worst_status():
         "frac", resolvers={"inv_revenue_ttm_cr": lambda: 1 / 8000.0})
     assert q2["value"] == pytest.approx(0.25) and q2["status"] == "SOURCED"
     assert worst_status(["COMPUTED", "UNVERIFIED", "SOURCED"]) == "UNVERIFIED"
+
+
+def test_semi_annual_reporters_use_two_reports():
+    rep = pd.Series([3.0, 4.0, 5.0, 6.0], index=pd.to_datetime(["2024-07-25", "2025-02-20", "2025-07-30", "2026-02-19"]))
+    assert F.reports_per_year(rep) == 2
+    ttm = F.ttm_eps_series(rep, pd.DatetimeIndex(pd.to_datetime(["2026-03-02"])))
+    assert ttm.iloc[0] == pytest.approx(11.0)  # H2-2025 (6) + H1-2025 (5)
+    q = pd.Series([1.0] * 6, index=pd.to_datetime(["2025-01-20", "2025-04-20", "2025-07-20", "2025-10-20", "2026-01-20", "2026-04-20"]))
+    assert F.reports_per_year(q) == 4
+
+
+def test_eps_currency_detection():
+    # ASML-like: calendar EPS 33.9 (EUR) vs trailing EPS 40.6 (USD) at 1.17 USD/EUR -> convert
+    assert F.eps_currency_factor(33.9, 40.6, 1.17) is True
+    # TSM-like: calendar EPS already per ADR in USD (15.54 vs 15.43); TWD->USD factor 0.031 -> keep
+    assert F.eps_currency_factor(15.54, 15.43, 0.031) is False
+    # missing inputs -> never convert
+    assert F.eps_currency_factor(None, 40.6, 1.17) is False
+    assert F.eps_currency_factor(33.9, -1.0, 1.17) is False

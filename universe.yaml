@@ -937,7 +937,7 @@ presets:
     label: "Pure multiple compression"
     description: "Earnings unchanged. The AI-basket P/E reverts toward its pre-ChatGPT (before 30-Nov-2022) median by lambda, or to a user-set multiple."
     params:
-      - {key: mode, label: "Target", kind: enum, value: median, options: [median, multiple]}
+      - {key: mode, label: "Target", kind: enum, value: median, options: [median, multiple, calibrated], note: "median = revert toward the AI basket's own pre-ChatGPT median P/E (user's literal spec; if today's basket P/E is already below that median this implies no compression); multiple = user-set basket P/E; calibrated = lambda x drawdown implied by the history P/E-vs-drawdown fit (history.pe_fit) at today's basket P/E"}
       - {key: lambda, label: "Reversion fraction lambda", kind: number, value: 0.5, min: 0, max: 1, step: 0.05, unit: frac, mc: {dist: triangular, low: 0.25, high: 0.80}}
       - {key: target_pe, label: "User-set basket P/E", kind: number, value: 25, min: 5, max: 80, step: 0.5, unit: x, mc: {dist: fixed}}
       - {key: per_name, label: "Per-name medians", kind: bool, value: false}
@@ -980,8 +980,8 @@ presets:
       - {key: kappa, label: "Growth de-rating per EPS cut kappa", kind: number, value: 0.0, min: 0, max: 1.5, step: 0.05, unit: x, mc: {dist: fixed}}
       - {key: phi_it, label: "IT budget elasticity phi", kind: number, value: 1.0, min: 0, max: 2, step: 0.05, unit: x, mc: {dist: triangular, low: 0.5, high: 1.5}}
       - {key: psi_india_dc, label: "India capex-order pass-through", kind: number, value: 0.5, min: 0, max: 1.5, step: 0.05, unit: x, mc: {dist: triangular, low: 0.25, high: 1.0}}
-      - {key: mode, label: "Multiple target", kind: enum, value: median, options: [median, multiple]}
-      - {key: lambda, label: "Reversion fraction lambda", kind: number, value: 0.60, min: 0, max: 1, step: 0.05, unit: frac, mc: {dist: triangular, low: 0.35, high: 0.85}}
+      - {key: mode, label: "Multiple target", kind: enum, value: calibrated, options: [median, multiple, calibrated], note: "USER_ASSUMPTION: full-pop default uses the calibrated mode (lambda x fit-implied drawdown at today's basket P/E) because the pre-ChatGPT-median target implies no compression when today's basket P/E is below it"}
+      - {key: lambda, label: "Reversion fraction lambda (share of the fit-implied drawdown)", kind: number, value: 0.60, min: 0, max: 1, step: 0.05, unit: frac, mc: {dist: triangular, low: 0.35, high: 0.85}, note: "USER_ASSUMPTION; horizon defaults 1D 0.10 / 1M 0.30 / 12M 0.60"}
       - {key: target_pe, label: "User-set basket P/E", kind: number, value: 25, min: 5, max: 80, step: 0.5, unit: x, mc: {dist: fixed}}
       - {key: per_name, label: "Per-name medians", kind: bool, value: false}
       - {key: floor_zero, label: "Compression only (floor at 0)", kind: bool, value: true}

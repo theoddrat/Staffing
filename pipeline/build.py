@@ -277,6 +277,29 @@ def build(skip_fund: bool = False, only_prices: bool = False, out: Path = OUT, l
         usd_per[ccy] = (1.0 / last) if spec.get("quote") == "per_usd" else last
     usd_inr = 1.0 / usd_per["INR"]
     ctx.usd_inr = usd_inr
+
+    usd_per_daily: dict[str, pd.Series] = {}
+    for ccy, spec in (cfg.get("fx_rates") or {}).items():
+        if not spec:
+            continue
+        c_ = _close(ctx.prices(spec["ticker"]))
+        if c_ is None or c_.dropna().empty:
+            continue
+        c_ = c_.dropna()
+        usd_per_daily[ccy] = (1.0 / c_) if spec.get("quote") == "per_usd" else c_
+
+    def fx_daily(from_ccy: str, to_ccy: str) -> pd.Series | None:
+        """Daily `to_ccy` units per 1 `from_ccy` unit (USD crosses), forward-filled on a business-day grid."""
+        if from_ccy == to_ccy:
+            return None
+        a = usd_per_daily.get(from_ccy) if from_ccy != "USD" else None
+        b = usd_per_daily.get(to_ccy) if to_ccy != "USD" else None
+        if (from_ccy != "USD" and a is None) or (to_ccy != "USD" and b is None):
+            return None
+        idx = pd.bdate_range("1995-01-01", pd.Timestamp.today().normalize())
+        aa = a.reindex(idx.union(a.index)).ffill().reindex(idx) if a is not None else pd.Series(1.0, index=idx)
+        bb = b.reindex(idx.union(b.index)).ffill().reindex(idx) if b is not None else pd.Series(1.0, index=idx)
+        return (aa / bb).dropna()
     # ---------------------------------------------------------------- fundamentals
     fund: dict[str, dict[str, Any]] = {}
     fund_tickers = [o["ticker"] for o in cfg["origins"]] + [t["ticker"] for t in cfg["india"]] + \
@@ -327,7 +350,7 @@ def build(skip_fund: bool = False, only_prices: bool = False, out: Path = OUT, l
         fb = None
         if t in fund:
             mk = cfg["markets"].get(mkt if mkt in cfg["markets"] else "US")
-            fb = compute_security_fundamentals(t, fund[t], c, mk["tz"], usd_per, S, MARKET_CCY.get(mkt))
+            fb = compute_security_fundamentals(t, fund[t], c, mk["tz"], usd_per, S, MARKET_CCY.get(mkt), fx_daily=fx_daily)
         ccy = (fb or {}).get("currency") or MARKET_CCY.get(mkt) or ("INR" if t == "USDINR=X" else "USD")
         if t.endswith("=X"):
             ccy = "RATE"
