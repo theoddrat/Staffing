@@ -5,6 +5,7 @@ import { FIXTURE_ENS_MULT, FIXTURE_NIFTY_H, makeBundle } from '../__fixtures__/m
 import { CHANNEL_VIS } from '../../guided/visual';
 import type { DataBundle } from '../../types/data';
 import type { Horizon, PresetId, SankeyGraph, ScenarioResult } from '../../types/engine';
+import { Rng } from '../rng';
 import { badNumbers } from './helpers';
 
 const bOls = makeBundle();
@@ -257,6 +258,43 @@ describe('Monte Carlo on out-of-sample residuals', () => {
     const eIn = demeaned(bNo.nifty_resid);
     expect(Math.abs(Math.log(1 + mcNo.factors.NIFTY.p95) - dN - quantile(eIn, 0.95))).toBeLessThan(0.002);
   });
+
+  it('OOS draws share date indices across stocks (block bootstrap on the OOS axis)', () => {
+    // two stocks given the same OOS series and the same deterministic move must get identical draws
+    const b = makeBundle({ models: true });
+    const [a, c] = [model(b, 'INFY.NS')!, model(b, 'TCS.NS')!];
+    // no missing cells: each stock redraws its own missing cells independently, which would break the equality
+    a.oos_resid = a.oos_resid.map((v) => v ?? 0.001);
+    c.oos_resid = [...a.oos_resid];
+    for (const z of c.horizons) Object.assign(z, a.horizons.find((y) => y.h === z.h));
+    const ia = b.india.find((t) => t.ticker === 'INFY.NS')!;
+    const ic = b.india.find((t) => t.ticker === 'TCS.NS')!;
+    ic.reg = ia.reg;
+    ic.slopes = ia.slopes;
+    b.history.replay_windows.push({ id: 'ZERO', label: 'zero', start: '2025-01-01', end: '2025-02-03', moves: { SOX: 0, NDX: 0 }, status: 'COMPUTED', src: [], note: null });
+    const p = defaultParams(b, 'replay', '1M');
+    const zero = { ...p, values: { ...p.values, window: 'ZERO' } };
+    for (let s = 0; s < 40; s++) {
+      const mc = runMonteCarlo(b, zero, { runs: 1, seed: s });
+      expect(mc.perStock['TCS.NS'].market.p50).toBe(mc.perStock['INFY.NS'].market.p50);
+    }
+  });
+
+  it('falls back to in-sample residuals when OOS residuals are too short or backtest.dates is missing', () => {
+    const b = makeBundle({ models: true });
+    for (const m of b.models!) m.oos_resid = m.oos_resid.map((v, k) => (k < 10 ? v : null)); // < 20 usable values
+    const p = defaultParams(b, 'replay', '1D');
+    const mc = runMonteCarlo(b, p, { runs: 200, seed: 1 });
+    expect(mc.residual_source).toBe('in_sample');
+    expect(mc.residual_note).toContain('no usable out-of-sample residuals');
+    const b2 = makeBundle({ models: true });
+    b2.backtest!.dates = [];
+    const r2 = runScenario(b2, p);
+    expect(r2.warnings.some((w) => w.includes('backtest.dates missing'))).toBe(true);
+    expect(runMonteCarlo(b2, p, { runs: 200, seed: 1 }).residual_source).toBe('in_sample');
+    // the coefficients still come from the ensemble
+    expect(r2.india.find((x) => x.ticker === 'NETWEB.NS')!.model_used).toBe('ensemble');
+  });
 });
 
 describe('plain-language explanations', () => {
@@ -340,6 +378,37 @@ describe('plain-language explanations', () => {
     }
     const rp = runScenario(bEns, defaultParams(bEns, 'replay', '1D'));
     expect(scenarioHeadline(bEns, rp)).toContain('DeepSeek day (synthetic)');
+  });
+});
+
+describe('randomised scenarios on the ensemble bundle (seeded)', () => {
+  it('no NaN anywhere, channels sum to the move, explanations stay finite and sorted', () => {
+    const rng = new Rng(2026);
+    for (let k = 0; k < 80; k++) {
+      const preset = PRESETS[rng.int(PRESETS.length)];
+      const h = HORIZONS[rng.int(HORIZONS.length)];
+      const p = defaultParams(bEns, preset, h);
+      const values = { ...p.values };
+      // jitter every numeric parameter inside (and slightly beyond) its MC range
+      for (const s of paramSpecs(bEns, preset, h)) {
+        if (s.kind !== 'number' || typeof s.value !== 'number') continue;
+        const lo = s.mc?.low ?? s.value * 0.5;
+        const hi = s.mc?.high ?? s.value * 1.5;
+        values[s.key] = rng.uniform(Math.min(lo, hi) - 0.1 * Math.abs(hi - lo), Math.max(lo, hi) + 0.1 * Math.abs(hi - lo));
+      }
+      if (preset === 'restatement') values.target = rng.next() < 0.5 ? 'NETWEB.NS' : 'CRWV';
+      const r = runScenario(bEns, { ...p, values });
+      expect(badNumbers(r), `${preset} ${h} #${k}`).toEqual([]);
+      for (const x of r.india) {
+        const c = x.channel_inr_cr;
+        const sum = (c.parent ?? 0) + (c.sentiment ?? 0) + (c.fx_fpi ?? 0) + (c.own ?? 0);
+        expect(Math.abs(sum - (x.mcap_change_inr_cr ?? 0))).toBeLessThan(1e-6 * Math.max(1, Math.abs(x.mcap_change_inr_cr ?? 0)));
+        const e = explainStock(bEns, r, x.ticker);
+        expect(badNumbers(e)).toEqual([]);
+        for (let j = 1; j < e.reasons.length; j++) expect(Math.abs(e.reasons[j - 1].inr_cr)).toBeGreaterThanOrEqual(Math.abs(e.reasons[j].inr_cr));
+      }
+      expect(scenarioHeadline(bEns, r)).not.toMatch(/NaN|undefined|Infinity/);
+    }
   });
 });
 

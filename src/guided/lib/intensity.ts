@@ -1,8 +1,9 @@
 // Mild / Severe / Extreme, taken from the data bundle rather than invented: each preset's
 // shock-size parameters already carry a Monte Carlo range (low … high) around the default, so
 // Mild = the low end, Severe = the default, Extreme = the high end of that published range.
-import type { ParamSpec } from '../../types/data';
-import type { ParamValue, PresetId } from '../../types/engine';
+import type { DataBundle, ParamSpec } from '../../types/data';
+import type { Horizon, ParamValue, PresetId } from '../../types/engine';
+import { intensityValues as engineIntensity } from '../../engine';
 
 export type Intensity = 'mild' | 'severe' | 'extreme';
 
@@ -68,4 +69,41 @@ export function intensityCaption(preset: PresetId, values: Record<string, ParamV
     default:
       return null;
   }
+}
+
+export type Levels = Record<Intensity, Record<string, ParamValue>>;
+
+/**
+ * Mild / Severe / Extreme values for a preset at a horizon. The engine's intensityValues is the
+ * single source (it moves every sampled dial to the end of its published range); the local
+ * shock-size-only version above is the fallback when the engine has none for this preset.
+ */
+export function levelsFor(bundle: DataBundle, preset: PresetId, horizon: Horizon, specs: ParamSpec[]): Levels {
+  try {
+    const v = engineIntensity(bundle, preset, horizon);
+    if (v && v.mild && v.severe && v.extreme && Object.keys(v.severe).length) return v;
+  } catch {
+    /* fall back to the local mapping */
+  }
+  return {
+    mild: intensityValues(preset, specs, 'mild'),
+    severe: intensityValues(preset, specs, 'severe'),
+    extreme: intensityValues(preset, specs, 'extreme'),
+  };
+}
+
+/** Which level the current values sit at exactly (null = customised, or no levels for this preset). */
+export function levelOf(levels: Levels, values: Record<string, ParamValue>, specs: ParamSpec[]): Intensity | null {
+  for (const level of ['severe', 'mild', 'extreme'] as Intensity[]) {
+    const iv = levels[level];
+    const keys = Object.keys(iv);
+    if (!keys.length) continue;
+    const hit = keys.every((k) => {
+      const cur = values[k] ?? specs.find((s) => s.key === k)?.value;
+      const want = iv[k];
+      return typeof cur === 'number' && typeof want === 'number' && Math.abs(cur - want) < 1e-9;
+    });
+    if (hit) return level;
+  }
+  return null;
 }

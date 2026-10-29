@@ -122,6 +122,30 @@ HISTORY = O(
     overlay=L(OVERLAY), worst_windows=O(SOX=WORST, NDX=WORST), replay_windows=L(REPLAY),
     deepseek_next_day=L(O(ticker=STR, tier=EN("A", "B", "C", "D"), r_jan27=NUMN, r_jan28=NUMN, ar_jan28=NUMN)),
 )
+# ---------------------------------------------------------------------------- V2 accuracy lab (all optional)
+H_ENUM = E(1, 5, 21)
+MODEL_SPEC = O(id=STR, label=STR, description=STR, family=E("baseline", "linear", "robust", "nonlinear", "stack"),
+               mode=E("scenario", "nowcast"), scenario_usable=BOOL, features=L(STR))
+FACTOR_AUX = O(id=STR, ticker=STR, name=STR, market=MARKET, role=STR, scenario_map=ON(SOX=NUM, NDX=NUM, r2=NUM, n=NUM))
+HORIZON = O(h=H_ENUM, SOX=NUM, NDX=NUM, PARENT=NUMN, NIFTY=NUM, beta_total=NUMN, r2_oos=NUMN, n_oos=NUM)
+OOS = O(rmse=NUM, mae=NUM, r2=NUM, hit=NUMN, n=NUM)
+STOCK_MODELS = O(ticker=STR, horizons=L(HORIZON),
+                 components=D(O(SOX=NUM, NDX=NUM, PARENT=NUMN, NIFTY=NUM, weight=NUM)),
+                 oos=D(OOS), oos_shock=D(OOS), oos_nowcast=("nullable", D(OOS)), oos_resid=L(NUMN), coverage90=NUMN)
+EVENT_ROW = O(ticker=STR, display=STR, tier=TIER, actual=NUM, pred=D(NUMN), lo90=NUMN, hi90=NUMN)
+BT_EVENT = O(id=STR, label=STR, us_date=STRN, india_date=STR, kind=E("named", "worst_sox"), x_sox=NUM, x_ndx=NUM,
+             rows=L(EVENT_ROW), metrics=D(O(corr=NUMN, mae=NUM, hit=NUMN)))
+BACKTEST = O(method=STR, start=STR, end=STR, refit_every=NUM, train_years=NUM, dates=L(STR), models=L(MODEL_SPEC),
+             ensemble=O(method=STR, weights=D(NUM), weights_by_tier=Opt(D(D(NUM)))),
+             summary=L(O(mode=E("scenario", "nowcast"), subset=E("all", "shock", "events"), model=STR, rmse=NUM, mae=NUM,
+                         r2=NUM, hit=NUMN, corr_xs=NUMN, n=NUM)),
+             calibration=L(O(nominal=NUM, coverage=NUM, n=NUM)), events=L(BT_EVENT),
+             horizon_check=L(O(h=H_ENUM, model=STR, r2=NUM, n=NUM)),
+             nifty_horizons=L(O(h=H_ENUM, SOX=NUM, NDX=NUM, r2=NUM, n=NUM)), nifty_oos_resid=Opt(L(NUMN)))
+NOWCAST = ON(us_date=STR, for_india_date=STR, note=STR,
+             rows=L(O(ticker=STR, display=STR, pred=NUM, lo90=NUMN, hi90=NUMN, actual=Opt(NUMN))),
+             nifty=ON(pred=NUM, lo90=NUMN, hi90=NUMN, actual=Opt(NUMN)))
+
 BUNDLE = O(
     meta=O(app=STR, schema_version=NUM, built_at=STR, as_of=STR, as_of_us=STR, usd_inr=NUM, fx_rates_usd=D(NUM),
            regression_window=O(start=STR, end=STR, years=NUM, n_india_days=NUM),
@@ -150,6 +174,10 @@ BUNDLE = O(
     assumptions=L(QUANTITY),
     presets=L(PRESET),
     history=HISTORY,
+    factors_aux=Opt(L(FACTOR_AUX)),
+    models=Opt(L(STOCK_MODELS)),
+    backtest=Opt(BACKTEST),
+    nowcast=Opt(NOWCAST),
 )
 
 
@@ -286,6 +314,36 @@ def cross_checks(b: dict[str, Any]) -> list[str]:
     ids = [s["id"] for s in b.get("sources", [])]
     if len(ids) != len(set(ids)):
         errs.append("duplicate source ids")
+    errs += v2_checks(b)
+    return errs
+
+
+def v2_checks(b: dict[str, Any]) -> list[str]:
+    """Consistency of the optional V2 sections (lengths, tickers, weights)."""
+    errs: list[str] = []
+    bt = b.get("backtest")
+    india = {t.get("ticker") for t in b.get("india", [])}
+    nd = len(bt.get("dates", [])) if isinstance(bt, dict) else None
+    for m in b.get("models", []) or []:
+        tk = m.get("ticker")
+        if tk not in india:
+            errs.append(f"models {tk}: not an india target")
+        if nd is not None and len(m.get("oos_resid", [])) != nd:
+            errs.append(f"models {tk}: oos_resid length {len(m.get('oos_resid', []))} != backtest.dates {nd}")
+        hs = [h.get("h") for h in m.get("horizons", [])]
+        if 1 not in hs or len(hs) != len(set(hs)):
+            errs.append(f"models {tk}: horizons must contain h=1 once (got {hs})")
+        w = sum(c.get("weight", 0) for c in (m.get("components") or {}).values())
+        if w > 1 + 1e-6:
+            errs.append(f"models {tk}: component weights sum {w:.4f} > 1")
+    if isinstance(bt, dict):
+        if "nifty_oos_resid" in bt and len(bt["nifty_oos_resid"]) != nd:
+            errs.append("backtest.nifty_oos_resid length != backtest.dates")
+        ws = (bt.get("ensemble") or {}).get("weights") or {}
+        if ws and abs(sum(ws.values()) - 1) > 1e-4:
+            errs.append(f"backtest.ensemble.weights sum {sum(ws.values()):.5f} != 1")
+        if any(v < 0 for v in ws.values()):
+            errs.append("backtest.ensemble.weights has a negative weight")
     return errs
 
 

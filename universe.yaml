@@ -894,32 +894,43 @@ modellab:
   refit_every: 21                # re-estimate every model about once a month
   ewma_half_life: 126            # recent-weighted model: weight halves every ~6 months
   huber_c: 1.345                 # robust model tuning constant (95% efficiency under normal errors)
+  huber_max_iter: 50
   shrink_tau2_floor: 0.05        # minimum between-stock variance as a share of mean se^2
+  shrink_min_group: 3            # fewer stocks than this in a tier -> shrink toward all stocks instead
+  gbm_enabled: true
   gbm_refit_every: 63            # machine-learning model is refitted quarterly (it is slower)
   gbm: {max_iter: 300, learning_rate: 0.05, max_leaf_nodes: 15, min_samples_leaf: 200, l2_regularization: 1.0}
+  gbm_feature_window: 252        # trailing window for the point-in-time beta / volatility features
+  gbm_feature_min_obs: 126
   ridge_lambdas: [0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1.0]   # nowcast ridge penalties (standardised features)
   ridge_val_sessions: 126        # last ~6 months of each training window pick the ridge penalty
   stack_min_rows: 1500           # out-of-sample rows needed before stacking weights replace equal weights
+  band_levels: [0.5, 0.8, 0.9]
   band_min_obs: 126              # out-of-sample residuals needed for a stock's own prediction band
   band_lookback: 504             # bands use at most the last ~2 years of out-of-sample residuals
   hit_threshold: 0.005           # direction hit-rate only counts days the stock moved at least 0.5%
   shock_quantile: 0.05           # "shock day" = US chips move in their trailing worst 5%
+  xs_min_stocks: 8               # cross-sectional correlation needs at least this many stocks that day
+  event_min_stocks: 5
   final_min_obs: 120             # short-history stocks get a final fit (no backtest) with at least this
   horizons: [1, 5, 21]
-  horizon_min_blocks: {"5": 60, "21": 24}
+  horizon_long_years: 10         # "long window" candidate for multi-session horizons (vs the 3-year window)
+  horizon_stack_min_blocks: {"5": 600, "21": 200}   # pooled out-of-sample blocks before stacking weights are used
+  nifty_horizon_min_blocks: {"5": 60, "21": 24}
+  settle_minutes: 20             # a session counts as closed this long after its official close
   worst_sox_since: "2023-01-01"
   worst_sox_n: 10
   events:
-    - {id: smci_10k, label: "Super Micro delays its annual report", us_date: "2024-08-28"}
-    - {id: smci_ey, label: "Super Micro's auditor EY resigns", us_date: "2024-10-30"}
-    - {id: deepseek, label: "DeepSeek shock", us_date: "2025-01-27"}
-    - {id: nvda_nov2025, label: "Nvidia beats, then reverses on AI-bubble fears", us_date: "2025-11-20"}
-    - {id: anthropic_feb2026, label: "Anthropic plugins hit US software stocks", us_date: "2026-02-03"}
-    - {id: openai_apr2026, label: "WSJ: OpenAI missed user and revenue goals", us_date: "2026-04-28"}
-    - {id: tomoro_may2026, label: "OpenAI buys consulting firm Tomoro", us_date: "2026-05-11"}
-    - {id: openai_oct2026, label: "FT: OpenAI revenue run-rate about $50bn", us_date: "2026-10-08"}
-    - {id: coreweave_oct2026, label: "CoreWeave bond scare", us_date: "2026-10-14"}
-    - {id: lam_oct2026, label: "Lam Research supply-chain warning", us_date: "2026-10-22"}
+    - {id: smci_10k, label: "Super Micro delays its annual report", us_date: "2024-08-28", history_src: [hist_fool_smci]}
+    - {id: smci_ey, label: "Super Micro's auditor EY resigns", us_date: "2024-10-30", history_src: [hist_siliconangle_smci_ey]}
+    - {id: deepseek, label: "DeepSeek shock", us_date: "2025-01-27", history_src: [hist_bs_deepseek]}
+    - {id: nvda_nov2025, label: "Nvidia beats, then reverses on AI-bubble fears", us_date: "2025-11-20", history_src: [hist_fortune_nvda_nov2025]}
+    - {id: anthropic_feb2026, label: "Anthropic plugins hit US software stocks", us_date: "2026-02-03", history_src: [hist_moneylife_anthropic, hist_bt_anthropic]}
+    - {id: openai_apr2026, label: "WSJ: OpenAI missed user and revenue goals", us_date: "2026-04-28", history_src: [hist_reuters_openai_apr2026]}
+    - {id: tomoro_may2026, label: "OpenAI buys consulting firm Tomoro", us_date: "2026-05-11", history_src: [hist_bs_tomoro]}
+    - {id: openai_oct2026, label: "FT: OpenAI revenue run-rate about $50bn", us_date: "2026-10-08", history_src: [hist_admiral_openai_oct2026]}
+    - {id: coreweave_oct2026, label: "CoreWeave bond scare", us_date: "2026-10-14", history_src: [hist_siliconangle_crwv_oct2026, hist_247_orcl_oct2026]}
+    - {id: lam_oct2026, label: "Lam Research supply-chain warning", us_date: "2026-10-22", history_src: [hist_techtimes_lam_oct2026]}
 
 # Ticker verification log seeds (the pipeline also verifies every ticker live).
 ticker_fixes:

@@ -1,9 +1,15 @@
-// App shell: loads /data.json (never renders invented numbers), then the terminal: banner, header,
-// F-keys, command bar, ticker tape, active panel, status line, footer.
+// App shell: loads /data.json (never renders invented numbers), then one store drives two UIs:
+// the guided, illustrated mode (default for first-time users) and the terminal (banner, header,
+// F-keys, command bar, ticker tape, active panel, status line, footer). Switching keeps the scenario.
 import { Component, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { DataBundle } from './types/data';
 import type { PanelId, PanelProps } from './panels/types';
-import { useTerminal } from './state/store';
+import { useTerminal, type ExtState, type StoreActions } from './state/store';
+import { LearnProvider } from './learn/Term';
+import GuidedApp from './guided/GuidedApp';
+import { Icon } from './guided/icons';
+import { readPref } from './guided/storage';
+import './styles/guided.css';
 import { contextFromBundle } from './commands/parse';
 import { Banner, FunctionKeys, Footer, HeaderBar, HelpOverlay, StatusLine } from './components/Shell';
 import CommandBar from './components/CommandBar';
@@ -98,8 +104,53 @@ function Splash({ load }: { load: Exclude<Load, { status: 'ok' }> }) {
   );
 }
 
-function Terminal({ bundle }: { bundle: DataBundle }) {
-  const { state, actions } = useTerminal(bundle);
+/** Loading / error screen in the guided look, for people who have not chosen the terminal. */
+function GuidedSplash({ load }: { load: Exclude<Load, { status: 'ok' }> }) {
+  return (
+    <div className="g-app">
+      <div className="g-banner" role="note">
+        <Icon name="warning" size={15} />
+        <span>
+          <b>Hypothetical scenario</b> — model output, not a forecast
+        </span>
+      </div>
+      <main className="g-main g-splash">
+        {load.status === 'loading' ? (
+          <div className="g-empty" role="status">
+            <span className="g-calc-spin is-big" aria-hidden="true" />
+            <p className="g-empty-title">Loading the market data…</p>
+            <p className="g-muted">Prices, company links and sources for 32 Indian and 25 US companies.</p>
+          </div>
+        ) : (
+          <div className="g-empty" role="alert">
+            <Icon name="warning" size={36} />
+            <p className="g-empty-title">The data could not be loaded</p>
+            <p className="g-muted">{load.error}</p>
+            <p className="g-muted">This app only shows numbers from its generated data file, so nothing is shown in its place.</p>
+          </div>
+        )}
+      </main>
+      <footer className="g-footer">
+        <p>
+          <b>Educational model. Not investment advice.</b>
+        </p>
+      </footer>
+    </div>
+  );
+}
+
+function prefersTerminal(): boolean {
+  try {
+    const h = window.location.hash.replace('#', '').toUpperCase();
+    if (/^F[1-6]$/.test(h) || h === 'SEC') return true;
+    if (/[?&]cmd=/.test(window.location.search)) return true;
+  } catch {
+    /* ignore */
+  }
+  return readPref('mode') === 'terminal';
+}
+
+function Terminal({ bundle, state, actions }: { bundle: DataBundle; state: ExtState; actions: StoreActions }) {
   const ctx = useMemo(() => contextFromBundle(bundle), [bundle]);
   const [focusKey, setFocusKey] = useState(0);
 
@@ -126,44 +177,22 @@ function Terminal({ bundle }: { bundle: DataBundle }) {
     return () => window.removeEventListener('keydown', onKey);
   }, [actions, state.helpOpen]);
 
-  // Deep links: ?cmd=POP%2012M;NVDA  and  #F2 (applied once on mount; guarded for StrictMode).
-  const deepLinked = useRef(false);
-  useEffect(() => {
-    if (deepLinked.current) return;
-    deepLinked.current = true;
-    try {
-      const q = new URLSearchParams(window.location.search);
-      const cmds = q.getAll('cmd').flatMap((c) => c.split(';')).map((c) => c.trim()).filter(Boolean);
-      for (const c of cmds) actions.go(c);
-      const h = window.location.hash.replace('#', '').toUpperCase();
-      if (/^F[1-6]$/.test(h) || h === 'SEC') actions.navigate(h as PanelId);
-    } catch {
-      /* ignore malformed URLs */
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    try {
-      window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}#${state.panel}`);
-    } catch {
-      /* ignore */
-    }
-  }, [state.panel]);
-
-  if (!state.result) {
-    return (
-      <Splash
-        load={{ status: 'error', error: `Scenario engine failed on the default preset: ${state.resultError ?? 'unknown error'}` }}
-      />
-    );
-  }
-
+  // (#F2-style hashes and ?cmd= deep links are applied once by Root / the store.)
   const props: PanelProps = { state, actions };
   return (
     <div className="app">
       <Banner lowConfidence={state.result.lowConfidence} />
-      <HeaderBar bundle={bundle} result={state.result} />
+      <div className="term-hdr">
+        <HeaderBar bundle={bundle} result={state.result} />
+        <button
+          type="button"
+          className="btn term-guided-btn"
+          onClick={() => actions.setMode('guided')}
+          title="Plain-language, illustrated view of the same scenario"
+        >
+          ◧ GUIDED VIEW
+        </button>
+      </div>
       <FunctionKeys panel={state.panel} onNav={actions.navigate} />
       <CommandBar ctx={ctx} onGo={actions.go} focusKey={focusKey} />
       <TickerTape bundle={bundle} onPick={(t) => actions.go(bundle.india.find((x) => x.ticker === t)?.display ?? t)} />
@@ -183,6 +212,37 @@ function Terminal({ bundle }: { bundle: DataBundle }) {
       <Footer />
       {state.helpOpen && <HelpOverlay onClose={() => actions.openHelp(false)} />}
     </div>
+  );
+}
+
+function Root({ bundle }: { bundle: DataBundle }) {
+  const { state, actions } = useTerminal(bundle);
+
+  // Terminal deep links: ?cmd=POP%2012M;NVDA (applied once per page load; guarded for StrictMode).
+  const deepLinked = useRef(false);
+  useEffect(() => {
+    if (deepLinked.current) return;
+    deepLinked.current = true;
+    try {
+      const q = new URLSearchParams(window.location.search);
+      const cmds = q.getAll('cmd').flatMap((c) => c.split(';')).map((c) => c.trim()).filter(Boolean);
+      for (const c of cmds) actions.go(c);
+    } catch {
+      /* ignore malformed URLs */
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const learn = useMemo(() => ({ bundle, result: state.result ?? null, openLearn: actions.openLearn }), [bundle, state.result, actions]);
+
+  if (!state.result) {
+    const load = { status: 'error', error: `Scenario engine failed on the default preset: ${state.resultError ?? 'unknown error'}` } as const;
+    return state.mode === 'terminal' ? <Splash load={load} /> : <GuidedSplash load={load} />;
+  }
+  return (
+    <LearnProvider value={learn}>
+      {state.mode === 'terminal' ? <Terminal bundle={bundle} state={state} actions={actions} /> : <GuidedApp state={state} actions={actions} />}
+    </LearnProvider>
   );
 }
 
@@ -208,6 +268,6 @@ export default function App() {
       alive = false;
     };
   }, []);
-  if (load.status !== 'ok') return <Splash load={load} />;
-  return <Terminal bundle={load.bundle} />;
+  if (load.status !== 'ok') return prefersTerminal() ? <Splash load={load} /> : <GuidedSplash load={load} />;
+  return <Root bundle={load.bundle} />;
 }

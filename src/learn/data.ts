@@ -127,6 +127,11 @@ export function statusCounts(b: DataBundle | null): Record<Status, number> {
   }
   for (const a of b.assumptions) q(a);
   for (const p of b.presets) for (const s of p.params) if (s.status in c) c[s.status] += 1;
+  const tickers = new Set([...b.origins.map((o) => o.ticker), ...b.india.map((t) => t.ticker)]);
+  for (const t of tickers) q(b.securities[t]?.op_leverage);
+  q(b.fx?.default_f);
+  q(b.calibration?.contagion_us);
+  q(b.calibration?.contagion_india);
   return c;
 }
 
@@ -190,4 +195,14 @@ export function pctWord(x: number | null | undefined, digits = 1): string {
   if (!isNum(x)) return '—';
   const v = Math.abs(x * 100).toFixed(digits);
   return x < 0 ? `−${v}%` : `+${v}%`;
+}
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+/** "2026-10-28" → "28 Oct 2026" (or "Oct 2026" with monthOnly). Unknown → ''. */
+export function fmtDate(d: string | null | undefined, monthOnly = false): string {
+  if (!d || !/^\d{4}-\d{2}/.test(d)) return '';
+  const [y, m, day] = d.split('-');
+  const mon = MONTHS[Number(m) - 1] ?? '';
+  return monthOnly || !day ? `${mon} ${y}` : `${Number(day)} ${mon} ${y}`;
 }

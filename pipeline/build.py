@@ -201,7 +201,8 @@ def _worst_windows(r: pd.Series | None) -> dict[str, Any]:
 
 
 # ============================================================================ main build
-def build(skip_fund: bool = False, only_prices: bool = False, out: Path = OUT, log=print, refresh: bool = False) -> dict[str, Any]:
+def build(skip_fund: bool = False, only_prices: bool = False, out: Path = OUT, log=print, refresh: bool = False,
+          skip_modellab: bool = False) -> dict[str, Any]:
     t0 = time.time()
     now = pd.Timestamp(datetime.now(timezone.utc))
     cfg, cfg_log = load_universe()
@@ -231,6 +232,8 @@ def build(skip_fund: bool = False, only_prices: bool = False, out: Path = OUT, l
     adrs = list(cfg.get("benchmarks", {}).get("adrs", []))
     for a in adrs:
         market_map[a] = "US"
+    for a in cfg.get("factors_aux", []) or []:  # V2 accuracy-lab signals (verified like every other ticker)
+        market_map[a["ticker"]] = a.get("market") or infer_market(a["ticker"])
     ctx = CoreContext(cfg, market_map, now, refresh=refresh)
 
     requested = list(dict.fromkeys(list(market_map.keys())))
@@ -729,6 +732,20 @@ def build(skip_fund: bool = False, only_prices: bool = False, out: Path = OUT, l
     }
     if nm.get("down") is not None:
         bundle["nifty_model_down"] = stats.public(nm["down"])  # additive optional field
+    # ---------------------------------------------------------------- V2 accuracy lab (optional sections)
+    if not skip_modellab and (cfg.get("modellab") or {}).get("enabled", False):
+        tl = time.time()
+        try:
+            from pipeline.modellab.runner import run as run_modellab
+
+            lab, _lab_diag = run_modellab(cfg, ctx, est, nm, now, log=log)
+            for k in ("factors_aux", "models", "backtest", "nowcast"):
+                if k in lab:
+                    bundle[k] = lab[k]
+            log(f"[modellab] sections added in {time.time()-tl:.1f}s")
+        except Exception as exc:  # noqa: BLE001 - never block the core bundle
+            warnings.append(f"model lab failed: {type(exc).__name__}: {exc}")
+            log("[modellab] FAILED\n" + traceback.format_exc())
     clean = sanitize(bundle)
     errs = validate_bundle(clean)
     if errs:

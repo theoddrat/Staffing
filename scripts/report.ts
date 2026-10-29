@@ -77,7 +77,7 @@ function modelLine(bundle: DataBundle, r: ScenarioResult): string {
   const diffs = r.india.filter((x) => x.model_used === 'ensemble' && x.market_move_ols !== null && x.market_move_ols !== undefined);
   const mad = diffs.length ? diffs.reduce((a, x) => a + Math.abs(x.market_move - (x.market_move_ols as number)), 0) / diffs.length : null;
   return (
-    `Layer-2 model: ${info ? info.replace(/^INFO: /, '') : `walk-forward-validated ensemble for ${nEns} of ${r.india.length} stocks`}.` +
+    `Layer-2 model: ${info ? info.replace(/^INFO: Layer 2 uses the /, '') : `walk-forward-validated ensemble for ${nEns} of ${r.india.length} stocks`}.` +
     (mad !== null ? ` Mean |ensemble − OLS| market move ${up(mad)} (OLS mkt column).` : '')
   );
 }
@@ -91,7 +91,7 @@ function accuracySummary(bundle: DataBundle): string[] {
   const SUBSET: Record<string, string> = { all: 'all days', shock: 'shock days (SOX in its trailing worst 5%)', events: 'named AI events' };
   for (const mode of ['scenario', 'nowcast'] as const)
     for (const subset of ['all', 'shock', 'events'] as const) {
-      const rows = (bt.summary ?? []).filter((x) => x.mode === mode && x.subset === subset).sort((a, b) => b.r2 - a.r2);
+      const rows = (bt.summary ?? []).filter((x) => x.mode === mode && x.subset === subset).sort((a, b) => (Number.isFinite(b.r2) ? b.r2 : -Infinity) - (Number.isFinite(a.r2) ? a.r2 : -Infinity));
       if (!rows.length) continue;
       out.push(`  ${mode} mode, ${SUBSET[subset]} (pooled across stocks; R² vs a zero forecast):`);
       const t = table(

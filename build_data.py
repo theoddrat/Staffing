@@ -6,6 +6,7 @@ yfinance, estimates the transmission model and writes public/data.json (schema: 
     python build_data.py --offline       # cache only (no network)
     python build_data.py --skip-fund     # prices from cache/network, fundamentals from cache only
     python build_data.py --only-prices   # no fundamentals at all (fast; P/E, mcap etc. null)
+    python build_data.py --skip-modellab # skip the V2 accuracy lab (walk-forward backtest, ~1-3 min)
 
 All scenarios produced from this data are HYPOTHETICAL. Educational model. Not investment advice.
 """
@@ -23,6 +24,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--skip-fund", action="store_true", help="fundamentals from cache only")
     ap.add_argument("--only-prices", action="store_true", help="skip fundamentals entirely")
     ap.add_argument("--refresh", action="store_true", help="force re-download of every price history")
+    ap.add_argument("--skip-modellab", action="store_true", help="skip the V2 accuracy lab (models/backtest/nowcast sections)")
     ap.add_argument("--out", default=str(Path(__file__).resolve().parent / "public" / "data.json"))
     args = ap.parse_args(argv)
     if args.offline:
@@ -31,7 +33,7 @@ def main(argv: list[str] | None = None) -> int:
     from pipeline.build import build  # imported after env so the cache modules see ACM_OFFLINE
 
     build(skip_fund=args.skip_fund or args.offline, only_prices=args.only_prices, out=Path(args.out),
-          refresh=args.refresh and not args.offline)
+          refresh=args.refresh and not args.offline, skip_modellab=args.skip_modellab)
     from pipeline.validate import main as validate_main
 
     return validate_main([args.out])

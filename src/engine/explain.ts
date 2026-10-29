@@ -3,7 +3,7 @@
 // returns NaN. Labels and confidence words come from the shared vocabulary in src/guided/visual.ts.
 import type { DataBundle, StockModels } from '../types/data';
 import type { Channel, Explanation, Horizon, IndiaResult, PresetId, ScenarioResult } from '../types/engine';
-import { CHANNEL_VIS, CONFIDENCE_VIS } from '../guided/visual';
+import { CHANNEL_VIS, CONFIDENCE_VIS, TIER_VIS } from '../guided/visual';
 import { ENSEMBLE_H, type CoefSel } from './ensemble';
 import { prepare, type Prep, type PrepIndia } from './prepare';
 import { defaultParams, paramSpecs } from './presets';
@@ -25,10 +25,10 @@ function asNum(v: unknown): number | null {
   return null;
 }
 
-/** |x| as a percent: one decimal below 10%, whole numbers above. */
+/** |x| as a percent: two decimals below 0.1%, one below 10%, whole numbers above. */
 function pctAbs(x: number): string {
   const v = Math.abs(num(x) ? x : 0) * 100;
-  return `${v < 9.95 ? v.toFixed(1) : v.toFixed(0)}%`;
+  return `${v < 0.095 ? v.toFixed(2) : v < 9.95 ? v.toFixed(1) : v.toFixed(0)}%`;
 }
 
 /** Signed percent with a true minus sign, e.g. −66% / +105%. */
@@ -52,13 +52,6 @@ function moves(x: number, plural = false): string {
   const sfx = plural ? '' : 's';
   if (!num(x) || Math.abs(x) < 0.0005) return `barely move${sfx}`;
   return `${x < 0 ? 'fall' : 'rise'}${sfx} about ${pctAbs(x)}`;
-}
-
-/** Response to a 10% fall in `what` for a log-space coefficient b, e.g. "falling about 1.2% for every 10% fall in US chips". */
-function per10(b: number, what: string): string {
-  const r = expm1Safe((num(b) ? b : 0) * Math.log(0.9));
-  if (Math.abs(r) < 0.0005) return `barely reacting to ${what}`;
-  return `${r < 0 ? 'falling' : 'rising'} about ${pctAbs(r)} for every 10% fall in ${what}`;
 }
 
 function joinAnd(xs: string[]): string {
@@ -89,8 +82,31 @@ function exposureShare(c: Ctx, ch: 'revenue' | 'capex' | 'credit'): number | nul
   return num(v) ? v : null;
 }
 
+/** Signed share of the price this channel accounts for (₹ crore / market cap; log contribution without one). */
+function priceEffect(c: Ctx, ch: Channel, logFallback: number): number {
+  const inr = c.r.channel_inr_cr?.[ch];
+  const m = c.r.mcap_inr_cr;
+  if (num(inr) && num(m) && m > 0) return inr / m;
+  return num(logFallback) ? expm1Safe(logFallback) : 0;
+}
+
+/** " — about 9.1% off its price" / " — adding about 1.2% to its price" / "". */
+function effectWords(eff: number): string {
+  if (!num(eff) || Math.abs(eff) < 0.0005) return '';
+  return eff < 0 ? ` — about ${pctAbs(eff)} off its price` : ` — adding about ${pctAbs(eff)} to its price`;
+}
+
+/** How a stock has followed one factor: with it, against it, or barely (log-space coefficient b). */
+function followWords(who: string, b: number, what: string): string {
+  const r = expm1Safe((num(b) ? b : 0) * Math.log(0.9));
+  if (Math.abs(r) < 0.0005) return `, but ${who} has barely reacted to ${what} in the past`;
+  return b > 0
+    ? `; ${who} has tended to follow it, falling about ${pctAbs(r)} for every 10% fall in ${what}`
+    : `; ${who} has tended to move the other way, rising about ${pctAbs(r)} for every 10% fall in ${what}`;
+}
+
 function reasonText(ch: Channel, c: Ctx): string {
-  const { r, sel, result, bundle, prep, t } = c;
+  const { r, sel, result, bundle, t } = c;
   const f = result.factors;
   const who = r.display || r.name || r.ticker;
   const values = result.params?.values ?? {};
@@ -102,37 +118,47 @@ function reasonText(ch: Channel, c: Ctx): string {
       const subject = pt ? `${pName} ${num(stake) ? `owns about ${pctAbs(stake)} of it` : 'is its parent company'}` : 'Its parent company';
       const xP = sel && Math.abs(sel.PARENT) > 1e-12 ? r.market_contrib.parent / sel.PARENT : null;
       const pm = xP !== null && num(xP) ? ` and ${moves(expm1Safe(xP))} in this scenario` : '';
-      const follow = sel ? `; ${who} has tended to follow it, ${per10(sel.PARENT, pName)}` : '';
-      return `${subject}${pm}${follow}.`;
+      const follow = sel ? followWords(who, sel.PARENT, pName) : '';
+      return `${subject}${pm}${follow}${effectWords(priceEffect(c, 'parent', r.market_contrib.parent))}.`;
     }
     case 'sentiment': {
-      const head = `US chip stocks ${moves(f.SOX, true)} and big US tech ${moves(f.NDX)} in this scenario`;
-      let follow = '';
-      if (sel) {
-        // combined response to a chip move with US tech moving as it usually does alongside (DESIGN §3.3 slope)
-        const s = t?.target.slopes?.ndx_on_sox;
-        const bComb = sel.SOX + sel.NDX * (num(s) ? s : 0);
-        follow = `; on top of the Nifty, ${who} has tended to move with them, ${per10(bComb, 'US chips')}`;
-      }
       const contagion = sel ? r.market_contrib.sentiment - (sel.SOX * f.x.SOX + sel.NDX * f.x.NDX) : 0;
-      let trust = '';
-      if (Math.abs(contagion) > 1e-6) {
-        const tgt = values.target;
-        const rest = typeof tgt === 'string' ? bundle.india?.find((x) => x.ticker === tgt)?.display ?? tgt : 'a peer';
-        trust = `, plus a knock-on loss of trust from ${rest} restating its profits`;
-      }
-      return `${head}${follow}${trust}.`;
+      const factorLog = r.market_contrib.sentiment - contagion;
+      const eff = effectWords(priceEffect(c, 'sentiment', r.market_contrib.sentiment));
+      const hasTrust = Math.abs(contagion) > 1e-6;
+      const tgt = values.target;
+      const rest = typeof tgt === 'string' ? bundle.india?.find((x) => x.ticker === tgt)?.display ?? tgt : 'a peer';
+      if (hasTrust && Math.abs(factorLog) < 0.0005)
+        return `${rest} restating its profits knocks investors' trust in Indian companies of the same kind (${TIER_VIS[r.tier]?.label ?? `tier ${r.tier}`})${eff}.`;
+      const head = `US chip stocks ${moves(f.SOX, true)} and big US tech ${moves(f.NDX)} in this scenario`;
+      let body = '';
+      if (Math.abs(factorLog) >= 0.0005) {
+        // direction relative to the US factor moves of this scenario (the sign of the ₹ effect)
+        const along = factorLog * (f.x.SOX + f.x.NDX) >= 0;
+        body = `; on top of the Nifty, ${who} has tended to move ${along ? 'with' : 'against'} them`;
+      } else if (Math.abs(f.x.SOX) >= 0.0005 || Math.abs(f.x.NDX) >= 0.0005) body = `; beyond the Nifty, ${who} has barely moved with them in the past`;
+      const trust = hasTrust ? `, plus a knock-on loss of trust from ${rest} restating its profits` : '';
+      return `${head}${body}${trust}${eff}.`;
     }
     case 'fx_fpi': {
-      const follow = sel ? `; ${who} has moved with the Nifty, ${per10(sel.NIFTY, 'the Nifty')}` : '';
-      return `A US sell-off tends to make foreign funds sell Indian shares, so the Nifty ${moves(f.NIFTY)} here${follow}.`;
+      let follow = '';
+      if (sel) {
+        const r10 = expm1Safe(sel.NIFTY * Math.log(0.9));
+        follow =
+          Math.abs(r10) < 0.0005
+            ? `, but ${who} has barely moved with the Nifty in the past`
+            : sel.NIFTY > 0
+              ? `; ${who} has typically moved ${pctAbs(r10)} for every 10% Nifty move`
+              : `; ${who} has tended to move against the Nifty, rising ${pctAbs(r10)} for every 10% fall`;
+      }
+      return `A US sell-off tends to make foreign funds sell Indian shares, so the Nifty ${moves(f.NIFTY)} here${follow}${effectWords(priceEffect(c, 'fx_fpi', r.market_contrib.fx_fpi))}.`;
     }
     case 'own': {
       const rr = asNum(values.r);
       const dd = asNum(values.d);
       const cut = rr !== null ? ` down ${pctAbs(rr)}` : '';
       const derate = dd !== null && dd > 0 ? ` and loses ${pctAbs(dd)} of its valuation on credibility` : '';
-      return `${who} itself restates its profits${cut}${derate}, a direct hit to its own share price.`;
+      return `${who} itself restates its profits${cut}${derate}${effectWords(priceEffect(c, 'own', r.market_contrib.own))}.`;
     }
     case 'revenue': {
       const sh = exposureShare(c, 'revenue');
@@ -151,7 +177,9 @@ function reasonText(ch: Channel, c: Ctx): string {
       return `Debt-heavy AI cloud firms${cost} would buy less from it, which could cut its earnings by about ${pctAbs(r.ear_contrib.credit)}.`;
     }
     case 'fx':
-      return `A rupee about ${pctAbs(f.inr_depr)} weaker makes its dollar earnings worth more rupees, ${r.fx_eps >= 0 ? 'lifting' : 'cutting'} its earnings by about ${pctAbs(r.fx_eps)}.`;
+      return r.fx_eps >= 0
+        ? `A rupee about ${pctAbs(f.inr_depr)} weaker makes its dollar earnings worth more rupees, lifting its earnings by about ${pctAbs(r.fx_eps)}.`
+        : `Unlike exporters, its dollar costs outweigh its dollar income, so a rupee about ${pctAbs(f.inr_depr)} weaker cuts its earnings by about ${pctAbs(r.fx_eps)}.`;
     default:
       return '';
   }
@@ -176,7 +204,7 @@ function confidenceText(r: IndiaResult): { grade: 'HIGH' | 'MED' | 'LOW'; text: 
   const cv = CONFIDENCE_VIS[grade];
   const bits: string[] = [];
   if (!k || k.r2 === null || !num(k.r2)) bits.push('there is no fitted factor model for it');
-  else bits.push(`the market factors in the model explain about ${pctAbs(clamp(k.r2, 0, 1))} of its day-to-day price moves`);
+  else bits.push(`historically, US and Indian market moves explained about ${pctAbs(clamp(k.r2, 0, 1))} of its day-to-day price changes`);
   const share = num(k?.assumption_share) ? k.assumption_share : 0;
   bits.push(share > 0.005 ? `${pctAbs(share)} of its business-impact inputs are assumptions` : 'none of its business-impact inputs are assumptions');
   if (num(k?.n) && k.n < 250) bits.push(`it has only ${k.n} trading days of history`);
@@ -207,9 +235,10 @@ function accuracyText(c: Ctx, model: StockModels | null): Explanation['accuracy'
   const vsOls = ols && num(ols.r2) ? ` (the plain 3-year regression: ${ols.r2 > 0 ? pctAbs(ols.r2) : 'no better than that'})` : '';
   const band = cov !== null ? `${h === 1 ? '' : ' on single days'} the actual move landed inside its 90% range ${pctAbs(cov)} of the time` : '';
   const text =
-    r2 > 0
+    (r2 > 0
       ? `${tested}, the model explained about ${pctAbs(r2)} of this stock's ${sp.moves} moves${vsOls}${band ? `, and${band}` : ''}.`
-      : `${tested}, the model did not beat a no-change forecast for this stock's ${sp.moves} moves${band ? `, though${band}` : ''}; treat the estimate as a rough guide.`;
+      : `${tested}, the model did not beat a no-change forecast for this stock's ${sp.moves} moves${band ? `, though${band}` : ''}; treat the estimate as a rough guide.`) +
+    (c.sel?.model === 'ols' ? ' This scenario uses the 3-year regression for this stock instead.' : '');
   return { text, r2_oos: r2, coverage90: cov };
 }
 
@@ -249,7 +278,7 @@ export function explainStock(bundle: DataBundle, result: ScenarioResult, ticker:
     return { ch, inr: byInr && num(inr) ? inr : 0, w: Math.abs(v) };
   });
   const all = items.reduce((a, x) => a + x.w, 0);
-  const kept = items.filter((x) => x.w > 1e-9 && x.w >= 1e-3 * all);
+  const kept = items.filter((x) => x.w > 1e-9 && x.w >= 5e-3 * all); // drop channels under 0.5% of the story
   const tot = kept.reduce((a, x) => a + x.w, 0);
   const reasons = kept
     .sort((a, b) => b.w - a.w) // stable: ties keep the dominance order
@@ -279,7 +308,7 @@ export function scenarioHeadline(bundle: DataBundle, result: ScenarioResult): st
   if (result.params?.preset === 'replay') {
     const id = result.params.values?.window;
     const w = (bundle.history?.replay_windows ?? []).find((x) => x.id === id);
-    lead = `Replaying ${w?.label ?? 'a past sell-off'} on today's stocks (hypothetical)`;
+    lead = w?.label ? `Replaying “${w.label}” on today's stocks (hypothetical)` : `Replaying a past sell-off on today's stocks (hypothetical)`;
   }
   const tot = result.totals?.india_mcap_change_inr_cr;
   const value =
@@ -305,10 +334,11 @@ export function intensityValues(bundle: DataBundle, presetId: PresetId, horizon?
   for (const s of paramSpecs(bundle, presetId, H)) {
     if (s.kind !== 'number' || NOT_SHOCK_SIZE.has(s.key) || !num(s.value) || !s.mc) continue;
     if ((s.mc.dist !== 'triangular' && s.mc.dist !== 'uniform') || !num(s.mc.low) || !num(s.mc.high)) continue;
+    // the published range around the default, kept inside the slider bounds (never past the default)
     let lo = Math.min(s.mc.low, s.value);
     let hi = Math.max(s.mc.high, s.value);
-    if (num(s.min)) lo = Math.max(lo, s.min);
-    if (num(s.max)) hi = Math.min(hi, s.max);
+    if (num(s.min)) lo = Math.min(Math.max(lo, s.min), s.value);
+    if (num(s.max)) hi = Math.max(Math.min(hi, s.max), s.value);
     const flip = MILDER_WHEN_HIGHER.has(s.key);
     out.mild[s.key] = flip ? hi : lo;
     out.severe[s.key] = s.value;

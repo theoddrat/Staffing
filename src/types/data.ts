@@ -5,7 +5,7 @@
 export type Status = 'SOURCED' | 'UNVERIFIED' | 'USER_ASSUMPTION' | 'COMPUTED' | 'DERIVED';
 export type Tier = 'A' | 'B' | 'C' | 'D';
 export type OriginGroup = 'chips' | 'hyperscalers' | 'infra' | 'software';
-export type Market = 'US' | 'IN' | 'JP' | 'DE' | 'CH' | 'FR' | 'TW' | 'NL' | 'FX' | 'OTHER';
+export type Market = 'US' | 'IN' | 'JP' | 'DE' | 'CH' | 'FR' | 'TW' | 'KR' | 'NL' | 'FX' | 'OTHER';
 export type CrashType =
   | 'earnings_collapse'
   | 'multiple_compression'

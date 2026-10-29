@@ -33,7 +33,7 @@ export function McFanIll({ result, ticker, compact }: IllProps) {
   const sx = scale(0, S, 14, W - 88);
   const sy = scale(Math.min(...all), Math.max(...all), H - 34, 26);
   const band = (a: 'p5' | 'p25', b: 'p95' | 'p75') =>
-    `${linePath(bands.map((x, s) => [sx(s), sy(x[b])]))} ${linePath(bands.map((x, s) => [sx(s), sy(x[a])]).reverse()).replace('M', 'L')} Z`;
+    `${linePath(bands.map((x, s) => [sx(s), sy(x[b])]))} ${linePath(bands.map((x, s): [number, number] => [sx(s), sy(x[a])]).reverse()).replace('M', 'L')} Z`;
   const r = (ticker ? resultFor(result, ticker) : null) ?? result?.india.find((x) => x.range) ?? null;
   const end = bands[S];
   return (
