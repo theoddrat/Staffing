@@ -317,7 +317,7 @@ export interface OverlaySeries {
   v: number[]; // indexed to 100 at peak
 }
 
-export interface DataBundle {
+export interface DataBundle extends DataBundleV2Extras {
   meta: {
     app: string; // 'AI CRASH MONITOR'
     schema_version: number;
@@ -385,4 +385,116 @@ export interface DataBundle {
     replay_windows: ReplayWindow[];
     deepseek_next_day: { ticker: string; tier: Tier | null; r_jan27: number | null; r_jan28: number | null; ar_jan28: number | null }[];
   };
+}
+
+// ───────────────────────── V2: accuracy lab (DESIGN §9) ─────────────────────────
+// All sections are OPTIONAL so older bundles stay valid; engine/UI must degrade gracefully.
+
+export type ModelId =
+  | 'zero' | 'ols' | 'ols_rf' | 'dimson' | 'shrink' | 'ewma' | 'asym' | 'huber' | 'quantile'
+  | 'gbm' | 'nowcast' | 'ensemble';
+
+export interface ModelSpec {
+  id: ModelId | string;
+  label: string; // short human name, e.g. "Shrunk toward peers"
+  description: string; // one plain-language sentence for first-time users
+  family: 'baseline' | 'linear' | 'robust' | 'nonlinear' | 'stack';
+  mode: 'scenario' | 'nowcast';
+  scenario_usable: boolean; // linear in the factor moves -> the engine can use its coefficients
+  features: string[];
+}
+
+export interface FactorAux {
+  id: string; // 'INDA' | 'EPI' | 'SMIN' | 'IGV' | 'TWII' | 'KS11' | 'TNX' | 'DXY' | 'USDINR' | 'ADR' ...
+  ticker: string;
+  name: string;
+  market: Market;
+  role: string; // plain-language: what information it carries for Indian stocks
+  /** How it co-moves with the US AI factors (used if a scenario needs its value). */
+  scenario_map: { SOX: number; NDX: number; r2: number; n: number } | null;
+}
+
+/** Ensemble structural coefficients at one horizon (same roles as RegressionResult.coef keys). */
+export interface HorizonCoefs {
+  h: 1 | 5 | 21; // trading sessions
+  SOX: number;
+  NDX: number;
+  PARENT: number | null;
+  NIFTY: number;
+  beta_total: number | null; // reduced-form response to a 1-unit log SOX move (DESIGN §3.3 formula)
+  r2_oos: number | null; // out-of-sample R² at this horizon (scenario mode), vs zero forecast
+  n_oos: number;
+}
+
+export interface OosStats {
+  rmse: number;
+  mae: number;
+  r2: number; // 1 - SSE/SSE_zero
+  hit: number | null; // sign hit rate on |actual| >= 0.5%
+  n: number;
+}
+
+export interface StockModels {
+  ticker: string;
+  horizons: HorizonCoefs[]; // h = 1, 5, 21 — what the engine uses
+  components: Record<string, { SOX: number; NDX: number; PARENT: number | null; NIFTY: number; weight: number }>; // h=1 linear components + ensemble weight
+  oos: Record<string, OosStats>; // scenario mode, 1 session, by model id
+  oos_shock: Record<string, OosStats>; // same on shock days only
+  oos_nowcast: Record<string, OosStats> | null; // nowcast mode, by model id
+  oos_resid: (number | null)[]; // ensemble OOS residuals (1 session, scenario mode), aligned to backtest.dates
+  coverage90: number | null; // share of OOS actuals inside the ensemble's 90% band
+}
+
+export interface BacktestEventRow {
+  ticker: string;
+  display: string;
+  tier: Tier;
+  actual: number; // log return on the India session after the US shock
+  pred: Record<string, number | null>; // OOS prediction by model id (fitted before the event)
+  lo90: number | null; // ensemble 90% band
+  hi90: number | null;
+}
+
+export interface BacktestEvent {
+  id: string;
+  label: string;
+  us_date: string | null;
+  india_date: string;
+  kind: 'named' | 'worst_sox';
+  x_sox: number; // aligned SOX log move that hit India this session
+  x_ndx: number;
+  rows: BacktestEventRow[];
+  metrics: Record<string, { corr: number | null; mae: number; hit: number | null }>; // across stocks, by model id
+}
+
+export interface Backtest {
+  method: string; // plain description of the walk-forward protocol
+  start: string; // first OOS date
+  end: string;
+  refit_every: number; // sessions
+  train_years: number;
+  dates: string[]; // OOS India dates (alignment for StockModels.oos_resid)
+  models: ModelSpec[];
+  ensemble: { method: string; weights: Record<string, number>; weights_by_tier?: Partial<Record<Tier, Record<string, number>>> };
+  /** Pooled across all stocks: one row per (mode, subset, model). */
+  summary: { mode: 'scenario' | 'nowcast'; subset: 'all' | 'shock' | 'events'; model: string; rmse: number; mae: number; r2: number; hit: number | null; corr_xs: number | null; n: number }[];
+  calibration: { nominal: number; coverage: number; n: number }[]; // ensemble bands: 0.5 / 0.8 / 0.9
+  events: BacktestEvent[];
+  horizon_check: { h: 1 | 5 | 21; model: string; r2: number; n: number }[];
+  nifty_horizons: { h: 1 | 5 | 21; SOX: number; NDX: number; r2: number; n: number }[];
+}
+
+export interface Nowcast {
+  us_date: string; // last US session used
+  for_india_date: string; // next NSE session being predicted (may be in the future)
+  note: string; // e.g. "model check, not a trading signal; the move happens at the open"
+  rows: { ticker: string; display: string; pred: number; lo90: number | null; hi90: number | null }[];
+  nifty: { pred: number; lo90: number | null; hi90: number | null } | null;
+}
+
+export interface DataBundleV2Extras {
+  factors_aux?: FactorAux[];
+  models?: StockModels[];
+  backtest?: Backtest;
+  nowcast?: Nowcast | null;
 }

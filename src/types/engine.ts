@@ -80,6 +80,10 @@ export interface IndiaResult {
   channel_inr_cr: Partial<Record<Channel, number>>; // signed INR-crore contributions used for dominance + Sankey
   confidence: { score: number; grade: 'HIGH' | 'MED' | 'LOW'; r2: number | null; assumption_share: number; n: number };
   notes: string[];
+  /** V2: which coefficient set produced market_move ('ensemble' when bundle.models exists, else 'ols'). */
+  model_used?: 'ensemble' | 'ols';
+  /** V2: the same scenario through the original 3y OLS coefficients, for comparison. */
+  market_move_ols?: number | null;
 }
 
 export interface SankeyNode {
@@ -126,6 +130,15 @@ export interface MCResult {
   fan: { ticker: string; days: number[]; p5: number[]; p25: number[]; p50: number[]; p75: number[]; p95: number[] } | null;
 }
 
+/** V2: plain-language explanation of one stock's result, for the guided UI (DESIGN §9.5). */
+export interface Explanation {
+  ticker: string;
+  headline: string; // e.g. "Netweb could fall about 16% in this scenario (likely range −66% to +105%)."
+  reasons: { channel: Channel; label: string; text: string; inr_cr: number; share: number }[]; // biggest first
+  confidence: { grade: 'HIGH' | 'MED' | 'LOW'; text: string };
+  accuracy: { text: string; r2_oos: number | null; coverage90: number | null } | null; // from bundle.models/backtest
+}
+
 export interface EngineAPI {
   defaultParams(bundle: DataBundle, preset: PresetId, horizon?: Horizon): ScenarioParams;
   runScenario(bundle: DataBundle, params: ScenarioParams): ScenarioResult;
@@ -136,4 +149,6 @@ export interface EngineAPI {
   ): MCResult;
   /** Merge MC percentiles into a scenario result (fills IndiaResult.range). */
   withRanges(result: ScenarioResult, mc: MCResult): ScenarioResult;
+  /** V2 */
+  explainStock?(bundle: DataBundle, result: ScenarioResult, ticker: string): Explanation; // also a named export of src/engine/index.ts
 }

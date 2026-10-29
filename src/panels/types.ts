@@ -4,6 +4,10 @@ import type { Horizon, MCResult, ParamValue, PresetId, ScenarioParams, ScenarioR
 
 export type PanelId = 'F1' | 'F2' | 'F3' | 'F4' | 'F5' | 'F6' | 'SEC';
 
+/** V2 guided views (DESIGN §9.5). Terminal mode keeps the F-key panels above. */
+export type GuidedView = 'home' | 'impact' | 'stock' | 'flow' | 'history' | 'accuracy' | 'learn';
+export type UiMode = 'guided' | 'terminal';
+
 export const PANEL_TITLES: Record<PanelId, string> = {
   F1: 'SHOCK',
   F2: 'INDIA IMPACT',
@@ -25,6 +29,8 @@ export interface AppState {
   tierFilter: Tier | 'ALL';
   historyFocus: string | null; // history case / event id requested via `HIST <ID> <GO>`
   message: string | null; // last command-bar feedback line
+  mode?: UiMode; // V2: default 'guided' for first-time users (remembered per browser)
+  view?: GuidedView; // V2: current guided view
 }
 
 export interface AppActions {
@@ -39,6 +45,8 @@ export interface AppActions {
   setTierFilter(t: Tier | 'ALL'): void;
   setHistoryFocus(id: string | null): void;
   go(command: string): void; // execute a command-bar command, e.g. "CAPEX -30"
+  setMode?(mode: UiMode): void; // V2
+  setView?(view: GuidedView, ticker?: string | null): void; // V2: e.g. setView('stock', 'NETWEB.NS')
 }
 
 export interface PanelProps {

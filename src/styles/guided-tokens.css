@@ -1,0 +1,58 @@
+/* Guided-mode tokens (DESIGN §9.5). Single dark theme, continuous with the terminal look:
+   black ground, amber as the one accent, a readable sans for prose, mono for every number.
+   Layout concept: one clear column of story-cards that widens into a 2–3 column board on desktop. */
+@import '@fontsource/ibm-plex-sans/400.css';
+@import '@fontsource/ibm-plex-sans/500.css';
+@import '@fontsource/ibm-plex-sans/600.css';
+
+:root {
+  color-scheme: dark;
+  /* surfaces (blue-biased neutrals so the amber reads warm) */
+  --g-bg: #050608;
+  --g-card: #0e1014;
+  --g-card-2: #151820;
+  --g-line: #262a33;
+  --g-line-hi: #3a3320;
+  /* text */
+  --g-text: #ece9e2;
+  --g-muted: #9aa1ab;
+  --g-faint: #5f6671;
+  /* the one accent (brand continuity with the terminal) */
+  --g-accent: #ffb000;
+  --g-accent-soft: #2b2006;
+  /* semantic */
+  --g-up: #34d17f;
+  --g-down: #ff5c5c;
+  --g-down-soft: #3a1214;
+  --g-up-soft: #0f2c1d;
+  /* channels (distinct on dark, colour-blind-safe-ish pairing with icons + labels) */
+  --ch-parent: #3fc1ff;
+  --ch-revenue: #a98bff;
+  --ch-capex: #ff6fd0;
+  --ch-sentiment: #ffb000;
+  --ch-fpi: #2dd4bf;
+  --ch-fx: #8bd450;
+  --ch-credit: #ff8a3d;
+  --ch-own: #c7c9cf;
+  --ch-premium: #f5d76e;
+  /* tiers */
+  --tier-a: #3fc1ff;
+  --tier-b: #a98bff;
+  --tier-c: #ff6fd0;
+  --tier-d: #34d17f;
+  /* type */
+  --g-font: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --g-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --g-fs-xs: 12px;
+  --g-fs-sm: 13px;
+  --g-fs: 15px;
+  --g-fs-lg: 18px;
+  --g-fs-xl: 24px;
+  --g-fs-2xl: 34px;
+  /* shape + rhythm */
+  --g-r: 12px;
+  --g-r-sm: 7px;
+  --g-gap: 14px;
+  --g-gap-lg: 24px;
+  --g-shadow: 0 1px 0 rgba(255, 255, 255, 0.03), 0 8px 24px rgba(0, 0, 0, 0.35);
+}

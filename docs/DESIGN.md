@@ -311,3 +311,83 @@ history_notes:      # optional: case_id -> list of extra sourced facts (free tex
 * If you depend on another stream's output that is not there yet (e.g. `public/data.json`),
   code against the types and a fixture; never block.
 * Keep functions small and tested; no network in unit tests.
+
+## 9. V2 — accuracy lab + guided, illustrated UX
+
+Goal: (a) get as close as possible to the prices Indian stocks *actually* printed after US AI
+shocks, and prove it out of sample; (b) make the app understandable to a first-time user, with
+every term illustrated and every number shown visually.
+
+### 9.1 Two prediction modes
+* **Scenario mode** (what the engine can use): inputs are only the US AI factor moves
+  (x_SOX, x_NDX), the parent move x_P and the Nifty response implied by them. Prediction is the
+  reduced form of the structural model (Layer 2).
+* **Nowcast mode** (evaluation + "tomorrow's model check" only): adds every signal observable
+  before the NSE close via the information-set rule: US-listed India ETFs (INDA/EPI/SMIN — they
+  reprice Indian equities during US hours), the stock's own US ADR (INFY→INFY.NS, WIT→WIPRO.NS),
+  US software (IGV — the AI-disruption channel for IT services), Asian chip markets that close
+  before NSE (^TWII, ^KS11 → same day), US 10y yield (^TNX) and dollar (DX-Y.NYB) changes,
+  USDINR. Verify every ticker in yfinance; drop and log failures. Nowcast predictability is
+  real but mostly happens at the NSE open: label it "not tradeable at the previous close".
+
+### 9.2 Model zoo (per stock unless noted; all walk-forward)
+| id | model | scenario-usable |
+|---|---|---|
+| `zero` | predicts 0 (benchmark every metric is quoted against) | — |
+| `ols` | current structural OLS, rolling 3y | yes |
+| `ols_rf` | reduced form, no contemporaneous Nifty | yes |
+| `dimson` | adds next-session lags (delayed reaction); scenario beta = sum of lags | yes |
+| `shrink` | empirical-Bayes shrinkage of each coefficient toward its tier mean: b̃ = w·b̂ + (1−w)·b̄_tier, w = τ²/(τ²+se²) | yes |
+| `ewma` | WLS with exponential weights, half-life 126 sessions (captures regime shifts) | yes |
+| `asym` | separate SOX slopes for down / up days (downside slope used when x_SOX < 0) | yes |
+| `huber` or `quantile` | robust (Huber-T RLM or median QuantReg) | yes |
+| `gbm` | pooled HistGradientBoosting across stocks (features: factor moves, tier, trailing beta/vol) | eval only |
+| `nowcast` | ridge on the full nowcast feature set | eval only |
+| `ensemble` | non-negative stacking (NNLS on in-training OOS predictions, normalised) of the scenario-usable models; scenario coefficients = weighted average of component coefficients | **used by engine** |
+
+### 9.3 Walk-forward protocol
+Refit every 21 India sessions; training = trailing 3 years (EWMA: same window, weighted);
+out-of-sample (OOS) predictions for the next 21 sessions only; first OOS month needs ≥ 500
+training sessions (OOS starts ~2021 for long-history names). Stacking weights for refit k are
+estimated only on OOS predictions made before refit k (no look-ahead).
+Metrics per model, mode and subset (all days / shock days = x_SOX in its trailing worst 5% /
+named AI events): RMSE, MAE, OOS R² = 1 − SSE/SSE_zero, hit rate (sign agreement on days with
+|actual| ≥ 0.5%), cross-sectional correlation across stocks on shock days, and interval
+calibration (share of actuals inside the predicted 50/80/90% bands; bands from the trailing OOS
+residual quantiles).
+Event case studies: for every named AI event and the 10 worst SOX sessions since 2023, store
+each stock's actual next-session move and every model's OOS prediction (fitted only on data
+before the event).
+Horizons: h ∈ {1, 5, 21} sessions — cumulative h-session India log return regressed on the
+cumulative aligned factors over the same sessions (non-overlapping blocks for OOS metrics);
+ensemble structural coefficients and Nifty model per h. Engine mapping: 1D → h1, 1M → h21,
+12M → h21 applied to the 12-month factor move (documented assumption).
+
+### 9.4 Engine use
+Layer 2 = same formula with `models[i].horizons[h]` ensemble coefficients and
+`backtest.nifty_horizons[h]`; falls back to `india[i].reg` when missing. MC bootstraps the
+ensemble's **out-of-sample** residuals (honest bands); `range` therefore reflects real
+prediction error. `IndiaResult` also carries `market_move_ols` for comparison.
+
+### 9.5 Guided UX principles
+* Plain words first, technical term second ("How strongly it follows US chip stocks (beta)").
+* Every concept has a `<Term>` "?" chip → explainer card with an SVG illustration, a one-line
+  definition and a live example computed from the bundle (e.g. "If US chips fall 10%, Netweb has
+  tended to fall about 3.2% the next day").
+* Progressive disclosure: illustrated scenario cards → intensity (Mild / Severe / Extreme) →
+  "Customize" sliders → TERMINAL mode (the existing F1–F6 screens).
+* Every number gets a visual (bar, range whisker, gauge, mini chart). Icons + colours encode
+  channel and tier consistently (`src/guided/visual.ts`, `src/guided/icons.tsx`).
+* First visit opens a short illustrated tour (dismissable, remembered with try/catch storage).
+* "How accurate is this?" is a first-class page: predicted-vs-actual charts on past shocks,
+  model scoreboard, calibration gauge — always out-of-sample.
+* Works at phone width; no horizontal page scroll; same engine and data as terminal mode.
+
+### 9.6 V2 ownership
+| Path | Owner |
+|---|---|
+| `pipeline/modellab/**`, `tests/test_modellab.py`, additions to `universe.yaml` (`factors_aux`, `modellab` settings), wiring in `pipeline/build.py`, `public/data.json` | MODEL-LAB |
+| `src/engine/**`, `scripts/report.ts` | ENGINE-V2 |
+| `src/App.tsx`, `src/state/**`, `src/guided/**` except `src/guided/history/**`, `src/guided/accuracy/**`; `src/styles/guided.css` | UX-CORE |
+| `src/learn/**`, `src/guided/history/**`, `src/guided/accuracy/**`, `src/styles/learn.css`; may add `<Term>` chips inside existing `src/panels/**` files | UX-LEARN |
+| `src/types/*.ts`, `src/panels/types.ts`, `src/guided/visual.ts`, `src/guided/icons.tsx`, `src/styles/guided-tokens.css`, docs, package.json, configs | ORCHESTRATOR |
