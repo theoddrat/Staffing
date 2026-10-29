@@ -1,10 +1,11 @@
 // npm run report [-- --horizon 1D|1M|12M] [--runs 5000] [--seed N] [--file public/data.json] [--json]
+//                  [--set key=value ...]   e.g. --set mode=calibrated --set lambda=0.6 (applied to every horizon)
 // Prints the Full bubble pop scenario (HYPOTHETICAL) from public/data.json using the same engine as the UI.
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { defaultParams, paramSpecs, runMonteCarlo, runScenario, withRanges } from '../src/engine/index';
 import type { DataBundle } from '../src/types/data';
-import type { Channel, Horizon, IndiaResult, MCResult, ScenarioResult } from '../src/types/engine';
+import type { Channel, Horizon, IndiaResult, MCResult, ParamValue, ScenarioParams, ScenarioResult } from '../src/types/engine';
 
 const CHANNEL: Record<Channel, string> = {
   parent: 'Parent link',
@@ -75,6 +76,19 @@ function summary(r: ScenarioResult, mc: MCResult | null, label: string): string 
   return lines.join('\n');
 }
 
+/** Parse repeated `--set key=value` flags into param values (numbers / booleans / null / strings). */
+function setOverrides(): Record<string, ParamValue> {
+  const out: Record<string, ParamValue> = {};
+  process.argv.forEach((a, i) => {
+    if (a !== '--set' || i + 1 >= process.argv.length) return;
+    const [k, ...rest] = process.argv[i + 1].split('=');
+    const raw = rest.join('=');
+    if (!k) return;
+    out[k] = raw === 'null' || raw === '' ? null : raw === 'true' ? true : raw === 'false' ? false : Number.isFinite(Number(raw)) ? Number(raw) : raw;
+  });
+  return out;
+}
+
 function main() {
   const file = resolve(process.cwd(), arg('file', 'public/data.json')!);
   if (!existsSync(file)) {
@@ -90,7 +104,9 @@ function main() {
   const runs = Number(arg('runs', '5000'));
   const seed = Number(arg('seed', '20221130'));
 
-  const params = defaultParams(bundle, 'fullpop', horizon);
+  const sets = setOverrides();
+  const withSets = (p: ScenarioParams): ScenarioParams => ({ ...p, values: { ...p.values, ...sets } });
+  const params = withSets(defaultParams(bundle, 'fullpop', horizon));
   const base = runScenario(bundle, params);
   const mc = runMonteCarlo(bundle, params, { runs, seed });
   const res = withRanges(base, mc);
@@ -110,8 +126,11 @@ function main() {
   out.push(
     'Parameters: ' +
       specs
-        .filter((s) => s.kind === 'number' && params.values[s.key] !== null && params.values[s.key] !== undefined)
-        .map((s) => `${s.key}=${params.values[s.key]}${s.status === 'USER_ASSUMPTION' ? ' [USER ASSUMPTION]' : s.status === 'SOURCED' ? ' [SOURCED]' : ''}`)
+        .filter((s) => (s.kind === 'number' || s.kind === 'enum' || s.kind === 'bool') && params.values[s.key] !== null && params.values[s.key] !== undefined)
+        .map((s) => {
+          const set = s.key in sets ? ' [--set]' : s.status === 'USER_ASSUMPTION' ? ' [USER ASSUMPTION]' : s.status === 'SOURCED' ? ' [SOURCED]' : '';
+          return `${s.key}=${params.values[s.key]}${set}`;
+        })
         .join(', '),
   );
   out.push('');
@@ -126,7 +145,7 @@ function main() {
   out.push('');
   for (const h of ['1D', '1M', '12M'] as const) {
     if (h === horizon) continue;
-    const p = defaultParams(bundle, 'fullpop', h);
+    const p = withSets(defaultParams(bundle, 'fullpop', h));
     const r = runScenario(bundle, p);
     const m = runMonteCarlo(bundle, p, { runs, seed });
     out.push(summary(r, m, `Full bubble pop ${h}`));

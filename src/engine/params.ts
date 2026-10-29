@@ -105,8 +105,10 @@ export function resolveParams(prep: Prep, params: ScenarioParams): ResolvedParam
   }
   clampValues(v);
 
-  const modeRaw = values.mode;
-  const mode: 'median' | 'multiple' = modeRaw === 'multiple' ? 'multiple' : 'median';
+  const modeRaw = typeof values.mode === 'string' ? values.mode.toLowerCase() : values.mode;
+  const mode: ResolvedParams['mode'] = modeRaw === 'multiple' ? 'multiple' : modeRaw === 'calibrated' ? 'calibrated' : 'median';
+  if (modeRaw !== undefined && modeRaw !== null && modeRaw !== 'median' && modeRaw !== mode)
+    warnings.push(`unknown multiple mode '${String(values.mode)}': using median reversion`);
   const target_pe = asNumber(values.target_pe);
   const fo = asNumber(values.f_override);
 

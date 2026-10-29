@@ -274,8 +274,9 @@ def build_event_studies(h: dict, data: _Data, targets: dict, origins: dict) -> l
                 paths.append(res["car"])
             groups.append({"name": g["name"], "index": g["index"], "members": members, "mean_car": ev.mean_path(paths)})
         note = (
-            "Log abnormal returns cumulated from day -5; market model (alpha, beta on trading days -250..-11 vs the "
-            "group's local index), market-adjusted when fewer than 120 estimation days. Day 0 = first session on/after "
+            "Log abnormal returns cumulated from day -5; zero-alpha market model AR = r - beta*r_m (beta by OLS on trading "
+            "days -250..-11 vs the group's local index; the estimated alpha is dropped so pre-event run-ups do not leak "
+            "into post-event CARs), market-adjusted (beta = 1) when fewer than 120 estimation days. Day 0 = first session on/after "
             "the event date ('next' groups: first session after it, i.e. the India reaction to a US close)."
         )
         if missing:
@@ -541,7 +542,7 @@ def build_contagion(h: dict, data: _Data, targets: dict, origins: dict) -> tuple
             "calib.contagion_us",
             "US restatement contagion: peer abnormal return ÷ target abnormal return (SMCI, 30-Oct-2024)",
             [
-                {"label": f"Median 1-day abnormal return of {len(peer_ars)} chip-origin peers vs S&P 500 (market model)", "value": med, "status": "COMPUTED", "src": ["hist_yahoo"], "note": detail},
+                {"label": f"Median 1-day abnormal return of {len(peer_ars)} chip-origin peers vs S&P 500 (zero-alpha market model)", "value": med, "status": "COMPUTED", "src": ["hist_yahoo"], "note": detail},
                 {"label": f"1 ÷ {comp} 1-day abnormal return ({ar_c_s * 100:+.1f}%)", "value": 1.0 / ar_c_s, "status": "COMPUTED", "src": ["hist_siliconangle_smci_ey", "hist_yahoo"], "note": None},
             ],
             unit="x",
@@ -571,7 +572,7 @@ def build_contagion(h: dict, data: _Data, targets: dict, origins: dict) -> tuple
             "calib.contagion_india",
             "India restatement contagion: peer abnormal return ÷ Satyam move (7-Jan-2009)",
             [
-                {"label": f"Mean 1-day abnormal return of {len(peer_ars)} Indian IT peers vs Nifty 50 (market model)", "value": mean, "status": "COMPUTED", "src": ["hist_yahoo"], "note": detail},
+                {"label": f"Mean 1-day abnormal return of {len(peer_ars)} Indian IT peers vs Nifty 50 (zero-alpha market model)", "value": mean, "status": "COMPUTED", "src": ["hist_yahoo"], "note": detail},
                 {"label": f"1 ÷ Satyam one-day move ({move * 100:.0f}%)", "value": 1.0 / move, "status": "SOURCED", "src": list(ind.get("src", [])), "note": "Raw move (not abnormal); sources report 77–78%."},
             ],
             unit="x",
@@ -610,7 +611,7 @@ def build_history(ctx: Any) -> tuple[dict[str, Any], dict[str, Any], list[dict[s
         by_id.get("dotcom", cases[0] if cases else {"notes": []})["notes"].append(f"BUILD: {n}")
     if "deepseek" in by_id:
         by_id["deepseek"]["notes"].append(
-            "deepseek_next_day: simple returns on 27-Jan-2025 and 28-Jan-2025; AR = market-model abnormal return on "
+            "deepseek_next_day: simple returns on 27-Jan-2025 and 28-Jan-2025; AR = zero-alpha market-model abnormal return on "
             "28-Jan vs the local index (Nifty 50; S&P 500 for US-listed names)."
         )
 

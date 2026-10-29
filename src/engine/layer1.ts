@@ -21,6 +21,8 @@ export interface BasketPE {
   peTarget: number | null;
   dBasket: number;
   source: 'history' | 'aggregate' | 'none';
+  /** mode 'calibrated': drawdown implied by the P/E-vs-drawdown fit at today's basket P/E (≤ 0). */
+  impliedDrawdown: number | null;
 }
 
 const E_CAP = 0.95;
@@ -55,29 +57,49 @@ export function basketDerating(prep: Prep, rp: ResolvedParams, warn: (m: string)
     }
   }
   const lambda = rp.v.lambda ?? 0;
+  if (peNow === null) {
+    if (rp.comp.multiple) warn('AI-basket P/E unavailable: multiple compression not applied');
+    return { peNow, pePre, peTarget: null, dBasket: 0, source, impliedDrawdown: null };
+  }
+  if (rp.comp.multiple && rp.mode === 'median' && pePre !== null && peNow <= pePre) {
+    warn(
+      `AI-basket trailing P/E (${peNow.toFixed(1)}x) is below its pre-ChatGPT median (${pePre.toFixed(1)}x): reversion implies no de-rating — switch MODE to CALIBRATED (P/E-vs-drawdown fit) or MULTIPLE.`,
+    );
+  }
+  if (rp.mode === 'calibrated') {
+    // d_basket = λ · max(0, −(intercept + slope · PE_now)): λ = share of the historically implied
+    // peak-to-trough drawdown realised as pure de-rating (DESIGN §4.1 item 4)
+    const fit = prep.bundle.history?.pe_fit;
+    if (!fit || !isFiniteNum(fit.slope) || !isFiniteNum(fit.intercept) || !(fit.n > 0)) {
+      if (rp.comp.multiple) warn('history.pe_fit unavailable: calibrated multiple compression not applied');
+      return { peNow, pePre, peTarget: null, dBasket: 0, source, impliedDrawdown: null };
+    }
+    const implied = fit.intercept + fit.slope * peNow;
+    let d = Math.max(0, lambda) * Math.max(0, -implied);
+    if (rp.floor_zero) d = Math.max(0, d);
+    d = clamp(d, -2, D_CAP);
+    return { peNow, pePre, peTarget: peNow * (1 - d), dBasket: d, source, impliedDrawdown: Math.min(implied, 0) };
+  }
   let peTarget: number | null = null;
   if (rp.mode === 'multiple') {
     if (rp.target_pe !== null) peTarget = rp.target_pe;
     else warn('multiple mode without target_pe: falling back to median reversion');
   }
-  if (peNow === null) {
-    if (rp.comp.multiple) warn('AI-basket P/E unavailable: multiple compression not applied');
-    return { peNow, pePre, peTarget: null, dBasket: 0, source };
-  }
   if (peTarget === null) {
     if (pePre === null) {
       if (rp.comp.multiple) warn('pre-ChatGPT basket P/E unavailable: multiple compression not applied');
-      return { peNow, pePre, peTarget: null, dBasket: 0, source };
+      return { peNow, pePre, peTarget: null, dBasket: 0, source, impliedDrawdown: null };
     }
     peTarget = peNow + lambda * (pePre - peNow);
   }
   let d = 1 - peTarget / peNow;
   if (rp.floor_zero) d = Math.max(0, d);
-  return { peNow, pePre, peTarget, dBasket: clamp(d, -2, D_CAP), source };
+  return { peNow, pePre, peTarget, dBasket: clamp(d, -2, D_CAP), source, impliedDrawdown: null };
 }
 
 function perNameDerating(o: Prep['origins'][number], rp: ResolvedParams, basket: BasketPE): { d: number; perName: boolean } {
-  if (!rp.per_name || o.pe0 === null) return { d: basket.dBasket, perName: false };
+  // calibrated mode is a basket-level calibration: every origin takes the basket de-rating
+  if (!rp.per_name || rp.mode === 'calibrated' || o.pe0 === null) return { d: basket.dBasket, perName: false };
   let target: number | null = null;
   if (rp.mode === 'multiple' && rp.target_pe !== null) target = rp.target_pe;
   else if (o.pePre !== null) target = o.pe0 + (rp.v.lambda ?? 0) * (o.pePre - o.pe0);
@@ -95,7 +117,9 @@ export function layer1(
   warn: (m: string) => void,
 ): { o: OriginCore[]; basket: BasketPE } {
   const v = rp.v;
-  const basket = rp.comp.multiple ? basketDerating(prep, rp, warn) : { peNow: null, pePre: null, peTarget: null, dBasket: 0, source: 'none' as const };
+  const basket: BasketPE = rp.comp.multiple
+    ? basketDerating(prep, rp, warn)
+    : { peNow: null, pePre: null, peTarget: null, dBasket: 0, source: 'none', impliedDrawdown: null };
   const out: OriginCore[] = prep.origins.map((o, j) => {
     const es: number[] = [];
     const ds: number[] = [];
@@ -143,6 +167,10 @@ export function layer1(
       if (pn.d !== 0) ds.push(pn.d);
       if (detail) {
         if (pn.perName) drivers.push(`multiple: own P/E ${o.pe0?.toFixed(1)}x vs pre-ChatGPT ${o.pePre?.toFixed(1) ?? '—'}x → de-rating ${p(pn.d)}`);
+        else if (rp.mode === 'calibrated' && basket.peNow !== null && basket.impliedDrawdown !== null)
+          drivers.push(
+            `multiple (calibrated): basket P/E ${basket.peNow.toFixed(1)}x → P/E-vs-drawdown fit implies ${p(basket.impliedDrawdown)} × λ ${(v.lambda ?? 0).toFixed(2)} → de-rating ${p(pn.d)}`,
+          );
         else if (basket.peNow !== null)
           drivers.push(
             `multiple: basket P/E ${basket.peNow.toFixed(1)}x → ${basket.peTarget?.toFixed(1) ?? '—'}x (pre-ChatGPT ${basket.pePre?.toFixed(1) ?? '—'}x) → de-rating ${p(pn.d)}`,

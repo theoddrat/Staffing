@@ -223,8 +223,12 @@ export function runScenario(bundle: DataBundle, params: ScenarioParams): Scenari
     origin_mcap_change_usd: fin(origins.reduce((a, r) => a + (r.mcap_change_usd ?? 0), 0)),
   };
   if (rp.comp.multiple && core.basket.peNow !== null) {
+    const how =
+      rp.mode === 'calibrated' && core.basket.impliedDrawdown !== null
+        ? `calibrated: fit-implied drawdown ${(core.basket.impliedDrawdown * 100).toFixed(1)}% × λ ${(rp.v.lambda ?? 0).toFixed(2)}`
+        : `${rp.mode}`;
     warnings.push(
-      `INFO: AI-basket P/E ${core.basket.peNow.toFixed(1)}x (pre-ChatGPT ${core.basket.pePre?.toFixed(1) ?? '—'}x, ${core.basket.source}) → target ${core.basket.peTarget?.toFixed(1) ?? '—'}x, de-rating ${(core.basket.dBasket * 100).toFixed(1)}%`,
+      `INFO: AI-basket P/E ${core.basket.peNow.toFixed(1)}x (pre-ChatGPT ${core.basket.pePre?.toFixed(1) ?? '—'}x, ${core.basket.source}; ${how}) → target ${core.basket.peTarget?.toFixed(1) ?? '—'}x, de-rating ${(core.basket.dBasket * 100).toFixed(1)}%`,
     );
   }
   return {

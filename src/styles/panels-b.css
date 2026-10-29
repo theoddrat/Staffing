@@ -85,3 +85,5 @@ button.b-chip.active, button.b-chip.active:hover { background: var(--amber); col
 .b-dd { display: block; white-space: nowrap; }
 .b-dd-label { display: block; color: var(--grey); font-size: var(--fs-xs); white-space: normal; max-width: 260px; margin-left: auto; }
 .b-chart-caption { color: var(--grey); font-size: var(--fs-xs); margin-top: 2px; }
+.b-callout { border-left: 3px solid var(--amber); background: #120d00; color: var(--white); font-size: var(--fs-sm); padding: 4px 8px; margin: 0 0 6px; line-height: 1.45; }
+.b-callout b { color: var(--amber); font-weight: 700; }

@@ -225,6 +225,26 @@ def joint_returns(r_stock: pd.Series, r_index: pd.Series) -> pd.DataFrame:
     return df.sort_index()
 
 
+def estimate_beta(
+    df: pd.DataFrame, lo: int, hi: int, min_obs: int = MIN_EST_OBS
+) -> tuple[float, float | None, str]:
+    """Beta of r on m over joint rows [lo, hi] (OLS with intercept).
+
+    Returns (beta, alpha_estimate, method). Fewer than `min_obs` rows (or no variance) ->
+    (1.0, None, 'market_adjusted').
+    """
+    lo = max(0, lo)
+    if hi < lo:
+        return 1.0, None, "market_adjusted"
+    e = df.iloc[lo : hi + 1]
+    if len(e) < min_obs:
+        return 1.0, None, "market_adjusted"
+    fit = ols_fit(e["m"].to_numpy(), e["r"].to_numpy())
+    if fit is None:
+        return 1.0, None, "market_adjusted"
+    return fit["slope"], fit["intercept"], "market_model"
+
+
 def market_model_car(
     r_stock: pd.Series | None,
     r_index: pd.Series | None,
@@ -238,8 +258,10 @@ def market_model_car(
     """CAR path from -pre..+post (log abnormal returns, cumulative from day -pre).
 
     day0='same' -> first joint trading date on/after event_date; 'next' -> strictly after.
-    Market model alpha/beta on [est[0], est[1]] relative to day 0 (needs >= min_obs obs),
-    otherwise market-adjusted (AR = r - r_m).
+    Zero-alpha market model: beta from OLS (with intercept) on [est[0], est[1]] relative to day 0,
+    AR_t = r_t - beta * r_m,t (the estimated alpha is dropped so a bubble-era run-up in the
+    estimation window does not leak into post-event CARs). Market-adjusted (beta = 1) when fewer
+    than `min_obs` estimation days exist.
     """
     if r_stock is None or r_index is None:
         return None
@@ -254,29 +276,7 @@ def market_model_car(
         return None
     if p0 - pre < 0:
         return None
-    lo, hi = p0 + est[0], p0 + est[1]
-    method = "market_model"
-    alpha, beta = 0.0, 1.0
-    if lo >= 0 and hi - lo + 1 >= min_obs:
-        e = df.iloc[lo : hi + 1]
-        fit = ols_fit(e["m"].to_numpy(), e["r"].to_numpy())
-        if fit is None:
-            method = "market_adjusted"
-        else:
-            alpha, beta = fit["intercept"], fit["slope"]
-    else:
-        lo2 = max(0, lo)
-        e = df.iloc[lo2 : hi + 1] if hi >= lo2 else df.iloc[0:0]
-        if len(e) >= min_obs:
-            fit = ols_fit(e["m"].to_numpy(), e["r"].to_numpy())
-            if fit is not None:
-                alpha, beta = fit["intercept"], fit["slope"]
-            else:
-                method = "market_adjusted"
-        else:
-            method = "market_adjusted"
-    if method == "market_adjusted":
-        alpha, beta = 0.0, 1.0
+    beta, alpha_est, method = estimate_beta(df, p0 + est[0], p0 + est[1], min_obs)
     car: list[float | None] = []
     ars: list[float | None] = []
     cum = 0.0
@@ -287,7 +287,7 @@ def market_model_car(
             ars.append(None)
             continue
         row = df.iloc[p]
-        ar = float(row["r"] - (alpha + beta * row["m"]))
+        ar = float(row["r"] - beta * row["m"])
         cum += ar
         ars.append(ar)
         car.append(cum)
@@ -299,7 +299,7 @@ def market_model_car(
         "ar1": fnum(ars[pre + 1], 6) if len(ars) > pre + 1 else None,
         "car_end": fnum(last, 6),
         "method": method,
-        "alpha": fnum(alpha),
+        "alpha_est": fnum(alpha_est),
         "beta": fnum(beta),
     }
 
@@ -314,7 +314,8 @@ def abnormal_return(
 ) -> dict[str, Any] | None:
     """Single-day log abnormal return on `date` (exact joint trading date required).
 
-    Estimation window positions are relative to `est_anchor` (default: `date`).
+    Same zero-alpha market model as `market_model_car`; estimation window positions are relative
+    to `est_anchor` (default: `date`).
     """
     if r_stock is None or r_index is None:
         return None
@@ -326,21 +327,10 @@ def abnormal_return(
     pa = first_on_or_after(df.index, anchor)
     if pa is None:
         return None
-    lo, hi = max(0, pa + est[0]), pa + est[1]
-    method = "market_model"
-    alpha, beta = 0.0, 1.0
-    if hi >= lo and hi - lo + 1 >= min_obs:
-        e = df.iloc[lo : hi + 1]
-        fit = ols_fit(e["m"].to_numpy(), e["r"].to_numpy())
-        if fit is not None:
-            alpha, beta = fit["intercept"], fit["slope"]
-        else:
-            method = "market_adjusted"
-    else:
-        method = "market_adjusted"
+    beta, alpha_est, method = estimate_beta(df, pa + est[0], pa + est[1], min_obs)
     row = df.loc[d]
-    ar = float(row["r"] - (alpha + beta * row["m"]))
-    return {"ar": ar, "r": float(row["r"]), "m": float(row["m"]), "alpha": alpha, "beta": beta, "method": method}
+    ar = float(row["r"] - beta * row["m"])
+    return {"ar": ar, "r": float(row["r"]), "m": float(row["m"]), "alpha_est": alpha_est, "beta": beta, "method": method}
 
 
 def mean_path(paths: list[list[float | None]]) -> list[float | None]:

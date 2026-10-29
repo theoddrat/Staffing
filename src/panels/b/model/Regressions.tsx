@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import type { DataBundle, IndiaTarget, RegressionResult } from '../../../types/data';
 import { isNum, num } from '../../../lib/format';
 import { CoefCell, Empty, Note, Section } from '../common';
+import { median } from '../util';
 
 type SortKey = 'tier' | 'beta_total' | 'beta_total_down' | 'r2' | 'SOX' | 'NIFTY';
 
@@ -47,6 +48,18 @@ export default function Regressions({
   }, [bundle.india, sortKey]);
   const nm = bundle.nifty_model;
   const w = bundle.meta?.regression_window;
+  const tierB = useMemo(() => {
+    const tb = (bundle.india ?? []).filter((t) => t.tier === 'B' && isNum(t.reg?.coef?.SOX?.b));
+    const neg = tb.filter((t) => (t.reg!.coef.SOX.b as number) < 0);
+    return {
+      n: tb.length,
+      neg: neg.length,
+      negSig: neg.filter((t) => Math.abs(t.reg!.coef.SOX.t) >= 1.96).length,
+      medSox: median(tb.map((t) => t.reg!.coef.SOX.b)),
+      medNdx: median(tb.map((t) => t.reg?.coef?.NDX?.b ?? null)),
+      medTot: median(tb.map((t) => t.beta_total)),
+    };
+  }, [bundle.india]);
 
   if (!rows.length) return <Empty note="no India targets in data.json" />;
 
@@ -104,6 +117,24 @@ export default function Regressions({
           </span>
         }
       >
+        {tierB.n > 0 ? (
+          <div className="b-callout">
+            {tierB.neg * 2 >= tierB.n ? (
+              <>
+                <b>TIER B FINDING (COMPUTED):</b> lagged b_SOX is negative for {tierB.neg} of {tierB.n} Indian IT names ({tierB.negSig} with |t| ≥ 1.96; median{' '}
+                {num(tierB.medSox, 2)}), while b_NDX is positive (median {num(tierB.medNdx, 2)}) and β total is near zero (median {num(tierB.medTot, 2)}). That is
+                consistent with an AI-disruption channel — strong AI-hardware news reads as substitution risk for labour-based IT services. So a pure US-AI (SOX)
+                sell-off can lift Tier B on the market channel (Layer 2) even while the revenue channel (Layer 3: US tech-client IT budgets) hurts it — compare
+                market-implied vs fundamental moves in F2.
+              </>
+            ) : (
+              <>
+                <b>Tier B (COMPUTED):</b> lagged b_SOX is negative for only {tierB.neg} of {tierB.n} Indian IT names (median {num(tierB.medSox, 2)}; b_NDX median{' '}
+                {num(tierB.medNdx, 2)}); the AI-disruption pattern is not dominant in this window.
+              </>
+            )}
+          </div>
+        ) : null}
         <div className="b-scroll-lg">
           <table className="tbl b-tbl">
             <thead>

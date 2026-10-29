@@ -192,6 +192,18 @@ export function PeDrawdownScatter({ bundle }: { bundle: DataBundle }) {
           pt: p,
         })),
     })).filter((s) => s.data.length > 0);
+    if (isNum(basket?.now) && isNum(basket?.implied_drawdown)) {
+      series.push({
+        type: 'scatter',
+        name: "Today's AI basket (fit-implied)",
+        symbol: 'diamond',
+        symbolSize: 15,
+        z: 10,
+        itemStyle: { color: CHART_COLORS.red, borderColor: CHART_COLORS.white, borderWidth: 1 },
+        label: { show: false },
+        data: [{ value: [basket!.now, basket!.implied_drawdown], today: true }],
+      });
+    }
     if (fit && isNum(fit.slope) && isNum(fit.intercept)) {
       const lo = Math.max(0, xmin * 0.9);
       const hi = xmax * 1.05;
@@ -227,6 +239,13 @@ export function PeDrawdownScatter({ bundle }: { bundle: DataBundle }) {
       tooltip: {
         trigger: 'item',
         formatter: (p: any) => {
+          if (p.data?.today) {
+            return [
+              "<b>Today's AI basket</b> (aggregate P/E of the shock origins)",
+              `P/E now ${times(basket?.now, 1)} · pre-ChatGPT median ${times(basket?.pre_chatgpt_median, 1)}`,
+              `fit-implied peak-to-trough drawdown ${pct(basket?.implied_drawdown, 1)} — the CALIBRATED-mode input for shock 4`,
+            ].join('<br/>');
+          }
           const pt = p.data?.pt;
           if (!pt) return '';
           return [
@@ -252,9 +271,28 @@ export function PeDrawdownScatter({ bundle }: { bundle: DataBundle }) {
 
   if (!pts.length) return <Empty note="history.pe_vs_drawdown is empty in data.json" />;
   return (
-    <Section title="Pre-crash P/E vs peak-to-trough drawdown — calibration for shock 4 (multiple compression)">
+    <Section title="Pre-crash P/E vs peak-to-trough drawdown — calibrates shock 4 (CALIBRATED mode)">
       <Chart option={option} height={360} />
-      <div className="b-chart-caption">■ = P/E COMPUTED from Shiller's data · ● = P/E SOURCED (hover for the source) · dashed = OLS fit · red line = today's AI-basket P/E.</div>
+      <div className="b-chart-caption">
+        ■ = P/E COMPUTED from Shiller's data · ● = P/E SOURCED (hover for the source) · dashed = OLS fit · red ◆ / line = today's AI-basket P/E and the
+        fit-implied drawdown, which shock 4's CALIBRATED mode scales by λ.
+      </div>
+      {isNum(basket?.now) && isNum(basket?.pre_chatgpt_median) ? (
+        <div className="b-note">
+          {basket!.now! < basket!.pre_chatgpt_median! ? (
+            <>
+              Today's AI-basket P/E ({times(basket!.now, 1)}) is <b>below</b> its pre-ChatGPT median ({times(basket!.pre_chatgpt_median, 1)}): earnings grew faster
+              than prices, so median-reversion (shock 4 "median" mode) implies no de-rating. The CALIBRATED mode instead applies λ × the fit-implied
+              drawdown at today's P/E ({pct(basket!.implied_drawdown, 0)}).
+            </>
+          ) : (
+            <>
+              Today's AI-basket P/E ({times(basket!.now, 1)}) is {pct(basket!.now! / basket!.pre_chatgpt_median! - 1, 0)} above its pre-ChatGPT median (
+              {times(basket!.pre_chatgpt_median, 1)}), so median-reversion and the CALIBRATED mode both imply a de-rating.
+            </>
+          )}
+        </div>
+      ) : null}
       <div className="b-kv" style={{ margin: '4px 0' }}>
         <span className="k">FIT</span>
         <span className="v">
@@ -310,8 +348,8 @@ export function PeDrawdownScatter({ bundle }: { bundle: DataBundle }) {
       </div>
       <Note>
         Shiller-episode CAPE / trailing P/E and drawdowns are COMPUTED from Robert Shiller's monthly S&P data; other P/E points are SOURCED and
-        their drawdowns COMPUTED from Yahoo index closes where available. The fit is descriptive (few points) — use it as a sanity range for
-        the λ / target-multiple sliders in F1, not as a forecast.
+        their drawdowns COMPUTED from Yahoo index closes where available. The fit is descriptive (few points): shock 4's CALIBRATED mode applies
+        λ × the fit-implied drawdown at today's basket P/E, and the fit is a sanity range for the median / target-multiple modes — not a forecast.
       </Note>
     </Section>
   );

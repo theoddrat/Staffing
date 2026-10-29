@@ -47,6 +47,23 @@ describe.skipIf(!HAS)('real data.json', () => {
     }
   });
 
+  it("calibrated multiple mode produces the fit-implied de-rating (and median mode explains itself)", () => {
+    const fit = bundle.history?.pe_fit;
+    const p = defaultParams(bundle, 'fullpop', '12M');
+    const cal = runScenario(bundle, { ...p, values: { ...p.values, mode: 'calibrated' } });
+    expect(badNumbers(cal)).toEqual([]);
+    if (fit && fit.n > 0 && bundle.history.ai_basket_pe?.now) {
+      const implied = fit.intercept + fit.slope * bundle.history.ai_basket_pe.now;
+      const lambda = Number(p.values.lambda);
+      const msft = cal.origins.find((o) => o.group === 'hyperscalers' && !bundle.origins.find((x) => x.ticker === o.ticker)!.credit.stressed)!;
+      expect(Math.abs(msft.d - lambda * Math.max(0, -implied))).toBeLessThan(1e-9);
+      const med = runScenario(bundle, { ...p, values: { ...p.values, mode: 'median' } });
+      expect(cal.factors.SOX).toBeLessThanOrEqual(med.factors.SOX + 1e-12);
+      const pre = bundle.history.ai_basket_pe.pre_chatgpt_median;
+      if (pre && bundle.history.ai_basket_pe.now <= pre) expect(med.warnings.some((w) => w.includes('below its pre-ChatGPT median'))).toBe(true);
+    }
+  });
+
   it('Monte Carlo on the real bundle: ordered percentiles, fast', () => {
     const p = defaultParams(bundle, 'fullpop', '12M');
     const t0 = performance.now();

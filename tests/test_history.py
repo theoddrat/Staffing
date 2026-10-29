@@ -59,7 +59,7 @@ def test_drawdown_none_when_window_uncovered():
 
 
 # ----------------------------------------------------------------------------- event studies
-def _synthetic_pair(n=400, beta=1.5, alpha=0.0005, shock_pos=300, shock=-0.10, seed=7):
+def _synthetic_pair(n=400, beta=1.5, alpha=0.0, shock_pos=300, shock=-0.10, seed=7):
     rng = np.random.default_rng(seed)
     idx = bdays("2018-01-01", n)
     m = pd.Series(rng.normal(0, 0.01, n), index=idx)
@@ -81,6 +81,25 @@ def test_market_model_car_recovers_planted_abnormal_return():
     assert res["car"][5] == pytest.approx(-0.10, abs=0.01)  # day 0
     assert res["car"][-1] == pytest.approx(-0.10, abs=0.02)  # day +60
     assert res["day0_date"] == idx[300].strftime("%Y-%m-%d")
+
+
+def test_zero_alpha_market_model_ignores_estimation_window_run_up():
+    """A bubble-era run-up (alpha 1%/day before the event, 0 after) must not leak into post-event CARs."""
+    rng = np.random.default_rng(3)
+    n, p0 = 400, 300
+    idx = bdays("2018-01-01", n)
+    m = pd.Series(rng.normal(0, 0.01, n), index=idx)
+    alpha = np.where(np.arange(n) < p0 - 10, 0.01, 0.0)
+    r = pd.Series(alpha + 1.5 * m.to_numpy() + rng.normal(0, 0.0005, n), index=idx)
+    r.iloc[p0] += -0.10
+    res = ev.market_model_car(r, m, idx[p0], day0="same")
+    assert res["method"] == "market_model"
+    assert res["alpha_est"] == pytest.approx(0.01, abs=0.001)  # estimated, recorded...
+    assert res["beta"] == pytest.approx(1.5, abs=0.05)
+    assert res["ar0"] == pytest.approx(-0.10, abs=0.005)  # ...but not subtracted from the AR
+    assert res["car"][-1] == pytest.approx(-0.10, abs=0.02)  # an alpha model would give about -0.71
+    a1 = ev.abnormal_return(r, m, idx[p0])
+    assert a1["ar"] == pytest.approx(-0.10, abs=0.005) and a1["method"] == "market_model"
 
 
 def test_market_model_car_next_day_and_truncation():

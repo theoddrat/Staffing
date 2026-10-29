@@ -34,6 +34,14 @@ export function mean(xs: (number | null | undefined)[]): number | null {
   return n ? s / n : null;
 }
 
+/** Median of the finite values (null when none). */
+export function median(xs: (number | null | undefined)[]): number | null {
+  const v = xs.filter(isFiniteNum).sort((a, b) => a - b);
+  if (!v.length) return null;
+  const m = v.length >> 1;
+  return v.length % 2 ? v[m] : (v[m - 1] + v[m]) / 2;
+}
+
 /** Ordinary least squares y = a + b x over finite pairs. Null when < 3 points or no x-variance. */
 export function olsLine(
   xs: number[],

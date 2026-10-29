@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import type { DataBundle } from '../../../types/data';
 import Formula from '../../../components/Formula';
 import { SourceLinks } from '../../../components/StatusBadge';
-import { isNum, num, pct } from '../../../lib/format';
+import { isNum, num, pct, times } from '../../../lib/format';
 import { Section } from '../common';
 
 interface Block {
@@ -28,6 +28,53 @@ function FormulaBlock({ b }: { b: Block }) {
       ) : null}
     </div>
   );
+}
+
+const SHOCK4_PLACEHOLDER = { title: '__shock4__', tex: [] } as Block;
+
+const fmtSigned = (x: number, d: number) => (x < 0 ? `-${Math.abs(x).toFixed(d)}` : x.toFixed(d));
+
+/** Shock 4 with its three modes; the calibrated mode shows the live fit and today's basket P/E. */
+export function shock4Block(bundle: DataBundle): Block {
+  const fit = bundle.history?.pe_fit;
+  const bp = bundle.history?.ai_basket_pe;
+  const a = fit?.intercept;
+  const b = fit?.slope;
+  const now = bp?.now;
+  const pre = bp?.pre_chatgpt_median;
+  const hasFit = isNum(a) && isNum(b);
+  const liveD = hasFit && isNum(now) ? Math.max(0, -((a as number) + (b as number) * (now as number))) : null;
+  const tex = [
+    String.raw`\text{median: }\ \text{PE}^{*}=\text{PE}_{now}+\lambda\left(\text{PE}_{pre}-\text{PE}_{now}\right);\qquad \text{multiple: }\ \text{PE}^{*}=M;\qquad d=\max\!\left(0,\;1-\frac{\text{PE}^{*}}{\text{PE}_{now}}\right)`,
+    String.raw`\text{calibrated: }\ d_{basket}=\lambda\cdot\max\!\big(0,\;-(a+b\cdot\text{PE}^{basket}_{now})\big)\qquad(a,\,b\ \text{from the F4 P/E-vs-drawdown fit})`,
+  ];
+  if (liveD !== null) {
+    tex.push(
+      String.raw`d_{basket}=\lambda\cdot\max\!\big(0,\;-(${fmtSigned(a as number, 3)}\;${(b as number) < 0 ? '-' : '+'}\;${Math.abs(b as number).toFixed(5)}\times${(now as number).toFixed(2)})\big)=\lambda\cdot${liveD.toFixed(3)}`,
+    );
+  }
+  tex.push(String.raw`\text{PE}^{basket}=\frac{\sum_j M_j}{\sum_j E_j}\quad(\text{origins with positive EPS})`);
+  const notes: ReactNode[] = [
+    <>
+      Modes — <b>median</b>: the basket P/E moves a fraction λ of the way back to its pre-ChatGPT median (d floored at 0); <b>multiple</b>: the P/E goes to a
+      user-set multiple M; <b>calibrated</b>: the de-rating is λ × the peak-to-trough drawdown that the historical P/E-vs-drawdown fit (F4) implies at today's basket P/E.
+    </>,
+    <>
+      Live (COMPUTED): basket P/E now <b>{times(now, 1)}</b> · pre-ChatGPT median <b>{times(pre, 1)}</b> · fit-implied drawdown <b>{pct(bp?.implied_drawdown, 0)}</b>
+      {hasFit ? ` (a = ${num(a, 3)}, b = ${num(b, 5)}, R² = ${num(fit?.r2, 2)}, n = ${fit?.n ?? '—'})` : ' (fit unavailable)'}.
+    </>,
+  ];
+  if (isNum(now) && isNum(pre)) {
+    notes.push(
+      now < pre ? (
+        <>Today's basket P/E is below its pre-ChatGPT median — earnings grew faster than prices — so the median mode implies no de-rating; the calibrated mode still applies one.</>
+      ) : (
+        <>Today's basket P/E is {pct(now / pre - 1, 0)} above its pre-ChatGPT median, so the median mode implies a de-rating of up to {pct(1 - pre / now, 0)} at λ = 1.</>
+      ),
+    );
+  }
+  notes.push(<>PE<sub>pre</sub> = median P/E in the 3 years before 30-Nov-2022 (ChatGPT launch).</>);
+  return { title: 'Shock 4 · pure multiple compression (earnings unchanged) — median / multiple / calibrated', tex, notes };
 }
 
 const L1: Block[] = [
@@ -65,14 +112,7 @@ const L1: Block[] = [
       <>β<sub>k|j*</sub> = same-day peer beta (COMPUTED); γ = contagion ratio calibrated on Super Micro (30-Oct-2024) for US names and Satyam (7-Jan-2009) for Indian names (see FACTORS &amp; FX).</>,
     ],
   },
-  {
-    title: 'Shock 4 · pure multiple compression (earnings unchanged)',
-    tex: [
-      String.raw`\text{PE}^{*}=\text{PE}_{now}+\lambda\left(\text{PE}_{pre}-\text{PE}_{now}\right)\quad\text{or}\quad \text{PE}^{*}=M,\qquad d=\max\!\left(0,\;1-\frac{\text{PE}^{*}}{\text{PE}_{now}}\right)`,
-      String.raw`\text{PE}^{basket}=\frac{\sum_j M_j}{\sum_j E_j}\quad(\text{origins with positive EPS})`,
-    ],
-    notes: [<>PE<sub>pre</sub> = median P/E in the 3 years before 30-Nov-2022 (ChatGPT launch). The P/E-vs-drawdown fit in F4 is the calibration reference.</>],
-  },
+  SHOCK4_PLACEHOLDER,
   {
     title: 'Shock 5 · AI credit event (LOW CONFIDENCE) · Shock 6 replay · Shock 7 full pop',
     tex: [
@@ -201,7 +241,7 @@ export default function Formulas({ bundle }: { bundle: DataBundle }) {
   return (
     <div className="b-formula-grid">
       <Section title="Layer 1 — origin impact">
-        {L1.map((b) => (
+        {L1.map((b) => (b === SHOCK4_PLACEHOLDER ? shock4Block(bundle) : b)).map((b) => (
           <FormulaBlock key={b.title} b={b} />
         ))}
         {FACTORS.map((b) => (

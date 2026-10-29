@@ -44,7 +44,7 @@ export interface ResolvedParams {
   horizon: '1D' | '1M' | '12M';
   /** Numeric parameters keyed by ParamSpec.key (fallbacks applied). */
   v: Record<string, number>;
-  mode: 'median' | 'multiple';
+  mode: 'median' | 'multiple' | 'calibrated';
   per_name: boolean;
   floor_zero: boolean;
   target_pe: number | null;

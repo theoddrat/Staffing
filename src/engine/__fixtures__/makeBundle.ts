@@ -56,6 +56,8 @@ function sec(ticker: string, o: Partial<Security> & { name?: string }): Security
     ret_since_chatgpt_vs_bench: o.ret_since_chatgpt_vs_bench ?? 0.1,
     bench: null,
     revenue_ttm: o.revenue_ttm ?? null,
+    financial_currency: o.financial_currency ?? o.currency ?? 'USD',
+    ...(o.revenue_ttm_usd !== undefined ? { revenue_ttm_usd: o.revenue_ttm_usd } : {}),
     ebit_margin: o.ebit_margin ?? null,
     gross_margin: null,
     op_leverage: o.op_leverage ?? q(`${ticker}.op_leverage`, 1.5, 'COMPUTED', 'x'),
@@ -203,7 +205,7 @@ export function fixturePresets(): Preset[] {
     { id: 'restatement', num: 3, label: 'Accounting restatement', description: 'synthetic', low_confidence: false, horizon_overrides: null,
       params: [other('target', 'ticker', 'CRWV'), num('r', 0.3, 0.1, 0.5), num('d', 0.25, 0.1, 0.4), other('contagion', 'number', null), num('lambda_india', 0, null, null)] },
     { id: 'multiple', num: 4, label: 'Multiple compression', description: 'synthetic', low_confidence: false, horizon_overrides: null,
-      params: [other('mode', 'enum', 'median', ['median', 'multiple']), num('lambda', 0.5, 0.25, 0.8), num('target_pe', 25, null, null), other('per_name', 'bool', false), other('floor_zero', 'bool', true), num('lambda_india', 0.5, 0.25, 0.8), other('f_override', 'number', null)] },
+      params: [other('mode', 'enum', 'median', ['median', 'multiple', 'calibrated']), num('lambda', 0.5, 0.25, 0.8), num('target_pe', 25, null, null), other('per_name', 'bool', false), other('floor_zero', 'bool', true), num('lambda_india', 0.5, 0.25, 0.8), other('f_override', 'number', null)] },
     { id: 'credit', num: 5, label: 'AI credit event', description: 'synthetic', low_confidence: true, horizon_overrides: null,
       params: [num('ds_bps', 400, 200, 800), num('duration', 5, 3, 7), num('k', 0.3, 0.1, 0.5), num('d_credit', 0.15, 0.05, 0.3), num('psi_supplier', 1, 0.8, 1), ...common()] },
     { id: 'replay', num: 6, label: 'Historical replay', description: 'synthetic', low_confidence: false, horizon_overrides: null,
@@ -211,7 +213,7 @@ export function fixturePresets(): Preset[] {
     { id: 'fullpop', num: 7, label: 'Full bubble pop', description: 'synthetic', low_confidence: true,
       params: [
         num('c', 0.35, 0.2, 0.5), num('psi_supplier', 1, 0.8, 1), num('psi_india_dc', 0.5, 0.25, 1), num('phi_it', 1, 0.5, 1.5),
-        other('mode', 'enum', 'median', ['median', 'multiple']), num('lambda', 0.6, 0.4, 0.8), num('target_pe', 25, null, null), other('per_name', 'bool', false), other('floor_zero', 'bool', true),
+        other('mode', 'enum', 'median', ['median', 'multiple', 'calibrated']), num('lambda', 0.6, 0.4, 0.8), num('target_pe', 25, null, null), other('per_name', 'bool', false), other('floor_zero', 'bool', true),
         num('ds_bps', 500, 300, 800), num('duration', 5, 3, 7), num('k', 0.35, 0.2, 0.5), num('d_credit', 0.2, 0.1, 0.3),
         num('lambda_india', 0.5, 0.3, 0.7), other('f_override', 'number', null),
       ],
@@ -240,6 +242,10 @@ export interface FixtureOpts {
   extraOrigins?: number;
   usdInr?: number;
   aiBasketFromHistory?: boolean;
+  /** Explicit history.ai_basket_pe now / pre-ChatGPT median (overrides aiBasketFromHistory). */
+  aiBasket?: { now: number; pre: number };
+  /** history.pe_fit (drawdown = intercept + slope·P/E); default intercept 0.1, slope −0.01. */
+  peFit?: { slope: number; intercept: number; n?: number };
 }
 
 export function makeBundle(opts: FixtureOpts = {}): DataBundle {
@@ -301,6 +307,7 @@ export function makeBundle(opts: FixtureOpts = {}): DataBundle {
       role: 'india',
       market: 'IN',
       currency: 'INR',
+      financial_currency: 'INR',
       last_close: t.price,
       pe_ttm: t.pe,
       mcap_inr: t.mcapInr,
@@ -410,8 +417,12 @@ export function makeBundle(opts: FixtureOpts = {}): DataBundle {
       event_studies: [],
       us_vs_india: [],
       pe_vs_drawdown: [],
-      pe_fit: { slope: 0, intercept: 0, r2: 0, n: 0 },
-      ai_basket_pe: opts.aiBasketFromHistory ? { now: 40, pre_chatgpt_median: 30, implied_drawdown: null } : { now: null, pre_chatgpt_median: null, implied_drawdown: null },
+      pe_fit: { slope: opts.peFit?.slope ?? -0.01, intercept: opts.peFit?.intercept ?? 0.1, r2: 0.3, n: opts.peFit?.n ?? 11 },
+      ai_basket_pe: opts.aiBasket
+        ? { now: opts.aiBasket.now, pre_chatgpt_median: opts.aiBasket.pre, implied_drawdown: null }
+        : opts.aiBasketFromHistory
+          ? { now: 40, pre_chatgpt_median: 30, implied_drawdown: null }
+          : { now: null, pre_chatgpt_median: null, implied_drawdown: null },
       overlay: [],
       worst_windows: {
         SOX: { d1: -0.1, d1_date: '2000-04-14', d21: -0.3, d21_end: '2000-04-14', d252: -1.2, d252_end: '2001-04-04' },

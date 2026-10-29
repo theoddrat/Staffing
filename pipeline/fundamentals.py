@@ -111,22 +111,35 @@ def earnings_table(earn: pd.DataFrame | None, tz: str) -> pd.Series | None:
     return s if not s.empty else None
 
 
-def ttm_eps_series(reported: pd.Series | None, dates: pd.DatetimeIndex, max_span_days: int = 400) -> pd.Series:
-    """TTM EPS valid on each date d = sum of the last 4 reports announced strictly before d.
+def reports_per_year(reported: pd.Series | None) -> int:
+    """4 for quarterly reporters, 2 for semi-annual reporters (median gap between reports > 150 days)."""
+    if reported is None or len(reported) < 3:
+        return 4
+    gaps = np.diff(reported.index.to_numpy()).astype("timedelta64[D]").astype(float)
+    recent = gaps[-6:] if len(gaps) > 6 else gaps
+    return 2 if float(np.median(recent)) > 150 else 4
 
-    No look-ahead: a report announced on local date a is first used on dates > a. Requires the four
-    reports to span <= max_span_days (i.e. four consecutive quarters), else NaN.
+
+def ttm_eps_series(reported: pd.Series | None, dates: pd.DatetimeIndex, max_span_days: int = 400,
+                   per_year: int | None = None) -> pd.Series:
+    """TTM EPS valid on each date d = sum of the last 4 quarterly (or 2 semi-annual) reports
+    announced strictly before d.
+
+    No look-ahead: a report announced on local date a is first used on dates > a. Requires the reports
+    to be consecutive (first-to-last span <= max_span_days), else NaN.
     """
     out = pd.Series(np.nan, index=pd.DatetimeIndex(dates), dtype=float)
-    if reported is None or len(reported) < 4:
+    n = per_year or reports_per_year(reported)
+    if reported is None or len(reported) < n:
         return out
     rep_dates = reported.index.to_numpy()
     vals = reported.to_numpy(dtype=float)
     roll = np.full(len(vals), np.nan)
-    for i in range(3, len(vals)):
-        span = (reported.index[i] - reported.index[i - 3]).days
-        if span <= max_span_days:
-            roll[i] = vals[i - 3 : i + 1].sum()
+    span_limit = max_span_days if n == 4 else 250
+    for i in range(n - 1, len(vals)):
+        span = (reported.index[i] - reported.index[i - n + 1]).days
+        if span <= span_limit:
+            roll[i] = vals[i - n + 1 : i + 1].sum()
     # for each date, index of the last report with announcement date < d
     pos = np.searchsorted(rep_dates, out.index.to_numpy(), side="left") - 1
     ok = pos >= 0
@@ -170,6 +183,17 @@ def _info(f: dict[str, Any], key: str) -> Any:
     return info.get(key) if isinstance(info, dict) else None
 
 
+def eps_currency_factor(ttm_last: float | None, trailing_eps: float | None, fx_last: float | None) -> bool:
+    """True if the calendar EPS looks like it is in the reporting (financial) currency rather than the
+    listing currency: converting it with the latest fin->price FX rate brings it materially closer to
+    Yahoo's trailing EPS (which is quoted in the listing currency)."""
+    if not ttm_last or not trailing_eps or not fx_last or ttm_last <= 0 or trailing_eps <= 0 or fx_last <= 0:
+        return False
+    d_price = abs(math.log(ttm_last / trailing_eps))
+    d_fin = abs(math.log(ttm_last * fx_last / trailing_eps))
+    return d_fin + 0.05 < d_price
+
+
 def compute_security_fundamentals(
     ticker: str,
     fund: dict[str, Any],
@@ -178,7 +202,9 @@ def compute_security_fundamentals(
     usd_per: dict[str, float],
     settings: dict[str, Any],
     price_currency: str | None,
+    fx_daily: Any = None,
 ) -> dict[str, Any]:
+    """`fx_daily(from_ccy, to_ccy)` -> daily Series of `to` units per 1 `from` unit (or None)."""
     """Fundamentals block for one security. Every output is COMPUTED from Yahoo data or None."""
     notes: list[str] = []
     out: dict[str, Any] = {k: None for k in (
@@ -204,9 +230,23 @@ def compute_security_fundamentals(
 
     # ---- P/E on the earnings-calendar basis (consistent now vs pre-ChatGPT)
     rep = earnings_table(fund.get("earnings_dates"), market_tz)
-    if close is not None and not close.dropna().empty and rep is not None and len(rep) >= 4:
+    per_year = reports_per_year(rep)
+    if close is not None and not close.dropna().empty and rep is not None and len(rep) >= per_year:
         c = close.dropna()
-        ttm = ttm_eps_series(rep, c.index)
+        ttm = ttm_eps_series(rep, c.index, per_year=per_year)
+        if per_year == 2:
+            notes.append("semi-annual reporter: TTM EPS = last two half-year reports")
+        # EPS currency consistency: Yahoo's calendar EPS can be in the reporting currency while the
+        # price is in the listing currency (e.g. ASML: EUR EPS vs USD ADR price).
+        cur_p = out["currency"]
+        if cur_p and fin_cur and cur_p != fin_cur and fx_daily is not None:
+            fxs = fx_daily(fin_cur, cur_p)
+            last_ttm = fnum(ttm.dropna().iloc[-1]) if not ttm.dropna().empty else None
+            fx_last = fnum(fxs.dropna().iloc[-1]) if fxs is not None and not fxs.dropna().empty else None
+            if fxs is not None and eps_currency_factor(last_ttm, fnum(_info(fund, "trailingEps")), fx_last):
+                rate = fxs.reindex(c.index, method="ffill")
+                ttm = ttm * rate
+                notes.append(f"calendar EPS converted {fin_cur}->{cur_p} with daily FX before building the P/E series")
         pe = pe_series(c, ttm)
         eps_now = fnum(ttm.iloc[-1])
         out["eps_ttm"] = eps_now
@@ -220,7 +260,11 @@ def compute_security_fundamentals(
         # sanity check vs Yahoo trailing P/E (different EPS basis, but should be same order of magnitude)
         ytr = fnum(_info(fund, "trailingPE"))
         if out["pe_ttm"] and ytr and not (1 / 3 <= out["pe_ttm"] / ytr <= 3):
-            notes.append(f"calendar-EPS P/E {out['pe_ttm']:.1f} vs Yahoo trailing P/E {ytr:.1f} differ >3x; premium suppressed")
+            notes.append(f"calendar-EPS P/E {out['pe_ttm']:.1f} vs Yahoo trailing P/E {ytr:.1f} differ >3x: "
+                         "using Yahoo trailing P/E and suppressing the AI premium")
+            out["pe_ttm"] = None
+            out["eps_ttm"] = None
+            out["pe_basis"] = None
             out["pe_pre_chatgpt_median"] = None
     if out["pe_ttm"] is None:
         ytr = fnum(_info(fund, "trailingPE"))
