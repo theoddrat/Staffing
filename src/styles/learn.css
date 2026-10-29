@@ -41,26 +41,27 @@
   letter-spacing: -0.01em;
 }
 .lv-h2 {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
+  display: block;
   font-size: var(--g-fs-lg);
   font-weight: 600;
+  line-height: 1.35;
   margin: 0 0 6px;
   color: var(--g-text);
 }
 .lv-h2 > svg {
   color: var(--g-accent);
+  vertical-align: -3px;
+  margin-right: 6px;
 }
 .lv-h3 {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 6px;
+  display: block;
   font-size: var(--g-fs);
   font-weight: 600;
+  line-height: 1.4;
   margin: 14px 0 6px;
+}
+.lv-h3 > svg {
+  vertical-align: -2px;
 }
 .lv-lede {
   font-size: var(--g-fs-lg);
@@ -156,6 +157,7 @@ p.lv-muted {
 .lv-two {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
+  align-items: start;
   gap: var(--g-gap-lg);
   margin-bottom: var(--g-gap-lg);
 }
@@ -169,8 +171,7 @@ p.lv-muted {
 }
 
 /* ───────────── buttons, chips, tabs ───────────── */
-.lv-page button,
-.lv-pop button {
+:where(.lv-page, .lv-pop) button {
   font: inherit;
   color: inherit;
 }
@@ -639,9 +640,6 @@ p.lv-muted {
   font-weight: 500;
 }
 .lv-toolbar {
-  position: sticky;
-  top: 0;
-  z-index: 5;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -1529,7 +1527,7 @@ p.lv-muted {
   color: var(--g-muted);
 }
 .lv-es-chart {
-  max-width: 640px;
+  max-width: 520px;
   padding: 6px;
   border-radius: var(--g-r-sm);
   border: 1px solid var(--g-line);

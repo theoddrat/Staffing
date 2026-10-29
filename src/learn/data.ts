@@ -167,8 +167,11 @@ export function fmtPct(x: number | null | undefined, digits = 1, signed = true):
   return signed && v > 0 ? `+${s}%` : `${s}%`;
 }
 
+/** Round-trip through toFixed so values that round to zero never print as "-0". */
+const noNegZero = (x: number, digits: number) => (Number(x.toFixed(digits)) === 0 ? 0 : x);
+
 export function fmtNum(x: number | null | undefined, digits = 1): string {
-  return isNum(x) ? x.toLocaleString('en-US', { minimumFractionDigits: digits, maximumFractionDigits: digits }) : '—';
+  return isNum(x) ? noNegZero(x, digits).toLocaleString('en-US', { minimumFractionDigits: digits, maximumFractionDigits: digits }) : '—';
 }
 
 export function fmtUsdB(x: number | null | undefined): string {
@@ -194,6 +197,7 @@ export function fmtCrore(x: number | null | undefined): string {
 export function pctWord(x: number | null | undefined, digits = 1): string {
   if (!isNum(x)) return '—';
   const v = Math.abs(x * 100).toFixed(digits);
+  if (Number(v) === 0) return `${v}%`;
   return x < 0 ? `−${v}%` : `+${v}%`;
 }
 

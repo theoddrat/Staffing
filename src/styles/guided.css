@@ -1684,7 +1684,7 @@
   font-size: var(--g-fs-sm);
   color: var(--g-muted);
 }
-.g-mc span {
+.g-mc > span {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -2509,16 +2509,16 @@
   white-space: nowrap;
 }
 .g-hero-range,
-.g-mc span {
+.g-mc > span {
   display: block;
 }
 .g-hero-range > svg,
-.g-mc span > svg,
+.g-mc > span > svg,
 .g-hero-range .g-calc {
   vertical-align: -3px;
   margin-right: 4px;
 }
-.g-mc span.g-calc {
+.g-mc > span.g-calc {
   display: inline-flex;
 }
 .g-flow-starts {

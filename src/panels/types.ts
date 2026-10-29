@@ -31,6 +31,7 @@ export interface AppState {
   message: string | null; // last command-bar feedback line
   mode?: UiMode; // V2: default 'guided' for first-time users (remembered per browser)
   view?: GuidedView; // V2: current guided view
+  learnTerm?: string | null; // V2: glossary id the Learn page should open/scroll to (a GlossaryId)
 }
 
 export interface AppActions {

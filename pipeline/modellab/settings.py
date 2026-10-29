@@ -14,6 +14,9 @@ class LabSettings:
     ewma_half_life: float
     huber_c: float
     huber_max_iter: int
+    tail_quantile: float
+    down_quantile: float
+    subset_min_obs: int
     shrink_tau2_floor: float
     shrink_min_group: int
     gbm_enabled: bool
@@ -58,6 +61,9 @@ def from_config(cfg: dict[str, Any]) -> LabSettings:
         ewma_half_life=float(m["ewma_half_life"]),
         huber_c=float(m["huber_c"]),
         huber_max_iter=int(m["huber_max_iter"]),
+        tail_quantile=float(m["tail_quantile"]),
+        down_quantile=float(m["down_quantile"]),
+        subset_min_obs=int(m["subset_min_obs"]),
         shrink_tau2_floor=float(m["shrink_tau2_floor"]),
         shrink_min_group=int(m["shrink_min_group"]),
         gbm_enabled=bool(m["gbm_enabled"]),

@@ -204,7 +204,7 @@ function Story({ c, bundle, onReplay }: { c: HistoryCase; bundle: DataBundle; on
                   </span>
                   <div className="lv-dd-sub">
                     {d.peak_date && d.trough_date ? `${fmtDate(d.peak_date, true)} → ${fmtDate(d.trough_date, true)}` : ''}
-                    {isNum(d.days_to_bottom) ? ` · ${d.days_to_bottom} trading days down` : ''}
+                    {isNum(d.days_to_bottom) ? ` · ${d.days_to_bottom} trading ${d.days_to_bottom === 1 ? 'day' : 'days'} down` : ''}
                     {d.recovered_date
                       ? ` · back to the peak ${fmtDate(d.recovered_date, true)}`
                       : d.status === 'COMPUTED' && d.trough_date

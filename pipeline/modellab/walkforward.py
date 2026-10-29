@@ -19,14 +19,15 @@ from pipeline.modellab import fit
 from pipeline.modellab.panel import Panel, ns
 from pipeline.modellab.settings import LabSettings
 
-LINEAR = ("ols", "ols_rf", "dimson", "shrink", "ewma", "asym", "huber")
+LINEAR = ("ols", "ols_rf", "dimson", "shrink", "ewma", "asym", "huber", "tail", "down")
+SUBSET_MODELS = ("tail", "down")  # OLS on a subset of the training days (big moves / US down days)
 STRUCT = ("SOX_DN", "SOX_UP", "NDX", "PARENT", "NIFTY")
 COEF_NAMES = ("SOX", "NDX", "PARENT", "NIFTY")
 
 
 def cols_for(model: str, with_parent: bool) -> list[str]:
     p = ["PARENT"] if with_parent else []
-    if model in ("ols", "ewma", "huber", "shrink"):
+    if model in ("ols", "ewma", "huber", "shrink", "tail", "down"):
         return ["SOX", "NDX", *p, "NIFTY"]
     if model == "ols_rf":
         return ["SOX", "NDX", *p]
@@ -245,6 +246,12 @@ def run_walkforward(P: Panel, st: LabSettings, log: Callable[[str], None] = prin
                     b = fit.lstsq(X, yy, 0.5 ** ((R - 1 - rows) / H))
                 elif model == "huber":
                     b = fit.huber(X, yy, st.huber_c, st.huber_max_iter)
+                elif model in SUBSET_MODELS:
+                    xs = F["SOX"][rows, i]
+                    sel = (np.abs(xs) >= np.quantile(np.abs(xs), st.tail_quantile)) if model == "tail" else (xs <= np.quantile(xs, st.down_quantile))
+                    if sel.sum() < st.subset_min_obs:
+                        continue
+                    b = fit.lstsq(X[sel], yy[sel])
                 else:
                     b = fit.lstsq(X, yy)
                 struct_hist[model][k, i] = struct(model, cols, b)

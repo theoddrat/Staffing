@@ -895,6 +895,9 @@ modellab:
   ewma_half_life: 126            # recent-weighted model: weight halves every ~6 months
   huber_c: 1.345                 # robust model tuning constant (95% efficiency under normal errors)
   huber_max_iter: 50
+  tail_quantile: 0.7             # "big-move" model: fitted only on the 30% of days with the largest US chip moves
+  down_quantile: 0.2             # "down-day" model: fitted only on the 20% of days with the worst US chip moves
+  subset_min_obs: 100
   shrink_tau2_floor: 0.05        # minimum between-stock variance as a share of mean se^2
   shrink_min_group: 3            # fewer stocks than this in a tier -> shrink toward all stocks instead
   gbm_enabled: true

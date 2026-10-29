@@ -259,6 +259,9 @@ export default function CustomizeDrawer({ state, actions, onClose }: Omit<Guided
                   </button>
                 ))}
               </div>
+              {!state.result.preset.horizon_overrides && (
+                <p className="g-muted g-small">For this scenario a longer time keeps the likely move but widens the range of outcomes.</p>
+              )}
             </section>
           )}
 

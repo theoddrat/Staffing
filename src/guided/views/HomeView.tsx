@@ -134,7 +134,10 @@ function ScenarioCard({ copy, state, actions, openCustomize }: GuidedProps & { c
   const commit = () => {
     if (values !== null) actions.applyScenario(copy.id, isReplay ? undefined : h, values);
   };
-  const lowConf = bundle.presets.find((p) => p.id === copy.id)?.low_confidence;
+  const presetDef = bundle.presets.find((p) => p.id === copy.id);
+  const lowConf = presetDef?.low_confidence;
+  // presets without per-horizon settings move the same on average; time only widens the range
+  const sameMove = !isReplay && !presetDef?.horizon_overrides;
   const titleId = `sc-${copy.id}`;
 
   return (
@@ -213,6 +216,7 @@ function ScenarioCard({ copy, state, actions, openCustomize }: GuidedProps & { c
               ))}
               <HelpChip id="horizon" />
             </div>
+            {sameMove && <p className="g-scard-note">A longer time keeps the likely move but widens the range of outcomes.</p>}
           </>
         )}
 

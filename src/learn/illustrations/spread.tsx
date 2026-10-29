@@ -87,6 +87,11 @@ export function BetaIll({ bundle, ticker, compact }: IllProps) {
           {`slope ${fit.b.toFixed(2)} on ${fit.n} big US-chip days`}
         </Txt>
       )}
+      {fit && !compact && tg && isNum(tg.beta_total) && (
+        <Txt x={R} y={T + 23} size={9} color={C.muted} anchor="end">
+          {`all days, full model: ${fmtNum(tg.beta_total, 2)}`}
+        </Txt>
+      )}
     </Svg>
   );
 }
