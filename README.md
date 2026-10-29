@@ -49,6 +49,9 @@ npm test              # 98 tests: engine math, all presets, Monte Carlo, Sankey 
 
 `npm run report -- --horizon 1M` and `--set key=value` (e.g. `--set mode=median`) override preset parameters.
 
+`npm run build:artifact` builds the hosted variant (fonts inlined, relative paths) into
+`dist-artifact/`: `artifact.html` plus the files listed in `publish-files.json`.
+
 ## Everything is driven by `universe.yaml`
 
 Add or remove any company, tier, parent link or shock origin by editing `universe.yaml` — no code

@@ -2,7 +2,9 @@
 @import '@fontsource/jetbrains-mono/400.css';
 @import '@fontsource/jetbrains-mono/700.css';
 
+/* Deliberately single-theme (terminal look requested by the user): dark on every host. */
 :root {
+  color-scheme: dark;
   --bg: #000000;
   --panel: #070707;
   --panel-2: #0e0e0e;

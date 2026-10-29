@@ -190,7 +190,8 @@ export default function App() {
   const [load, setLoad] = useState<Load>({ status: 'loading' });
   useEffect(() => {
     let alive = true;
-    fetch('/data.json', { cache: 'no-cache' })
+    // Relative to the page (vite base './'), so the app also works when hosted under a sub-path.
+    fetch(`${import.meta.env.BASE_URL}data.json`, { cache: 'no-cache' })
       .then((r) => {
         if (!r.ok) throw new Error(`GET /data.json → HTTP ${r.status}`);
         const ct = r.headers.get('content-type') ?? '';

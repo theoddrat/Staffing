@@ -1,13 +1,17 @@
 /* UI-A: terminal shell + F1/F2/F3/SEC panel layout. Tokens come from theme.css. */
 
-.app { display: flex; flex-direction: column; height: 100vh; min-height: 0; }
+.app {
+  display: flex; flex-direction: column; height: 100%; min-height: 0;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
 .main { flex: 1 1 auto; overflow: auto; min-height: 0; padding-bottom: 4px; }
 .spacer { flex: 1; }
 .small { font-size: var(--fs-xs); }
 
 /* Hypothetical banner — always on top */
 .hypo-banner {
-  position: sticky; top: 0; z-index: 30; flex: 0 0 auto;
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; flex: 0 0 auto;
   display: flex; align-items: center; justify-content: center; gap: 10px;
   background: #4a0000; color: #ffd27a; font-weight: 700; letter-spacing: 0.08em;
   padding: 3px 8px; border-bottom: 1px solid #a30000; font-size: var(--fs-sm); text-transform: uppercase;
@@ -82,7 +86,10 @@
 .footer > span:first-child { font-weight: 700; }
 
 /* Help overlay */
-.help-overlay { position: fixed; inset: 0; z-index: 50; background: rgba(0, 0, 0, 0.78); display: flex; align-items: flex-start; justify-content: center; padding-top: 8vh; }
+.help-overlay {
+  position: fixed; inset: 0; z-index: 50; background: rgba(0, 0, 0, 0.78); display: flex; align-items: flex-start; justify-content: center;
+  padding: max(8vh, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) max(16px, env(safe-area-inset-left, 0px));
+}
 .help-box { width: min(920px, 94vw); max-height: 80vh; overflow: auto; }
 
 /* Generic bits used by UI-A panels */
