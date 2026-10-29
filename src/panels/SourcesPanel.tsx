@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import type { PanelProps } from './types';
 import '../styles/panels-b.css';
+import { HelpChip } from '../learn/Term';
 import { SubTabs } from './b/common';
 import { Provenance, SourcesTable, TickerLog } from './b/sources/SourcesViews';
 
@@ -18,7 +19,9 @@ export default function SourcesPanel({ state }: PanelProps) {
     <div className="b-root" data-panel="F6">
       <div className="panel" style={{ marginBottom: 0 }}>
         <div className="panel-header">
-          <span>F6 SOURCES — citations, verification log, provenance</span>
+          <span>
+            F6 SOURCES — citations, verification log, provenance <HelpChip id="sourced" /> <HelpChip id="unverified" /> <HelpChip id="user_assumption" />
+          </span>
           <span className="spacer" />
           <span className="muted">
             {bundle.sources?.length ?? 0} sources · {bundle.meta?.ticker_log?.length ?? 0} tickers checked · built {bundle.meta?.built_at ?? '—'}

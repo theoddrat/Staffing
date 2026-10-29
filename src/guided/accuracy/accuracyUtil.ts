@@ -197,6 +197,8 @@ export interface StockAccuracy {
   display: string;
   name: string;
   tier: Tier;
+  /** false when the stock has no out-of-sample history yet (e.g. listed recently) */
+  tested: boolean;
   r2All: number | null;
   r2Shock: number | null;
   hitShock: number | null;
@@ -212,20 +214,22 @@ export function perStock(b: DataBundle): StockAccuracy[] {
     const m = byT.get(t.ticker);
     const all = m?.oos?.ensemble;
     const sh = m?.oos_shock?.ensemble;
+    const tested = !!all && all.n > 0 && isNum(all.r2) && (m?.oos_resid ?? []).some(isNum);
     return {
       ticker: t.ticker,
       display: t.display,
       name: t.name,
       tier: t.tier,
-      r2All: all && isNum(all.r2) ? all.r2 : null,
-      r2Shock: sh && isNum(sh.r2) ? sh.r2 : null,
-      hitShock: sh && isNum(sh.hit) ? sh.hit : null,
-      cover90: m && isNum(m.coverage90) ? m.coverage90 : null,
+      tested,
+      r2All: tested && isNum(all!.r2) ? all!.r2 : null,
+      r2Shock: tested && sh && sh.n > 0 && isNum(sh.r2) ? sh.r2 : null,
+      hitShock: tested && sh && isNum(sh.hit) ? sh.hit : null,
+      cover90: tested && m && isNum(m.coverage90) ? m.coverage90 : null,
       n: all?.n ?? 0,
       nShock: sh?.n ?? 0,
     };
   });
-  const key = (r: StockAccuracy) => (isNum(r.r2Shock) ? r.r2Shock : -Infinity);
+  const key = (r: StockAccuracy) => (r.tested ? (isNum(r.r2Shock) ? r.r2Shock : isNum(r.r2All) ? r.r2All : -1e9) : -Infinity);
   return rows.sort((a, c) => key(c) - key(a));
 }
 

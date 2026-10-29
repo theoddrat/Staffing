@@ -6,6 +6,7 @@ import { SourceLinks } from '../../../components/StatusBadge';
 import { isNum, spct } from '../../../lib/format';
 import { CrashTags, Empty, MoveCell, Note } from '../common';
 import { windowDays } from '../util';
+import { HelpChip } from '../../../learn/Term';
 
 function tierColor(tier: string | null | undefined, i: number): string {
   if (tier && CHART_COLORS.tiers[tier]) return CHART_COLORS.tiers[tier];
@@ -123,7 +124,7 @@ export default function EventStudies({ bundle, focusEventId }: { bundle: DataBun
       <div className="panel">
         <div className="panel-header">
           <span>
-            {ev.label} — {ev.date}
+            {ev.label} — {ev.date} <HelpChip id="car" />
           </span>
           <span className="spacer" />
           <SourceLinks ids={ev.src ?? []} bundle={bundle} />

@@ -8,6 +8,7 @@ import CasesTable from './b/history/CasesTable';
 import EventStudies from './b/history/EventStudies';
 import { PeDrawdownScatter, UsIndiaScatter } from './b/history/Scatters';
 import { CalibrationCheck, DeepSeekTable, DotcomOverlay } from './b/history/OverlayCalib';
+import { HelpChip } from '../learn/Term';
 
 const TABS = [
   { id: 'cases', label: 'Cases' },
@@ -46,7 +47,10 @@ export default function HistoryPanel({ state }: PanelProps) {
     <div className="b-root" data-panel="F4">
       <div className="panel" style={{ marginBottom: 0 }}>
         <div className="panel-header">
-          <span>F4 HISTORY — historical evidence: bubble crashes, accounting scandals, and how India was hit</span>
+          <span>
+            F4 HISTORY — historical evidence: bubble crashes, accounting scandals, and how India was hit <HelpChip id="drawdown" />{' '}
+            <HelpChip id="event_study" /> <HelpChip id="contagion" />
+          </span>
           <span className="spacer" />
           <span className="muted">
             {cases.length} cases · {events.length} event studies · data as of {bundle.meta?.as_of ?? '—'}

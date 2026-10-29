@@ -19,7 +19,7 @@ export function headlineItems(result: ScenarioResult): HeadlineItem[] {
     {
       id: 'india',
       label: 'India',
-      value: isNum(tot) && Math.abs(tot) >= 1 ? rupeesCr(tot) : 'no change',
+      value: isNum(tot) && Math.abs(tot) >= 1 ? rupeesCr(tot, { sign: true }) : 'no change',
       x: isNum(tot) ? tot : null,
     },
   ];

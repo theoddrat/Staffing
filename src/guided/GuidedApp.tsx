@@ -162,9 +162,8 @@ export default function GuidedApp({ state, actions }: { state: ExtState; actions
   return (
     <div className="g-app">
       <div className="g-banner" role="note">
-        <Icon name="warning" size={15} />
         <span>
-          <b>Hypothetical scenario</b> — model output, not a forecast
+          <Icon name="warning" size={15} /> <b>Hypothetical scenario</b> — model output, not a forecast
         </span>
         {result.lowConfidence && <span className="g-banner-flag">Low confidence: includes the AI-debt channel</span>}
       </div>

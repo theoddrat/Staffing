@@ -6,7 +6,7 @@ import type { IndiaResult, ScenarioResult } from '../../types/engine';
 import { scenarioHeadline } from '../../engine';
 import { isNum } from '../../lib/format';
 import Chart from '../../components/Chart';
-import { Term } from '../../learn/Term';
+import { HelpChip, Term } from '../../learn/Term';
 import { Icon } from '../icons';
 import { TIER_VIS } from '../visual';
 import { Calculating, Callout, ChannelChip, ConfidenceDots, EmptyState, Gauge, MoveBar, ShareBar, StepNum, TierBadge, type Range } from '../ui';
@@ -29,9 +29,10 @@ function SummaryStrip({ result, usdInr }: { result: ScenarioResult; usdInr: numb
     <div className="g-strip">
       <section className="g-tile is-hero" aria-labelledby="t-india">
         <h3 id="t-india" className="g-tile-label">
-          <Icon name="rupee" size={16} /> What these {result.india.length} Indian companies could lose
+          <Icon name="rupee" size={16} />{' '}
+          {isNum(tot) && tot > 0 ? `What these ${result.india.length} Indian companies could gain, net` : `What these ${result.india.length} Indian companies could lose`}
         </h3>
-        <p className="g-tile-value">{isNum(tot) && Math.abs(tot) >= 1 ? rupeesCr(tot) : 'No change'}</p>
+        <p className="g-tile-value">{isNum(tot) && Math.abs(tot) >= 1 ? rupeesCr(tot, { sign: true }) : 'No change'}</p>
         <ShareBar x={share} label={`${pctAbs(share, 1)} of their combined market value`} />
         <p className="g-tile-note">
           about {pctAbs(share, 1)} of their combined {rupeesCr(base)} <Term id="mcap">market value</Term>
@@ -148,7 +149,7 @@ function CompanyCard({
       </p>
       <div className="g-co-why">
         {topReasons(r).map((p) => (
-          <ChannelChip key={p.channel} channel={p.channel} share={p.share} />
+          <ChannelChip key={p.channel} channel={p.channel} share={p.share} short />
         ))}
       </div>
       <div className="g-co-foot">
@@ -319,17 +320,17 @@ export default function ImpactView({ state, actions, openCustomize }: GuidedProp
           <span className="g-mc-err">
             <Icon name="warning" size={15} /> The range simulation failed ({state.mcError}); the likely moves are still shown.
           </span>
-        ) : state.mcRunning || !state.mc ? (
+        ) : !state.mc ? (
           <Calculating text={`Working out likely ranges from ${runs ? runs.toLocaleString('en-IN') : 'thousands of'} simulated paths…`} />
         ) : (
           <span>
-            <Icon name="dice" size={15} /> Likely ranges come from {state.mc.runs.toLocaleString('en-IN')} <Term id="monte_carlo">simulated paths</Term>.
+            <Icon name="dice" size={15} /> Likely ranges come from {state.mc.runs.toLocaleString('en-IN')} simulated paths <HelpChip id="monte_carlo" />
           </span>
         )}
       </div>
 
       <div className="g-filters" role="group" aria-label="Filter and order the companies">
-        <div className="g-pills" role="radiogroup" aria-label="Kind of company">
+        <div className="g-pills is-row" role="radiogroup" aria-label="Kind of company">
           <button type="button" role="radio" aria-checked={tier === 'ALL'} className={`g-pill${tier === 'ALL' ? ' is-on' : ''}`} onClick={() => actions.setTierFilter('ALL')}>
             All <small>{result.india.length}</small>
           </button>
@@ -347,7 +348,7 @@ export default function ImpactView({ state, actions, openCustomize }: GuidedProp
               {TIER_VIS[t].label} <small>{counts[t]}</small>
             </button>
           ))}
-          <Term id="tier" />
+          <HelpChip id="tier" />
         </div>
         <div className="g-filters-right">
           <label className="g-field is-inline">

@@ -6,7 +6,7 @@ import type { DataBundle, IndiaTarget, Security } from '../../types/data';
 import type { IndiaResult, ScenarioResult } from '../../types/engine';
 import { isNum } from '../../lib/format';
 import Chart from '../../components/Chart';
-import { Term } from '../../learn/Term';
+import { HelpChip, Term } from '../../learn/Term';
 import { Icon } from '../icons';
 import { TIER_VIS } from '../visual';
 import { Calculating, Callout, ChannelKey, ConfidenceDots, DivergingStack, EmptyState, GBadge, Gauge, MoveBar, Sources, TierBadge } from '../ui';
@@ -69,7 +69,7 @@ function PartRows({ parts, text }: { parts: Part[]; text(ch: PartChannel): strin
       {parts.map((p) => (
         <li key={p.channel}>
           <div className="g-reason-head">
-            <ChannelKey channel={p.channel} />
+            <ChannelKey channel={p.channel} label={p.channel === 'fx' && p.frac < 0 ? 'A weaker rupee raises its costs' : undefined} />
             <b className="g-reason-val">{p.inr_cr !== null ? rupeesCr(p.inr_cr, { sign: true }) : pct(p.frac)}</b>
           </div>
           <p className="g-reason-text">{text(p.channel)}</p>
@@ -103,7 +103,7 @@ function PriceVsBusiness({ r }: { r: IndiaResult }) {
   return (
     <section className="g-card" aria-labelledby="pvb">
       <h2 id="pvb" className="g-h2">
-        <Icon name="target" size={20} /> Price move vs business damage <Term id="gap" />
+        <Icon name="target" size={20} /> Price move vs business damage <HelpChip id="gap" />
       </h2>
       {bar(a, 'is-market', 'What prices would likely do')}
       {bar(b, 'is-fund', 'What the business numbers justify')}
@@ -161,14 +161,20 @@ function ShockDays({ bundle, r }: { bundle: DataBundle; r: IndiaResult }) {
   return (
     <figure className="g-dots">
       <figcaption className="g-h3">
-        {mode === 'oos' ? 'Past shock days the model had not seen' : 'Past days when US chip stocks fell hard'} <Term id={mode === 'oos' ? 'oos' : 'backtest'} />
+        {mode === 'oos' ? 'Past shock days the model had not seen' : 'Past days when US chip stocks fell hard'} <HelpChip id={mode === 'oos' ? 'oos' : 'backtest'} />
       </figcaption>
       <svg viewBox={`0 0 ${W} ${W}`} className="g-dots-svg" role="img" aria-label={`Predicted vs actual on ${pts.length} past days: right direction on ${hits}`}>
         <rect x={P} y={P} width={W - 2 * P} height={W - 2 * P} className="g-dots-frame" />
         <line x1={px(-d)} y1={py(0)} x2={px(d)} y2={py(0)} className="g-dots-axis" />
         <line x1={px(0)} y1={py(-d)} x2={px(0)} y2={py(d)} className="g-dots-axis" />
         <line x1={px(-d)} y1={py(-d)} x2={px(d)} y2={py(d)} className="g-dots-diag" />
-        <text x={px(d) - 4} y={py(d) + 14} textAnchor="end" className="g-dots-note">
+        <text
+          x={px(d * 0.55) + 8}
+          y={py(d * 0.55) + 8}
+          textAnchor="middle"
+          transform={`rotate(-45 ${px(d * 0.55) + 8} ${py(d * 0.55) + 8})`}
+          className="g-dots-note"
+        >
           perfect guess
         </text>
         {pts.map((p, i) => (
@@ -202,8 +208,44 @@ function ShockDays({ bundle, r }: { bundle: DataBundle; r: IndiaResult }) {
   );
 }
 
-function Sure({ bundle, r, text, accuracy }: { bundle: DataBundle; r: IndiaResult; text: string; accuracy: string | null }) {
+/** "Validated blend of 2 models (…) · the original single model said −11.1%" */
+function ModelLine({ bundle, r }: { bundle: DataBundle; r: IndiaResult }) {
+  const model = bundle.models?.find((m) => m.ticker === r.ticker) ?? null;
+  const used = Object.entries(model?.components ?? {})
+    .filter(([, c]) => isNum(c?.weight) && c.weight > 0)
+    .sort((a, b) => b[1].weight - a[1].weight)
+    .map(([id]) => bundle.backtest?.models.find((m) => m.id === id)?.label ?? id);
+  if (r.model_used === 'ensemble' && used.length)
+    return (
+      <p className="g-model-line">
+        <Icon name="layers" size={14} /> <Term id="ensemble">Validated blend</Term> of {used.length} {used.length === 1 ? 'model' : 'models'} ({used.join(', ')})
+        {isNum(r.market_move_ols) && <> · the original single model said {pct(r.market_move_ols)}</>}
+      </p>
+    );
+  if (r.model_used === 'ols')
+    return (
+      <p className="g-model-line">
+        <Icon name="layers" size={14} /> Single 3-year regression — no validated blend for this company yet
+      </p>
+    );
+  return null;
+}
+
+function Sure({
+  bundle,
+  r,
+  text,
+  accuracy,
+}: {
+  bundle: DataBundle;
+  r: IndiaResult;
+  text: string;
+  accuracy: { text: string; r2_oos: number | null } | null;
+}) {
   const c = r.confidence;
+  const hasLab = !!bundle.models?.length;
+  const tested = !!accuracy && isNum(accuracy.r2_oos);
+  const since = bundle.securities[r.ticker]?.first_date ?? null;
   const zones = [
     { to: 40, color: 'var(--g-down)' },
     { to: 70, color: 'var(--g-accent)' },
@@ -212,7 +254,7 @@ function Sure({ bundle, r, text, accuracy }: { bundle: DataBundle; r: IndiaResul
   return (
     <section className="g-card" aria-labelledby="sure">
       <h2 id="sure" className="g-h2">
-        <Icon name="shield" size={20} /> How sure are we? <Term id="confidence" />
+        <Icon name="shield" size={20} /> How sure are we? <HelpChip id="confidence" />
       </h2>
       <div className="g-sure">
         <div className="g-sure-gauge">
@@ -228,14 +270,14 @@ function Sure({ bundle, r, text, accuracy }: { bundle: DataBundle; r: IndiaResul
           <ul className="g-sure-factors">
             <li>
               <span>
-                Fit to past prices <Term id="r2" />
+                Fit to past prices <HelpChip id="r2" />
               </span>
               <Meter x={isNum(c.r2) ? Math.max(0, c.r2) / 0.4 : 0} label="fit to past prices" />
               <b>{isNum(c.r2) ? `R² ${c.r2.toFixed(2)}` : 'no fit'}</b>
             </li>
             <li>
               <span>
-                Inputs that are assumptions <Term id="user_assumption" />
+                Inputs that are assumptions <HelpChip id="user_assumption" />
               </span>
               <Meter x={c.assumption_share} label="share of assumed inputs" />
               <b>{pctAbs(c.assumption_share)}</b>
@@ -246,14 +288,26 @@ function Sure({ bundle, r, text, accuracy }: { bundle: DataBundle; r: IndiaResul
               <b>{c.n.toLocaleString('en-IN')} days</b>
             </li>
           </ul>
-          {accuracy && (
+          {tested ? (
             <p className="g-sure-acc">
-              <Icon name="target" size={16} /> {accuracy}
+              <Icon name="target" size={16} /> {accuracy!.text}
             </p>
+          ) : (
+            <div className="g-sure-acc is-new">
+              <span className="g-badge g-badge-new">
+                <Icon name="clock" size={13} /> {hasLab ? 'Too new to test against history' : 'Not yet tested on unseen days'}
+              </span>
+              <p>
+                {hasLab
+                  ? `${r.display} has prices only since ${since ?? 'recently'}, so there are no past days the model had not already seen to check it against.`
+                  : 'This data file has no out-of-sample test yet; treat the estimate as a rough guide.'}
+              </p>
+            </div>
           )}
+          <ModelLine bundle={bundle} r={r} />
         </div>
       </div>
-      <ShockDays bundle={bundle} r={r} />
+      {(tested || !hasLab) && <ShockDays bundle={bundle} r={r} />}
     </section>
   );
 }
@@ -300,7 +354,12 @@ function Facts({ bundle, r, t, sec }: { bundle: DataBundle; r: IndiaResult; t: I
             <Term id="ai_premium">AI premium</Term>
           </dt>
           <dd>
-            {isNum(r.ai_premium) ? `${pct(r.ai_premium, 0)} vs its pre-ChatGPT P/E` : 'unknown — its group’s typical premium is used'} <GBadge status={r.ai_premium_status} />
+            {!isNum(r.ai_premium)
+              ? 'unknown — no AI premium is assumed'
+              : sec && !isNum(sec.pe_pre_chatgpt_median)
+                ? `about ${pct(r.ai_premium, 0)} — its group’s typical premium (no price-to-earnings history from before ChatGPT)`
+                : `${pct(r.ai_premium, 0)} vs its pre-ChatGPT P/E`}{' '}
+            <GBadge status={r.ai_premium_status} />
           </dd>
         </div>
         {isNum(r.ret_since_chatgpt_vs_bench) && (
@@ -429,7 +488,9 @@ function PriceChart({ sec }: { sec: Security | undefined }) {
           <Chart option={option} height={260} themed={false} />
           <p className="g-muted g-small">
             Weekly closing price{sec?.currency ? ` in ${sec.currency}` : ''}.{' '}
-            {ph && ph.dates[0] > CHATGPT ? `Listed (or data starts) on ${ph.dates[0]}, after ChatGPT launched on 30 Nov 2022.` : 'The line marks ChatGPT’s launch on 30 Nov 2022.'}
+            {ph && ph.dates[0] > CHATGPT
+              ? `Its price data starts on ${sec?.first_date ?? ph.dates[0]}, after ChatGPT launched on 30 Nov 2022.`
+              : 'The line marks ChatGPT’s launch on 30 Nov 2022.'}
           </p>
         </>
       ) : (
@@ -514,11 +575,13 @@ export default function StockView({ state, actions }: GuidedProps) {
 
           <section className="g-card" aria-labelledby="why">
             <h2 id="why" className="g-h2">
-              <Icon name="pulse" size={20} /> Why the price would move <Term id="market_implied" />
+              <Icon name="pulse" size={20} /> What moves the share price <HelpChip id="market_implied" />
             </h2>
             {mParts.length ? (
               <>
-                <p className="g-muted">How this share has reacted on similar days, split by <Term id="channel">channel</Term>.</p>
+                <p className="g-muted">
+                  How this share has reacted on similar days, split by <Term id="channel">channel</Term>. These add up to the headline move.
+                </p>
                 <DivergingStack parts={mParts} label="Price move split by channel" />
                 <div className="g-dstack-scale" aria-hidden="true">
                   <span>← pushes the price down</span>
@@ -537,12 +600,13 @@ export default function StockView({ state, actions }: GuidedProps) {
 
           <section className="g-card" aria-labelledby="biz">
             <h2 id="biz" className="g-h2">
-              <Icon name="factory" size={20} /> What the business numbers say <Term id="fundamental" />
+              <Icon name="factory" size={20} /> What hurts the business <HelpChip id="fundamental" />
             </h2>
             {bParts.length ? (
               <>
                 <p className="g-muted">
-                  Lost <Term id="eps">earnings</Term>, a fading <Term id="ai_premium">AI premium</Term> and the rupee, as a share of today’s price.
+                  Damage to <Term id="eps">earnings</Term> and valuation — lost orders, a fading <Term id="ai_premium">AI premium</Term>, the rupee —
+                  as a share of today’s price. A separate estimate from the price move above, compared with it below.
                 </p>
                 <DivergingStack parts={bParts} label="Business damage split by channel" />
                 <div className="g-dstack-scale" aria-hidden="true">
@@ -567,7 +631,7 @@ export default function StockView({ state, actions }: GuidedProps) {
         </div>
 
         <div className="g-stock-side">
-          <Sure bundle={bundle} r={r} text={exp?.confidence.text ?? ''} accuracy={exp?.accuracy?.text ?? null} />
+          <Sure bundle={bundle} r={r} text={exp?.confidence.text ?? ''} accuracy={exp?.accuracy ?? null} />
           <Facts bundle={bundle} r={r} t={t} sec={sec} />
           <PriceChart sec={sec} />
         </div>

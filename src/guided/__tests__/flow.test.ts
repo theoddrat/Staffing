@@ -37,7 +37,7 @@ const graph: SankeyGraph = {
 
 describe('flow diagram layout', () => {
   it('groups US tickers by group and keeps ₹ totals exact', () => {
-    const f = buildFlow(graph, bundle, { topN: 2, width: 900, height: 400 });
+    const f = buildFlow(graph, bundle, { topN: 2, width: 900, height: 400, mergeSources: false });
     const chips = f.links.filter((l) => l.source === 'g:chips');
     expect(chips).toHaveLength(1);
     expect(chips[0].value).toBe(80);
@@ -58,7 +58,7 @@ describe('flow diagram layout', () => {
   });
 
   it('layout is finite and inside the box; widths share one scale', () => {
-    const f = buildFlow(graph, bundle, { topN: 3, width: 700, height: 300 });
+    const f = buildFlow(graph, bundle, { topN: 3, width: 700, height: 300, mergeSources: false });
     for (const n of f.nodes) {
       for (const v of [n.x, n.y, n.h]) expect(Number.isFinite(v)).toBe(true);
       expect(n.y).toBeGreaterThanOrEqual(0);
@@ -67,6 +67,25 @@ describe('flow diagram layout', () => {
     const a = f.links.find((l) => l.source === 'g:chips')!;
     const b = f.links.find((l) => l.source === 'm:riskoff')!;
     expect(a.w / b.w).toBeCloseTo(80 / 30, 6);
+  });
+
+  it('market view merges the investor-mood sources into one starting point (sum kept)', () => {
+    const f = buildFlow(graph, bundle, { topN: 2 });
+    const src = f.nodes.filter((n) => n.kind === 'source').map((n) => n.id).sort();
+    expect(src).toEqual(['g:us_ai', 'm:riskoff']);
+    expect(f.links.find((l) => l.source === 'g:us_ai')?.value).toBe(90);
+    expect(buildFlow(graph, bundle, { mode: 'fundamental' }).nodes.some((n) => n.id === 'g:chips')).toBe(true);
+    // opposite-signed groups net into one ribbon instead of a red and a green one
+    const mixed: SankeyGraph = {
+      nodes: graph.nodes,
+      links: [
+        { source: 'o:NVDA', target: 'c:sentiment', value: 40, sign: 1 },
+        { source: 'o:MSFT', target: 'c:sentiment', value: 100, sign: -1 },
+        { source: 'c:sentiment', target: 't:A.NS', value: 60, sign: -1 },
+      ],
+    };
+    const m = buildFlow(mixed, bundle).links.filter((l) => l.source === 'g:us_ai');
+    expect(m.map((l) => [l.sign, l.value])).toEqual([[-1, 60]]);
   });
 
   it('narrow mode drops the source column', () => {

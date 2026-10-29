@@ -56,6 +56,14 @@ export interface FlowOptions {
   nodeW?: number;
   xs?: number[]; // left edge of each column
   sources?: boolean; // false = channels → companies only (narrow screens)
+  /**
+   * Market view: give each channel one plain starting point ("US AI stocks fall", "Parent companies
+   * abroad fall") instead of splitting it across US tickers. The split of the investor-mood channel
+   * between chip stocks (SOX) and big tech (NDX) rests on two highly correlated coefficients, so
+   * per-group ribbons can point opposite ways (chips "cushioning" India) without meaning much.
+   * Default: on for the market view, off for the business view.
+   */
+  mergeSources?: boolean;
 }
 
 const MACRO: Record<string, { label: string; icon: IconName; color: string }> = {
@@ -99,6 +107,7 @@ export function buildFlow(graph: SankeyGraph, bundle: DataBundle, opts: FlowOpti
   const pad = opts.pad ?? 10;
   const nodeW = opts.nodeW ?? 14;
   const withSources = opts.sources !== false;
+  const merge = opts.mergeSources ?? mode === 'market';
   const nCols = withSources ? 3 : 2;
   const xs = opts.xs && opts.xs.length === nCols ? opts.xs : withSources ? [0, (width - nodeW) / 2, width - nodeW] : [0, width - nodeW];
   const chanCol = withSources ? 1 : 0;
@@ -119,11 +128,13 @@ export function buildFlow(graph: SankeyGraph, bundle: DataBundle, opts: FlowOpti
   const ensure = (n: Omit<Raw, 'inV' | 'outV'>) => {
     if (!nodes.has(n.id)) nodes.set(n.id, { ...n, inV: 0, outV: 0 });
   };
-  const agg = new Map<string, { source: string; target: string; value: number; sign: 1 | -1; color: string }>();
-  const add = (source: string, target: string, value: number, sign: 1 | -1, color: string) => {
-    const key = `${source}|${target}|${sign}`;
-    const cur = agg.get(key) ?? { source, target, value: 0, sign, color };
+  const agg = new Map<string, { source: string; target: string; value: number; sign: 1 | -1; color: string; signed: number; net: boolean }>();
+  /** Sum links per (source, target, sign); merged starting points are netted to one signed link instead. */
+  const add = (source: string, target: string, value: number, sign: 1 | -1, color: string, net = false) => {
+    const key = net ? `${source}|${target}|net` : `${source}|${target}|${sign}`;
+    const cur = agg.get(key) ?? { source, target, value: 0, sign, color, signed: 0, net };
     cur.value += value;
+    cur.signed += sign * value;
     agg.set(key, cur);
   };
   const chanNode = (id: string) => {
@@ -139,10 +150,16 @@ export function buildFlow(graph: SankeyGraph, bundle: DataBundle, opts: FlowOpti
     const tk = kind.get(l.target);
     if (tk === 'channel') {
       if (!withSources) continue;
-      const s = sourceNode(l.source, label.get(l.source) ?? l.source, bundle);
+      let s = sourceNode(l.source, label.get(l.source) ?? l.source, bundle);
+      if (merge && l.target === 'c:sentiment')
+        s =
+          l.source === 'm:replay'
+            ? { id: 'g:us_ai', label: 'US stocks fall as in the replayed crash', icon: 'clock', color: 'var(--g-accent)' }
+            : { id: 'g:us_ai', label: 'US AI stocks fall', icon: 'pulse', color: 'var(--g-accent)' };
+      else if (merge && l.target === 'c:parent') s = { id: 'g:parents', label: 'Parent companies abroad fall', icon: 'building', color: 'var(--ch-parent)' };
       ensure({ id: s.id, label: s.label, col: 0, kind: 'source', icon: s.icon, color: s.color });
       const v = chanNode(l.target);
-      add(s.id, l.target, l.value, l.sign, v.color);
+      add(s.id, l.target, l.value, l.sign, v.color, s.id === 'g:us_ai' || s.id === 'g:parents');
     } else if (sk === 'channel' && tk === 'target') {
       const v = chanNode(l.source);
       const isTop = top.has(l.target);
@@ -159,10 +176,19 @@ export function buildFlow(graph: SankeyGraph, bundle: DataBundle, opts: FlowOpti
       add(l.source, tid, l.value, l.sign, v.color);
     }
   }
-  for (const a of agg.values()) {
+  for (const [k, a] of agg) {
+    if (a.net) {
+      a.value = Math.abs(a.signed);
+      a.sign = a.signed < 0 ? -1 : 1;
+      if (a.value <= 1e-9) {
+        agg.delete(k);
+        continue;
+      }
+    }
     nodes.get(a.source)!.outV += a.value;
     nodes.get(a.target)!.inV += a.value;
   }
+  for (const [id, n] of nodes) if (n.kind === 'source' && n.outV <= 0) nodes.delete(id);
 
   // columns: biggest first; "others" always last
   const cols: string[][] = Array.from({ length: nCols }, () => []);

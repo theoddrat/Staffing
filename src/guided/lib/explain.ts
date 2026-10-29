@@ -121,12 +121,15 @@ export function reasonText(ch: PartChannel, r: IndiaResult, bundle: DataBundle, 
     }
     case 'credit':
       return 'Debt-stressed AI cloud firms would buy less of what it sells.';
-    case 'premium':
-      return isNum(r.ai_premium)
-        ? `Its price-to-earnings ratio is ${pctAbs(r.ai_premium)} ${r.ai_premium >= 0 ? 'above' : 'below'} its pre-ChatGPT level; ${
-            r.ai_premium >= 0 ? 'part of that extra could fade.' : 'so there is little AI premium left to lose.'
-          }`
-        : 'Part of the extra price investors pay for the AI story could fade (its own pre-ChatGPT level is unknown, so its group’s typical premium is used).';
+    case 'premium': {
+      const own = bundle.securities[r.ticker]?.pe_pre_chatgpt_median;
+      if (!isNum(r.ai_premium)) return 'Part of the extra price investors pay for the AI story could fade.';
+      if (!isNum(own))
+        return `It has no price-to-earnings history from before ChatGPT, so its group’s typical AI premium (about ${pctAbs(r.ai_premium)}) is assumed; part of that extra could fade.`;
+      return `Its price-to-earnings ratio is ${pctAbs(r.ai_premium)} ${r.ai_premium >= 0 ? 'above' : 'below'} its pre-ChatGPT level; ${
+        r.ai_premium >= 0 ? 'part of that extra could fade.' : 'so there is little AI premium left to lose.'
+      }`;
+    }
     case 'fx':
       return r.fx_eps >= 0
         ? `A rupee about ${pctAbs(result.factors.inr_depr, 1)} weaker makes its dollar earnings worth more rupees.`

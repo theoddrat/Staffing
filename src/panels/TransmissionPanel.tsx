@@ -4,6 +4,7 @@ import type { PanelProps } from './types';
 import Chart, { CHART_COLORS } from '../components/Chart';
 import { prepareGraph } from './TransmissionPanel.graph';
 import { crore, isNum } from '../lib/format';
+import { HelpChip } from '../learn/Term';
 
 type Mode = 'market' | 'fundamental';
 const TOPN: (number | 'ALL')[] = [10, 15, 25, 'ALL'];
@@ -89,7 +90,7 @@ export default function TransmissionPanel({ state, actions }: PanelProps) {
     <div className="transmission-panel">
       <div className="panel">
         <div className="panel-header">
-          F3 TRANSMISSION MAP — ORIGIN → CHANNEL → INDIAN STOCK (₹ CRORE)
+          F3 TRANSMISSION MAP — ORIGIN → CHANNEL → INDIAN STOCK (₹ CRORE) <HelpChip id="channel" /> <HelpChip id="crore" />
           <span className="spacer" />
           <button className={`btn btn-xs ${mode === 'market' ? 'active' : ''}`} onClick={() => setMode('market')}>
             MARKET (LAYER 2)

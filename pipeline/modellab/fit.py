@@ -51,13 +51,14 @@ def ridge_path(Xs: np.ndarray, yc: np.ndarray, lambdas: list[float] | np.ndarray
     return V @ ((V.T @ c)[:, None] / (np.maximum(d, 0.0)[:, None] + lam[None, :]))
 
 
-def simplex_weights(G: np.ndarray, c: np.ndarray) -> np.ndarray:
+def simplex_weights(G: np.ndarray, c: np.ndarray, allow_zero: bool = True) -> np.ndarray:
     """Stacking weights: min w'Gw - 2c'w subject to w >= 0 and sum(w) <= 1.
 
     G = P'P and c = P'y from out-of-sample component predictions P. The remainder 1 - sum(w) is the
     weight on the zero forecast, so the full weight vector (components + zero) is non-negative and
     sums to one. Solved exactly with NNLS on a Cholesky factor; if the unconstrained-sum NNLS weights
-    exceed one, the sum = 1 constraint is imposed through a heavily weighted extra row.
+    exceed one (or `allow_zero` is False: a convex combination), sum = 1 is imposed through a heavily
+    weighted extra row.
     """
     m = len(c)
     scale = float(np.trace(G)) / m
@@ -69,7 +70,7 @@ def simplex_weights(G: np.ndarray, c: np.ndarray) -> np.ndarray:
     A = L.T
     b = np.linalg.solve(L, cs)
     w, _ = nnls(A, b, maxiter=50 * m)
-    if w.sum() <= 1.0 + 1e-12:
+    if allow_zero and w.sum() <= 1.0 + 1e-12:
         return w
     M = 1e4 * max(1.0, float(np.max(np.abs(A))))
     w, _ = nnls(np.vstack([A, np.full((1, m), M)]), np.append(b, M), maxiter=50 * m)

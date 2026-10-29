@@ -11,6 +11,7 @@ import { DEFAULT_MC_RUNS, DEFAULT_MC_SEED, defaultParams, horizonForWindow, runS
 import { contextFromBundle, parseCommand, type ParseContext } from '../commands/parse';
 import { panelForView, parseHash, viewForPanel, type Route } from '../guided/router';
 import { readPref, writePref } from '../guided/storage';
+import { requestTerm } from '../learn/nav';
 import { McClient } from './mcClient';
 import { useRouteSync } from './routeSync';
 
@@ -272,7 +273,10 @@ export function useTerminal(bundle: DataBundle): { state: ExtState; actions: Sto
   // ---- actions ----
   const sRef = useRef(s);
   sRef.current = s;
-  const setParams = useCallback((p: ScenarioParams) => dispatch({ type: 'params', params: p }), []);
+  const setParams = useCallback((p: ScenarioParams) => {
+    if (paramsKey(p) === paramsKey(paramsRef.current)) return;
+    dispatch({ type: 'params', params: p });
+  }, []);
   const onRoute = useCallback((route: Route) => dispatch({ type: 'route', route }), []);
   useRouteSync(bundle, { mode: s.mode, view: s.view, selected: s.selected, learnTerm: s.learnTerm, panel: s.panel }, onRoute);
 
@@ -308,7 +312,10 @@ export function useTerminal(bundle: DataBundle): { state: ExtState; actions: Sto
         else dispatch({ type: 'route', route: { mode: 'guided', view: viewForPanel(cur.panel, cur.selected, bundle), ticker: null, term: null } });
       },
       setView: (view: GuidedView, ticker?: string | null) => dispatch({ type: 'view', view, ticker: ticker ?? null }),
-      openLearn: (id: GlossaryId) => dispatch({ type: 'route', route: { mode: 'guided', view: 'learn', ticker: null, term: id } }),
+      openLearn: (id: GlossaryId) => {
+        requestTerm(id); // the Learn page picks this up on mount (or live, if it is already open)
+        dispatch({ type: 'route', route: { mode: 'guided', view: 'learn', ticker: null, term: id } });
+      },
       applyScenario: (preset: PresetId, horizon?: Horizon, values?: Record<string, ParamValue>) => {
         const cur = paramsRef.current;
         const win = typeof values?.window === 'string' ? values.window : null;

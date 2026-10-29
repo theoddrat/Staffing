@@ -222,8 +222,8 @@ function TourWho() {
           <g key={i}>
             <rect x="14" y={y + 2} width="70" height="8" rx="4" className="a-stub" />
             <rect x="14" y={y + 15} width="46" height="6" rx="3" className="a-stub is-dim" />
-            <path d={`M${x0 - w * 220 - 24} ${y + 10}H${Math.min(x0 + 4, x0 - w * 220 + 70)}`} className="a-whisker" />
             <rect x={x0 - w * 200} y={y + 4} width={w * 200} height="12" rx="4" className="a-fall" />
+            <path d={`M${x0 - w * 200 - 30} ${y + 10}H${x0 + 12}M${x0 - w * 200 - 30} ${y + 5}v10M${x0 + 12} ${y + 5}v10`} className="a-whisker is-strong" />
             <path d={`M${x0} ${y}v20`} className="a-zero" />
           </g>
         );
@@ -267,6 +267,7 @@ function TourSure() {
       <path d="M70 52H250" className="a-whisker is-strong" />
       <path d="M70 44v16M250 44v16" className="a-whisker is-strong" />
       <rect x="130" y="45" width="60" height="14" rx="4" className="a-fall" />
+      <path d="M190 40v24" className="a-zero" />
       <circle cx="130" cy="52" r="7" className="a-dot" />
       <text x="160" y="30" textAnchor="middle" className="a-cap">likely range (9 in 10 simulations)</text>
       {[0, 1, 2].map((i) => (

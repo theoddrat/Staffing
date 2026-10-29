@@ -76,14 +76,14 @@ export type Levels = Record<Intensity, Record<string, ParamValue>>;
 /**
  * Mild / Severe / Extreme values for a preset at a horizon. The engine's intensityValues is the
  * single source (it moves every sampled dial to the end of its published range); the local
- * shock-size-only version above is the fallback when the engine has none for this preset.
+ * shock-size-only version above is used only if the engine call fails.
  */
 export function levelsFor(bundle: DataBundle, preset: PresetId, horizon: Horizon, specs: ParamSpec[]): Levels {
   try {
     const v = engineIntensity(bundle, preset, horizon);
-    if (v && v.mild && v.severe && v.extreme && Object.keys(v.severe).length) return v;
+    if (v && v.mild && v.severe && v.extreme) return v; // replay legitimately has no levels
   } catch {
-    /* fall back to the local mapping */
+    /* engine failed: fall back to the local mapping */
   }
   return {
     mild: intensityValues(preset, specs, 'mild'),

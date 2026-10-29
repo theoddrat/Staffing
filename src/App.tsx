@@ -109,9 +109,8 @@ function GuidedSplash({ load }: { load: Exclude<Load, { status: 'ok' }> }) {
   return (
     <div className="g-app">
       <div className="g-banner" role="note">
-        <Icon name="warning" size={15} />
         <span>
-          <b>Hypothetical scenario</b> — model output, not a forecast
+          <Icon name="warning" size={15} /> <b>Hypothetical scenario</b> — model output, not a forecast
         </span>
       </div>
       <main className="g-main g-splash">

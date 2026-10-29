@@ -1,9 +1,114 @@
 // F5 / REGRESSIONS — Layer-2 betas with HAC t-stats, R², downside model, total AI beta.
 import { useMemo, useState } from 'react';
-import type { DataBundle, IndiaTarget, RegressionResult } from '../../../types/data';
-import { isNum, num } from '../../../lib/format';
+import type { DataBundle, IndiaTarget, RegressionResult, StockModels } from '../../../types/data';
+import { isNum, num, pct } from '../../../lib/format';
+import { HelpChip } from '../../../learn/Term';
 import { CoefCell, Empty, Note, Section } from '../common';
 import { median } from '../util';
+
+/** Blend weights of one stock's ensemble ("huber 84% · ewma 16%"), remainder = the no-change forecast. */
+function weightsText(m: StockModels): string {
+  const parts = Object.entries(m.components ?? {})
+    .filter(([, c]) => isNum(c.weight) && c.weight > 0.005)
+    .sort((a, b) => b[1].weight - a[1].weight);
+  const used = parts.reduce((s, [, c]) => s + c.weight, 0);
+  const out = parts.map(([id, c]) => `${id} ${Math.round(c.weight * 100)}%`);
+  if (1 - used > 0.005) out.push(`no change ${Math.round((1 - used) * 100)}%`);
+  return out.join(' · ');
+}
+
+/** Ensemble (validated) coefficients next to the original OLS fit — what the scenario engine uses. */
+function EnsembleTable({ bundle, rows, selected, onSelect }: { bundle: DataBundle; rows: IndiaTarget[]; selected: string | null; onSelect: (t: string) => void }) {
+  const models = useMemo(() => new Map((bundle.models ?? []).map((m) => [m.ticker, m])), [bundle.models]);
+  const hs = useMemo(() => [...new Set((bundle.models ?? []).flatMap((m) => m.horizons.map((h) => h.h)))].sort((a, b) => a - b), [bundle.models]);
+  const [h, setH] = useState<number>(1);
+  const hh = hs.includes(h as 1 | 5 | 21) ? h : (hs[0] ?? 1);
+  const bt = bundle.backtest;
+  const nh = bt?.nifty_horizons?.find((x) => x.h === hh) ?? null;
+  if (!bundle.models?.length) return null;
+  return (
+    <Section
+      title={
+        <>
+          Validated ensemble — what scenarios use (h = {hh} session{hh === 1 ? '' : 's'}) <HelpChip id="ensemble" /> <HelpChip id="oos" />
+        </>
+      }
+      right={
+        hs.length > 1 ? (
+          <span className="b-toolbar" style={{ margin: 0 }}>
+            <label>horizon</label>
+            <select value={hh} onChange={(e) => setH(Number(e.target.value))}>
+              {hs.map((x) => (
+                <option key={x} value={x}>
+                  h = {x}
+                </option>
+              ))}
+            </select>
+          </span>
+        ) : undefined
+      }
+    >
+      <div className="b-callout">
+        <b>Scenarios use the validated ensemble; the OLS table is the original single model.</b>
+      </div>
+      {nh ? (
+        <div className="muted" style={{ margin: '4px 0 6px' }}>
+          Nifty model (walk-forward, h = {nh.h}): c_SOX {num(nh.SOX, 3)} · c_NDX {num(nh.NDX, 3)} · OOS R² {num(nh.r2, 3)} · n {nh.n}
+        </div>
+      ) : null}
+      <div className="b-scroll-lg">
+        <table className="tbl b-tbl">
+          <thead>
+            <tr>
+              <th>NAME</th>
+              <th>TIER</th>
+              <th className="num">b_SOX</th>
+              <th className="num">b_NDX</th>
+              <th className="num">b_P</th>
+              <th className="num">b_N</th>
+              <th className="num">β TOTAL ENS</th>
+              <th className="num">β TOTAL OLS</th>
+              <th className="num">OOS R²</th>
+              <th className="num">n OOS</th>
+              <th className="num">90% COVER</th>
+              <th>BLEND WEIGHTS</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((t) => {
+              const m = models.get(t.ticker);
+              const hc = m?.horizons.find((x) => x.h === hh) ?? null;
+              const tested = !!m && (m.oos_resid ?? []).some(isNum) && isNum(hc?.r2_oos);
+              return (
+                <tr key={t.ticker} className={`clickable${t.ticker === selected ? ' sel' : ''}`} onClick={() => onSelect(t.ticker)} title={t.name}>
+                  <td className="lbl">{t.display || t.ticker}</td>
+                  <td>{t.tier}</td>
+                  <td className="num">{num(hc?.SOX, 3)}</td>
+                  <td className="num">{num(hc?.NDX, 3)}</td>
+                  <td className="num">{num(hc?.PARENT, 3)}</td>
+                  <td className="num">{num(hc?.NIFTY, 3)}</td>
+                  <td className={`num ${isNum(hc?.beta_total) ? 'white' : 'muted'}`}>{num(hc?.beta_total, 2)}</td>
+                  <td className="num muted">{num(t.beta_total, 2)}</td>
+                  <td className="num">{tested ? num(hc!.r2_oos, 3) : '—'}</td>
+                  <td className="num">{tested ? hc!.n_oos : '—'}</td>
+                  <td className="num">{tested && isNum(m!.coverage90) ? pct(m!.coverage90, 0) : '—'}</td>
+                  <td className="muted">
+                    {!m ? <span className="b-flag">NO MODEL</span> : !tested ? <span className="b-flag" title="no out-of-sample history yet">TOO NEW TO TEST</span> : weightsText(m)}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <Note>
+        Ensemble = non-negative blend of the scenario-usable models, weighted by out-of-sample accuracy before each refit; its coefficients are the
+        weighted average of the components' coefficients. OOS R² is measured against the no-change forecast on sessions the models never saw.
+        {bt ? ` Walk-forward ${bt.start} → ${bt.end}, refit every ${bt.refit_every} sessions on ${bt.train_years} years.` : ''}
+      </Note>
+    </Section>
+  );
+}
 
 type SortKey = 'tier' | 'beta_total' | 'beta_total_down' | 'r2' | 'SOX' | 'NIFTY';
 
@@ -101,8 +206,14 @@ export default function Regressions({
           <Empty note="nifty_model missing" />
         )}
       </Section>
+      <EnsembleTable bundle={bundle} rows={rows} selected={selected} onSelect={onSelect} />
       <Section
-        title={`India targets — r_i,t = a + b_SOX x_SOX,t + b_NDX x_NDX,t + b_P x_P,t + b_N r_N,t + e   ${w ? `(${w.start} → ${w.end})` : ''}`}
+        title={
+          <>
+            {`India targets — original single model (OLS): r_i,t = a + b_SOX x_SOX,t + b_NDX x_NDX,t + b_P x_P,t + b_N r_N,t + e   ${w ? `(${w.start} → ${w.end})` : ''}`}{' '}
+            <HelpChip id="beta" /> <HelpChip id="r2" />
+          </>
+        }
         right={
           <span className="b-toolbar" style={{ margin: 0 }}>
             <label>sort</label>

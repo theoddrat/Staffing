@@ -18,7 +18,7 @@ function steps(bundle: DataBundle): Step[] {
       title: 'A what-if simulator, not a forecast',
       text: (
         <>
-          Imagine the AI boom deflates in the US. This tool estimates how that shock could reach <b>{n} Indian listed companies</b>
+          Imagine the AI boom deflates in the US. This tool estimates how that shock could reach <b>{n} Indian listed companies</b>{' '}
           — which ones get hit, through which links, and roughly how hard. Every scenario is <b>hypothetical</b>.
         </>
       ),

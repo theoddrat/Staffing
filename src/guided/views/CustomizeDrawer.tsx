@@ -5,7 +5,7 @@ import type { DataBundle, ParamSpec } from '../../types/data';
 import type { Horizon, ParamValue, PresetId, ScenarioResult } from '../../types/engine';
 import { paramSpecs } from '../../engine';
 import { isNum } from '../../lib/format';
-import { Term } from '../../learn/Term';
+import { HelpChip, Term } from '../../learn/Term';
 import { Icon } from '../icons';
 import { GBadge, Sources } from '../ui';
 import type { GuidedProps } from '../types';
@@ -250,7 +250,7 @@ export default function CustomizeDrawer({ state, actions, onClose }: Omit<Guided
                 </>
               )}
               <h3 className="g-h3">
-                Over what time? <Term id="horizon" />
+                Over what time? <HelpChip id="horizon" />
               </h3>
               <div className="g-pills" role="radiogroup" aria-label="Over what time">
                 {HORIZONS.map((h) => (

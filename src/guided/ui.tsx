@@ -9,25 +9,38 @@ import { CHANNEL_VIS, CONFIDENCE_VIS, TIER_VIS } from './visual';
 import type { PartChannel } from './lib/explain';
 import { clamp, pct, pctAbs } from './lib/format';
 
-export function ChannelChip({ channel, share, title }: { channel: PartChannel; share?: number; title?: string }) {
+/** Short chip labels for tight spaces (the full label + explanation stay in the tooltip). */
+export const CHANNEL_SHORT: Record<PartChannel, string> = {
+  parent: 'Parent company falls',
+  sentiment: 'Investor mood',
+  fx_fpi: 'Foreign money leaves',
+  revenue: 'IT budgets cut',
+  capex: 'Fewer data-centre orders',
+  credit: 'AI borrowers squeezed',
+  fx: 'Weaker rupee',
+  own: 'Own accounting shock',
+  premium: 'AI premium fades',
+};
+
+export function ChannelChip({ channel, share, title, short }: { channel: PartChannel; share?: number; title?: string; short?: boolean }) {
   const v = CHANNEL_VIS[channel];
   return (
-    <span className="g-chip g-chip-ch" title={title ?? v.blurb}>
+    <span className="g-chip g-chip-ch" title={title ?? `${v.label}: ${v.blurb}`}>
       <Icon name={v.icon} size={14} color={v.color} />
-      <span className="g-chip-text">{v.label}</span>
+      <span className="g-chip-text">{short ? CHANNEL_SHORT[channel] : v.label}</span>
       {isNum(share) && <span className="g-chip-num">{pctAbs(share)}</span>}
     </span>
   );
 }
 
-/** Legend key: colour swatch + icon + plain label. */
-export function ChannelKey({ channel }: { channel: PartChannel }) {
+/** Legend key: colour swatch + icon + plain label (optionally a more specific label). */
+export function ChannelKey({ channel, label }: { channel: PartChannel; label?: string }) {
   const v = CHANNEL_VIS[channel];
   return (
     <span className="g-key">
       <span className="g-swatch" style={{ background: v.color }} aria-hidden="true" />
       <Icon name={v.icon} size={15} color={v.color} />
-      <span>{v.label}</span>
+      <span>{label ?? v.label}</span>
     </span>
   );
 }
@@ -181,11 +194,12 @@ export function DivergingStack({ parts, label }: { parts: StackPart[]; label: st
   const nTot = neg.reduce((a, p) => a - p.frac, 0);
   const pTot = pos.reduce((a, p) => a + p.frac, 0);
   const tot = nTot + pTot || 1;
+  // flex-grow values must sum to ≥ 1 or the segments leave part of their side empty
   const seg = (p: StackPart) => (
     <span
       key={p.channel}
       className="g-dstack-seg"
-      style={{ flexGrow: Math.abs(p.frac), background: CHANNEL_VIS[p.channel].color }}
+      style={{ flexGrow: (Math.abs(p.frac) / tot) * 1000, background: CHANNEL_VIS[p.channel].color }}
       title={`${CHANNEL_VIS[p.channel].label}: ${pct(p.frac)} of the price`}
     />
   );

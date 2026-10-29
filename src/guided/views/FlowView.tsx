@@ -6,9 +6,9 @@ import { isNum } from '../../lib/format';
 import { Term } from '../../learn/Term';
 import { Icon } from '../icons';
 import { CHANNEL_VIS } from '../visual';
-import { ChannelKey, EmptyState, StepNum } from '../ui';
+import { CHANNEL_SHORT, ChannelKey, EmptyState, StepNum } from '../ui';
 import type { GuidedProps } from '../types';
-import { buildFlow, ribbonPath, type FlowLayout, type FlowMode, type FlowNode } from '../lib/flow';
+import { buildFlow, OTHERS_ID, ribbonPath, type FlowLayout, type FlowMode, type FlowNode } from '../lib/flow';
 import { pctAbs, rupeesCr } from '../lib/format';
 
 function useWidth(ref: RefObject<HTMLDivElement | null>): number {
@@ -83,9 +83,10 @@ function netOf(layout: FlowLayout, id: string): { inNet: number; outNet: number 
   return { inNet, outNet };
 }
 
+/** Net ₹ through a node: what leaves a source or a channel, what arrives at a company. */
 function nodeValue(layout: FlowLayout, n: FlowNode): number {
   const { inNet, outNet } = netOf(layout, n.id);
-  return n.kind === 'source' ? outNet : inNet;
+  return n.kind === 'company' ? inNet : outNet;
 }
 
 function describe(layout: FlowLayout, n: FlowNode, mode: FlowMode): { title: string; text: string } {
@@ -129,15 +130,25 @@ export default function FlowView({ state, actions }: GuidedProps) {
   const width = Math.max(300, w || 900);
   const narrow = width < 640;
   const nodeW = 12;
+  // The market view has one plain starting point per channel, so its picture is channels →
+  // companies with the starting points listed beside it; the business view shows the US groups too.
+  const withSources = mode === 'fundamental' && !narrow;
   const layout = useMemo(() => {
-    const left = narrow ? 120 : 200;
+    const left = narrow ? 120 : withSources ? 200 : 250;
     const right = narrow ? 108 : 176;
-    const xs = narrow ? [left, width - right - nodeW] : [left, (left + width - right - nodeW) / 2, width - right - nodeW];
-    return buildFlow(result.sankey[mode], bundle, { mode, topN: narrow ? 8 : 12, width, height: narrow ? 540 : 600, nodeW, xs, sources: !narrow, pad: 12 });
-  }, [result, bundle, mode, narrow, width]);
+    const xs = withSources ? [left, (left + width - right - nodeW) / 2, width - right - nodeW] : [left, width - right - nodeW];
+    const opts = { mode, topN: narrow ? 8 : 12, width, nodeW, xs, sources: withSources, pad: 12 };
+    const base = narrow ? 520 : 560;
+    const first = buildFlow(result.sankey[mode], bundle, { ...opts, height: base });
+    // grow the picture when a column's labels need more room than its nodes
+    const cols = new Map<number, number>();
+    for (const n of first.nodes) cols.set(n.col, (cols.get(n.col) ?? 0) + (n.kind === 'company' ? 33 : 50));
+    const need = Math.max(0, ...cols.values());
+    return need > base ? buildFlow(result.sankey[mode], bundle, { ...opts, height: need + 16 }) : first;
+  }, [result, bundle, mode, narrow, width, withSources]);
 
-  // narrow screens drop the source column; list the US starting points under the picture instead
-  const full = useMemo(() => (narrow ? buildFlow(result.sankey[mode], bundle, { mode, topN: 1 }) : null), [narrow, result, bundle, mode]);
+  // starting points (merged per channel in the market view), listed when the picture leaves them out
+  const full = useMemo(() => (withSources ? null : buildFlow(result.sankey[mode], bundle, { mode, topN: 1 })), [withSources, result, bundle, mode]);
   const starts = full ? full.nodes.filter((n) => n.kind === 'source').map((n) => ({ n, v: nodeValue(full, n) })) : [];
 
   const active = focus ?? pinned;
@@ -159,7 +170,7 @@ export default function FlowView({ state, actions }: GuidedProps) {
     for (const n of layout.nodes) m.set(n.col, [...(m.get(n.col) ?? []), n]);
     return m;
   }, [layout]);
-  const lastCol = narrow ? 1 : 2;
+  const lastCol = withSources ? 2 : 1;
   const labels = useMemo(() => {
     const out = new Map<string, Label & { anchor: 'start' | 'end'; x: number }>();
     for (const [col, ns] of byCol) {
@@ -168,7 +179,10 @@ export default function FlowView({ state, actions }: GuidedProps) {
       const max = isLast ? (narrow ? 13 : 22) : narrow ? 15 : 22;
       const placed = placeLabels(
         ns,
-        (n) => (n.kind === 'company' ? [n.label] : wrap(n.label, max)),
+        (n) =>
+          n.kind === 'company'
+            ? [n.id === OTHERS_ID && narrow ? `+${layout.others} others` : n.label]
+            : wrap(narrow && n.channel ? CHANNEL_SHORT[n.channel] : n.label, max),
         (n) => rupeesCr(nodeValue(layout, n), { sign: true }),
         layout.height,
       );
@@ -232,8 +246,24 @@ export default function FlowView({ state, actions }: GuidedProps) {
         </p>
       </div>
 
-      <div className={`g-flow-cols${narrow ? ' is-narrow' : ''}`} aria-hidden="true">
-        {!narrow && <span>Where it starts</span>}
+      {starts.length > 0 && (
+        <section className="g-flow-starts" aria-labelledby="flow-starts">
+          <h2 id="flow-starts" className="g-h3">
+            Where it starts
+          </h2>
+          <ul>
+            {starts.map(({ n, v }) => (
+              <li key={n.id}>
+                <Icon name={n.icon} size={18} color={n.color} />
+                <span>{n.label}</span>
+                <b>{rupeesCr(v, { sign: true })}</b>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+      <div className={`g-flow-cols${withSources ? '' : ' is-narrow'}`} aria-hidden="true">
+        {withSources && <span>Where it starts</span>}
         <span>How it travels</span>
         <span>Who feels it</span>
       </div>
@@ -266,7 +296,7 @@ export default function FlowView({ state, actions }: GuidedProps) {
             </g>
             <g className="g-flow-anim" aria-hidden="true">
               {layout.links
-                .filter((l) => l.w >= 3)
+                .filter((l) => l.w >= 6)
                 .map((l) => {
                   const s = byId.get(l.source)!;
                   const t = byId.get(l.target)!;
@@ -326,32 +356,10 @@ export default function FlowView({ state, actions }: GuidedProps) {
         ) : (
           <p className="g-muted">
             <Icon name="help" size={15} /> Hover, tap or tab to any bar to see what flows through it. Orange-red ribbons push prices down; green
-            ribbons cushion them. {narrow ? 'On a small screen the US starting points are listed below the picture.' : ''}
+            ribbons cushion them.
           </p>
         )}
       </div>
-
-      {narrow && starts.length > 0 && (
-        <section className="g-card" aria-labelledby="flow-starts">
-          <h2 id="flow-starts" className="g-h2">
-            Where it starts
-          </h2>
-          <ul className="g-flow-legend">
-            {starts.map(({ n, v }) => (
-              <li key={n.id}>
-                <div className="g-reason-head">
-                  <span className="g-key">
-                    <span className="g-swatch" style={{ background: n.color }} aria-hidden="true" />
-                    <Icon name={n.icon} size={15} color={n.color} />
-                    <span>{n.label}</span>
-                  </span>
-                  <b className="g-reason-val">{rupeesCr(v, { sign: true })}</b>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
 
       {!empty && (
         <section className="g-card" aria-labelledby="flow-legend">

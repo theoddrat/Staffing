@@ -23,7 +23,10 @@ def ns(x: pd.DatetimeIndex | pd.Timestamp | str) -> np.ndarray | int:
     return int(pd.Timestamp(x).as_unit("ns").value)
 
 
-BASE_FEATS = ["SOX", "NDX", "PARENT", "NIFTY", "SOX_L1", "NDX_L1", "PARENT_L1", "NIFTY_L1", "Y_L1", "SOXn", "NDXn", "ADR"]
+BASE_FEATS = ["SOX", "NDX", "PARENT", "NIFTY", "SOX_L1", "NDX_L1", "PARENT_L1", "NIFTY_L1", "Y_L1", "SOXn", "NDXn", "ADR",
+              "NIFTY_L2", "Y_L2", "ADR_L1", "GAP", "GAP_L1"]
+# Signals of the previous session that are still informative for the next one (all known before the NSE open).
+LAG_OF = {"INDA_L1": "INDA", "EPI_L1": "EPI", "SMIN_L1": "SMIN", "ADR_L1": "ADR", "NIFTY_L2": "NIFTY_L1", "Y_L2": "Y_L1", "GAP_L1": "GAP"}
 
 
 @dataclass
@@ -120,7 +123,15 @@ def build_panel(cfg: dict[str, Any], ctx: Any, est: Any, nm: dict[str, Any], now
 
     targets = cfg["india"]
     N = len(targets)
-    feats = BASE_FEATS + list(aux_series)
+    feats = BASE_FEATS + list(aux_series) + [k for k, v in LAG_OF.items() if v in aux_series]
+
+    def _derive(df: pd.DataFrame) -> None:
+        """ETF gap (US-listed India fund move net of the Nifty session it already contains and of the rupee) + lags."""
+        if "INDA" in df.columns and "USDINR" in df.columns:
+            df["GAP"] = df["INDA"] - df["NIFTY_L1"] + df["USDINR"]
+        for lg, src in LAG_OF.items():
+            if src in df.columns:
+                df[lg] = df[src].shift(1)
     Y = np.full((T, N), np.nan)
     F = {k: np.full((T, N), np.nan) for k in feats}
     adrs: list[str | None] = [None] * N
@@ -160,6 +171,7 @@ def build_panel(cfg: dict[str, Any], ctx: Any, est: Any, nm: dict[str, Any], now
         if adr_ret is not None and len(adr_ret) > 300:
             df["ADR"] = align_series(own, markets[tm], adr_ret, markets[ctx.market_of(adr)])[0]
             adrs[i] = adr
+        _derive(df)
         if tm == "IN":
             j = D[:n_data].get_indexer(own)
         else:
@@ -185,6 +197,11 @@ def build_panel(cfg: dict[str, Any], ctx: Any, est: Any, nm: dict[str, Any], now
                 F["ADR"][r, i] = on_D(adr_ret, ctx.market_of(adr))[r]
             F["SOX_L1"][r, i], F["NDX_L1"][r, i] = F["SOX"][r - 1, i], F["NDX"][r - 1, i]
             F["Y_L1"][r, i], F["NIFTY_L1"][r, i] = Y[r - 1, i], F["NIFTY"][r - 1, i]
+            if "INDA" in F and "USDINR" in F:
+                F["GAP"][r, i] = F["INDA"][r, i] - F["NIFTY_L1"][r, i] + F["USDINR"][r, i]
+            for lg, src in LAG_OF.items():
+                if lg in F and src in F:
+                    F[lg][r, i] = F[src][r - 1, i]
 
     ny = nm["frame"]["y"].reindex(D).to_numpy(dtype=float).copy()
     if future:
@@ -192,6 +209,10 @@ def build_panel(cfg: dict[str, Any], ctx: Any, est: Any, nm: dict[str, Any], now
     nifty = {"y": ny, "SOX": common["SOX"], "NDX": common["NDX"], "NIFTY_L1": np.r_[np.nan, ny[:-1]]}
     for aid in aux_series:
         nifty[aid] = common[aid]
+    nf = pd.DataFrame(nifty)
+    _derive(nf)
+    for k in nf.columns:
+        nifty[k] = nf[k].to_numpy(dtype=float).copy()
 
     us_dates = pd.DatetimeIndex(sox.index)
     us_j = np.searchsorted(ns(in_close), ns(close_timestamps(us_dates, us_mk)), side="left")

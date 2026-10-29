@@ -902,9 +902,13 @@ modellab:
   gbm: {max_iter: 300, learning_rate: 0.05, max_leaf_nodes: 15, min_samples_leaf: 200, l2_regularization: 1.0}
   gbm_feature_window: 252        # trailing window for the point-in-time beta / volatility features
   gbm_feature_min_obs: 126
-  ridge_lambdas: [0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1.0]   # nowcast ridge penalties (standardised features)
-  ridge_val_sessions: 126        # last ~6 months of each training window pick the ridge penalty
-  stack_min_rows: 1500           # out-of-sample rows needed before stacking weights replace equal weights
+  ridge_lambdas: [0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1.0, 3.0, 10.0]   # nowcast ridge penalties (standardised features)
+  ridge_cv_folds: 5              # the ridge penalty is chosen by 5-fold blocked cross-validation inside each training window
+  nowcast_train_sessions: 1512   # nowcast models use a longer window (~6 years): the overnight-ETF links are stable and need data
+  stack_min_rows: 15000          # ~2 years of pooled out-of-sample rows before stacking weights replace equal weights
+  stack_allow_zero: false        # false = convex blend (weights >= 0, sum 1). Letting weight flow to the no-change
+                                 # forecast learned 60-70% shrinkage in calm 2019 and then badly under-predicted the
+                                 # March 2020 crash, so crash responses are not shrunk toward zero.
   band_levels: [0.5, 0.8, 0.9]
   band_min_obs: 126              # out-of-sample residuals needed for a stock's own prediction band
   band_lookback: 504             # bands use at most the last ~2 years of out-of-sample residuals
@@ -915,8 +919,8 @@ modellab:
   final_min_obs: 120             # short-history stocks get a final fit (no backtest) with at least this
   horizons: [1, 5, 21]
   horizon_long_years: 10         # "long window" candidate for multi-session horizons (vs the 3-year window)
-  horizon_stack_min_blocks: {"5": 600, "21": 200}   # pooled out-of-sample blocks before stacking weights are used
-  nifty_horizon_min_blocks: {"5": 60, "21": 24}
+  horizon_stack_min_blocks: {"5": 3000, "21": 750}  # ~2 years of pooled out-of-sample blocks before stacking weights are used
+  nifty_horizon_min_blocks: {"5": 96, "21": 24}     # ~2 years of Nifty blocks
   settle_minutes: 20             # a session counts as closed this long after its official close
   worst_sox_since: "2023-01-01"
   worst_sox_n: 10

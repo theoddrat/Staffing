@@ -8,6 +8,7 @@ import Chart, { axisStyle, CHART_COLORS } from '../components/Chart';
 import QuantityView from '../components/QuantityView';
 import { StatusBadge, SourceLinks } from '../components/StatusBadge';
 import { compact, crore, isNum, num, pct, signClass, spct, usd } from '../lib/format';
+import { HelpChip } from '../learn/Term';
 
 const PRE_CHATGPT = '2022-11-30';
 
@@ -158,7 +159,9 @@ function OriginBlock({ info, res, state }: { info: OriginInfo; res: OriginResult
   return (
     <>
       <div className="panel">
-        <div className="panel-header">EXPOSURES (LAYER 1 CAPEX / CREDIT CHANNELS)</div>
+        <div className="panel-header">
+          EXPOSURES (LAYER 1 CAPEX / CREDIT CHANNELS) <HelpChip id="ear" />
+        </div>
         <table className="tbl">
           <tbody>
             <KV k="GROUP">{info.group}</KV>
@@ -203,7 +206,7 @@ function OriginBlock({ info, res, state }: { info: OriginInfo; res: OriginResult
       </div>
       <div className="panel">
         <div className="panel-header">
-          SCENARIO WATERFALL — PRICE → EPS CUT → DE-RATING → NEW PRICE <span className="spacer" />
+          SCENARIO WATERFALL — PRICE → EPS CUT → DE-RATING → NEW PRICE <HelpChip id="pe" /> <HelpChip id="eps" /> <span className="spacer" />
           {res && <span className={signClass(res.move)}>{spct(res.move)}</span>}
         </div>
         {res ? (
@@ -359,7 +362,7 @@ function IndiaLinks({ t, state }: { t: IndiaTarget } & Pick<PanelProps, 'state'>
   return (
       <div className="panel">
         <div className="panel-header">
-          TIER {t.tier} LINKS & EXPOSURES {t.short_history && <span className="down"> · SHORT HISTORY</span>}
+          TIER {t.tier} LINKS & EXPOSURES <HelpChip id="tier" /> {t.short_history && <span className="down"> · SHORT HISTORY</span>}
         </div>
         <table className="tbl">
           <tbody>
@@ -411,7 +414,9 @@ function IndiaDetail({ t, res, state }: { t: IndiaTarget; res: IndiaResult | und
   return (
     <>
       <div className="panel">
-        <div className="panel-header">LAYER 2 REGRESSIONS (LOG RETURNS, US t−1 ALIGNED)</div>
+        <div className="panel-header">
+          LAYER 2 REGRESSIONS (LOG RETURNS, US t−1 ALIGNED) <HelpChip id="beta" /> <HelpChip id="lag" /> <HelpChip id="r2" />
+        </div>
         <div className="panel-body grid-2 reg-grid">
           <RegTable reg={t.reg} title="FULL 3Y" />
           <RegTable reg={t.reg_down} title="DOWNSIDE (WORST 5% SOX DAYS)" />
@@ -419,7 +424,7 @@ function IndiaDetail({ t, res, state }: { t: IndiaTarget; res: IndiaResult | und
       </div>
       <div className="panel">
         <div className="panel-header">
-          SCENARIO BREAKDOWN <span className="spacer" />
+          SCENARIO BREAKDOWN <HelpChip id="market_implied" /> <HelpChip id="fundamental" /> <span className="spacer" />
           {res && (
             <>
               MKT <span className={signClass(res.market_move)}>{spct(res.market_move)}</span>&nbsp;· FUND NET{' '}
@@ -512,7 +517,9 @@ function IndiaDetail({ t, res, state }: { t: IndiaTarget; res: IndiaResult | und
       </div>
       <div className="grid-2">
         <div className="panel">
-          <div className="panel-header">ROLLING 1Y BETAS (DID AI LINKAGE RISE AFTER NOV-2022?)</div>
+          <div className="panel-header">
+            ROLLING 1Y BETAS (DID AI LINKAGE RISE AFTER NOV-2022?) <HelpChip id="beta" />
+          </div>
           <RollingChart t={t} />
         </div>
         <div className="panel">

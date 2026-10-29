@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import type { Horizon, ParamValue, ScenarioResult } from '../../types/engine';
 import { defaultParams, horizonForWindow, paramSpecs, runScenario } from '../../engine';
 import { paramsKey } from '../../state/store';
-import { Term } from '../../learn/Term';
+import { HelpChip, Term } from '../../learn/Term';
 import { Icon } from '../icons';
 import { ScenarioArt } from '../art';
 import { Callout, StepNum } from '../ui';
@@ -63,12 +63,12 @@ function HowItReachesIndia({ n, us }: { n: number; us: number }) {
   );
 }
 
-function Preview({ r }: { r: ScenarioResult | null }) {
+function Preview({ r, flatWhy }: { r: ScenarioResult | null; flatWhy?: string }) {
   if (!r) return <p className="g-preview is-empty">No preview for this choice.</p>;
   if (isFlat(r))
     return (
       <p className="g-preview is-flat">
-        <Icon name="warning" size={16} /> Barely moves at today’s prices — open the card to see why.
+        <Icon name="warning" size={16} /> {flatWhy ?? 'Barely moves anything at this strength.'}
       </p>
     );
   const icons = { chips: 'chip', nifty: 'trendDown', india: 'rupee' } as const;
@@ -117,12 +117,19 @@ function ScenarioCard({ copy, state, actions, openCustomize }: GuidedProps & { c
     }
   }, [values, isCurrent, result, isReplay, bundle, win, h, copy.id, params.overrides, params.premiumFloorZero]);
 
+  // the card's own values: its preset defaults (at this horizon) + the chosen level
+  const own = useMemo(() => {
+    const base = defaultParams(bundle, copy.id, isReplay ? horizonForWindow(bundle, win) : h).values;
+    return { ...base, ...(values ?? (isCurrent ? params.values : {})) };
+  }, [bundle, copy.id, isReplay, win, h, values, isCurrent, params.values]);
   const mainKey = isReplay ? 'window' : SHOCK_KEYS[copy.id]?.[0];
-  const mainVal = isReplay ? win : values ? values[mainKey] : params.values[mainKey];
   const sentence =
-    mainKey && PARAM_COPY[mainKey]?.sentence
-      ? PARAM_COPY[mainKey].sentence!(mainVal ?? null, { bundle, preset: copy.id, values: { ...params.values, ...(values ?? {}) } })
-      : null;
+    mainKey && PARAM_COPY[mainKey]?.sentence ? PARAM_COPY[mainKey].sentence!(own[mainKey] ?? null, { bundle, preset: copy.id, values: own }) : null;
+  const ai = bundle.history.ai_basket_pe;
+  const flatWhy =
+    copy.id === 'multiple' && own.mode === 'median' && ai.now !== null && ai.pre_chatgpt_median !== null && ai.now < ai.pre_chatgpt_median
+      ? `At today’s prices AI stocks (${ai.now.toFixed(1)}× earnings) are already below their pre-ChatGPT level (${ai.pre_chatgpt_median.toFixed(1)}×), so “back to normal” means no fall. Open Customize and choose “Like past bubbles”.`
+      : undefined;
 
   const commit = () => {
     if (values !== null) actions.applyScenario(copy.id, isReplay ? undefined : h, values);
@@ -145,7 +152,7 @@ function ScenarioCard({ copy, state, actions, openCustomize }: GuidedProps & { c
           {copy.title}
         </h3>
         <p className="g-scard-blurb">
-          {copy.blurb} <Term id={copy.term} />
+          {copy.blurb} <HelpChip id={copy.term} />
         </p>
         {lowConf && copy.lowConfidenceNote && (
           <p className="g-scard-low">
@@ -204,13 +211,13 @@ function ScenarioCard({ copy, state, actions, openCustomize }: GuidedProps & { c
                   {HORIZON_CHIP[x]}
                 </button>
               ))}
-              <Term id="horizon" />
+              <HelpChip id="horizon" />
             </div>
           </>
         )}
 
         {sentence && <p className="g-scard-say">{sentence}</p>}
-        <Preview r={preview} />
+        <Preview r={preview} flatWhy={flatWhy} />
 
         <div className="g-scard-actions">
           <button

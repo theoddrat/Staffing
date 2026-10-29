@@ -7,6 +7,8 @@ import Chart, { axisStyle, CHART_COLORS } from '../components/Chart';
 import { StatusBadge } from '../components/StatusBadge';
 import { crore, isNum, num, pct, signClass, spct } from '../lib/format';
 import type { ExtState } from '../state/store';
+import { HelpChip } from '../learn/Term';
+import type { GlossaryId } from '../learn/ids';
 
 const TIERS: (Tier | 'ALL')[] = ['ALL', 'A', 'B', 'C', 'D'];
 const TIER_LABEL: Record<Tier, string> = {
@@ -278,7 +280,7 @@ export default function ImpactPanel(props: PanelProps) {
     return { sum, n, avg: n ? avg / n : 0 };
   }, [filtered]);
 
-  const th = (col: Col, label: string, title?: string, cls = '') => (
+  const th = (col: Col, label: string, title?: string, cls = '', term?: GlossaryId) => (
     <th
       className={`sortable ${cls} ${sort.col === col ? 'sorted' : ''}`}
       title={title}
@@ -292,6 +294,7 @@ export default function ImpactPanel(props: PanelProps) {
     >
       {label}
       {sort.col === col ? (sort.dir === 1 ? ' ▲' : ' ▼') : ''}
+      {term && <HelpChip id={term} />}
     </th>
   );
 
@@ -331,20 +334,20 @@ export default function ImpactPanel(props: PanelProps) {
                 {th('rank', '#', 'Rank by market-implied move (most negative first)', 'num')}
                 {th('display', 'SYM')}
                 <th>NAME</th>
-                {th('tier', 'T')}
-                {th('channel', 'DOM CHANNEL', 'Largest |₹ cr| channel contribution')}
-                {th('beta', 'β TOT', 'Total AI beta: d ln P / d ln SOX along the typical joint path', 'num')}
-                {th('beta_dn', 'β DN', 'Same on worst-5% SOX days', 'num')}
-                {th('market', 'MKT-IMPLIED', 'Layer 2: regression-implied move', 'num')}
-                {th('fund_g', 'FUND GROSS', 'Layer 3: (1−EaR)(1−d) − 1', 'num')}
-                {th('fund_n', 'FUND NET FX', 'Layer 3 + 4: net of INR depreciation benefit', 'num')}
-                {th('gap', 'GAP', 'Market − fundamental (negative = sentiment overreaction)', 'num')}
-                {th('prem', 'AI PREM', 'Current P/E ÷ median P/E in the 3y before 30-Nov-2022, minus 1', 'num')}
-                {th('p5', 'LOW P5', 'Monte Carlo 5th percentile', 'num')}
-                {th('p50', 'BASE P50', 'Monte Carlo median', 'num')}
+                {th('tier', 'T', undefined, '', 'tier')}
+                {th('channel', 'DOM CHANNEL', 'Largest |₹ cr| channel contribution', '', 'channel')}
+                {th('beta', 'β TOT', 'Total AI beta: d ln P / d ln SOX along the typical joint path', 'num', 'beta_total')}
+                {th('beta_dn', 'β DN', 'Same on worst-5% SOX days', 'num', 'downside_beta')}
+                {th('market', 'MKT-IMPLIED', 'Layer 2: regression-implied move', 'num', 'market_implied')}
+                {th('fund_g', 'FUND GROSS', 'Layer 3: (1−EaR)(1−d) − 1', 'num', 'fundamental')}
+                {th('fund_n', 'FUND NET FX', 'Layer 3 + 4: net of INR depreciation benefit', 'num', 'fx_offset')}
+                {th('gap', 'GAP', 'Market − fundamental (negative = sentiment overreaction)', 'num', 'gap')}
+                {th('prem', 'AI PREM', 'Current P/E ÷ median P/E in the 3y before 30-Nov-2022, minus 1', 'num', 'ai_premium')}
+                {th('p5', 'LOW P5', 'Monte Carlo 5th percentile', 'num', 'range')}
+                {th('p50', 'BASE P50', 'Monte Carlo median', 'num', 'monte_carlo')}
                 {th('p95', 'HIGH P95', 'Monte Carlo 95th percentile', 'num')}
-                {th('mcap', 'ΔMCAP ₹ CR', 'Market-implied move × market cap', 'num')}
-                {th('conf', 'CONF', 'Confidence score: R², assumption share, sample size', 'num')}
+                {th('mcap', 'ΔMCAP ₹ CR', 'Market-implied move × market cap', 'num', 'crore')}
+                {th('conf', 'CONF', 'Confidence score: R², assumption share, sample size', 'num', 'confidence')}
               </tr>
             </thead>
             <tbody>
@@ -394,12 +397,14 @@ export default function ImpactPanel(props: PanelProps) {
 
       <div className="grid-2">
         <div className="panel">
-          <div className="panel-header">TREEMAP — SIZE |ΔMCAP ₹ CR|, COLOUR = MARKET-IMPLIED MOVE</div>
+          <div className="panel-header">
+            TREEMAP — SIZE |ΔMCAP ₹ CR|, COLOUR = MARKET-IMPLIED MOVE <HelpChip id="mcap" />
+          </div>
           <Treemap rows={filtered} onPick={(t) => actions.select(t)} />
         </div>
         <div className="panel">
           <div className="panel-header">
-            MONTE CARLO FAN — {sel ? `${sel.display} (${sel.ticker})` : '—'} <span className="spacer" />
+            MONTE CARLO FAN — {sel ? `${sel.display} (${sel.ticker})` : '—'} <HelpChip id="monte_carlo" /> <span className="spacer" />
             {mcForFan && !state.mc && <span className="muted">STALE</span>}
           </div>
           <FanChart mc={mcForFan} ticker={sel?.ticker ?? null} display={sel?.display ?? ''} />

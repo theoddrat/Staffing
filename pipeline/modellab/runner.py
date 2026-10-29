@@ -16,7 +16,7 @@ from pipeline.modellab.metrics import coverage, oos_stats
 from pipeline.modellab.panel import Panel, build_panel
 from pipeline.modellab.settings import LabSettings, as_dict, from_config
 from pipeline.modellab.specs import MODEL_SPECS
-from pipeline.modellab.walkforward import LINEAR, WF, band_offsets, run_walkforward, stack
+from pipeline.modellab.walkforward import LINEAR, WF, band_offsets, nowcast_blend, run_walkforward, stack
 
 ROOT = Path(__file__).resolve().parents[2]
 CACHE_DIR = ROOT / ".cache" / "modellab"
@@ -51,13 +51,15 @@ def method_text(st: LabSettings) -> str:
         "(SOX) and US tech (Nasdaq-100) moves that reach India that session, the parent's move and the Nifty move implied by a "
         "Nifty model fitted on the same window; intercepts are left out, exactly as the app applies the coefficients. "
         "The blend's weights come from non-negative least squares on out-of-sample predictions made before each refit "
-        f"(weights are at least zero and any remainder goes to the no-change forecast), per tier once a tier has {st.stack_min_rows} "
-        "such rows. Prediction bands use earlier out-of-sample errors, scaled by each refit's volatility. Shock days: the US chip "
+        + ("(weights are at least zero and any remainder goes to the no-change forecast)" if st.stack_allow_zero else
+           "(weights are at least zero and sum to one, so crash responses are never shrunk toward no change)")
+        + f", per tier once a tier has {st.stack_min_rows} such rows (equal weights before that). Prediction bands use earlier out-of-sample errors, scaled by each refit's volatility. Shock days: the US chip "
         f"move is in the worst {round(100 * st.shock_quantile)}% of the training window. R-squared is measured against the "
         "no-change forecast (1 - SSE/SSE of zero), so a negative value means worse than predicting nothing. Nowcast mode adds "
         "every signal known before the NSE close (US-listed India funds and ADRs, US software, Taiwan and Korea, US yields, the "
-        "dollar, the rupee, the previous session) in a ridge regression whose penalty is chosen on the last "
-        f"{st.ridge_val_sessions} sessions of each training window."
+        "dollar, the rupee, the previous session) in a ridge regression fitted on the previous "
+        f"{st.nowcast_train_sessions} sessions, its penalty chosen by {st.ridge_cv_folds}-fold blocked cross-validation inside "
+        "each training window."
     )
 
 
@@ -90,6 +92,7 @@ def compute(cfg: dict[str, Any], ctx: Any, P: Panel, st: LabSettings, log: Calla
     tt["walkforward"] = time.time() - t
     t = time.time()
     stack(P, wf, st)
+    nowcast_blend(P, wf, st)
     wf.bands["ensemble"] = band_offsets(P.Y - wf.preds["ensemble"], wf.sig["ols_rf"], wf, st)
     tt["stack_bands"] = time.time() - t
     if st.gbm_enabled:
@@ -148,8 +151,9 @@ def compute(cfg: dict[str, Any], ctx: Any, P: Panel, st: LabSettings, log: Calla
         "dates": [d.strftime("%Y-%m-%d") for d in P.dates[wf.t0:nd]],
         "models": [s for s in MODEL_SPECS if s["id"] in used],
         "ensemble": {"method": "Non-negative least squares on out-of-sample predictions made before each refit; weights sum to one "
-                               "including the no-change forecast ('zero'); a tier uses its own weights once it has "
-                               f"{st.stack_min_rows} out-of-sample rows, otherwise the all-stock weights.",
+                               + ("including the no-change forecast ('zero')" if st.stack_allow_zero else
+                                  "(a convex blend; the no-change forecast 'zero' is listed with weight 0)")
+                               + f"; a tier uses its own weights once it has {st.stack_min_rows} out-of-sample rows, otherwise the all-stock weights.",
                      "weights": wdict(fw["ALL"]), "weights_by_tier": by_tier},
         "summary": summary, "calibration": calib, "events": events, "horizon_check": hcheck, "nifty_horizons": nifty_h,
         "nifty_oos_resid": [ex._num(v) for v in (P.nifty["y"] - wf.nifty_pred["ols"])[wf.t0:nd]],
@@ -157,7 +161,8 @@ def compute(cfg: dict[str, Any], ctx: Any, P: Panel, st: LabSettings, log: Calla
     sections = {"factors_aux": ex.factors_aux_section(cfg, ctx, P, st), "models": models, "backtest": backtest,
                 "nowcast": ex.nowcast_section(P, wf, st)}
     diag = {"timing": {k: round(v, 1) for k, v in tt.items()}, "aux": P.info["aux"], "same_day_markets": P.info["same_day_markets"],
-            "future": P.future, "n_refits": len(wf.refits) - 1, "lambda": {k: [ex._num(x) for x in v] for k, v in wf.lam.items()},
+            "future": P.future, "n_refits": len(wf.refits) - 1,
+            "nowcast_blend": {v: wf.weights[f"{v}_blend"]["final"] for v in ("nowcast", "nowcast_pre")}, "lambda": {k: [ex._num(x) for x in v] for k, v in wf.lam.items()},
             "weights_hist": [{"refit": P.dates[min(R, P.T - 1)].strftime("%Y-%m-%d"), "ALL": [round(float(x), 4) for x in h["ALL"]],
                               "n": h["n"]["ALL"]} for R, h in zip(wf.refits, wf.weights["hist"])][:: 6]}
     if horizons and "_diag" in horizons:

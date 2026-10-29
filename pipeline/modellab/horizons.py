@@ -95,7 +95,7 @@ def run_horizons(P: Panel, wf: WF, st: LabSettings, log: Callable[[str], None] =
             if len(ncand) < len(NCANDS):
                 nW_hist.append(None)
                 continue
-            nw = fit.simplex_weights(nG, nc_) if nn >= st.nifty_horizon_min_blocks.get(h, 10 ** 9) else np.full(3, 1 / 3)
+            nw = fit.simplex_weights(nG, nc_, st.stack_allow_zero) if nn >= st.nifty_horizon_min_blocks.get(h, 10 ** 9) else np.full(3, 1 / 3)
             nW_hist.append(nw)
             ch = sum(nw[j] * ncand[name] for j, name in enumerate(NCANDS))
             if is_final:
@@ -143,7 +143,7 @@ def run_horizons(P: Panel, wf: WF, st: LabSettings, log: Callable[[str], None] =
                 for q, i in enumerate(hv):
                     w = tau2 / (tau2 + s2[q])
                     S["shrink_h"][i][j] = S["h1"][i][j] + w * dlt[q]
-            sw = fit.simplex_weights(G, c_) if n_ >= st.horizon_stack_min_blocks.get(h, 10 ** 9) else np.full(4, 0.25)
+            sw = fit.simplex_weights(G, c_, st.stack_allow_zero) if n_ >= st.horizon_stack_min_blocks.get(h, 10 ** 9) else np.full(4, 0.25)
             sW_hist.append(sw)
             if is_final:
                 for i in idx:

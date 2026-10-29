@@ -29,7 +29,7 @@ MODEL_SPECS = [
      "description": "A blend of the scenario models, each weighted by how well it predicted unseen days before; this is what the scenario engine uses."},
     {"id": "nowcast", "label": "Next-session nowcast", "family": "linear", "mode": "nowcast", "scenario_usable": False,
      "features": ["SOX", "NDX", "PARENT", "INDA", "EPI", "SMIN", "IGV", "TWII", "KS11", "TNX", "DXY", "USDINR", "ADR", "own previous return", "Nifty previous return"],
-     "description": "Uses every clue known before the Indian close: US-listed India funds, the stock's US-listed shares, US software, Taiwan and Korea, US yields, the dollar and the rupee. A model check, not a scenario tool."},
+     "description": "Uses every clue known before the Indian close: US-listed India funds, the stock's US-listed shares, US software, Taiwan and Korea, US yields, the dollar and the rupee. It blends a per-stock fit with the stock's link to a Nifty forecast built from the same clues. A model check, not a scenario tool."},
     {"id": "nowcast_pre", "label": "Before-the-open nowcast", "family": "linear", "mode": "nowcast", "scenario_usable": False,
      "features": ["SOX", "NDX", "PARENT (if it closes after India)", "INDA", "EPI", "SMIN", "IGV", "TNX", "DXY", "USDINR", "ADR", "own previous return", "Nifty previous return"],
      "description": "Like the next-session nowcast, but only with clues available before the Indian market opens: it leaves out Taiwan, Korea and Japan, which trade during Indian hours."},

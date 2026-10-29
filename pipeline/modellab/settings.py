@@ -22,8 +22,10 @@ class LabSettings:
     gbm_feature_window: int
     gbm_feature_min_obs: int
     ridge_lambdas: tuple[float, ...]
-    ridge_val_sessions: int
+    ridge_cv_folds: int
+    nowcast_train_sessions: int
     stack_min_rows: int
+    stack_allow_zero: bool
     band_levels: tuple[float, ...]
     band_min_obs: int
     band_lookback: int
@@ -64,8 +66,10 @@ def from_config(cfg: dict[str, Any]) -> LabSettings:
         gbm_feature_window=int(m["gbm_feature_window"]),
         gbm_feature_min_obs=int(m["gbm_feature_min_obs"]),
         ridge_lambdas=tuple(float(x) for x in m["ridge_lambdas"]),
-        ridge_val_sessions=int(m["ridge_val_sessions"]),
+        ridge_cv_folds=int(m["ridge_cv_folds"]),
+        nowcast_train_sessions=int(m["nowcast_train_sessions"]),
         stack_min_rows=int(m["stack_min_rows"]),
+        stack_allow_zero=bool(m["stack_allow_zero"]),
         band_levels=tuple(float(x) for x in m["band_levels"]),
         band_min_obs=int(m["band_min_obs"]),
         band_lookback=int(m["band_lookback"]),

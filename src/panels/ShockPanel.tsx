@@ -7,6 +7,7 @@ import { paramSpecs } from '../engine';
 import { StatusBadge } from '../components/StatusBadge';
 import { crore, isNum, num, pct, signClass, spct, usd } from '../lib/format';
 import type { ExtState } from '../state/store';
+import { HelpChip } from '../learn/Term';
 
 const HORIZONS: Horizon[] = ['1D', '1M', '12M'];
 type SortKey = 'mcap' | 'move' | 'e' | 'd' | 'ticker';
@@ -42,7 +43,7 @@ function FactorBox({ state }: PanelProps) {
   return (
     <div className="panel">
       <div className="panel-header">
-        FACTOR MOVES <span className="spacer" />
+        FACTOR MOVES <HelpChip id="sox" /> <HelpChip id="nifty" /> <span className="spacer" />
         {mc && <span className={stale ? 'muted' : 'cyan'}>MC P5 / P50 / P95{stale ? ' (STALE)' : ''}</span>}
       </div>
       <table className="tbl">
@@ -71,7 +72,7 @@ function CapexBox({ state }: PanelProps) {
   return (
     <div className="panel">
       <div className="panel-header">
-        HYPERSCALER CAPEX — TTM FROM FILINGS <StatusBadge status="COMPUTED" title="Sum of the last 4 quarterly capital expenditures (cash-flow statements via Yahoo Finance)" />
+        HYPERSCALER CAPEX — TTM FROM FILINGS <HelpChip id="capex" /> <StatusBadge status="COMPUTED" title="Sum of the last 4 quarterly capital expenditures (cash-flow statements via Yahoo Finance)" />
         <span className="spacer" />
         {cut != null && <span className="down">CUT {pct(cut, 0)} = {usd(cut * total)}</span>}
       </div>
@@ -145,7 +146,7 @@ function OriginTable({ state, actions }: PanelProps) {
   return (
     <div className="panel">
       <div className="panel-header">
-        LAYER 1 — ORIGIN VALUATION WATERFALL (PRICE = P/E × EPS; MOVE = (1−e)(1−d) − 1)
+        LAYER 1 — ORIGIN VALUATION WATERFALL (PRICE = P/E × EPS; MOVE = (1−e)(1−d) − 1) <HelpChip id="pe" /> <HelpChip id="multiple_compression" />
         <span className="spacer" />
         <span className={signClass(totalUsd)}>Σ ΔMCAP {usd(totalUsd)}</span>
       </div>
@@ -220,7 +221,7 @@ export default function ShockPanel(props: PanelProps) {
     <div className="shock-panel">
       <div className="panel">
         <div className="panel-header">
-          F1 SHOCK — PRESET <span className="spacer" />
+          F1 SHOCK — PRESET <HelpChip id="scenario" /> <span className="spacer" />
           {result.lowConfidence && <span className="down">LOW CONFIDENCE</span>}
         </div>
         <div className="preset-row">
@@ -245,7 +246,7 @@ export default function ShockPanel(props: PanelProps) {
       <div className="grid-2 shock-grid">
         <div className="panel">
           <div className="panel-header">
-            PARAMETERS — LIVE <span className="spacer" />
+            PARAMETERS — LIVE <HelpChip id="user_assumption" /> <span className="spacer" />
             HORIZON
             {HORIZONS.map((h) => (
               <button key={h} className={`btn btn-xs ${params.horizon === h ? 'active' : ''}`} onClick={() => actions.setHorizon(h)}>
