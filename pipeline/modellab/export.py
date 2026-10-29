@@ -96,7 +96,7 @@ def event_rows(P: Panel, wf: WF, st: LabSettings, log) -> list[dict[str, Any]]:
 
 
 def build_events(P: Panel, wf: WF, st: LabSettings, evs: list[dict[str, Any]], b90: tuple[np.ndarray, np.ndarray]) -> list[dict[str, Any]]:
-    models = scenario_models(wf)
+    models = scenario_models(wf) + ["nowcast", "nowcast_pre"]  # nowcast columns: India-listed stocks only
     res = []
     for e in evs:
         t = e["t"]
@@ -116,7 +116,9 @@ def build_events(P: Panel, wf: WF, st: LabSettings, evs: list[dict[str, Any]], b
         metrics = {}
         for m in models:
             p = np.zeros(P.N) if m == "zero" else wf.preds[m][t]
-            metrics[m] = event_metrics(A[ok], p[ok], st.hit_threshold, st.event_min_stocks)
+            mk = ok & np.isfinite(p)
+            if mk.any():
+                metrics[m] = event_metrics(A[mk], p[mk], st.hit_threshold, st.event_min_stocks)
         res.append({"id": e["id"], "label": e["label"], "us_date": e["us_date"], "india_date": P.dates[t].strftime("%Y-%m-%d"),
                     "kind": e["kind"], "x_sox": float(P.nifty["SOX"][t]), "x_ndx": float(P.nifty["NDX"][t]),
                     "rows": rows, "metrics": metrics})

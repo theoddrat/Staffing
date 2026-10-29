@@ -20,6 +20,7 @@ from pipeline.modellab.walkforward import band_offsets, nowcast_blend, run_walkf
 ROOT = Path(__file__).resolve().parents[2]
 CACHE_DIR = ROOT / ".cache" / "modellab"
 CODE_DIR = Path(__file__).resolve().parent
+CACHE_KEEP = 4
 
 
 def fingerprint(P: Panel, st: LabSettings, cfg: dict[str, Any]) -> str:
@@ -80,6 +81,8 @@ def run(cfg: dict[str, Any], ctx: Any, est: Any, nm: dict[str, Any],
     diag["runtime_s"] = round(time.time() - t_start, 1)
     clean = sanitize({"sections": sections, "diag": diag})
     cache.write_text(json.dumps(clean, allow_nan=False, separators=(",", ":")))
+    for old in sorted(CACHE_DIR.glob("*.json"), key=lambda f: f.stat().st_mtime)[:-CACHE_KEEP]:
+        old.unlink(missing_ok=True)  # keep only the most recent results
     log(f"[modellab] done in {diag['runtime_s']}s (cached as {cache.name})")
     return clean["sections"], clean["diag"]
 
