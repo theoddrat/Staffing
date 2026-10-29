@@ -78,12 +78,10 @@ function indiaResult(prep: Prep, core: CoreOut, rp: ResolvedParams, rq: ReturnTy
   const L = m.parent + m.sentiment + m.fx_fpi + m.own;
   const mScale = Math.abs(L) > 1e-12 ? marketMove / L : 1;
   const mc = (x: number) => (mcap !== null ? x * mScale * mcap : 0);
-  const sox = t.bSOX * core.f.xSOX;
-  const ndx = t.bNDX * core.f.xNDX;
   const market = {
     parent: mc(m.parent),
-    sox: mc(sox),
-    ndx: mc(ndx),
+    sox: mc(m.sox),
+    ndx: mc(m.ndx),
     contagion: mc(m.contagion),
     fx_fpi: mc(m.fx_fpi),
     own: mc(m.own),
@@ -151,7 +149,8 @@ function indiaResult(prep: Prep, core: CoreOut, rp: ResolvedParams, rq: ReturnTy
     notes.push('market cap unavailable: INR-crore values not computed');
   }
 
-  if (!t.hasReg) notes.push('no Layer-2 regression in bundle: factor channels excluded from the market-implied move');
+  if (m.coef.note) notes.push(m.coef.note);
+  if (m.coef.model === 'ols' && !t.hasReg) notes.push('no Layer-2 regression in bundle: factor channels excluded from the market-implied move');
   if (m.parentPath === 'missing') notes.push(`parent ${t.parent}: no parent map or slope, parent channel = 0`);
   if (m.parentPath === 'slope') notes.push(`parent ${t.parent}: moved via the target-level co-movement slope on SOX`);
   if (fund.premFallback) notes.push(`AI premium unavailable: tier-${t.tier} median ${(fund.prem! * 100).toFixed(0)}% used (USER ASSUMPTION)`);
@@ -172,7 +171,7 @@ function indiaResult(prep: Prep, core: CoreOut, rp: ResolvedParams, rq: ReturnTy
     name: t.name,
     tier: t.tier,
     dominant_channel: dominant,
-    beta_total: isFiniteNum(t.target.beta_total) ? t.target.beta_total : null,
+    beta_total: isFiniteNum(m.coef.beta_total) ? m.coef.beta_total : null,
     beta_total_down: isFiniteNum(t.target.beta_total_down) ? t.target.beta_total_down : null,
     market_move: marketMove,
     market_contrib: { parent: fin(m.parent), sentiment: fin(m.sentiment), fx_fpi: fin(m.fx_fpi), own: fin(m.own) },
@@ -197,6 +196,8 @@ function indiaResult(prep: Prep, core: CoreOut, rp: ResolvedParams, rq: ReturnTy
     channel_inr_cr: Object.fromEntries(Object.entries(channel_inr_cr).map(([k, x]) => [k, fin(x)])) as Partial<Record<Channel, number>>,
     confidence: conf,
     notes: uniq(notes),
+    model_used: m.coef.model,
+    market_move_ols: fin(expm1Safe(m.logMoveOls)),
   };
   return { result, row: { idx: i, market, fundamental } };
 }
@@ -222,6 +223,16 @@ export function runScenario(bundle: DataBundle, params: ScenarioParams): Scenari
     india_mcap_change_inr_cr: fin(india.reduce((a, r) => a + (r.mcap_change_inr_cr ?? 0), 0)),
     origin_mcap_change_usd: fin(origins.reduce((a, r) => a + (r.mcap_change_usd ?? 0), 0)),
   };
+  if (prep.hasModels) {
+    const nEns = india.filter((r) => r.model_used === 'ensemble').length;
+    const sel = prep.nifty[rp.horizon];
+    const hs = uniq(prep.india.filter((t) => t.sel[rp.horizon].model === 'ensemble').map((t) => `h${t.sel[rp.horizon].h}`));
+    warnings.push(
+      `INFO: Layer 2 uses the walk-forward-validated ensemble for ${nEns} of ${india.length} stocks (${hs.join('/') || '—'} coefficients` +
+        `${rp.horizon === '12M' ? ' applied to the 12-month factor move, a documented assumption' : ''}; Nifty link ${sel.model === 'ensemble' ? `ensemble h${sel.h}` : '3y OLS'})` +
+        `${nEns < india.length ? `; ${india.length - nEns} fall back to the 3y OLS` : ''}`,
+    );
+  }
   if (rp.comp.multiple && core.basket.peNow !== null) {
     const how =
       rp.mode === 'calibrated' && core.basket.impliedDrawdown !== null

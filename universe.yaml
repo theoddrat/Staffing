@@ -48,6 +48,8 @@ markets:
   CH: {tz: Europe/Zurich, close: "17:30"}
   FR: {tz: Europe/Paris, close: "17:30"}
   FX: {tz: Europe/London, close: "22:00"}   # Yahoo FX daily bar; ordering only (after NSE close)
+  TW: {tz: Asia/Taipei, close: "13:30"}    # TWSE closes before NSE (same-day information)
+  KR: {tz: Asia/Seoul, close: "15:30"}     # KRX closes before NSE (same-day information)
 
 factors:
   - {id: SOX, ticker: "^SOX", name: "PHLX Semiconductor Index", market: US}
@@ -856,6 +858,68 @@ benchmarks:
   nifty: "^NSEI"
   nifty_it: "^CNXIT"
   adrs: [INFY, WIT]
+
+# -------------------------------------------------------------------------------------
+# V2 ACCURACY LAB (DESIGN.md §9). Auxiliary signals used only by the nowcast model and the
+# out-of-sample backtest; the scenario engine keeps using SOX / NDX / parent / Nifty.
+#   kind: return (log return) | change (first difference of the level, e.g. a yield)
+#   pre_open_lag: 1 -> the series closes during the Indian session, so a forecast made before the
+#                 NSE open can only use the previous session's value
+# -------------------------------------------------------------------------------------
+factors_aux:
+  - {id: INDA, ticker: INDA, name: "iShares MSCI India ETF (US-listed)", market: US, kind: return,
+     role: "A US-listed fund that holds large Indian companies. It trades while India is closed, so its move overnight shows how US investors re-priced Indian shares before the NSE opens."}
+  - {id: EPI, ticker: EPI, name: "WisdomTree India Earnings Fund (US-listed)", market: US, kind: return,
+     role: "Another US-listed basket of Indian shares; a second read on how US investors priced India overnight."}
+  - {id: SMIN, ticker: SMIN, name: "iShares MSCI India Small-Cap ETF (US-listed)", market: US, kind: return,
+     role: "A US-listed fund of smaller Indian companies, closer to the mid- and small-caps in Tiers C and D."}
+  - {id: IGV, ticker: IGV, name: "iShares Expanded Tech-Software Sector ETF", market: US, kind: return,
+     role: "US software stocks. When AI looks set to replace software and services work, these fall and Indian IT services often follow the next day."}
+  - {id: TWII, ticker: "^TWII", name: "Taiwan Weighted Index", market: TW, kind: return, pre_open_lag: 1,
+     role: "Taiwan's market, dominated by chipmaker TSMC. It closes during the Indian session, so a pre-open forecast can only use the previous day's value."}
+  - {id: KS11, ticker: "^KS11", name: "KOSPI (Korea)", market: KR, kind: return, pre_open_lag: 1,
+     role: "Korea's market, home of memory-chip makers Samsung and SK Hynix; also closes during the Indian session."}
+  - {id: TNX, ticker: "^TNX", name: "US 10-year Treasury yield", market: US, kind: change,
+     role: "The daily change in the US 10-year bond yield. Rising yields make global funds less keen on expensive growth shares and emerging markets."}
+  - {id: DXY, ticker: "DX-Y.NYB", name: "US Dollar Index", market: US, kind: return,
+     role: "The dollar against major currencies. A stronger dollar usually means money leaving emerging markets like India."}
+  - {id: USDINR, ticker: "USDINR=X", name: "US dollar / Indian rupee", market: FX, kind: return,
+     role: "The rupee exchange rate. A weaker rupee helps exporters' profits but signals foreign investors selling."}
+
+modellab:
+  enabled: true
+  oos_start: "2019-01-01"        # first out-of-sample (unseen) session considered
+  train_sessions: 756            # trailing training window (about 3 years of NSE sessions)
+  min_train_obs: 500             # a stock needs this many usable sessions before its first forecast
+  refit_every: 21                # re-estimate every model about once a month
+  ewma_half_life: 126            # recent-weighted model: weight halves every ~6 months
+  huber_c: 1.345                 # robust model tuning constant (95% efficiency under normal errors)
+  shrink_tau2_floor: 0.05        # minimum between-stock variance as a share of mean se^2
+  gbm_refit_every: 63            # machine-learning model is refitted quarterly (it is slower)
+  gbm: {max_iter: 300, learning_rate: 0.05, max_leaf_nodes: 15, min_samples_leaf: 200, l2_regularization: 1.0}
+  ridge_lambdas: [0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1.0]   # nowcast ridge penalties (standardised features)
+  ridge_val_sessions: 126        # last ~6 months of each training window pick the ridge penalty
+  stack_min_rows: 1500           # out-of-sample rows needed before stacking weights replace equal weights
+  band_min_obs: 126              # out-of-sample residuals needed for a stock's own prediction band
+  band_lookback: 504             # bands use at most the last ~2 years of out-of-sample residuals
+  hit_threshold: 0.005           # direction hit-rate only counts days the stock moved at least 0.5%
+  shock_quantile: 0.05           # "shock day" = US chips move in their trailing worst 5%
+  final_min_obs: 120             # short-history stocks get a final fit (no backtest) with at least this
+  horizons: [1, 5, 21]
+  horizon_min_blocks: {"5": 60, "21": 24}
+  worst_sox_since: "2023-01-01"
+  worst_sox_n: 10
+  events:
+    - {id: smci_10k, label: "Super Micro delays its annual report", us_date: "2024-08-28"}
+    - {id: smci_ey, label: "Super Micro's auditor EY resigns", us_date: "2024-10-30"}
+    - {id: deepseek, label: "DeepSeek shock", us_date: "2025-01-27"}
+    - {id: nvda_nov2025, label: "Nvidia beats, then reverses on AI-bubble fears", us_date: "2025-11-20"}
+    - {id: anthropic_feb2026, label: "Anthropic plugins hit US software stocks", us_date: "2026-02-03"}
+    - {id: openai_apr2026, label: "WSJ: OpenAI missed user and revenue goals", us_date: "2026-04-28"}
+    - {id: tomoro_may2026, label: "OpenAI buys consulting firm Tomoro", us_date: "2026-05-11"}
+    - {id: openai_oct2026, label: "FT: OpenAI revenue run-rate about $50bn", us_date: "2026-10-08"}
+    - {id: coreweave_oct2026, label: "CoreWeave bond scare", us_date: "2026-10-14"}
+    - {id: lam_oct2026, label: "Lam Research supply-chain warning", us_date: "2026-10-22"}
 
 # Ticker verification log seeds (the pipeline also verifies every ticker live).
 ticker_fixes:

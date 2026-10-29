@@ -10,7 +10,9 @@ export interface FactorCore {
   xAi: number;
   xSOX: number;
   xNDX: number;
-  xN: number;
+  xN: number; // Nifty log move (validated ensemble link when the bundle has one, else 3y OLS)
+  xNOls: number; // Nifty log move through the 3y OLS Nifty model
+  niftyModel: 'ensemble' | 'ols';
   f: number; // INR depreciation (+ = weaker INR), simple
   rTech: number; // mcap-weighted mean origin revenue hit
   cEffIndia: number; // capex-order cut feeding the India capex channel (before psi_india_dc)
@@ -60,7 +62,9 @@ export function factors(
     xSOX = prep.betaSoxChip * xChip;
     xNDX = prep.betaNdxAi * xAi;
   }
-  const xN = prep.cSOX * xSOX + prep.cNDX * xNDX;
+  const xNOls = prep.cSOX * xSOX + prep.cNDX * xNDX;
+  const ns = prep.nifty[rp.horizon];
+  const xN = ns.model === 'ensemble' ? ns.SOX * xSOX + ns.NDX * xNDX : xNOls;
   const f = rp.f_override !== null ? rp.f_override : Math.max(0, expm1Safe(prep.betaInr * xNDX));
 
   // revenue shock of US/global tech clients (mcap-weighted mean of origin revenue hits)
@@ -110,6 +114,8 @@ export function factors(
     xSOX,
     xNDX,
     xN,
+    xNOls,
+    niftyModel: ns.model,
     f,
     rTech,
     cEffIndia,

@@ -1,5 +1,6 @@
 // Engine-side helper types (additive; the contract types live in src/types/*.ts).
 import type { ParamSpec, Quantity, Status } from '../types/data';
+import type { MCResult } from '../types/engine';
 
 /** Effective value of a Quantity after user overrides. */
 export interface EffectiveQuantity {
@@ -66,3 +67,14 @@ export interface ResolvedParams {
   };
   warnings: string[];
 }
+
+/** V2 Monte Carlo result: also says which residuals were bootstrapped (DESIGN §9.4). */
+export interface MCResultV2 extends MCResult {
+  /** 'oos' = the validated ensemble's out-of-sample residuals; 'in_sample' = 3y OLS residuals. */
+  residual_source: 'oos' | 'in_sample';
+  residual_note: string;
+}
+
+/** V2 guided intensity levels (DESIGN §9.5): mild = low end of each MC range, severe = default, extreme = high end. */
+export type Intensity = 'mild' | 'severe' | 'extreme';
+export type IntensityValues = Record<Intensity, Record<string, number>>;

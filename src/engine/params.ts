@@ -149,9 +149,11 @@ export function resolveParams(prep: Prep, params: ScenarioParams): ResolvedParam
   }
 
   const pf = effective(qIdx.get('assump.premium_fallback'), overrides, 'assump.premium_fallback').value;
+  const horizon = params.horizon === '1D' || params.horizon === '1M' || params.horizon === '12M' ? params.horizon : '1M';
+  if (horizon !== params.horizon) warnings.push(`horizon '${String(params.horizon)}' unknown: 1M used`);
   return {
     preset: params.preset,
-    horizon: params.horizon,
+    horizon,
     premiumFallback: pf === null ? true : pf !== 0,
     v,
     mode,

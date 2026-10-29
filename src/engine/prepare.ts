@@ -1,5 +1,7 @@
 // Static, per-bundle structures (built once per DataBundle object and cached).
-import type { DataBundle, IndiaTarget, OriginInfo, Quantity, ReplayWindow, Security, Tier } from '../types/data';
+import type { DataBundle, IndiaTarget, OriginInfo, Quantity, ReplayWindow, Security, StockModels, Tier } from '../types/data';
+import type { Horizon } from '../types/engine';
+import { coefSelection, niftySelection, type CoefSel, type NiftySel } from './ensemble';
 import { isFiniteNum } from './util';
 
 export interface PrepOrigin {
@@ -35,12 +37,17 @@ export interface PrepIndia {
   target: IndiaTarget;
   sec: Security | undefined;
   hasReg: boolean;
+  /** 3y OLS coefficients (india[i].reg); 0 when missing. */
   bSOX: number;
   bNDX: number;
   bP: number;
   bN: number;
   r2: number | null;
   n: number;
+  /** V2: validated ensemble for this stock (bundle.models), if any. */
+  model: StockModels | null;
+  /** V2: Layer-2 coefficients used at each scenario horizon (ensemble, else the OLS above). */
+  sel: Record<Horizon, CoefSel>;
   parent: string | null;
   parentOriginIdx: number; // -1 when the parent is not an origin
   parentMap: { SOX: number; NDX: number } | null;
@@ -51,9 +58,25 @@ export interface PrepIndia {
   ebitMargin: number | null;
   premRaw: number | null; // security.ai_premium
   mcapInrCr: number | null;
-  /** Combined residual e_i + b_N·e_N per resid date (NaN where missing). */
+  /** Combined in-sample residual e_i + b_N·e_N per resid date (NaN where missing). */
   resid: Float64Array;
   nonNull: Int32Array;
+}
+
+/** One residual series on the Monte Carlo date axis (shared by every stock and the Nifty). */
+export interface McSeries {
+  resid: Float64Array; // per MC date, NaN where missing
+  pool: Float64Array; // the series' own non-null values, used to redraw missing cells
+  source: 'oos' | 'in_sample';
+}
+
+/** Residuals the Monte Carlo bootstraps (DESIGN §4.5, §9.4). */
+export interface McResid {
+  source: 'oos' | 'in_sample';
+  len: number; // MC date-axis length
+  nifty: McSeries;
+  india: McSeries[];
+  note: string;
 }
 
 export interface Prep {
@@ -65,20 +88,129 @@ export interface Prep {
   indiaIdx: Map<string, number>;
   betaSoxChip: number;
   betaNdxAi: number;
-  cSOX: number;
+  cSOX: number; // 3y OLS Nifty model
   cNDX: number;
+  /** V2: true when the bundle carries validated ensembles (bundle.models). */
+  hasModels: boolean;
+  /** V2: Nifty link per scenario horizon (backtest.nifty_horizons when models exist, else the OLS model). */
+  nifty: Record<Horizon, NiftySel>;
+  niftyOls: NiftySel;
   betaInr: number;
   capexTotalUsd: number | null;
   tierMedianPremium: Record<Tier, number | null>;
-  residLen: number;
+  residLen: number; // in-sample residual axis (resid_dates)
   niftyResid: Float64Array;
   niftyNonNull: Int32Array;
+  /** V2: what the Monte Carlo bootstraps (ensemble out-of-sample residuals when available). */
+  mc: McResid;
   windows: Map<string, ReplayWindow>;
   peerOrigins: Record<string, Record<string, number>>;
   staticWarnings: string[];
 }
 
 const cache = new WeakMap<DataBundle, Prep>();
+
+/** Fewer usable out-of-sample residuals than this → the stock keeps its in-sample residuals. */
+const MIN_OOS_RESID = 20;
+
+function toArr(xs: (number | null)[] | null | undefined, len: number): Float64Array {
+  const a = new Float64Array(len);
+  for (let t = 0; t < len; t++) {
+    const v = xs?.[t];
+    a[t] = isFiniteNum(v) ? v : NaN;
+  }
+  return a;
+}
+
+function nonNullOf(a: Float64Array): Int32Array {
+  const idx: number[] = [];
+  for (let t = 0; t < a.length; t++) if (!Number.isNaN(a[t])) idx.push(t);
+  return Int32Array.from(idx);
+}
+
+// Centre residual series on zero (standard residual-bootstrap practice; OLS residuals are already
+// ~mean-zero, this only removes the drift that missing cells can introduce; the scenario has no alpha).
+function demean(a: Float64Array): Float64Array {
+  let s = 0;
+  let n = 0;
+  for (let t = 0; t < a.length; t++) {
+    if (!Number.isNaN(a[t])) {
+      s += a[t];
+      n++;
+    }
+  }
+  if (n > 0) {
+    const m = s / n;
+    for (let t = 0; t < a.length; t++) if (!Number.isNaN(a[t])) a[t] -= m;
+  }
+  return a;
+}
+
+function valuesAt(a: Float64Array, idx: Int32Array): Float64Array {
+  const out = new Float64Array(idx.length);
+  for (let k = 0; k < idx.length; k++) out[k] = a[idx[k]];
+  return out;
+}
+
+/**
+ * Monte Carlo residuals. With validated ensembles (bundle.models + backtest.dates) the bootstrap
+ * runs on the OOS date axis: each stock's ensemble out-of-sample residuals (already the total
+ * scenario-mode error, so no b_N·e_N is added on top) and the Nifty model's OOS residuals. Stocks
+ * (or the Nifty) without usable OOS residuals keep their in-sample residuals, re-indexed onto that
+ * axis by date. Without ensembles: the in-sample scheme on resid_dates.
+ */
+function buildMcResid(bundle: DataBundle, india: PrepIndia[], niftyResid: Float64Array, niftyNonNull: Int32Array, warnings: string[]): McResid {
+  const residDates = bundle.resid_dates ?? [];
+  const inSample = (resid: Float64Array, nonNull: Int32Array): McSeries => ({ resid, pool: valuesAt(resid, nonNull), source: 'in_sample' });
+  const fallback = (why: string | null): McResid => ({
+    source: 'in_sample',
+    len: residDates.length,
+    nifty: inSample(niftyResid, niftyNonNull),
+    india: india.map((t) => inSample(t.resid, t.nonNull)),
+    note: residDates.length
+      ? `in-sample 3y OLS residuals, ${residDates.length} sessions ${residDates[0]} → ${residDates[residDates.length - 1]}${why ? ` (${why})` : ''}`
+      : 'no residuals in the bundle: Monte Carlo shows shock-size uncertainty only',
+  });
+  if (!bundle.models?.length) return fallback(null);
+  const dates = bundle.backtest?.dates ?? [];
+  const L = dates.length;
+  if (L === 0) {
+    warnings.push('bundle.models present but backtest.dates missing: Monte Carlo uses in-sample residuals');
+    return fallback('backtest.dates missing');
+  }
+  let lenMismatch = 0;
+  const oos = (xs: (number | null)[] | null | undefined): McSeries | null => {
+    if (!xs || xs.length === 0) return null;
+    if (xs.length !== L) lenMismatch++;
+    const a = demean(toArr(xs, L));
+    const nn = nonNullOf(a);
+    return nn.length >= MIN_OOS_RESID ? { resid: a, pool: valuesAt(a, nn), source: 'oos' } : null;
+  };
+  const series = india.map((t) => (t.model ? oos(t.model.oos_resid) : null));
+  const nOos = series.filter(Boolean).length;
+  if (nOos === 0) return fallback('no usable out-of-sample residuals in bundle.models');
+  // in-sample series re-indexed onto the OOS axis by date; missing cells are redrawn from the full series
+  const at = new Map(dates.map((d, k) => [d, k] as [string, number]));
+  const pos = residDates.map((d) => at.get(d) ?? -1);
+  const mapped = (resid: Float64Array, nonNull: Int32Array): McSeries => {
+    const a = new Float64Array(L).fill(NaN);
+    for (let t = 0; t < pos.length; t++) if (pos[t] >= 0) a[pos[t]] = resid[t];
+    return { resid: a, pool: valuesAt(resid, nonNull), source: 'in_sample' };
+  };
+  const indiaS = india.map((t, i) => series[i] ?? mapped(t.resid, t.nonNull));
+  const niftyOos = oos(bundle.backtest?.nifty_oos_resid);
+  if (lenMismatch) warnings.push(`${lenMismatch} out-of-sample residual series do not match backtest.dates in length (padded / truncated)`);
+  const nIn = india.length - nOos;
+  return {
+    source: 'oos',
+    len: L,
+    nifty: niftyOos ?? mapped(niftyResid, niftyNonNull),
+    india: indiaS,
+    note:
+      `ensemble out-of-sample residuals, ${L} sessions ${dates[0]} → ${dates[L - 1]} (${nOos} of ${india.length} stocks` +
+      `${nIn ? `; ${nIn} without usable OOS residuals keep in-sample OLS residuals` : ''}; Nifty ${niftyOos ? 'out-of-sample' : 'in-sample'})`,
+  };
+}
 
 function posOrNull(x: unknown): number | null {
   return isFiniteNum(x) && x > 0 ? x : null;
@@ -179,38 +311,22 @@ export function prepare(bundle: DataBundle): Prep {
 
   // ---- residuals
   const residLen = bundle.resid_dates?.length ?? 0;
-  const toArr = (xs: (number | null)[] | undefined): Float64Array => {
-    const a = new Float64Array(residLen);
-    for (let t = 0; t < residLen; t++) {
-      const v = xs?.[t];
-      a[t] = isFiniteNum(v) ? v : NaN;
-    }
-    return a;
-  };
-  const nonNullOf = (a: Float64Array): Int32Array => {
-    const idx: number[] = [];
-    for (let t = 0; t < a.length; t++) if (!Number.isNaN(a[t])) idx.push(t);
-    return Int32Array.from(idx);
-  };
-  // Centre residual series on zero (standard residual-bootstrap practice; OLS residuals are already
-  // ~mean-zero, this only removes the drift that missing cells can introduce).
-  const demean = (a: Float64Array): Float64Array => {
-    let s = 0;
-    let n = 0;
-    for (let t = 0; t < a.length; t++) {
-      if (!Number.isNaN(a[t])) {
-        s += a[t];
-        n++;
-      }
-    }
-    if (n > 0) {
-      const m = s / n;
-      for (let t = 0; t < a.length; t++) if (!Number.isNaN(a[t])) a[t] -= m;
-    }
-    return a;
-  };
-  const niftyResid = demean(toArr(bundle.nifty_resid));
+  const niftyResid = demean(toArr(bundle.nifty_resid, residLen));
   const niftyNonNull = nonNullOf(niftyResid);
+
+  // ---- V2: validated ensembles + Nifty link per horizon
+  const modelBy = new Map((bundle.models ?? []).filter((m) => m && m.ticker).map((m) => [m.ticker, m] as [string, StockModels]));
+  const hasModels = (bundle.india ?? []).some((t) => modelBy.has(t.ticker));
+  const niftyOls: NiftySel = {
+    model: 'ols',
+    h: null,
+    SOX: cSOX,
+    NDX: cNDX,
+    r2: isFiniteNum(bundle.nifty_model?.r2) ? bundle.nifty_model.r2 : null,
+    n: isFiniteNum(bundle.nifty_model?.n) ? bundle.nifty_model.n : 0,
+  };
+  const nifty = niftySelection(bundle.backtest, niftyOls, hasModels);
+  if (hasModels && !bundle.backtest?.nifty_horizons?.length) warnings.push('backtest.nifty_horizons missing: ensemble stocks use the 3y OLS Nifty model');
 
   // ---- India targets
   const parentMaps = bundle.parent_maps ?? {};
@@ -219,7 +335,8 @@ export function prepare(bundle: DataBundle): Prep {
     const coef = t.reg?.coef ?? {};
     const b = (k: string) => (isFiniteNum(coef[k]?.b) ? coef[k].b : 0);
     const bN = b('NIFTY');
-    const own = toArr(t.resid);
+    const model = modelBy.get(t.ticker) ?? null;
+    const own = toArr(t.resid, residLen);
     const comb = new Float64Array(residLen);
     for (let i = 0; i < residLen; i++) {
       const e = own[i];
@@ -248,6 +365,8 @@ export function prepare(bundle: DataBundle): Prep {
       bN,
       r2: isFiniteNum(t.reg?.r2) ? (t.reg!.r2 as number) : null,
       n: isFiniteNum(t.reg?.n) ? (t.reg!.n as number) : 0,
+      model,
+      sel: coefSelection(t, { SOX: b('SOX'), NDX: b('NDX'), PARENT: b('PARENT'), NIFTY: bN }, model, hasModels, nifty),
       parent: t.parent ?? null,
       parentOriginIdx: t.parent ? originIdx.get(t.parent) ?? -1 : -1,
       parentMap: pm && isFiniteNum(pm.SOX) && isFiniteNum(pm.NDX) ? { SOX: pm.SOX, NDX: pm.NDX } : null,
@@ -264,6 +383,9 @@ export function prepare(bundle: DataBundle): Prep {
   });
   const indiaIdx = new Map(india.map((t) => [t.ticker, t.idx] as [string, number]));
   if (residLen === 0) warnings.push('resid_dates empty: Monte Carlo has no residual noise');
+  const unmatched = [...modelBy.keys()].filter((k) => !indiaIdx.has(k));
+  if (unmatched.length) warnings.push(`bundle.models has ${unmatched.length} ticker(s) not in bundle.india (ignored): ${unmatched.slice(0, 5).join(', ')}`);
+  const mc = buildMcResid(bundle, india, niftyResid, niftyNonNull, warnings);
 
   // ---- capex total
   const capexVals = origins.filter((o) => o.group === 'hyperscalers' && o.capexUsd !== null).map((o) => o.capexUsd as number);
@@ -294,12 +416,16 @@ export function prepare(bundle: DataBundle): Prep {
     betaNdxAi,
     cSOX,
     cNDX,
+    hasModels,
+    nifty,
+    niftyOls,
     betaInr,
     capexTotalUsd,
     tierMedianPremium,
     residLen,
     niftyResid,
     niftyNonNull,
+    mc,
     windows,
     peerOrigins: bundle.peer_beta?.origins ?? {},
     staticWarnings: warnings,

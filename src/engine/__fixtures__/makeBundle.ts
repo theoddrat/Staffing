@@ -1,8 +1,11 @@
 // SYNTHETIC DataBundle for engine unit tests ONLY. Every number here is made up for testing the
 // math; nothing in this file is market data, and the UI must never import it.
 import type {
+  Backtest,
   DataBundle,
+  HorizonCoefs,
   IndiaTarget,
+  OosStats,
   OriginInfo,
   ParamSpec,
   Preset,
@@ -10,6 +13,7 @@ import type {
   RegressionResult,
   Security,
   Status,
+  StockModels,
   Tier,
 } from '../../types/data';
 import { Rng } from '../rng';
@@ -246,6 +250,117 @@ export interface FixtureOpts {
   aiBasket?: { now: number; pre: number };
   /** history.pe_fit (drawdown = intercept + slope·P/E); default intercept 0.1, slope −0.01. */
   peFit?: { slope: number; intercept: number; n?: number };
+  /** V2: add synthetic validated ensembles (bundle.models + bundle.backtest). */
+  models?: boolean | FixtureModelOpts;
+}
+
+export interface FixtureModelOpts {
+  /** Tickers that get an ensemble (default: every target except KAYNES.NS, which exercises the OLS fallback). */
+  tickers?: string[];
+  /** OOS date-axis length; its last residDays dates coincide with resid_dates (default residDays + 120). */
+  oosDays?: number;
+  /** Standard deviation of the synthetic OOS residuals (default 0.02, wider than the in-sample 0.012). */
+  oosSd?: number;
+  /** Leave out backtest.nifty_oos_resid (exercises the Nifty in-sample fallback). */
+  noNiftyOos?: boolean;
+}
+
+/** Synthetic ensemble coefficient multipliers vs the fixture OLS, per horizon (distinct so tests can tell them apart). */
+export const FIXTURE_ENS_MULT: Record<1 | 5 | 21, { SOX: number; NDX: number; PARENT: number; NIFTY: number }> = {
+  1: { SOX: 0.8, NDX: 0.8, PARENT: 0.9, NIFTY: 0.95 },
+  5: { SOX: 1, NDX: 1, PARENT: 1, NIFTY: 1 },
+  21: { SOX: 1.25, NDX: 1.2, PARENT: 1.1, NIFTY: 1.05 },
+};
+/** Synthetic backtest.nifty_horizons. */
+export const FIXTURE_NIFTY_H: Backtest['nifty_horizons'] = [
+  { h: 1, SOX: 0.08, NDX: 0.12, r2: 0.08, n: 900 },
+  { h: 5, SOX: 0.1, NDX: 0.15, r2: 0.1, n: 180 },
+  { h: 21, SOX: 0.14, NDX: 0.2, r2: 0.12, n: 42 },
+];
+
+function oosStats(r2: number, n: number): OosStats {
+  return { rmse: 0.02, mae: 0.015, r2, hit: 0.55 + r2 / 4, n };
+}
+
+/** Synthetic bundle.models + bundle.backtest for the given India specs (made-up numbers, tests only). */
+function syntheticModels(specs: IndiaSpec[], residDates: string[], o: FixtureModelOpts, seed: number): { models: StockModels[]; backtest: Backtest } {
+  const rng = new Rng(seed);
+  const R = residDates.length;
+  const L = Math.max(o.oosDays ?? R + 120, 1);
+  const dates = Array.from({ length: L }, (_, k) => {
+    const d = new Date(Date.UTC(2023, 9, 30) + (k - (L - R)) * 86400000 * 1.4);
+    return d.toISOString().slice(0, 10);
+  });
+  const sd = o.oosSd ?? 0.02;
+  const common = Array.from({ length: L }, () => normal(rng));
+  const tickers = new Set(o.tickers ?? specs.filter((t) => t.ticker !== 'KAYNES.NS').map((t) => t.ticker));
+  const models: StockModels[] = specs
+    .filter((t) => tickers.has(t.ticker))
+    .map((t, i) => {
+      const hz = ([1, 5, 21] as const).map((h): HorizonCoefs => {
+        const m = FIXTURE_ENS_MULT[h];
+        return {
+          h,
+          SOX: (t.coef.SOX ?? 0) * m.SOX,
+          NDX: (t.coef.NDX ?? 0) * m.NDX,
+          PARENT: t.parent ? (t.coef.PARENT ?? 0) * m.PARENT : null,
+          NIFTY: (t.coef.NIFTY ?? 0) * m.NIFTY,
+          // INFY leaves beta_total to the engine (DESIGN §3.3 formula)
+          beta_total: t.ticker === 'INFY.NS' ? null : (t.coef.SOX ?? 0) * m.SOX + 0.5,
+          r2_oos: h === 1 ? 0.8 * t.r2 : h === 5 ? 0.6 * t.r2 : 0.5 * t.r2,
+          n_oos: h === 1 ? 800 : h === 5 ? 160 : 38,
+        };
+      });
+      const lead = t.ticker === 'NETWEB.NS' ? 60 : 0;
+      const load = t.load;
+      const oos_resid = Array.from({ length: L }, (_, k) =>
+        k < lead || k % 37 === 5 ? null : 0.004 + sd * (load * common[k] + Math.sqrt(Math.max(0, 1 - load * load)) * normal(rng)),
+      );
+      const comp = { SOX: t.coef.SOX ?? 0, NDX: t.coef.NDX ?? 0, PARENT: t.parent ? t.coef.PARENT ?? 0 : null, NIFTY: t.coef.NIFTY ?? 0 };
+      return {
+        ticker: t.ticker,
+        horizons: hz,
+        components: { ols: { ...comp, weight: 0.4 }, shrink: { ...comp, weight: 0.6 } },
+        oos: { zero: oosStats(0, 800), ols: oosStats(0.6 * t.r2, 800), ensemble: oosStats(0.8 * t.r2, 800) },
+        oos_shock: { zero: oosStats(0, 40), ols: oosStats(0.5 * t.r2, 40), ensemble: oosStats(0.7 * t.r2, 40) },
+        oos_nowcast: null,
+        oos_resid,
+        coverage90: 0.86 + 0.01 * (i % 4),
+      };
+    });
+  const backtest: Backtest = {
+    method: 'synthetic walk-forward (fixture)',
+    start: dates[0],
+    end: dates[L - 1],
+    refit_every: 21,
+    train_years: 3,
+    dates,
+    models: [
+      { id: 'zero', label: 'No change', description: 'synthetic', family: 'baseline', mode: 'scenario', scenario_usable: false, features: [] },
+      { id: 'ols', label: '3-year regression', description: 'synthetic', family: 'linear', mode: 'scenario', scenario_usable: true, features: ['SOX', 'NDX', 'PARENT', 'NIFTY'] },
+      { id: 'ensemble', label: 'Ensemble', description: 'synthetic', family: 'stack', mode: 'scenario', scenario_usable: true, features: ['SOX', 'NDX', 'PARENT', 'NIFTY'] },
+    ],
+    ensemble: { method: 'synthetic', weights: { ols: 0.4, shrink: 0.6 } },
+    summary: [
+      { mode: 'scenario', subset: 'all', model: 'zero', rmse: 0.022, mae: 0.016, r2: 0, hit: null, corr_xs: null, n: 5600 },
+      { mode: 'scenario', subset: 'all', model: 'ols', rmse: 0.02, mae: 0.015, r2: 0.15, hit: 0.6, corr_xs: 0.4, n: 5600 },
+      { mode: 'scenario', subset: 'all', model: 'ensemble', rmse: 0.019, mae: 0.014, r2: 0.2, hit: 0.62, corr_xs: 0.45, n: 5600 },
+      { mode: 'scenario', subset: 'shock', model: 'ensemble', rmse: 0.03, mae: 0.022, r2: 0.3, hit: 0.7, corr_xs: 0.5, n: 280 },
+    ],
+    calibration: [
+      { nominal: 0.5, coverage: 0.49, n: 5600 },
+      { nominal: 0.8, coverage: 0.78, n: 5600 },
+      { nominal: 0.9, coverage: 0.88, n: 5600 },
+    ],
+    events: [],
+    horizon_check: [
+      { h: 1, model: 'ensemble', r2: 0.2, n: 5600 },
+      { h: 21, model: 'ensemble', r2: 0.12, n: 260 },
+    ],
+    nifty_horizons: FIXTURE_NIFTY_H,
+  };
+  if (!o.noNiftyOos) backtest.nifty_oos_resid = Array.from({ length: L }, (_, k) => (k % 41 === 7 ? null : 0.01 * normal(rng)));
+  return { models, backtest };
 }
 
 export function makeBundle(opts: FixtureOpts = {}): DataBundle {
@@ -435,5 +550,11 @@ export function makeBundle(opts: FixtureOpts = {}): DataBundle {
       deepseek_next_day: [],
     },
   };
+  if (opts.models) {
+    const mo = opts.models === true ? {} : opts.models;
+    const { models, backtest } = syntheticModels(indiaSpecs, resid_dates, mo, (opts.seed ?? 7) + 101);
+    bundle.models = models;
+    bundle.backtest = backtest;
+  }
   return bundle;
 }

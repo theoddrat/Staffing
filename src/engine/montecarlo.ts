@@ -8,7 +8,7 @@ import { clampValues, resolveParams, resolveQuantities } from './params';
 import { prepare } from './prepare';
 import { paramSpecs } from './presets';
 import { Rng } from './rng';
-import type { ResolvedParams } from './types-extra';
+import type { MCResultV2, ResolvedParams } from './types-extra';
 import { expm1Safe, isFiniteNum, percentiles } from './util';
 
 export const DEFAULT_MC_RUNS = 5000;
@@ -62,7 +62,7 @@ export function runMonteCarlo(
   bundle: DataBundle,
   params: ScenarioParams,
   opts: { runs?: number; seed?: number; fanTicker?: string } = {},
-): MCResult {
+): MCResultV2 {
   const runs = Math.max(1, Math.floor(opts.runs ?? DEFAULT_MC_RUNS));
   const seed = (opts.seed ?? DEFAULT_MC_SEED) >>> 0;
   const prep = prepare(bundle);
@@ -73,7 +73,9 @@ export function runMonteCarlo(
   const rng = new Rng(seed);
 
   const nI = prep.india.length;
-  const R = prep.residLen;
+  // residual date axis: the ensemble's OOS dates when the bundle has validated models, else resid_dates
+  const res0 = prep.mc;
+  const R = res0.len;
   const B = h >= 5 ? 5 : 1;
   const idx = new Int32Array(h);
   const mkt = Array.from({ length: nI }, () => new Float64Array(runs));
@@ -96,8 +98,8 @@ export function runMonteCarlo(
     cpPos[d] = k;
   });
 
-  const niftyRes = prep.niftyResid;
-  const niftyNN = prep.niftyNonNull;
+  const niftyRes = res0.nifty.resid;
+  const niftyPool = res0.nifty.pool;
 
   for (let r = 0; r < runs; r++) {
     const rp = specs.length ? sample(rp0, specs, rng) : rp0;
@@ -113,27 +115,29 @@ export function runMonteCarlo(
       }
     }
 
+    // missing cells (short histories, dates outside a series) are redrawn from the series' own values;
+    // OOS residuals are the total scenario-mode error, so nothing (no b_N·e_N) is added on top
     let sN = 0;
-    if (R > 0 && niftyNN.length > 0) {
+    if (R > 0 && niftyPool.length > 0) {
       for (let t = 0; t < h; t++) {
         let x = niftyRes[idx[t]];
-        if (x !== x) x = niftyRes[niftyNN[rng.int(niftyNN.length)]];
+        if (x !== x) x = niftyPool[rng.int(niftyPool.length)];
         sN += x;
       }
     }
 
     for (let i = 0; i < nI; i++) {
-      const t = prep.india[i];
-      const res = t.resid;
-      const nn = t.nonNull;
+      const ser = res0.india[i];
+      const res = ser.resid;
+      const pool = ser.pool;
       const det = core.india[i].m.logMove;
       let s = 0;
-      if (R > 0 && nn.length > 0) {
+      if (R > 0 && pool.length > 0) {
         if (i === fanIdx) {
           fanVals[0][r] = 0;
           for (let d = 0; d < h; d++) {
             let x = res[idx[d]];
-            if (x !== x) x = res[nn[rng.int(nn.length)]];
+            if (x !== x) x = pool[rng.int(pool.length)];
             s += x;
             const k = cpPos[d + 1];
             if (k >= 0) fanVals[k][r] = expm1Safe(((d + 1) / h) * det + s);
@@ -141,7 +145,7 @@ export function runMonteCarlo(
         } else {
           for (let d = 0; d < h; d++) {
             let x = res[idx[d]];
-            if (x !== x) x = res[nn[rng.int(nn.length)]];
+            if (x !== x) x = pool[rng.int(pool.length)];
             s += x;
           }
         }
@@ -192,6 +196,8 @@ export function runMonteCarlo(
     perStock,
     factors: { SOX: pct(sox), NDX: pct(ndx), NIFTY: pct(nifty) },
     fan,
+    residual_source: res0.source,
+    residual_note: res0.note,
   };
 }
 
