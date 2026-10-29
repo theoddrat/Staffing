@@ -25,23 +25,29 @@ python build_data.py && npm run dev
 ```
 
 `build_data.py` downloads market data with yfinance (cached under `.cache/`), runs every
-regression / valuation / history computation and writes `public/data.json`. `npm run dev` serves
-the app at http://127.0.0.1:5173. A snapshot `public/data.json` is committed, so `npm run dev`
-alone also works.
+regression / valuation / history computation, validates the result against
+`src/types/data.ts` and writes `public/data.json` (~2.4 MB). `npm run dev` serves the app at
+http://127.0.0.1:5173. A snapshot `public/data.json` is committed, so `npm run dev` alone also works.
+
+The first build fetches fundamentals for ~65 tickers (a few minutes; Yahoo rate-limits politely);
+later builds reuse the cache and take ~10–15 s. Flags: `--refresh` (re-download prices),
+`--offline` (cache only), `--skip-fund`, `--only-prices`.
 
 Other entry points:
 
 ```bash
-npm run report        # prints the 10 most exposed Indian names under "Full bubble pop"
+npm run report        # 10 most exposed Indian names under "Full bubble pop" (+ biggest market-vs-fundamental gaps)
 ```
 
 ```bash
-python -m pytest -q   # alignment (US t-1 lag), regressions, valuation math, history
+python -m pytest -q   # 49 tests: alignment (US t-1 lag, holidays, Tokyo same-day), regressions, valuation math, history
 ```
 
 ```bash
-npm test              # engine math, Monte Carlo, command parser
+npm test              # 98 tests: engine math, all presets, Monte Carlo, Sankey mass balance, command parser, panel helpers
 ```
+
+`npm run report -- --horizon 1M` and `--set key=value` (e.g. `--set mode=median`) override preset parameters.
 
 ## Everything is driven by `universe.yaml`
 
@@ -97,6 +103,26 @@ Full specification: [`docs/DESIGN.md`](docs/DESIGN.md).
 Monte Carlo: 5,000 runs sampling shock sizes (triangular/uniform) and jointly bootstrapping
 historical regression residuals (no normal distributions), giving 5th/50th/95th percentiles and fan charts.
 
+## What the committed snapshot shows (data as of 28-Oct-2026 — hypothetical, re-run to refresh)
+
+* **AI multiples are not the stretched part.** The AI basket trades at ~25.7x trailing earnings,
+  *below* its pre-ChatGPT median (~32x): the rally has been earnings-led, so "revert to the
+  pre-ChatGPT median" implies no de-rating. The shock-4 `calibrated` mode instead scales the
+  peak-to-trough drawdown implied by the historical P/E-vs-drawdown fit (F4); Full bubble pop uses it.
+* **Full bubble pop, 12M (defaults):** SOX −44%, Nasdaq-100 −28%, implied Nifty −4%; hyperscaler
+  capex cut ≈ $203B. Most exposed on the market channel: SIFY, Netweb, Hitachi Energy India,
+  GE Vernova T&D India, E2E, HFCL, Anant Raj, STL, CG Power, OFSS — Tier C capex-chain and Tier A
+  parent-linked names, not the IT majors.
+* **Indian IT is wired the other way.** Lagged SOX betas are negative for all 12 Tier B names
+  (10 significant): over 2023–26 AI-chip rallies coincided with AI-disruption selling of IT
+  services. Their total AI beta is close to zero (−0.01 to +0.12; positive Nasdaq-100 loadings
+  offset the negative SOX ones), and where they do fall it is through Nasdaq-linked sentiment and
+  FPI flows — the
+  biggest "market move exceeds fundamental damage" gaps are Mphasis, LTM, Wipro, LTTS, Coforge.
+* **Trust contagion is historically small:** Satyam (Jan-2009) moved Indian IT peers by ~0 on
+  balance (Infosys/TCS/Wipro rose, HCL/TechM fell); Super Micro's auditor exit moved AI-hardware
+  peers ~5% of its own move. These calibrate the restatement shock.
+
 ## Repository layout
 
 ```
@@ -116,4 +142,11 @@ docs/                           design spec and research notes
 * Exposure shares are point-in-time disclosures; many links (e.g. hyperscaler share of a
   supplier's data-centre revenue) are not disclosed and are labelled USER ASSUMPTION.
 * The AI-credit shock is deliberately marked low-confidence.
+* Daily R² of Indian stocks on lagged US factors is low (≈0.04–0.24), so Monte Carlo bands —
+  which bootstrap 252 days of residuals for the 12M horizon — are wide; the base case is the
+  median, not a point forecast.
+* Pre-ChatGPT P/E (and so the AI premium) is unavailable for names listed after 2022 or with
+  negative/missing EPS history; those use a tier median, labelled USER ASSUMPTION.
+* Some company sites and NSE archives block automated access; affected figures use secondary
+  coverage and are labelled SECONDARY/UNVERIFIED (see `docs/research_addenda.md`).
 * Market data comes from Yahoo Finance via yfinance and inherits its gaps and revisions.

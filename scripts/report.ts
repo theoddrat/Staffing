@@ -68,7 +68,7 @@ const ALIGN: ('l' | 'r')[] = ['r', 'l', 'l', 'l', 'r', 'r', 'r', 'r', 'r', 'r', 
 function summary(r: ScenarioResult, mc: MCResult | null, label: string): string {
   const f = r.factors;
   const lines = [
-    `${label}: SOX ${sp(f.SOX)}  NDX ${sp(f.NDX)}  NIFTY ${sp(f.NIFTY)}  INR depreciation ${sp(f.inr_depr)}  US tech revenue shock ${sp(f.tech_revenue_shock)}`,
+    `${label}: SOX ${sp(f.SOX)}  NDX ${sp(f.NDX)}  NIFTY ${sp(f.NIFTY)}  INR depreciation ${sp(f.inr_depr)}  US tech revenue ${sp(-f.tech_revenue_shock)}`,
   ];
   if (f.capex_cut_usd !== null) lines.push(`  hyperscaler capex cut ≈ $${(f.capex_cut_usd / 1e9).toFixed(0)}B (TTM basis); supplier revenue absorbed ${f.capex_absorbed_share === null ? '—' : `${(f.capex_absorbed_share * 100).toFixed(0)}%`}`);
   if (mc) lines.push(`  MC (${mc.runs} runs, seed ${mc.seed}, ${mc.days}d): NIFTY p5/p50/p95 ${sp(mc.factors.NIFTY.p5)} / ${sp(mc.factors.NIFTY.p50)} / ${sp(mc.factors.NIFTY.p95)}`);

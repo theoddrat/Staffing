@@ -74,6 +74,7 @@ export interface TickerLogEntry {
   resolved: string | null;
   action: 'ok' | 'fixed' | 'dropped' | 'warning';
   note: string;
+  src?: string[]; // OPTIONAL: sources for the fix (e.g. NSE symbol-change circular)
 }
 
 export interface Security {
@@ -109,6 +110,8 @@ export interface Security {
   notes: string[];
   /** OPTIONAL (added by UI-A): weekly split-adjusted closes since 2021-01-01 for the SEC-page price chart. */
   price_history?: { dates: string[]; close: number[] } | null;
+  /** OPTIONAL: research-context notes (capex guidance, contracts...) with provenance; not used by the math. */
+  context?: { text: string; status: Status; src: string[] }[] | null;
 }
 
 export interface OriginInfo {
@@ -171,6 +174,8 @@ export interface IndiaTarget {
   resid: (number | null)[]; // aligned to bundle.resid_dates
   short_history: boolean; // < 3y of data in the window
   notes: string[];
+  adr_reg?: RegressionResult | null; // OPTIONAL: same model on the US ADR (cross-check; factors same-day)
+  reg_parent_secondary?: RegressionResult | null; // OPTIONAL: main model with the secondary parent (e.g. ENRIN on SIE.DE)
 }
 
 export interface HeatCell {
@@ -188,6 +193,7 @@ export interface FxEpisode {
   ndx: number | null; // log move
   sox: number | null;
   nifty: number | null;
+  src?: string[]; // OPTIONAL: sources for the episode definition
 }
 
 export interface ParamSpec {
@@ -325,7 +331,7 @@ export interface DataBundle {
     data_sources: { name: string; url: string; note: string }[];
     ticker_log: TickerLogEntry[];
     warnings: string[];
-    alignment: { rule: string; us_holiday_zero_days: number; india_holiday_accumulations: number };
+    alignment: { rule: string; us_holiday_zero_days: number; india_holiday_accumulations: number; src?: string[] };
   };
   settings: Record<string, number | string | boolean>;
   sources: Source[];

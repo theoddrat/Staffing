@@ -237,7 +237,7 @@ def build(skip_fund: bool = False, only_prices: bool = False, out: Path = OUT, l
     ticker_log: list[dict[str, Any]] = []
     for fx_ in cfg.get("ticker_fixes", []) or []:
         ticker_log.append({"requested": fx_["requested"], "resolved": fx_.get("resolved"), "action": fx_.get("action", "fixed"),
-                           "note": fx_.get("note", "")})
+                           "note": fx_.get("note", ""), "src": list(fx_.get("src", []) or [])})
     for t in requested:
         df = ctx.prices(t)
         if df is None or df.empty:
@@ -412,6 +412,7 @@ def build(skip_fund: bool = False, only_prices: bool = False, out: Path = OUT, l
     def _note(t: str, text: str, ids: list[str]) -> None:
         if t in securities:
             securities[t]["notes"].append(f"{text} [{_st(ids)}: {', '.join(ids)}]")
+            securities[t].setdefault("context", []).append({"text": text, "status": _st(ids), "src": ids})
 
     for t, d in (rc.get("na_revenue_share") or {}).items():
         if isinstance(d, dict) and d.get("value") is not None:
@@ -700,7 +701,8 @@ def build(skip_fund: bool = False, only_prices: bool = False, out: Path = OUT, l
             "ticker_log": ticker_log, "warnings": warnings,
             "alignment": {
                 "rule": "Information-set rule: a foreign return enters India day t if its close falls in (NSE close of the previous India day, NSE close of t]; "
-                        "US/Europe closes therefore enter with a 1-day lag, Tokyo same-day; foreign holidays give 0, India holidays accumulate.",
+                        "US/Europe closes therefore enter with a 1-day lag, Tokyo (TSE close 15:30 JST since 5-Nov-2024, 15:00 before; src: jpx_trading_hours) same-day; foreign holidays give 0, India holidays accumulate.",
+                "src": list((cfg["markets"].get("JP") or {}).get("src", []) or []),
                 "us_holiday_zero_days": int(est.diag.get("zero_days", 0)),
                 "india_holiday_accumulations": int(est.diag.get("accumulated_days", 0)),
             },

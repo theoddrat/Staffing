@@ -390,6 +390,7 @@ india:
       label: "Promoter (Hitachi Energy Ltd, Zurich) holding"
       parts:
         - {label: "Hitachi Energy Ltd holding (71.31%, Mar-2026; CRISIL 19-Jun-2026: 71.3%)", value: 0.7131, status: SOURCED, src: [powerindia_crisil]}
+        - {label: "Hitachi Ltd ownership of Hitachi Energy Ltd (100% since 28-Dec-2022) -> look-through stake", value: 1.0, status: SOURCED, src: [abb_hitachi_energy_2022]}
     exposures:
       - channel: capex
         driver: "transformers / HVDC / grid orders incl. data centres"
@@ -551,7 +552,7 @@ india:
           parts:
             - {label: "Technology & Services Rs 2,236.1 cr / revenue Rs 11,807.6 cr, Q2 FY27", value: 0.18938, status: SOURCED, src: [ltm_angelone_q2fy27, ltm_multibagg_q2fy27], note: "secondary; two outlets agree (19.0%)"}
     fx_margin_sens_bps: *tierb_fx
-    notes: ["NSE symbol changed LTIM -> LTM w.e.f. 27-Feb-2026; name LTM Ltd w.e.f. 17-Apr-2026."]
+    notes: ["NSE symbol changed LTIM -> LTM w.e.f. 27-Feb-2026; name LTM Ltd w.e.f. 17-Apr-2026 [SOURCED: ltim_rename]."]
 
   - ticker: PERSISTENT.NS
     display: PERSISTENT
@@ -1135,13 +1136,6 @@ sources:
     quote: "Customer One ... 28.10% [FY2026] ... 20.90% [FY2025] ... 20.00% [FY2024]; United States geographic concentration (% of net sales) 70.90%; Net sales 39,063,072 ($ thousands)"
     verification: PRIMARY
     note: "duplicated from research/addenda.yaml so universe.yaml resolves without the overlay"
-  - id: smci_secapi_fy26
-    title: "Financial analysis of Super Micro Computer fiscal 2026"
-    publisher: sec-api.io
-    url: https://sec-api.io/insights/financial-analysis-of-super-micro-computer-fiscal-2026
-    date: "2026"
-    quote: "One large data center and cloud service provider customer accounted for 28% of fiscal 2026 revenue"
-    verification: UNVERIFIED
   - id: crwv_10k_2025
     title: "CoreWeave Form 10-K for the year ended 31-Dec-2025"
     publisher: CoreWeave / SEC EDGAR

@@ -89,6 +89,8 @@ def apply_overlay(cfg: dict[str, Any], ov: dict[str, Any]) -> list[str]:
             log.append(f"overlay: added source {s['id']}")
         cfg.setdefault("sources", []).append(s)
     specs = quantity_specs(cfg)
+    url_of = {x["id"]: x.get("url") for x in cfg.get("sources", [])}
+    superseded: set[str] = set()
     for qid, spec in (ov.get("quantities", {}) or {}).items():
         if qid in specs:
             holder, field = specs[qid]
@@ -96,6 +98,23 @@ def apply_overlay(cfg: dict[str, Any], ov: dict[str, Any]) -> list[str]:
             new = copy.deepcopy(spec)
             if isinstance(old, dict) and "label" in old and "label" not in new:
                 new["label"] = old["label"]
+            # Keep the provenance of the replaced definition: a source on the same URL is superseded by
+            # the overlay's; a different source whose value agrees within 10% is kept as corroboration.
+            if isinstance(old, dict):
+                old_src = _spec_src(old)
+                new_src = _spec_src(new)
+                new_urls = {url_of.get(x) for x in new_src}
+                q_old = build_quantity("old", old)
+                q_new = build_quantity("new", new)
+                for sid in old_src:
+                    if sid in new_src:
+                        continue
+                    if url_of.get(sid) and url_of.get(sid) in new_urls:
+                        superseded.add(sid)
+                    elif (q_old and q_new and q_old["value"] and q_new["value"]
+                          and abs(q_old["value"] / q_new["value"] - 1) <= 0.10 and new.get("parts")):
+                        new["parts"][0].setdefault("src", []).append(sid)
+                        log.append(f"overlay: {qid} keeps {sid} as corroborating source")
             holder[field] = new
             log.append(f"overlay: quantity {qid} replaced")
         else:
@@ -112,6 +131,13 @@ def apply_overlay(cfg: dict[str, Any], ov: dict[str, Any]) -> list[str]:
                     log.append(f"overlay: unknown quantity id {qid} (ignored)")
             else:
                 log.append(f"overlay: unknown quantity id {qid} (ignored)")
+    if superseded:
+        cited = set()
+        _collect_src({k: v for k, v in cfg.items() if k not in ("sources", "history")}, cited)
+        drop = superseded - cited
+        if drop:
+            cfg["sources"] = [x for x in cfg["sources"] if x["id"] not in drop]
+            log.append("overlay: superseded duplicate sources removed: " + ", ".join(sorted(drop)))
     if ov.get("context"):
         cfg["research_context"] = ov["context"]
         log.append("overlay: context block loaded (" + ", ".join(sorted(ov["context"].keys())) + ")")
@@ -119,6 +145,30 @@ def apply_overlay(cfg: dict[str, Any], ov: dict[str, Any]) -> list[str]:
         cfg.setdefault("history", {}).setdefault("history_notes", {}).update(ov["history_notes"])
         log.append("overlay: history_notes merged")
     return log
+
+
+def _spec_src(spec: dict[str, Any]) -> list[str]:
+    out: list[str] = []
+    for p in spec.get("parts", []) or []:
+        for x in p.get("src", []) or []:
+            if x not in out:
+                out.append(x)
+    for x in spec.get("src", []) or []:
+        if x not in out:
+            out.append(x)
+    return out
+
+
+def _collect_src(obj: Any, acc: set[str]) -> None:
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            if k == "src" and isinstance(v, list):
+                acc.update(v)
+            else:
+                _collect_src(v, acc)
+    elif isinstance(obj, list):
+        for v in obj:
+            _collect_src(v, acc)
 
 
 def validate_config(cfg: dict[str, Any]) -> None:

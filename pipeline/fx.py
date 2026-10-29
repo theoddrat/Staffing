@@ -53,6 +53,7 @@ def fx_calibration(est: Any, closes: dict[str, pd.Series | None], episodes_cfg: 
             "ndx": window_move(closes.get("^NDX"), e["start"], e["end"]),
             "sox": window_move(closes.get("^SOX"), e["start"], e["end"]),
             "nifty": window_move(closes.get("^NSEI"), e["start"], e["end"]),
+            "src": list(e.get("src", []) or []),
         })
     out["episodes"] = eps
     risk_off = [x["inr_depr"] for x in eps if x["inr_depr"] is not None and x["ndx"] is not None and x["ndx"] < 0]

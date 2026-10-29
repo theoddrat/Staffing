@@ -31,9 +31,10 @@ const CHANNEL_LABEL: Record<string, string> = {
 
 class Builder {
   nodes = new Map<string, SankeyNode>();
-  // key "src|chan" -> signed and abs sums
+  // key "src|chan" -> signed sum of everything that source contributes to the channel
   inflow = new Map<string, { abs: number; signed: number }>();
-  outflow: SankeyLink[] = [];
+  // key "chan|target" -> signed sum (several channel parts, e.g. SOX and NDX, net into one link)
+  outflow = new Map<string, number>();
 
   node(id: string, label: string, kind: SankeyNode['kind']) {
     if (!this.nodes.has(id)) this.nodes.set(id, { id, label, kind });
@@ -45,7 +46,8 @@ class Builder {
     const chanId = `c:${channel}`;
     this.node(chanId, CHANNEL_LABEL[channel] ?? channel, 'channel');
     this.node(targetId, targetLabel, 'target');
-    this.outflow.push({ source: chanId, target: targetId, value: Math.abs(value), sign: value < 0 ? -1 : 1 });
+    const okey = `${chanId}|${targetId}`;
+    this.outflow.set(okey, (this.outflow.get(okey) ?? 0) + value);
     const tot = sources.reduce((a, s) => a + Math.abs(s.w), 0);
     const list = tot > 0 ? sources : [{ id: 'm:us_ai', label: 'US AI factor', kind: 'macro' as const, w: 1 }];
     const denom = tot > 0 ? tot : 1;
@@ -62,16 +64,19 @@ class Builder {
   }
 
   build(): SankeyGraph {
-    // merge sources that contribute < 2% of a channel's inflow into "Other origins"
+    // Links carry NET signed amounts: a source whose contributions differ in sign across stocks
+    // (e.g. chips lifting Indian IT through a negative b_SOX while hurting everyone else) shows its
+    // net effect, so for every channel the signed inflow equals the signed outflow (= Σ stock channel values).
+    // Merge sources that contribute < 2% of a channel's (net) inflow into "Other origins".
     const chanTotals = new Map<string, number>();
     for (const [key, f] of this.inflow) {
       const chan = key.split('|')[1];
-      chanTotals.set(chan, (chanTotals.get(chan) ?? 0) + f.abs);
+      chanTotals.set(chan, (chanTotals.get(chan) ?? 0) + Math.abs(f.signed));
     }
     const merged = new Map<string, { abs: number; signed: number }>();
     for (const [key, f] of this.inflow) {
       const [src, chan] = key.split('|');
-      const small = f.abs < 0.02 * (chanTotals.get(chan) ?? 0);
+      const small = Math.abs(f.signed) < 0.02 * (chanTotals.get(chan) ?? 0);
       const k = small ? `m:other|${chan}` : key;
       const cur = merged.get(k) ?? { abs: 0, signed: 0 };
       cur.abs += f.abs;
@@ -83,14 +88,17 @@ class Builder {
     for (const [key, f] of merged) {
       const [src, chan] = key.split('|');
       if (src === 'm:other') this.node('m:other', 'Other origins', 'macro');
-      links.push({ source: src, target: chan, value: f.abs, sign: f.signed < 0 ? -1 : 1 });
+      if (Math.abs(f.signed) <= 1e-9) continue;
+      links.push({ source: src, target: chan, value: Math.abs(f.signed), sign: f.signed < 0 ? -1 : 1 });
       used.add(src);
       used.add(chan);
     }
-    for (const l of this.outflow) {
-      links.push(l);
-      used.add(l.source);
-      used.add(l.target);
+    for (const [key, v] of this.outflow) {
+      if (Math.abs(v) <= 1e-9) continue;
+      const [chan, target] = key.split('|');
+      links.push({ source: chan, target, value: Math.abs(v), sign: v < 0 ? -1 : 1 });
+      used.add(chan);
+      used.add(target);
     }
     const nodes = Array.from(this.nodes.values()).filter((n) => used.has(n.id));
     return { nodes, links: links.filter((l) => l.value > 1e-9) };
