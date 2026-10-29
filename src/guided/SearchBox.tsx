@@ -26,6 +26,7 @@ export default function SearchBox({ bundle, result, onPick }: { bundle: DataBund
 
   return (
     <div className="g-search">
+      <Icon name="search" size={16} className="g-search-icon" />
       <input
         ref={input}
         type="search"

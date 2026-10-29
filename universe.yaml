@@ -921,7 +921,6 @@ modellab:
   horizon_long_years: 10         # "long window" candidate for multi-session horizons (vs the 3-year window)
   horizon_stack_min_blocks: {"5": 3000, "21": 750}  # ~2 years of pooled out-of-sample blocks before stacking weights are used
   nifty_horizon_min_blocks: {"5": 96, "21": 24}     # ~2 years of Nifty blocks
-  settle_minutes: 20             # a session counts as closed this long after its official close
   worst_sox_since: "2023-01-01"
   worst_sox_n: 10
   events:

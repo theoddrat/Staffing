@@ -2588,3 +2588,43 @@
     white-space: normal;
   }
 }
+
+/* ---------- integration polish (orchestrator) ---------- */
+.g-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--g-faint);
+  pointer-events: none;
+}
+.g-search .g-search-input {
+  padding-left: 36px;
+}
+.g-phone-only {
+  display: none;
+}
+.g-biz-toggle {
+  margin-left: auto;
+}
+@media (max-width: 640px) {
+  .g-phone-only {
+    display: inline-flex;
+  }
+  /* filter chips scroll sideways in their own strip instead of wrapping into four rows */
+  .g-filters {
+    min-width: 0;
+  }
+  .g-filters .g-pills.is-row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    min-width: 0;
+    max-width: 100%;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+  }
+  .g-filters .g-pills.is-row .g-pill {
+    flex: 0 0 auto;
+  }
+}

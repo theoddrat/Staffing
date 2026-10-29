@@ -8,7 +8,6 @@ from pathlib import Path
 from typing import Any, Callable
 
 import numpy as np
-import pandas as pd
 
 from pipeline.export import sanitize
 from pipeline.modellab import export as ex
@@ -16,7 +15,7 @@ from pipeline.modellab.metrics import coverage, oos_stats
 from pipeline.modellab.panel import Panel, build_panel
 from pipeline.modellab.settings import LabSettings, as_dict, from_config
 from pipeline.modellab.specs import MODEL_SPECS
-from pipeline.modellab.walkforward import LINEAR, WF, band_offsets, nowcast_blend, run_walkforward, stack
+from pipeline.modellab.walkforward import band_offsets, nowcast_blend, run_walkforward, stack
 
 ROOT = Path(__file__).resolve().parents[2]
 CACHE_DIR = ROOT / ".cache" / "modellab"
@@ -63,11 +62,11 @@ def method_text(st: LabSettings) -> str:
     )
 
 
-def run(cfg: dict[str, Any], ctx: Any, est: Any, nm: dict[str, Any], now_utc: pd.Timestamp,
+def run(cfg: dict[str, Any], ctx: Any, est: Any, nm: dict[str, Any],
         log: Callable[[str], None] = print, use_cache: bool = True) -> tuple[dict[str, Any], dict[str, Any]]:
     t_start = time.time()
     st = from_config(cfg)
-    P = build_panel(cfg, ctx, est, nm, now_utc, st.settle_minutes, log)
+    P = build_panel(cfg, ctx, est, nm, log)
     log(f"[modellab] panel {P.n_data} sessions x {P.N} targets ({P.dates[0].date()}..{P.dates[P.n_data - 1].date()}"
         f"{', +1 future session ' + str(P.dates[-1].date()) if P.future else ''}); aux: {', '.join(P.aux_ids)}")
     fp = fingerprint(P, st, cfg)
@@ -160,7 +159,8 @@ def compute(cfg: dict[str, Any], ctx: Any, P: Panel, st: LabSettings, log: Calla
     }
     sections = {"factors_aux": ex.factors_aux_section(cfg, ctx, P, st), "models": models, "backtest": backtest,
                 "nowcast": ex.nowcast_section(P, wf, st)}
-    diag = {"timing": {k: round(v, 1) for k, v in tt.items()}, "aux": P.info["aux"], "same_day_markets": P.info["same_day_markets"],
+    diag = {"timing": {k: round(v, 1) for k, v in tt.items()}, "aux": P.info.get("aux", []),
+            "same_day_markets": P.info.get("same_day_markets", []),
             "future": P.future, "n_refits": len(wf.refits) - 1,
             "nowcast_blend": {v: wf.weights[f"{v}_blend"]["final"] for v in ("nowcast", "nowcast_pre")}, "lambda": {k: [ex._num(x) for x in v] for k, v in wf.lam.items()},
             "weights_hist": [{"refit": P.dates[min(R, P.T - 1)].strftime("%Y-%m-%d"), "ALL": [round(float(x), 4) for x in h["ALL"]],

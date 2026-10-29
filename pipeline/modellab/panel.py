@@ -80,8 +80,7 @@ def same_day_markets(markets: dict[str, Any], ref_date: pd.Timestamp) -> set[str
     return {m for m, spec in markets.items() if close_timestamps([ref_date], spec)[0] < in_c}
 
 
-def build_panel(cfg: dict[str, Any], ctx: Any, est: Any, nm: dict[str, Any], now_utc: pd.Timestamp,
-                settle_minutes: int, log: Callable[[str], None] = print) -> Panel:
+def build_panel(cfg: dict[str, Any], ctx: Any, est: Any, nm: dict[str, Any], log: Callable[[str], None] = print) -> Panel:
     markets = cfg["markets"]
     IN = markets["IN"]
     start = est.hist_start - pd.Timedelta(days=400)
@@ -219,9 +218,11 @@ def build_panel(cfg: dict[str, Any], ctx: Any, est: Any, nm: dict[str, Any], now
     same_day_feats = {aid for aid, (_, mk) in aux_series.items() if mk in sd_mk}
     ready = True
     if future:
-        used = {mk for _, mk in aux_series.values() if mk in sd_mk} | {ctx.market_of(p) for p in parents if p and ctx.market_of(p) in sd_mk}
-        settle = pd.Timedelta(minutes=settle_minutes)
-        ready = all(close_timestamps([D[-1]], markets[mk])[0] + settle <= now_utc for mk in used)
+        # same-day (Asian) signals count only if their close for that session is actually in the data: in-progress
+        # bars were already dropped by the price layer, and a missing bar must not be read as "no move"
+        srcs = [s for s, mk in aux_series.values() if mk in sd_mk]
+        srcs += [ctx.logret(p) for p in dict.fromkeys(parents) if p and ctx.market_of(p) in sd_mk]
+        ready = all(s is not None and D[-1] in s.index for s in srcs)
     return Panel(dates=D, n_data=n_data, tickers=tickers, display=display, tiers=np.array(tiers), markets=mkts,
                  parents=parents, adrs=adrs, Y=Y, F=F, nifty=nifty, aux_ids=list(aux_series),
                  same_day_feats=same_day_feats, parent_same_day=psd, in_close=in_close, us_dates=us_dates,

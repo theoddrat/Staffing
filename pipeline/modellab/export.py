@@ -174,7 +174,7 @@ def scenario_map(ctx: Any, cfg: dict[str, Any], series: pd.Series, mk: str, year
 
 
 def factors_aux_section(cfg: dict[str, Any], ctx: Any, P: Panel, st: LabSettings) -> list[dict[str, Any]]:
-    ok = {a["id"] for a in P.info["aux"] if a["ok"]}
+    ok = {a["id"] for a in P.info.get("aux", []) if a["ok"]}
     out = []
     for a in cfg.get("factors_aux", []) or []:
         if a["id"] not in ok:
@@ -272,9 +272,13 @@ def models_section(P: Panel, wf: WF, st: LabSettings, ms: np.ndarray, mn: np.nda
 
 def nowcast_section(P: Panel, wf: WF, st: LabSettings) -> dict[str, Any] | None:
     nd, T = P.n_data, P.T
-    us_last = P.us_dates[-1]
-    t = P.india_row_of_us(us_last)
-    if t is None:
+    if P.future:  # the first NSE session missing from the data, fed by the US session(s) that closed before it
+        t = T - 1
+        us_last = P.last_us_date_of_row(t)
+    else:  # every NSE session is in: the latest US close feeds the newest one (its actual is known)
+        us_last = P.us_dates[-1]
+        t = P.india_row_of_us(us_last)
+    if t is None or us_last is None:
         return None
     variant = "nowcast" if (t < nd or P.future_same_day_ready) else "nowcast_pre"
     pr = wf.preds[variant]
@@ -298,11 +302,15 @@ def nowcast_section(P: Panel, wf: WF, st: LabSettings) -> dict[str, Any] | None:
                  "hi90": _num(npred[t] + hi) if np.isfinite(hi) else None}
         if t < nd:
             nifty["actual"] = _num(P.nifty["y"][t])
-    asia = " and that day's Taiwan, Korea and Japan closes" if variant == "nowcast" else ""
+    asia = " and that day's Taiwan, Korea and Japan closes" if variant == "nowcast" else " (Asian closes for that session not available, so only before-the-open clues)"
     note = (f"Model check, not a trading signal: predicted out of sample from the {us_last.strftime('%d %b %Y')} US close{asia} "
             f"with the '{SPEC_BY_ID[variant]['label']}' model. Most of this move happens at the NSE open, so it could not have "
             f"been traded at the previous close. Log returns; US-listed targets are excluded.")
     if t >= nd:
-        note += " The session has not traded yet (assumed to be the next weekday)."
+        later = P.us_dates[P.us_dates > us_last]
+        note += (" No NSE close for this session was available from Yahoo Finance at build time (assumed to be the next weekday), "
+                 "so there is no actual yet.")
+        if len(later):
+            note += f" The later US session ({later[-1].strftime('%d %b %Y')}) feeds the session after it."
     return {"us_date": us_last.strftime("%Y-%m-%d"), "for_india_date": P.dates[t].strftime("%Y-%m-%d"), "note": note,
             "rows": rows, "nifty": nifty}

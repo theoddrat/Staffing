@@ -1,7 +1,7 @@
 // A company's story: the headline, the likely move with its range, why (market channels), what the
 // business numbers say, the gap between the two, how sure we are (with past shock days), key facts
 // with provenance, and its price since 2021 with the ChatGPT launch marked.
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import type { DataBundle, IndiaTarget, Security } from '../../types/data';
 import type { IndiaResult, ScenarioResult } from '../../types/engine';
 import { isNum } from '../../lib/format';
@@ -507,6 +507,14 @@ export default function StockView({ state, actions }: GuidedProps) {
   const t = bundle.india.find((x) => x.ticker === ticker) ?? null;
   const exp = useMemo(() => (r ? getExplanation(bundle, result, r.ticker) : null), [bundle, result, r]);
   const order = useMemo(() => sortCompanies(result.india, 'fall').map((x) => x.ticker), [result]);
+  // On phones the business-damage section starts collapsed (the page is long); always open on wider screens.
+  const [bizOpen, setBizOpen] = useState<boolean>(() => {
+    try {
+      return !window.matchMedia('(max-width: 640px)').matches;
+    } catch {
+      return true;
+    }
+  });
 
   if (!r || !t)
     return (
@@ -601,7 +609,17 @@ export default function StockView({ state, actions }: GuidedProps) {
           <section className="g-card" aria-labelledby="biz">
             <h2 id="biz" className="g-h2">
               <Icon name="factory" size={20} /> What hurts the business <HelpChip id="fundamental" />
+              <button
+                type="button"
+                className="g-pill is-small g-phone-only g-biz-toggle"
+                aria-expanded={bizOpen}
+                aria-controls="biz-body"
+                onClick={() => setBizOpen((o) => !o)}
+              >
+                {bizOpen ? 'Hide' : 'Show'}
+              </button>
             </h2>
+            <div id="biz-body" hidden={!bizOpen}>
             {bParts.length ? (
               <>
                 <p className="g-muted">
@@ -625,6 +643,7 @@ export default function StockView({ state, actions }: GuidedProps) {
             ) : (
               <p className="g-muted">The business numbers barely change in this scenario.</p>
             )}
+            </div>
           </section>
 
           <PriceVsBusiness r={r} />

@@ -136,7 +136,7 @@ function CompanyCard({
           </span>
         )}
       </p>
-      <MoveBar move={r.market_move} range={range} domain={domain} stale={stale} />
+      <MoveBar move={r.market_move} range={range} domain={domain} stale={stale} scale="sqrt" />
       <p className="g-co-range">
         {range ? (
           <>
@@ -239,10 +239,13 @@ export default function ImpactView({ state, actions, openCustomize }: GuidedProp
   if (fresh) held.current = new Map(result.india.filter((r) => r.range).map((r) => [r.ticker, { p5: r.range!.p5, p95: r.range!.p95 }]));
   const rangeOf = (r: IndiaResult): Range | null => (r.range ? { p5: r.range.p5, p95: r.range.p95 } : held.current.get(r.ticker) ?? null);
 
+  // One scale for every card. It includes the 9-in-10 ranges (which at 1-year horizons are far wider than
+  // the likely moves) and is drawn compressed (signed square root) so both stay visible.
   const domain = useMemo<[number, number]>(() => {
     const ms = result.india.map((r) => r.market_move).filter(isNum);
-    const lo = Math.min(-0.02, ...ms) * 1.25;
-    const hi = Math.max(0.02, Math.max(...ms, 0) * 1.25);
+    const rs = result.india.flatMap((r) => (r.range ? [r.range.p5, r.range.p95] : [])).filter(isNum);
+    const lo = Math.max(-1, Math.min(-0.02, ...ms, ...rs) * 1.08);
+    const hi = Math.max(0.02, ...ms, ...rs, 0) * 1.08;
     return [lo, hi];
   }, [result]);
 
@@ -380,6 +383,7 @@ export default function ImpactView({ state, actions, openCustomize }: GuidedProp
           <span>
             <span className="g-leg-whisker" /> <Term id="range">range</Term> of 9 in 10 outcomes
           </span>
+          <span className="g-muted">scale squeezed toward the ends so wide ranges fit</span>
           <span>
             <Icon name="pulse" size={14} /> biggest <Term id="channel">reasons</Term>
           </span>

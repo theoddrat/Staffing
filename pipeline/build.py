@@ -738,7 +738,7 @@ def build(skip_fund: bool = False, only_prices: bool = False, out: Path = OUT, l
         try:
             from pipeline.modellab.runner import run as run_modellab
 
-            lab, _lab_diag = run_modellab(cfg, ctx, est, nm, now, log=log)
+            lab, _lab_diag = run_modellab(cfg, ctx, est, nm, log=log)
             for k in ("factors_aux", "models", "backtest", "nowcast"):
                 if k in lab:
                     bundle[k] = lab[k]

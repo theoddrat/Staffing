@@ -38,7 +38,6 @@ class LabSettings:
     horizon_long_years: int
     horizon_stack_min_blocks: dict[int, int]
     nifty_horizon_min_blocks: dict[int, int]
-    settle_minutes: int
     worst_sox_since: str
     worst_sox_n: int
     events: tuple[dict[str, Any], ...] = field(default_factory=tuple)
@@ -82,7 +81,6 @@ def from_config(cfg: dict[str, Any]) -> LabSettings:
         horizon_long_years=int(m["horizon_long_years"]),
         horizon_stack_min_blocks={int(k): int(v) for k, v in m["horizon_stack_min_blocks"].items()},
         nifty_horizon_min_blocks={int(k): int(v) for k, v in m["nifty_horizon_min_blocks"].items()},
-        settle_minutes=int(m["settle_minutes"]),
         worst_sox_since=str(m["worst_sox_since"]),
         worst_sox_n=int(m["worst_sox_n"]),
         events=tuple(dict(e) for e in m.get("events", []) or []),

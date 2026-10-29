@@ -13,7 +13,6 @@ from dataclasses import dataclass, field
 from typing import Any, Callable
 
 import numpy as np
-import pandas as pd
 
 from pipeline.modellab import fit
 from pipeline.modellab.panel import Panel, ns

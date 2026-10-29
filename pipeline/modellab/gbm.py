@@ -77,13 +77,15 @@ def run_gbm(P: Panel, wf: WF, st: LabSettings, log: Callable[[str], None] = prin
             ok = np.isfinite(yt) & np.all(np.isfinite(Xt[:, need]), axis=1) & stock_ok
             if ok.sum() < st.min_train_obs * 4:
                 continue
-            g = HistGradientBoostingRegressor(categorical_features=cat, random_state=0, early_stopping=False, **st.gbm)
-            g.fit(Xt[ok], yt[ok])
+            Xo = Xt[ok]
+            keep = np.array([np.unique(Xo[np.isfinite(Xo[:, j]), j]).size >= 2 for j in range(len(names))])  # drop constant columns
+            g = HistGradientBoostingRegressor(categorical_features=cat[keep], random_state=0, early_stopping=False, **st.gbm)
+            g.fit(Xo[:, keep], yt[ok])
             Xb = Xc[a:b]
             fit_mask = wf.fitted[wf.block_of[a:b]] & (is_in[None, :] if nowcast else True)  # same availability as the zoo
             okb = np.all(np.isfinite(Xb[:, :, need]), axis=-1) & fit_mask
             if okb.any():
                 rows, cols = np.nonzero(okb)
-                pr[a + rows, cols] = g.predict(Xb[rows, cols])
+                pr[a + rows, cols] = g.predict(Xb[rows, cols][:, keep])
         wf.preds[model_id] = pr
         log(f"[modellab] {model_id}: {len(starts)} pooled fits in {time.time() - t0:.1f}s")

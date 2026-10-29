@@ -85,6 +85,7 @@ export function MoveBar({
   stale,
   big,
   label,
+  scale = 'linear',
 }: {
   move: number;
   range?: Range | null;
@@ -92,10 +93,14 @@ export function MoveBar({
   stale?: boolean;
   big?: boolean;
   label?: string;
+  /** 'sqrt' compresses large values (signed square root) so a wide range and a small move both stay visible. */
+  scale?: 'linear' | 'sqrt';
 }) {
   const [lo, hi] = domain;
-  const span = hi - lo || 1;
-  const pos = (x: number) => ((clamp(x, lo, hi) - lo) / span) * 100;
+  const tf = scale === 'sqrt' ? (x: number) => Math.sign(x) * Math.sqrt(Math.abs(x)) : (x: number) => x;
+  const tlo = tf(lo);
+  const span = tf(hi) - tlo || 1;
+  const pos = (x: number) => ((tf(clamp(x, lo, hi)) - tlo) / span) * 100;
   const z = pos(0);
   const m = pos(move);
   const r = range && isNum(range.p5) && isNum(range.p95) ? range : null;
