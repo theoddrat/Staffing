@@ -42,6 +42,7 @@ content/
 
    ```bash
    backend/.venv/bin/python scripts/yaml_safe.py content/lessons/*/*.yaml content/dictionary/*.yaml
+   backend/.venv/bin/python backend/scripts/export_content.py   # refresh the standalone build's copy of the course
    cd backend && .venv/bin/python -m pytest tests/test_content.py
    cd frontend && npm test        # renders every formula with KaTeX in strict mode
    ```

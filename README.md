@@ -24,6 +24,13 @@ understanding. No term is used before it has been explained, and every term open
 | Persistent learning history: every event, attempt, answer and mistake stored in SQLite; export, import and reset | Working |
 | "I don't understand" in every lesson, which switches to a different teaching strategy | Working (two or more written alternatives per lesson, then the AI if it is configured) |
 
+There are two ways to run it, with the same lessons and screens:
+
+- **On claude.ai, with nothing to install** (the standalone build). The whole app is one HTML page published as
+  a claude.ai Artifact. Progress is saved privately to your Claude account, and the AI tutor runs on your own
+  Claude account, asking your permission the first time. See [Standalone build](#standalone-build-one-page-on-claudeai).
+- **As a local web app** with a Python server and a Next.js frontend (below).
+
 Lessons from Level 2 onward are **mapped but not written yet**. The app says so plainly when you open one.
 [docs/ROADMAP.md](docs/ROADMAP.md) lists what comes next.
 
@@ -63,13 +70,34 @@ is configured. Without a key the whole course still works. Explanations are self
 ideas, and "I don't understand" uses the written alternatives. `MATH_AI_PROVIDER=none` switches AI off
 explicitly. The other settings (model, effort, database URL) are in [backend/.env.example](backend/.env.example).
 
+## Standalone build (one page on claude.ai)
+
+`frontend/src/local/` re-implements the backend in TypeScript: grading, mastery, recommendations, the practice
+generators, the calculator and every API route. `src/lib/api.ts` sends its requests there instead of over the
+network when the page runs standalone. The course itself comes from `frontend/standalone/content.json`, which is
+exported from `content/`:
+
+```bash
+backend/.venv/bin/python backend/scripts/export_content.py   # after any change to content/ or the tutor prompts
+cd frontend && npm run build:standalone                       # -> frontend/standalone/dist/index.html (about 1.8 MB)
+npx playwright test -c standalone/playwright.config.ts        # the page in a browser, with and without a fake claude.ai runtime
+```
+
+Publish `dist/index.html` as an Artifact with the capabilities `db` and `user` (saving progress), `sample` (the AI
+tutor) and `downloads` (backups). Opened anywhere else, the page still works, but saves progress in that browser
+only and has no tutor.
+
 ## Tests
 
 ```bash
 cd backend && .venv/bin/python -m pytest       # content integrity, grading, mastery, API, AI pipeline, calculator
 cd frontend && npm run typecheck && npm run lint && npm test   # types, lint, unit tests (incl. every formula renders in KaTeX)
 cd frontend && npm run e2e                      # Playwright: real backend + browser, full lesson loop
+cd frontend && npx playwright test -c standalone/playwright.config.ts   # the standalone page (build it first)
 ```
+
+`npm test` also runs the standalone ports' tests. Several of them compare against tables recorded from the Python
+backend, so the two versions cannot quietly drift apart.
 
 The content tests matter as much as the code tests. They check, for example, that Levels 0 and 1 are complete,
 that the prerequisite graph has no cycles and reaches both goals, that every word a lesson introduces has a
@@ -90,6 +118,8 @@ frontend/src/
   components/         lesson player, assessment, dictionary drawer, tutor chat, ...
   widgets/            the interactive visuals used in lessons and the playground
   lib/                API client and generated types, rich-text renderer, number utilities
+  local/              the backend re-implemented in TypeScript for the standalone build
+frontend/standalone/  single-page build: entry point, in-page router, Next.js shims, content.json, browser tests
 scripts/yaml_safe.py  keeps hand-written YAML safe to parse
 docs/                 architecture, content guide, roadmap
 ```

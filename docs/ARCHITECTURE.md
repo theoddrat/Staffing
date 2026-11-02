@@ -134,3 +134,37 @@ available (and, if not, why).
   explanation of what the learner is seeing. A test checks that the list matches `content/widgets.yaml`.
 - Pages: home, learn (curriculum + lesson), map, dictionary, playground, practice, tutor, progress, research,
   settings.
+
+## Standalone build (the app as one page on claude.ai)
+
+The same frontend can run with no server at all, as a single HTML page published as a claude.ai Artifact.
+
+```
+React pages ──api.ts──▶ src/local/server.ts (in the page) ──▶ learner record ──▶ artifact db (your account)
+                                  │                                          └─▶ localStorage (fallback)
+                                  ├──▶ content.json (exported from content/, inlined)
+                                  └──▶ src/local/ai.ts ──▶ artifact `sample` (Claude, on your account)
+```
+
+- **The backend, ported.** `frontend/src/local/` mirrors the Python modules one to one: `content.ts` (bundle
+  helpers), `grading.ts`, `mastery.ts`, `recommend.ts`, `practice.ts` (the 27 generators), `calculator.ts`,
+  `store.ts` (the SQL tables as JSON rows), `service.ts` and `server.ts` (all 35 routes, with the same JSON, status
+  codes and error text as FastAPI). Exact arithmetic uses `fraction.ts` (BigInt rationals) and `rng.ts` (a seedable
+  Python-like Random).
+- **Kept in step with Python.** The ports were checked against the real backend. The grading tests embed
+  hundreds of recorded Python results (`parse_number`, `normalise_text`, `grade`). The server was compared on a
+  759-request replay against FastAPI, with identical status codes and keys. A backend test fails if
+  `frontend/standalone/content.json` no longer matches `content/`.
+- **Where progress is saved** (`persistence.ts`). Inside claude.ai the record lives in the viewer's private
+  collection `data/users/<id>` of the artifact's `db`: one document per table, large tables split into
+  content-named chunks plus a manifest, so an interrupted save never corrupts the previous record. Saves are
+  debounced and only changed documents are written. If the account cannot be used, it falls back to
+  localStorage, and if that is blocked too, to memory, saying so in the sidebar.
+- **The tutor** (`ai.ts`) uses the artifact `sample` capability: Claude on the viewer's own account, after a
+  one-time permission prompt. It sends the same teaching or research prompt and the same context as
+  `backend/app/ai/tutor.py`, asks for the same JSON shapes, checks them, and offers the calculator as a page tool.
+  No API key is involved.
+- **The build** (`frontend/standalone/build.mjs`) compiles Tailwind, embeds KaTeX's CSS and fonts, bundles the pages
+  with esbuild (shimming `next/link` and `next/navigation` with an in-page router that keeps the route in the
+  URL hash, e.g. `#v-learn--l1-fractions`), and inlines everything into `dist/index.html`. The artifact platform
+  wraps that page in `<html>`/`<body>` itself.

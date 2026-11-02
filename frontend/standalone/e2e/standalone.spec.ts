@@ -93,7 +93,8 @@ test.describe("opened outside claude.ai (no window.claude)", () => {
     await expect(page.getByRole("heading", { name: "Why did humans invent mathematics?" })).toBeVisible();
 
     await page.getByRole("link", { name: "Settings", exact: true }).click();
-    await expect(page.getByText(/saved in this browser only/)).toBeVisible();
+    // The settings page says where progress is kept (the sidebar repeats it in its status line).
+    await expect(page.getByRole("main").getByText(/saved in this browser only/)).toBeVisible();
     await expect(page.getByText("switched off", { exact: true })).toBeVisible();
     expect(errors).toEqual([]);
   });
@@ -175,7 +176,7 @@ test.describe("inside claude.ai (fake window.claude)", () => {
 
     // ...and comes back from the account after a reload.
     await page.reload();
-    await page.getByRole("button", { name: "What is a pattern?" }).click();
+    await page.getByRole("button", { name: "What is a pattern?", exact: true }).click();
     await expect(page.getByText(REPLY.reply)).toBeVisible();
     expect((await persistenceStatus(page))?.mode).toBe("account");
     expect(errors).toEqual([]);

@@ -8,6 +8,7 @@ from fractions import Fraction
 
 import pytest
 
+from app.config import REPO_DIR
 from app.content.loader import ContentError, iter_strings, iter_widget_refs, load_content
 from app.content.schema import ChoiceQuestion, GeneratedQuestion, NumberQuestion
 from app.learning.grading import materialise, parse_number
@@ -167,3 +168,17 @@ def test_term_discovery_finds_words_in_prose(bundle):
     found = bundle.find_terms("A fraction has a numerator and a denominator, and $\\tfrac{1}{2}$ is not a link.")
     assert {"fraction", "numerator", "denominator"} <= set(found)
     assert bundle.find_terms("I counted a set of numbers") == []  # everyday words are not auto-linked
+
+
+def test_standalone_content_file_is_current():
+    """frontend/standalone/content.json is what the browser build teaches from; it must match content/."""
+    import json
+    import sys
+
+    sys.path.insert(0, str(REPO_DIR / "backend" / "scripts"))
+    from export_content import OUT, build_export
+
+    assert OUT.exists(), "run: backend/.venv/bin/python backend/scripts/export_content.py"
+    assert json.loads(OUT.read_text()) == build_export(), (
+        "frontend/standalone/content.json is out of date - run: backend/.venv/bin/python backend/scripts/export_content.py"
+    )

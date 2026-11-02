@@ -105,7 +105,7 @@ function pyStr(v: unknown): string {
 }
 /** Python's `round(x, nd)`: correctly rounded, ties to even. */
 export function pyRound(x: number, nd = 0): number {
-  if (!Number.isFinite(x) || x === 0) return x;
+  if (!Number.isFinite(x) || x === 0 || Math.abs(x) >= 1e21) return x;
   const [ip, fp = ""] = Math.abs(x).toFixed(100).split(".");
   const keep = ip + fp.slice(0, nd);
   const rest = fp.slice(nd);
@@ -397,7 +397,7 @@ class Server implements LocalServer {
 
   async handle(method: string, path: string, reqBody?: unknown): Promise<unknown> {
     try {
-      const out = await this.dispatch(method.toUpperCase(), path, reqBody);
+      const out = await this.dispatch((method || "GET").toUpperCase(), path, reqBody);
       // What crosses the "wire" is JSON: never hand out references to the server's own objects.
       return out === undefined ? undefined : JSON.parse(JSON.stringify(out));
     } catch (e) {
@@ -410,7 +410,7 @@ class Server implements LocalServer {
 
   private async dispatch(method: string, rawPath: string, reqBody: unknown): Promise<unknown> {
     const qi = rawPath.indexOf("?");
-    let path = decodePath(qi < 0 ? rawPath : rawPath.slice(0, qi)).replace(/^\/api(?=\/|$)/, "") || "/";
+    let path = decodePath(qi < 0 ? rawPath : rawPath.slice(0, qi)).replace(/^\/?/, "/").replace(/^\/api(?=\/|$)/, "") || "/";
     const query = parseQuery(qi < 0 ? "" : rawPath.slice(qi + 1));
     let found = this.find(method, path);
     if (!found.route && !found.partial && path !== "/") {
@@ -1257,9 +1257,13 @@ class Server implements LocalServer {
 
 // ====================================================================== response helpers
 
-/** Newest first by a datetime column; ties keep table order (Python: ORDER BY <col> DESC). */
+/**
+ * Newest first by a datetime column (Python: ORDER BY <col> DESC). Times here have millisecond
+ * resolution (Python's have microseconds), so rows written in the same millisecond tie: the one
+ * written later comes first, as it would in the backend.
+ */
 function byNewest<T extends Json>(rows: readonly T[], col: keyof T & string): T[] {
-  return [...rows].sort((a, b) => cmp(String(b[col] ?? ""), String(a[col] ?? "")));
+  return [...rows].reverse().sort((a, b) => cmp(String(b[col] ?? ""), String(a[col] ?? "")));
 }
 
 function visualOut(v: unknown): S["Visual"] | null {

@@ -56,6 +56,7 @@ const CLEARED = "\u0000cleared";
 
 const MSG = {
   memory: "Not saved: this browser blocks storage, so your progress will be lost when you close or reload the page.",
+  notSaved: "Not saved: your progress will be lost when you close or reload the page.",
   readOnly: "Saved in this browser only: this view can't save to your Claude account (for example, with view-only access).",
   readOnlyNoStorage: "Not saved: this view can't save to your Claude account and this browser blocks storage.",
   accountGone: "Saved in this browser only: saving to your Claude account stopped working in this view.",
@@ -459,17 +460,18 @@ class LearnerPersistence implements Persistence {
     }
   }
 
-  private saveToBrowser(data: LearnerData): void {
+  /** False when this browser no longer allows storage (the mode is then `memory`). */
+  private saveToBrowser(data: LearnerData): boolean {
     let json: string;
     try {
       json = JSON.stringify(data);
     } catch {
       this.saveError = MSG.unstorable;
-      return;
+      return true;
     }
     if (json === this.stored) {
       this.saveError = null;
-      return;
+      return true;
     }
     try {
       const s = storage();
@@ -478,9 +480,14 @@ class LearnerPersistence implements Persistence {
       this.stored = json;
       this.saveError = null;
     } catch (e) {
-      if (isQuotaError(e)) this.saveError = MSG.browserFull;
-      else this.toMemory(data, MSG.browserBlocked);
+      if (isQuotaError(e)) {
+        this.saveError = MSG.browserFull;
+      } else {
+        this.toMemory(data, MSG.browserBlocked);
+        return false;
+      }
     }
+    return true;
   }
 
   private toMemory(data: LearnerData | null, note: string): void {
@@ -502,8 +509,7 @@ class LearnerPersistence implements Persistence {
     this.saveError = null;
     this.usingCopy = false;
     this.modeNote = kind === "readonly" ? MSG.readOnly : MSG.accountGone;
-    this.saveToBrowser(data);
-    if (this.mode_ === "memory") this.modeNote = kind === "readonly" ? MSG.readOnlyNoStorage : MSG.accountGoneNoStorage;
+    if (!this.saveToBrowser(data)) this.modeNote = kind === "readonly" ? MSG.readOnlyNoStorage : MSG.accountGoneNoStorage;
   }
 
   private async saveToAccount(data: LearnerData): Promise<void> {
@@ -519,16 +525,23 @@ class LearnerPersistence implements Persistence {
     }
     const byKey = new Map(plans.map((p) => [p.key, p] as const));
     const outcome: { failure: "quota" | "transient" | null } = { failure: null };
-    /** Note a failed call; true when saving to the account must stop (it now goes to the browser). */
+    /**
+     * Note a failed call; true when this pass must stop: the account refuses writes (saving moves to the
+     * browser), or a passing problem (the rest waits for the one retry). A full account goes on: writes to
+     * existing documents may still succeed.
+     */
     const failed = (e: unknown): boolean => {
       const kind = classify(codeOf(e));
       if (kind === "readonly" || kind === "gone") {
         this.toBrowserCopy(data, kind);
         return true;
       }
-      if (kind === "quota") outcome.failure = "quota";
-      else if (outcome.failure === null) outcome.failure = "transient";
-      return false;
+      if (kind === "quota") {
+        outcome.failure = "quota";
+        return false;
+      }
+      this.settle("transient");
+      return true;
     };
     const put = async (id: string, key: string | null, body: Body, json: string) => {
       await retryOnce(() => col.doc(id).set(body));
@@ -873,11 +886,11 @@ const isUser = (x: unknown): x is UserNamespace => !!x && typeof (x as { id?: un
 
 /** The viewer's private collection, when this view can use `db` and knows who the viewer is. */
 async function connectAccount(claude: ClaudeGlobal): Promise<{ col: CollectionRef; userId: string } | null> {
-  const use = (name: string): Promise<unknown> =>
+  const capability = (name: string): Promise<unknown> =>
     Promise.resolve()
       .then(() => claude.use(name))
       .catch(() => null);
-  const [db, user] = await within(Promise.all([use("db"), use("user")]), USE_TIMEOUT_MS).catch(() => [null, null]);
+  const [db, user] = await within(Promise.all([capability("db"), capability("user")]), USE_TIMEOUT_MS).catch(() => [null, null]);
   if (!isDb(db) || !isUser(user)) return null;
   const id = await within(
     Promise.resolve().then(() => user.id()),
@@ -941,5 +954,5 @@ export function memoryPersistence(initial?: LearnerData | null): Persistence {
   } catch {
     memory = null;
   }
-  return new LearnerPersistence({ mode: "memory", storageKey: DEFAULT_KEY, memory, note: MSG.memory });
+  return new LearnerPersistence({ mode: "memory", storageKey: DEFAULT_KEY, memory, note: MSG.notSaved });
 }

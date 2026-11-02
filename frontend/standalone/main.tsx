@@ -5,7 +5,9 @@
 import { createRoot } from "react-dom/client";
 import { Shell } from "@/components/Shell";
 import type { ContentJson, Persistence } from "@/local/types";
-import { ai, createPersistence, createServer } from "./dev-stub";
+import * as ai from "@/local/ai";
+import { createPersistence } from "@/local/persistence";
+import { createServer } from "@/local/server";
 import content from "./content.json";
 import { RouterView } from "./router";
 
