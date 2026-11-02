@@ -1,0 +1,4223 @@
+{
+ "openapi": "3.1.0",
+ "info": {
+  "title": "The Mathematical Universe",
+  "version": "0.1.0"
+ },
+ "paths": {
+  "/api/health": {
+   "get": {
+    "summary": "Health",
+    "operationId": "health_api_health_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HealthOut"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/curriculum": {
+   "get": {
+    "summary": "Curriculum",
+    "operationId": "curriculum_api_curriculum_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/CurriculumOut"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/lessons/{lesson_id}": {
+   "get": {
+    "summary": "Get Lesson",
+    "operationId": "get_lesson_api_lessons__lesson_id__get",
+    "parameters": [
+     {
+      "name": "lesson_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Lesson Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/LessonOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/lessons/{lesson_id}/open": {
+   "post": {
+    "summary": "Open Lesson",
+    "operationId": "open_lesson_api_lessons__lesson_id__open_post",
+    "parameters": [
+     {
+      "name": "lesson_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Lesson Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/OpenLessonOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/lessons/{lesson_id}/events": {
+   "post": {
+    "summary": "Lesson Event",
+    "operationId": "lesson_event_api_lessons__lesson_id__events_post",
+    "parameters": [
+     {
+      "name": "lesson_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Lesson Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/LessonEventIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/lessons/{lesson_id}/readiness": {
+   "get": {
+    "summary": "Lesson Readiness",
+    "operationId": "lesson_readiness_api_lessons__lesson_id__readiness_get",
+    "parameters": [
+     {
+      "name": "lesson_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Lesson Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ReadinessOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/lessons/{lesson_id}/explain-differently": {
+   "post": {
+    "summary": "Explain Differently",
+    "description": "The \"I don't understand\" button: a different teaching strategy each time.",
+    "operationId": "explain_differently_api_lessons__lesson_id__explain_differently_post",
+    "parameters": [
+     {
+      "name": "lesson_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Lesson Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ExplainDifferentlyIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/AlternativeOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/dictionary": {
+   "get": {
+    "summary": "Dictionary",
+    "operationId": "dictionary_api_dictionary_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/TermSummary"
+         },
+         "type": "array",
+         "title": "Response Dictionary Api Dictionary Get"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/dictionary/drafts": {
+   "get": {
+    "summary": "Drafts",
+    "operationId": "drafts_api_dictionary_drafts_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/GeneratedTermOut"
+         },
+         "type": "array",
+         "title": "Response Drafts Api Dictionary Drafts Get"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/dictionary/draft": {
+   "post": {
+    "summary": "Draft Term",
+    "description": "Ask the AI to draft an entry for a word not yet in the curated dictionary.",
+    "operationId": "draft_term_api_dictionary_draft_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/DraftTermIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/GeneratedTermOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/dictionary/{term_id}": {
+   "get": {
+    "summary": "Get Term",
+    "operationId": "get_term_api_dictionary__term_id__get",
+    "parameters": [
+     {
+      "name": "term_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Term Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/TermOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/dictionary/{term_id}/viewed": {
+   "post": {
+    "summary": "Term Viewed",
+    "operationId": "term_viewed_api_dictionary__term_id__viewed_post",
+    "parameters": [
+     {
+      "name": "term_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Term Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/TermSummary"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/lessons/{lesson_id}/assessment": {
+   "post": {
+    "summary": "Start Attempt",
+    "operationId": "start_attempt_api_lessons__lesson_id__assessment_post",
+    "parameters": [
+     {
+      "name": "lesson_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Lesson Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/StartAttemptIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/AttemptOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/attempts/{attempt_id}": {
+   "get": {
+    "summary": "Get Attempt",
+    "operationId": "get_attempt_api_attempts__attempt_id__get",
+    "parameters": [
+     {
+      "name": "attempt_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Attempt Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/AttemptOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/attempts/{attempt_id}/answer": {
+   "post": {
+    "summary": "Answer",
+    "operationId": "answer_api_attempts__attempt_id__answer_post",
+    "parameters": [
+     {
+      "name": "attempt_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Attempt Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/AnswerIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/AnswerOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/attempts/{attempt_id}/finish": {
+   "post": {
+    "summary": "Finish",
+    "operationId": "finish_api_attempts__attempt_id__finish_post",
+    "parameters": [
+     {
+      "name": "attempt_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Attempt Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/AttemptSummary"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/progress": {
+   "get": {
+    "summary": "Progress",
+    "operationId": "progress_api_progress_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ProgressOut"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/history": {
+   "get": {
+    "summary": "History",
+    "operationId": "history_api_history_get",
+    "parameters": [
+     {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "maximum": 1000,
+       "minimum": 1,
+       "default": 100,
+       "title": "Limit"
+      }
+     },
+     {
+      "name": "before",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Before"
+      }
+     },
+     {
+      "name": "lesson_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Lesson Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/EventOut"
+         },
+         "title": "Response History Api History Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/progress/mistakes": {
+   "get": {
+    "summary": "Mistakes",
+    "operationId": "mistakes_api_progress_mistakes_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/MistakeOut"
+         },
+         "type": "array",
+         "title": "Response Mistakes Api Progress Mistakes Get"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/progress/export": {
+   "get": {
+    "summary": "Export Data",
+    "description": "Everything the app knows about the learner, as JSON (a complete backup).",
+    "operationId": "export_data_api_progress_export_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Export Data Api Progress Export Get"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/progress/import": {
+   "post": {
+    "summary": "Import Data",
+    "operationId": "import_data_api_progress_import_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "additionalProperties": true,
+        "type": "object",
+        "title": "Payload"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/progress/reset": {
+   "post": {
+    "summary": "Reset",
+    "operationId": "reset_api_progress_reset_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ResetIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/practice/generators": {
+   "get": {
+    "summary": "Generators",
+    "operationId": "generators_api_practice_generators_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/GeneratorOut"
+         },
+         "type": "array",
+         "title": "Response Generators Api Practice Generators Get"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/practice/{generator_id}": {
+   "post": {
+    "summary": "New Question",
+    "operationId": "new_question_api_practice__generator_id__post",
+    "parameters": [
+     {
+      "name": "generator_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Generator Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/PracticeIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PracticeOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/practice/items/{item_id}/answer": {
+   "post": {
+    "summary": "Answer",
+    "operationId": "answer_api_practice_items__item_id__answer_post",
+    "parameters": [
+     {
+      "name": "item_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Item Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/PracticeAnswerIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/AnswerOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/ai/status": {
+   "get": {
+    "summary": "Ai Status",
+    "operationId": "ai_status_api_ai_status_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/AIStatus"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/tutor/threads": {
+   "get": {
+    "summary": "List Threads",
+    "operationId": "list_threads_api_tutor_threads_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/ThreadSummary"
+         },
+         "type": "array",
+         "title": "Response List Threads Api Tutor Threads Get"
+        }
+       }
+      }
+     }
+    }
+   },
+   "post": {
+    "summary": "Create Thread",
+    "operationId": "create_thread_api_tutor_threads_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ThreadIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ThreadOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/tutor/threads/{thread_id}": {
+   "get": {
+    "summary": "Get Thread",
+    "operationId": "get_thread_api_tutor_threads__thread_id__get",
+    "parameters": [
+     {
+      "name": "thread_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Thread Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ThreadOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "summary": "Delete Thread",
+    "operationId": "delete_thread_api_tutor_threads__thread_id__delete",
+    "parameters": [
+     {
+      "name": "thread_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Thread Id"
+      }
+     }
+    ],
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/tutor/threads/{thread_id}/messages": {
+   "post": {
+    "summary": "Send Message",
+    "operationId": "send_message_api_tutor_threads__thread_id__messages_post",
+    "parameters": [
+     {
+      "name": "thread_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Thread Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ChatIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/MessageOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/wonderings": {
+   "get": {
+    "summary": "List Wonderings",
+    "operationId": "list_wonderings_api_wonderings_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/WonderingOut"
+         },
+         "type": "array",
+         "title": "Response List Wonderings Api Wonderings Get"
+        }
+       }
+      }
+     }
+    }
+   },
+   "post": {
+    "summary": "Add Wondering",
+    "operationId": "add_wondering_api_wonderings_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/WonderingIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/WonderingOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/wonderings/{wid}": {
+   "patch": {
+    "summary": "Update Wondering",
+    "operationId": "update_wondering_api_wonderings__wid__patch",
+    "parameters": [
+     {
+      "name": "wid",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Wid"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/WonderingPatch"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/WonderingOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "summary": "Delete Wondering",
+    "operationId": "delete_wondering_api_wonderings__wid__delete",
+    "parameters": [
+     {
+      "name": "wid",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Wid"
+      }
+     }
+    ],
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ "components": {
+  "schemas": {
+   "AIStatus": {
+    "properties": {
+     "configured": {
+      "type": "boolean",
+      "title": "Configured"
+     },
+     "provider": {
+      "type": "string",
+      "title": "Provider"
+     },
+     "model": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Model"
+     },
+     "reason": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Reason"
+     }
+    },
+    "type": "object",
+    "required": [
+     "configured",
+     "provider",
+     "model",
+     "reason"
+    ],
+    "title": "AIStatus"
+   },
+   "Alternative": {
+    "properties": {
+     "strategy": {
+      "type": "string",
+      "enum": [
+       "story",
+       "everyday-objects",
+       "visual",
+       "smaller-steps",
+       "eli5",
+       "contrast",
+       "history",
+       "physical-activity",
+       "question-led"
+      ],
+      "title": "Strategy"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "text": {
+      "type": "string",
+      "title": "Text"
+     },
+     "visual": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/Visual"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "strategy",
+     "title",
+     "text"
+    ],
+    "title": "Alternative"
+   },
+   "AlternativeOut": {
+    "properties": {
+     "source": {
+      "type": "string",
+      "enum": [
+       "authored",
+       "ai",
+       "none"
+      ],
+      "title": "Source"
+     },
+     "strategy": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Strategy"
+     },
+     "title": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Title"
+     },
+     "text": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Text"
+     },
+     "visual": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/Visual"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "check_question": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Check Question"
+     },
+     "remaining_authored": {
+      "type": "integer",
+      "title": "Remaining Authored",
+      "default": 0
+     },
+     "ai_available": {
+      "type": "boolean",
+      "title": "Ai Available",
+      "default": false
+     },
+     "message": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Message"
+     }
+    },
+    "type": "object",
+    "required": [
+     "source"
+    ],
+    "title": "AlternativeOut"
+   },
+   "AnswerIn": {
+    "properties": {
+     "question_id": {
+      "type": "string",
+      "title": "Question Id"
+     },
+     "answer": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Answer"
+     }
+    },
+    "type": "object",
+    "required": [
+     "question_id",
+     "answer"
+    ],
+    "title": "AnswerIn"
+   },
+   "AnswerOut": {
+    "properties": {
+     "valid": {
+      "type": "boolean",
+      "title": "Valid"
+     },
+     "correct": {
+      "type": "boolean",
+      "title": "Correct"
+     },
+     "credit": {
+      "type": "number",
+      "title": "Credit"
+     },
+     "try_number": {
+      "type": "integer",
+      "title": "Try Number"
+     },
+     "tries_left": {
+      "type": "integer",
+      "title": "Tries Left"
+     },
+     "done": {
+      "type": "boolean",
+      "title": "Done"
+     },
+     "message": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Message"
+     },
+     "diagnosis": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Diagnosis"
+     },
+     "revisit": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/NodeOut"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "hint": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Hint"
+     },
+     "reveal": {
+      "anyOf": [
+       {
+        "additionalProperties": true,
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Reveal"
+     },
+     "graded_by": {
+      "type": "string",
+      "title": "Graded By",
+      "default": "rule"
+     },
+     "feedback": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Feedback"
+     },
+     "rubric_met": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "boolean"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Rubric Met"
+     }
+    },
+    "type": "object",
+    "required": [
+     "valid",
+     "correct",
+     "credit",
+     "try_number",
+     "tries_left",
+     "done"
+    ],
+    "title": "AnswerOut"
+   },
+   "AssessmentInfo": {
+    "properties": {
+     "pass_score": {
+      "type": "number",
+      "title": "Pass Score"
+     },
+     "question_count": {
+      "type": "integer",
+      "title": "Question Count"
+     }
+    },
+    "type": "object",
+    "required": [
+     "pass_score",
+     "question_count"
+    ],
+    "title": "AssessmentInfo"
+   },
+   "AttemptOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "lesson_id": {
+      "type": "string",
+      "title": "Lesson Id"
+     },
+     "mode": {
+      "type": "string",
+      "title": "Mode"
+     },
+     "pass_score": {
+      "type": "number",
+      "title": "Pass Score"
+     },
+     "started_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Started At"
+     },
+     "finished_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Finished At"
+     },
+     "score": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Score"
+     },
+     "passed": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Passed"
+     },
+     "questions": {
+      "items": {
+       "$ref": "#/components/schemas/QuestionPublic"
+      },
+      "type": "array",
+      "title": "Questions"
+     },
+     "progress": {
+      "items": {
+       "$ref": "#/components/schemas/QuestionProgress"
+      },
+      "type": "array",
+      "title": "Progress"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "lesson_id",
+     "mode",
+     "pass_score",
+     "started_at",
+     "finished_at",
+     "score",
+     "passed",
+     "questions",
+     "progress"
+    ],
+    "title": "AttemptOut"
+   },
+   "AttemptSummary": {
+    "properties": {
+     "attempt_id": {
+      "type": "string",
+      "title": "Attempt Id"
+     },
+     "lesson_id": {
+      "type": "string",
+      "title": "Lesson Id"
+     },
+     "score": {
+      "type": "number",
+      "title": "Score"
+     },
+     "passed": {
+      "type": "boolean",
+      "title": "Passed"
+     },
+     "pass_score": {
+      "type": "number",
+      "title": "Pass Score"
+     },
+     "state_before": {
+      "type": "string",
+      "title": "State Before"
+     },
+     "state_after": {
+      "type": "string",
+      "title": "State After"
+     },
+     "results": {
+      "items": {
+       "$ref": "#/components/schemas/QuestionResult"
+      },
+      "type": "array",
+      "title": "Results"
+     },
+     "revisit": {
+      "items": {
+       "$ref": "#/components/schemas/NodeOut"
+      },
+      "type": "array",
+      "title": "Revisit"
+     },
+     "next": {
+      "items": {
+       "$ref": "#/components/schemas/NodeOut"
+      },
+      "type": "array",
+      "title": "Next"
+     },
+     "learned_terms": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Learned Terms"
+     }
+    },
+    "type": "object",
+    "required": [
+     "attempt_id",
+     "lesson_id",
+     "score",
+     "passed",
+     "pass_score",
+     "state_before",
+     "state_after",
+     "results",
+     "revisit",
+     "next",
+     "learned_terms"
+    ],
+    "title": "AttemptSummary"
+   },
+   "ChatIn": {
+    "properties": {
+     "content": {
+      "type": "string",
+      "maxLength": 8000,
+      "minLength": 1,
+      "title": "Content"
+     },
+     "lesson_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Lesson Id"
+     },
+     "section": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Section"
+     }
+    },
+    "type": "object",
+    "required": [
+     "content"
+    ],
+    "title": "ChatIn"
+   },
+   "ConceptStateOut": {
+    "properties": {
+     "lesson_id": {
+      "type": "string",
+      "title": "Lesson Id"
+     },
+     "state": {
+      "type": "string",
+      "enum": [
+       "not_started",
+       "introduced",
+       "understood",
+       "mastered",
+       "needs_revision"
+      ],
+      "title": "State"
+     },
+     "first_seen_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "First Seen At"
+     },
+     "updated_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Updated At"
+     },
+     "last_passed_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Last Passed At"
+     },
+     "pass_count": {
+      "type": "integer",
+      "title": "Pass Count",
+      "default": 0
+     },
+     "attempt_count": {
+      "type": "integer",
+      "title": "Attempt Count",
+      "default": 0
+     },
+     "best_score": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Best Score"
+     },
+     "last_score": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Last Score"
+     },
+     "revision_reason": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Revision Reason"
+     },
+     "tested_out": {
+      "type": "boolean",
+      "title": "Tested Out",
+      "default": false
+     }
+    },
+    "type": "object",
+    "required": [
+     "lesson_id",
+     "state"
+    ],
+    "title": "ConceptStateOut"
+   },
+   "Connection": {
+    "properties": {
+     "lesson": {
+      "type": "string",
+      "title": "Lesson"
+     },
+     "how": {
+      "type": "string",
+      "title": "How"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "lesson",
+     "how"
+    ],
+    "title": "Connection"
+   },
+   "CurriculumOut": {
+    "properties": {
+     "stages": {
+      "items": {
+       "$ref": "#/components/schemas/StageOut"
+      },
+      "type": "array",
+      "title": "Stages"
+     },
+     "lessons": {
+      "items": {
+       "$ref": "#/components/schemas/NodeOut"
+      },
+      "type": "array",
+      "title": "Lessons"
+     }
+    },
+    "type": "object",
+    "required": [
+     "stages",
+     "lessons"
+    ],
+    "title": "CurriculumOut"
+   },
+   "DraftTermIn": {
+    "properties": {
+     "word": {
+      "type": "string",
+      "maxLength": 100,
+      "minLength": 1,
+      "title": "Word"
+     },
+     "context": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 1000
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Context"
+     }
+    },
+    "type": "object",
+    "required": [
+     "word"
+    ],
+    "title": "DraftTermIn"
+   },
+   "EventOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     },
+     "type": {
+      "type": "string",
+      "title": "Type"
+     },
+     "lesson_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Lesson Id"
+     },
+     "term_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Term Id"
+     },
+     "data": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Data"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "created_at",
+     "type",
+     "lesson_id",
+     "term_id",
+     "data"
+    ],
+    "title": "EventOut"
+   },
+   "Example": {
+    "properties": {
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "problem": {
+      "type": "string",
+      "title": "Problem"
+     },
+     "steps": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "minItems": 1,
+      "title": "Steps"
+     },
+     "answer": {
+      "type": "string",
+      "title": "Answer"
+     },
+     "visual": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/Visual"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "title",
+     "problem",
+     "steps",
+     "answer"
+    ],
+    "title": "Example"
+   },
+   "Experiment": {
+    "properties": {
+     "widget": {
+      "type": "string",
+      "title": "Widget"
+     },
+     "props": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Props",
+      "default": {}
+     },
+     "task": {
+      "type": "string",
+      "title": "Task"
+     },
+     "goal": {
+      "anyOf": [
+       {
+        "additionalProperties": true,
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Goal"
+     },
+     "success": {
+      "type": "string",
+      "title": "Success"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "widget",
+     "task",
+     "success"
+    ],
+    "title": "Experiment"
+   },
+   "ExplainDifferentlyIn": {
+    "properties": {
+     "section": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Section"
+     },
+     "seen": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Seen",
+      "default": []
+     },
+     "use_ai": {
+      "type": "boolean",
+      "title": "Use Ai",
+      "default": false
+     }
+    },
+    "type": "object",
+    "title": "ExplainDifferentlyIn"
+   },
+   "FormalDefinition": {
+    "properties": {
+     "statement": {
+      "type": "string",
+      "title": "Statement"
+     },
+     "kind": {
+      "$ref": "#/components/schemas/StatementKind",
+      "default": "definition"
+     },
+     "glossary": {
+      "items": {
+       "$ref": "#/components/schemas/GlossaryItem"
+      },
+      "type": "array",
+      "minItems": 1,
+      "title": "Glossary"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "statement",
+     "glossary"
+    ],
+    "title": "FormalDefinition"
+   },
+   "GeneratedTermOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "word": {
+      "type": "string",
+      "title": "Word"
+     },
+     "entry": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Entry"
+     },
+     "model": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Model"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "word",
+     "entry",
+     "model",
+     "created_at"
+    ],
+    "title": "GeneratedTermOut"
+   },
+   "GeneratorOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "lesson": {
+      "type": "string",
+      "title": "Lesson"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "title",
+     "lesson"
+    ],
+    "title": "GeneratorOut"
+   },
+   "GlossaryItem": {
+    "properties": {
+     "word": {
+      "type": "string",
+      "title": "Word"
+     },
+     "meaning": {
+      "type": "string",
+      "title": "Meaning"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "word",
+     "meaning"
+    ],
+    "title": "GlossaryItem"
+   },
+   "HTTPValidationError": {
+    "properties": {
+     "detail": {
+      "items": {
+       "$ref": "#/components/schemas/ValidationError"
+      },
+      "type": "array",
+      "title": "Detail"
+     }
+    },
+    "type": "object",
+    "title": "HTTPValidationError"
+   },
+   "HealthOut": {
+    "properties": {
+     "ok": {
+      "type": "boolean",
+      "title": "Ok"
+     },
+     "lessons_available": {
+      "type": "integer",
+      "title": "Lessons Available"
+     },
+     "lessons_planned": {
+      "type": "integer",
+      "title": "Lessons Planned"
+     },
+     "terms": {
+      "type": "integer",
+      "title": "Terms"
+     },
+     "version": {
+      "type": "string",
+      "title": "Version"
+     }
+    },
+    "type": "object",
+    "required": [
+     "ok",
+     "lessons_available",
+     "lessons_planned",
+     "terms",
+     "version"
+    ],
+    "title": "HealthOut"
+   },
+   "LessonEventIn": {
+    "properties": {
+     "type": {
+      "type": "string",
+      "enum": [
+       "section_viewed",
+       "experiment_completed",
+       "example_viewed",
+       "dont_understand",
+       "lesson_completed"
+      ],
+      "title": "Type"
+     },
+     "data": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Data",
+      "default": {}
+     }
+    },
+    "type": "object",
+    "required": [
+     "type"
+    ],
+    "title": "LessonEventIn"
+   },
+   "LessonOut": {
+    "properties": {
+     "node": {
+      "$ref": "#/components/schemas/NodeOut"
+     },
+     "lesson": {
+      "$ref": "#/components/schemas/LessonPublic"
+     },
+     "state": {
+      "$ref": "#/components/schemas/ConceptStateOut"
+     },
+     "readiness": {
+      "$ref": "#/components/schemas/ReadinessOut"
+     },
+     "terms": {
+      "items": {
+       "$ref": "#/components/schemas/TermSummary"
+      },
+      "type": "array",
+      "title": "Terms"
+     },
+     "prerequisites": {
+      "items": {
+       "$ref": "#/components/schemas/NodeOut"
+      },
+      "type": "array",
+      "title": "Prerequisites"
+     },
+     "unlocks": {
+      "items": {
+       "$ref": "#/components/schemas/NodeOut"
+      },
+      "type": "array",
+      "title": "Unlocks"
+     }
+    },
+    "type": "object",
+    "required": [
+     "node",
+     "lesson",
+     "state",
+     "readiness",
+     "terms",
+     "prerequisites",
+     "unlocks"
+    ],
+    "title": "LessonOut"
+   },
+   "LessonPublic": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "title": "Id"
+     },
+     "estimated_minutes": {
+      "type": "integer",
+      "title": "Estimated Minutes",
+      "default": 15
+     },
+     "goal": {
+      "type": "string",
+      "title": "Goal"
+     },
+     "why": {
+      "type": "string",
+      "title": "Why"
+     },
+     "problem": {
+      "type": "string",
+      "title": "Problem"
+     },
+     "plain": {
+      "type": "string",
+      "title": "Plain"
+     },
+     "analogy": {
+      "$ref": "#/components/schemas/Alternative"
+     },
+     "visual": {
+      "$ref": "#/components/schemas/Visual"
+     },
+     "example_simple": {
+      "$ref": "#/components/schemas/Example"
+     },
+     "example_harder": {
+      "$ref": "#/components/schemas/Example"
+     },
+     "word": {
+      "$ref": "#/components/schemas/WordIntro"
+     },
+     "symbols": {
+      "items": {
+       "$ref": "#/components/schemas/SymbolIntro"
+      },
+      "type": "array",
+      "title": "Symbols",
+      "default": []
+     },
+     "no_symbol_note": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "No Symbol Note"
+     },
+     "formal": {
+      "$ref": "#/components/schemas/FormalDefinition"
+     },
+     "notation": {
+      "items": {
+       "$ref": "#/components/schemas/NotationLine"
+      },
+      "type": "array",
+      "title": "Notation",
+      "default": []
+     },
+     "connections_back": {
+      "items": {
+       "$ref": "#/components/schemas/Connection"
+      },
+      "type": "array",
+      "title": "Connections Back",
+      "default": []
+     },
+     "worked": {
+      "$ref": "#/components/schemas/Example"
+     },
+     "experiment": {
+      "$ref": "#/components/schemas/Experiment"
+     },
+     "mistakes": {
+      "items": {
+       "$ref": "#/components/schemas/Mistake"
+      },
+      "type": "array",
+      "minItems": 1,
+      "title": "Mistakes"
+     },
+     "statements": {
+      "items": {
+       "$ref": "#/components/schemas/Statement"
+      },
+      "type": "array",
+      "title": "Statements",
+      "default": []
+     },
+     "assessment": {
+      "$ref": "#/components/schemas/AssessmentInfo"
+     },
+     "connections_forward": {
+      "items": {
+       "$ref": "#/components/schemas/Connection"
+      },
+      "type": "array",
+      "minItems": 1,
+      "title": "Connections Forward"
+     },
+     "alternatives": {
+      "items": {
+       "$ref": "#/components/schemas/Alternative"
+      },
+      "type": "array",
+      "minItems": 2,
+      "title": "Alternatives"
+     },
+     "practice": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Practice",
+      "default": []
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "id",
+     "goal",
+     "why",
+     "problem",
+     "plain",
+     "analogy",
+     "visual",
+     "example_simple",
+     "example_harder",
+     "word",
+     "formal",
+     "worked",
+     "experiment",
+     "mistakes",
+     "assessment",
+     "connections_forward",
+     "alternatives"
+    ],
+    "title": "LessonPublic",
+    "description": "A lesson as sent to the browser: the assessment answers are removed."
+   },
+   "MessageOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "role": {
+      "type": "string",
+      "enum": [
+       "user",
+       "assistant"
+      ],
+      "title": "Role"
+     },
+     "content": {
+      "type": "string",
+      "title": "Content"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     },
+     "strategy": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Strategy"
+     },
+     "check_question": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Check Question"
+     },
+     "missing_prerequisites": {
+      "items": {
+       "$ref": "#/components/schemas/NodeOut"
+      },
+      "type": "array",
+      "title": "Missing Prerequisites",
+      "default": []
+     },
+     "new_terms": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "New Terms",
+      "default": []
+     },
+     "statements": {
+      "items": {
+       "$ref": "#/components/schemas/StatementOut"
+      },
+      "type": "array",
+      "title": "Statements",
+      "default": []
+     },
+     "tool_calls": {
+      "items": {
+       "additionalProperties": true,
+       "type": "object"
+      },
+      "type": "array",
+      "title": "Tool Calls",
+      "default": []
+     },
+     "error": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Error"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "role",
+     "content",
+     "created_at"
+    ],
+    "title": "MessageOut"
+   },
+   "Mistake": {
+    "properties": {
+     "mistake": {
+      "type": "string",
+      "title": "Mistake"
+     },
+     "why": {
+      "type": "string",
+      "title": "Why"
+     },
+     "fix": {
+      "type": "string",
+      "title": "Fix"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "mistake",
+     "why",
+     "fix"
+    ],
+    "title": "Mistake"
+   },
+   "MistakeOut": {
+    "properties": {
+     "lesson_id": {
+      "type": "string",
+      "title": "Lesson Id"
+     },
+     "question_id": {
+      "type": "string",
+      "title": "Question Id"
+     },
+     "diagnosis": {
+      "type": "string",
+      "title": "Diagnosis"
+     },
+     "revisit": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Revisit"
+     },
+     "count": {
+      "type": "integer",
+      "title": "Count"
+     },
+     "last_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Last At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "lesson_id",
+     "question_id",
+     "diagnosis",
+     "revisit",
+     "count",
+     "last_at"
+    ],
+    "title": "MistakeOut"
+   },
+   "ModuleOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "why": {
+      "type": "string",
+      "title": "Why"
+     },
+     "goals": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Goals"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "title",
+     "why",
+     "goals"
+    ],
+    "title": "ModuleOut"
+   },
+   "NodeOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "stage": {
+      "type": "string",
+      "title": "Stage"
+     },
+     "module": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Module"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "summary": {
+      "type": "string",
+      "title": "Summary"
+     },
+     "pre": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Pre"
+     },
+     "goals": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Goals"
+     },
+     "feeds": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Feeds"
+     },
+     "available": {
+      "type": "boolean",
+      "title": "Available"
+     },
+     "order": {
+      "type": "integer",
+      "title": "Order"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "stage",
+     "title",
+     "summary",
+     "pre",
+     "goals",
+     "feeds",
+     "available",
+     "order"
+    ],
+    "title": "NodeOut"
+   },
+   "NotationLine": {
+    "properties": {
+     "expression": {
+      "type": "string",
+      "title": "Expression"
+     },
+     "read_aloud": {
+      "type": "string",
+      "title": "Read Aloud"
+     },
+     "parts": {
+      "items": {
+       "$ref": "#/components/schemas/NotationPart"
+      },
+      "type": "array",
+      "minItems": 1,
+      "title": "Parts"
+     },
+     "english": {
+      "type": "string",
+      "title": "English"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "expression",
+     "read_aloud",
+     "parts",
+     "english"
+    ],
+    "title": "NotationLine"
+   },
+   "NotationPart": {
+    "properties": {
+     "symbol": {
+      "type": "string",
+      "title": "Symbol"
+     },
+     "meaning": {
+      "type": "string",
+      "title": "Meaning"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "symbol",
+     "meaning"
+    ],
+    "title": "NotationPart"
+   },
+   "OpenLessonOut": {
+    "properties": {
+     "state": {
+      "$ref": "#/components/schemas/ConceptStateOut"
+     },
+     "new_terms": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "New Terms"
+     },
+     "readiness": {
+      "$ref": "#/components/schemas/ReadinessOut"
+     }
+    },
+    "type": "object",
+    "required": [
+     "state",
+     "new_terms",
+     "readiness"
+    ],
+    "title": "OpenLessonOut"
+   },
+   "OptionPublic": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "text": {
+      "type": "string",
+      "title": "Text"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "text"
+    ],
+    "title": "OptionPublic"
+   },
+   "PathProgress": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "target": {
+      "type": "string",
+      "title": "Target"
+     },
+     "total": {
+      "type": "integer",
+      "title": "Total"
+     },
+     "known": {
+      "type": "integer",
+      "title": "Known"
+     },
+     "mastered": {
+      "type": "integer",
+      "title": "Mastered"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "title",
+     "target",
+     "total",
+     "known",
+     "mastered"
+    ],
+    "title": "PathProgress"
+   },
+   "PracticeAnswerIn": {
+    "properties": {
+     "answer": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Answer"
+     }
+    },
+    "type": "object",
+    "required": [
+     "answer"
+    ],
+    "title": "PracticeAnswerIn"
+   },
+   "PracticeIn": {
+    "properties": {
+     "lesson_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Lesson Id"
+     },
+     "params": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Params",
+      "default": {}
+     }
+    },
+    "type": "object",
+    "title": "PracticeIn"
+   },
+   "PracticeOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "generator": {
+      "type": "string",
+      "title": "Generator"
+     },
+     "question": {
+      "$ref": "#/components/schemas/QuestionPublic"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "generator",
+     "question"
+    ],
+    "title": "PracticeOut"
+   },
+   "ProgressOut": {
+    "properties": {
+     "states": {
+      "additionalProperties": {
+       "$ref": "#/components/schemas/ConceptStateOut"
+      },
+      "type": "object",
+      "title": "States"
+     },
+     "counts": {
+      "additionalProperties": {
+       "type": "integer"
+      },
+      "type": "object",
+      "title": "Counts"
+     },
+     "stages": {
+      "items": {
+       "$ref": "#/components/schemas/StageProgress"
+      },
+      "type": "array",
+      "title": "Stages"
+     },
+     "paths": {
+      "items": {
+       "$ref": "#/components/schemas/PathProgress"
+      },
+      "type": "array",
+      "title": "Paths"
+     },
+     "vocabulary": {
+      "additionalProperties": {
+       "type": "integer"
+      },
+      "type": "object",
+      "title": "Vocabulary"
+     },
+     "exercises_completed": {
+      "type": "integer",
+      "title": "Exercises Completed"
+     },
+     "assessments_passed": {
+      "type": "integer",
+      "title": "Assessments Passed"
+     },
+     "next": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Next"
+     },
+     "revision": {
+      "items": {
+       "$ref": "#/components/schemas/RevisionItem"
+      },
+      "type": "array",
+      "title": "Revision"
+     },
+     "review_due": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Review Due"
+     },
+     "frontier_planned": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Frontier Planned"
+     },
+     "last_lesson": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Last Lesson"
+     }
+    },
+    "type": "object",
+    "required": [
+     "states",
+     "counts",
+     "stages",
+     "paths",
+     "vocabulary",
+     "exercises_completed",
+     "assessments_passed",
+     "next",
+     "revision",
+     "review_due",
+     "frontier_planned",
+     "last_lesson"
+    ],
+    "title": "ProgressOut"
+   },
+   "QuestionProgress": {
+    "properties": {
+     "question_id": {
+      "type": "string",
+      "title": "Question Id"
+     },
+     "tries": {
+      "type": "integer",
+      "title": "Tries"
+     },
+     "done": {
+      "type": "boolean",
+      "title": "Done"
+     },
+     "correct": {
+      "type": "boolean",
+      "title": "Correct"
+     },
+     "credit": {
+      "type": "number",
+      "title": "Credit"
+     },
+     "reveal": {
+      "anyOf": [
+       {
+        "additionalProperties": true,
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Reveal"
+     }
+    },
+    "type": "object",
+    "required": [
+     "question_id",
+     "tries",
+     "done",
+     "correct",
+     "credit"
+    ],
+    "title": "QuestionProgress"
+   },
+   "QuestionPublic": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "type": {
+      "type": "string",
+      "enum": [
+       "choice",
+       "number",
+       "text",
+       "truefalse",
+       "order",
+       "explain"
+      ],
+      "title": "Type"
+     },
+     "kind": {
+      "type": "string",
+      "title": "Kind"
+     },
+     "prompt": {
+      "type": "string",
+      "title": "Prompt"
+     },
+     "hint": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Hint"
+     },
+     "visual": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/Visual"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "options": {
+      "anyOf": [
+       {
+        "items": {
+         "$ref": "#/components/schemas/OptionPublic"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Options"
+     },
+     "multi": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Multi"
+     },
+     "unit": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Unit"
+     },
+     "items": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "string"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Items"
+     },
+     "order_label": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Order Label"
+     },
+     "rubric_count": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Rubric Count"
+     },
+     "mode": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Mode"
+     },
+     "max_tries": {
+      "type": "integer",
+      "title": "Max Tries"
+     },
+     "generated_from": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Generated From"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "type",
+     "kind",
+     "prompt",
+     "max_tries"
+    ],
+    "title": "QuestionPublic"
+   },
+   "QuestionResult": {
+    "properties": {
+     "question_id": {
+      "type": "string",
+      "title": "Question Id"
+     },
+     "prompt": {
+      "type": "string",
+      "title": "Prompt"
+     },
+     "correct": {
+      "type": "boolean",
+      "title": "Correct"
+     },
+     "credit": {
+      "type": "number",
+      "title": "Credit"
+     },
+     "tries": {
+      "type": "integer",
+      "title": "Tries"
+     }
+    },
+    "type": "object",
+    "required": [
+     "question_id",
+     "prompt",
+     "correct",
+     "credit",
+     "tries"
+    ],
+    "title": "QuestionResult"
+   },
+   "ReadinessOut": {
+    "properties": {
+     "ready": {
+      "type": "boolean",
+      "title": "Ready"
+     },
+     "missing": {
+      "items": {
+       "$ref": "#/components/schemas/NodeOut"
+      },
+      "type": "array",
+      "title": "Missing"
+     },
+     "direct_missing": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Direct Missing"
+     }
+    },
+    "type": "object",
+    "required": [
+     "ready",
+     "missing",
+     "direct_missing"
+    ],
+    "title": "ReadinessOut"
+   },
+   "ResetIn": {
+    "properties": {
+     "confirm": {
+      "type": "string",
+      "title": "Confirm"
+     }
+    },
+    "type": "object",
+    "required": [
+     "confirm"
+    ],
+    "title": "ResetIn"
+   },
+   "RevisionItem": {
+    "properties": {
+     "lesson_id": {
+      "type": "string",
+      "title": "Lesson Id"
+     },
+     "reason": {
+      "type": "string",
+      "title": "Reason"
+     }
+    },
+    "type": "object",
+    "required": [
+     "lesson_id",
+     "reason"
+    ],
+    "title": "RevisionItem"
+   },
+   "StageOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "kind": {
+      "type": "string",
+      "enum": [
+       "level",
+       "path"
+      ],
+      "title": "Kind"
+     },
+     "number": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Number"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "summary": {
+      "type": "string",
+      "title": "Summary"
+     },
+     "why": {
+      "type": "string",
+      "title": "Why"
+     },
+     "goals": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Goals"
+     },
+     "modules": {
+      "items": {
+       "$ref": "#/components/schemas/ModuleOut"
+      },
+      "type": "array",
+      "title": "Modules"
+     },
+     "target": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Target"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "kind",
+     "number",
+     "title",
+     "summary",
+     "why",
+     "goals",
+     "modules",
+     "target"
+    ],
+    "title": "StageOut"
+   },
+   "StageProgress": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "total": {
+      "type": "integer",
+      "title": "Total"
+     },
+     "available": {
+      "type": "integer",
+      "title": "Available"
+     },
+     "understood": {
+      "type": "integer",
+      "title": "Understood"
+     },
+     "mastered": {
+      "type": "integer",
+      "title": "Mastered"
+     },
+     "introduced": {
+      "type": "integer",
+      "title": "Introduced"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "total",
+     "available",
+     "understood",
+     "mastered",
+     "introduced"
+    ],
+    "title": "StageProgress"
+   },
+   "StartAttemptIn": {
+    "properties": {
+     "mode": {
+      "type": "string",
+      "enum": [
+       "lesson",
+       "test_out",
+       "review"
+      ],
+      "title": "Mode",
+      "default": "lesson"
+     }
+    },
+    "type": "object",
+    "title": "StartAttemptIn"
+   },
+   "Statement": {
+    "properties": {
+     "kind": {
+      "$ref": "#/components/schemas/StatementKind"
+     },
+     "text": {
+      "type": "string",
+      "title": "Text"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "kind",
+     "text"
+    ],
+    "title": "Statement"
+   },
+   "StatementKind": {
+    "type": "string",
+    "enum": [
+     "definition",
+     "established-fact",
+     "proven-theorem",
+     "conjecture",
+     "computational-observation",
+     "hypothesis",
+     "speculation",
+     "disproved-claim",
+     "unverified-proof",
+     "formally-verified-proof",
+     "convention"
+    ],
+    "title": "StatementKind",
+    "description": "Part 7 of the specification: every mathematical statement is classified."
+   },
+   "StatementOut": {
+    "properties": {
+     "kind": {
+      "type": "string",
+      "title": "Kind"
+     },
+     "text": {
+      "type": "string",
+      "title": "Text"
+     }
+    },
+    "type": "object",
+    "required": [
+     "kind",
+     "text"
+    ],
+    "title": "StatementOut"
+   },
+   "SymbolIntro": {
+    "properties": {
+     "symbol": {
+      "type": "string",
+      "title": "Symbol"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "looks_like": {
+      "type": "string",
+      "title": "Looks Like"
+     },
+     "means": {
+      "type": "string",
+      "title": "Means"
+     },
+     "why": {
+      "type": "string",
+      "title": "Why"
+     },
+     "read_aloud": {
+      "type": "string",
+      "title": "Read Aloud"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "symbol",
+     "name",
+     "looks_like",
+     "means",
+     "why",
+     "read_aloud"
+    ],
+    "title": "SymbolIntro"
+   },
+   "Term": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "title": "Id"
+     },
+     "word": {
+      "type": "string",
+      "title": "Word"
+     },
+     "pronunciation": {
+      "type": "string",
+      "title": "Pronunciation"
+     },
+     "plain": {
+      "type": "string",
+      "title": "Plain"
+     },
+     "analogy": {
+      "type": "string",
+      "title": "Analogy"
+     },
+     "visual": {
+      "$ref": "#/components/schemas/TermVisual"
+     },
+     "formal": {
+      "type": "string",
+      "title": "Formal"
+     },
+     "example": {
+      "type": "string",
+      "title": "Example"
+     },
+     "non_example": {
+      "type": "string",
+      "title": "Non Example"
+     },
+     "related": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Related",
+      "default": []
+     },
+     "used_later": {
+      "items": {
+       "$ref": "#/components/schemas/UseLater"
+      },
+      "type": "array",
+      "minItems": 1,
+      "title": "Used Later"
+     },
+     "introduced_in": {
+      "type": "string",
+      "title": "Introduced In"
+     },
+     "aliases": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Aliases",
+      "default": []
+     },
+     "symbol": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Symbol"
+     },
+     "formal_kind": {
+      "$ref": "#/components/schemas/StatementKind",
+      "default": "definition"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "id",
+     "word",
+     "pronunciation",
+     "plain",
+     "analogy",
+     "visual",
+     "formal",
+     "example",
+     "non_example",
+     "used_later",
+     "introduced_in"
+    ],
+    "title": "Term",
+    "description": "A personal-dictionary entry. All ten fields from Part 1.3 are required."
+   },
+   "TermOut": {
+    "properties": {
+     "term": {
+      "$ref": "#/components/schemas/Term"
+     },
+     "state": {
+      "$ref": "#/components/schemas/TermSummary"
+     },
+     "introduced_in": {
+      "$ref": "#/components/schemas/NodeOut"
+     }
+    },
+    "type": "object",
+    "required": [
+     "term",
+     "state",
+     "introduced_in"
+    ],
+    "title": "TermOut"
+   },
+   "TermSummary": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "word": {
+      "type": "string",
+      "title": "Word"
+     },
+     "plain": {
+      "type": "string",
+      "title": "Plain"
+     },
+     "symbol": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Symbol"
+     },
+     "introduced_in": {
+      "type": "string",
+      "title": "Introduced In"
+     },
+     "aliases": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Aliases"
+     },
+     "link_forms": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Link Forms"
+     },
+     "seen": {
+      "type": "boolean",
+      "title": "Seen"
+     },
+     "learned": {
+      "type": "boolean",
+      "title": "Learned"
+     },
+     "lookups": {
+      "type": "integer",
+      "title": "Lookups"
+     },
+     "ai_generated": {
+      "type": "boolean",
+      "title": "Ai Generated",
+      "default": false
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "word",
+     "plain",
+     "symbol",
+     "introduced_in",
+     "aliases",
+     "link_forms",
+     "seen",
+     "learned",
+     "lookups"
+    ],
+    "title": "TermSummary"
+   },
+   "TermVisual": {
+    "properties": {
+     "widget": {
+      "type": "string",
+      "title": "Widget"
+     },
+     "props": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Props",
+      "default": {}
+     },
+     "caption": {
+      "type": "string",
+      "title": "Caption"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "widget",
+     "caption"
+    ],
+    "title": "TermVisual"
+   },
+   "ThreadIn": {
+    "properties": {
+     "title": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Title"
+     },
+     "mode": {
+      "type": "string",
+      "enum": [
+       "teaching",
+       "research"
+      ],
+      "title": "Mode",
+      "default": "teaching"
+     },
+     "lesson_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Lesson Id"
+     }
+    },
+    "type": "object",
+    "title": "ThreadIn"
+   },
+   "ThreadOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "mode": {
+      "type": "string",
+      "title": "Mode"
+     },
+     "lesson_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Lesson Id"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     },
+     "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Updated At"
+     },
+     "message_count": {
+      "type": "integer",
+      "title": "Message Count"
+     },
+     "messages": {
+      "items": {
+       "$ref": "#/components/schemas/MessageOut"
+      },
+      "type": "array",
+      "title": "Messages"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "title",
+     "mode",
+     "lesson_id",
+     "created_at",
+     "updated_at",
+     "message_count",
+     "messages"
+    ],
+    "title": "ThreadOut"
+   },
+   "ThreadSummary": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "mode": {
+      "type": "string",
+      "title": "Mode"
+     },
+     "lesson_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Lesson Id"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     },
+     "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Updated At"
+     },
+     "message_count": {
+      "type": "integer",
+      "title": "Message Count"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "title",
+     "mode",
+     "lesson_id",
+     "created_at",
+     "updated_at",
+     "message_count"
+    ],
+    "title": "ThreadSummary"
+   },
+   "UseLater": {
+    "properties": {
+     "lesson": {
+      "type": "string",
+      "title": "Lesson"
+     },
+     "how": {
+      "type": "string",
+      "title": "How"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "lesson",
+     "how"
+    ],
+    "title": "UseLater"
+   },
+   "ValidationError": {
+    "properties": {
+     "loc": {
+      "items": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "integer"
+        }
+       ]
+      },
+      "type": "array",
+      "title": "Location"
+     },
+     "msg": {
+      "type": "string",
+      "title": "Message"
+     },
+     "type": {
+      "type": "string",
+      "title": "Error Type"
+     },
+     "input": {
+      "title": "Input"
+     },
+     "ctx": {
+      "type": "object",
+      "title": "Context"
+     }
+    },
+    "type": "object",
+    "required": [
+     "loc",
+     "msg",
+     "type"
+    ],
+    "title": "ValidationError"
+   },
+   "Visual": {
+    "properties": {
+     "widget": {
+      "type": "string",
+      "title": "Widget"
+     },
+     "props": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Props",
+      "default": {}
+     },
+     "caption": {
+      "type": "string",
+      "title": "Caption"
+     },
+     "prompt": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Prompt"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "widget",
+     "caption"
+    ],
+    "title": "Visual"
+   },
+   "WonderingIn": {
+    "properties": {
+     "text": {
+      "type": "string",
+      "maxLength": 4000,
+      "minLength": 1,
+      "title": "Text"
+     },
+     "lesson_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Lesson Id"
+     }
+    },
+    "type": "object",
+    "required": [
+     "text"
+    ],
+    "title": "WonderingIn"
+   },
+   "WonderingOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "text": {
+      "type": "string",
+      "title": "Text"
+     },
+     "lesson_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Lesson Id"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     },
+     "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Updated At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "text",
+     "lesson_id",
+     "status",
+     "note",
+     "created_at",
+     "updated_at"
+    ],
+    "title": "WonderingOut"
+   },
+   "WonderingPatch": {
+    "properties": {
+     "status": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "open",
+         "exploring",
+         "answered"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Status"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     }
+    },
+    "type": "object",
+    "title": "WonderingPatch"
+   },
+   "WordIntro": {
+    "properties": {
+     "terms": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "minItems": 1,
+      "title": "Terms"
+     },
+     "text": {
+      "type": "string",
+      "title": "Text"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "terms",
+     "text"
+    ],
+    "title": "WordIntro"
+   }
+  }
+ }
+}

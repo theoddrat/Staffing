@@ -87,10 +87,54 @@ class ContentBundle:
         """(surface form, term id) pairs for automatic linking, longest first."""
         pairs: list[tuple[str, str]] = []
         for t in self.terms.values():
-            pairs.append((t.word, t.id))
-            pairs.extend((a, t.id) for a in t.aliases)
+            pairs.extend((f, t.id) for f in link_forms(t))
         pairs.sort(key=lambda p: -len(p[0]))
         return pairs
+
+    def find_terms(self, text: str) -> list[str]:
+        """Dictionary terms mentioned in prose (math and explicit links excluded)."""
+        global _FORM_RE
+        if _FORM_RE is None or _FORM_RE[0] is not self:
+            forms = self.term_index()
+            pattern = r"(?<![\w-])(" + "|".join(re.escape(f) for f, _ in forms) + r")(?![\w-])"
+            lookup = {f.lower(): tid for f, tid in forms}
+            _FORM_RE = (self, re.compile(pattern, re.IGNORECASE), lookup)
+        _, rx, lookup = _FORM_RE
+        prose = re.sub(r"\$\$.*?\$\$|\$[^$]*\$|\[\[[^\]]*\]\]", " ", text, flags=re.S)
+        found: list[str] = []
+        for m in rx.finditer(prose):
+            tid = lookup.get(m.group(1).lower())
+            if tid and tid not in found:
+                found.append(tid)
+        return found
+
+
+# Everyday words that are also dictionary terms. They are linked only when the
+# author writes an explicit [[term]] link, never automatically - otherwise every
+# "number" or "set" in ordinary prose would become a link.
+AUTOLINK_STOPWORDS = {
+    "number", "numbers", "count", "counts", "counted", "counting", "add", "adding", "added", "plus", "times", "set",
+    "sets", "model", "models", "even", "odd", "unit", "units", "equal", "equals", "equal to", "equality", "measure",
+    "measuring", "measured", "compare", "comparing", "compared", "reason", "rule", "rules", "element", "elements",
+    "divide", "divides", "product", "multiply", "multiplied", "positive", "negative", "negatives", "math", "maths",
+    "amount", "amounts", "conclude", "define", "defined", "prove", "proved", "proving", "belongs to", "nought",
+    "divisor", "divisors",
+}
+
+
+def link_forms(term: Term) -> list[str]:
+    """Surface forms of a term that may be linked automatically in prose."""
+    forms = [term.word.split(" (")[0], *term.aliases]
+    out = []
+    for f in forms:
+        if f.lower() in AUTOLINK_STOPWORDS or len(f) < 3:
+            continue
+        if f not in out:
+            out.append(f)
+    return out
+
+
+_FORM_RE: tuple | None = None
 
 
 def _read_yaml(path: Path) -> Any:
