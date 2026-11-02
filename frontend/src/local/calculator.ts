@@ -994,13 +994,23 @@ function evalLin(L: Lin, p: number): { v: BF; mag: number } {
   return { v, mag };
 }
 
+/**
+ * How many digits we may compute to tell L from zero: exact ("safe") numbers can be extremely close
+ * to zero (e.g. (1+sqrt(2))**n minus an integer), so allow about twice their size; others are
+ * treated as zero once they vanish to about 200 digits.
+ */
+function precisionCap(L: Lin, mag: number): number {
+  return isSafe(L) ? Math.max(4600, 2 * Math.ceil(Math.max(mag, 0)) + 600) : 200;
+}
+
 /** L to about `digits` significant digits (zero if L is zero within the precision limit). */
 function approx(L: Lin, digits: number): BF {
   if (isRat(L)) return bfFromFrac(ratOf(L), digits + 5);
-  const cap = isSafe(L) ? 4600 + digits : 200 + digits;
+  let cap = 0;
   let p = digits + 10;
   for (;;) {
     const { v, mag } = evalLin(L, p);
+    if (!cap) cap = precisionCap(L, mag) + digits;
     const err = mag - p + 3 + Math.log10(L.t.length);
     if (v.m !== 0n) {
       const good = bfLog10(v) - err;
@@ -1025,9 +1035,10 @@ function signOf(L: Lin): number {
   if (isZero(L)) return 0;
   if (isRat(L)) return ratOf(L).cmp(0);
   const safe = isSafe(L);
-  const cap = safe ? 4600 : 200;
+  let cap = 0;
   for (let p = 30; ; p = Math.min(cap, 2 * p + 20)) {
     const { v, mag } = evalLin(L, p);
+    if (!cap) cap = precisionCap(L, mag);
     const err = mag - p + 3 + Math.log10(L.t.length);
     if (v.m !== 0n && bfLog10(v) > err + 1) return v.m > 0n ? 1 : -1;
     if (p >= cap) {
@@ -1048,7 +1059,7 @@ function linFloor(L: Lin): bigint {
     else if (signOf(linSub(L, linQ(n + 1n))) >= 0) n += 1n;
     else return n;
   }
-  return n;
+  throw new CalcError("could not evaluate this expression precisely enough");
 }
 
 // ------------------------------------------------------------------ printing (SymPy's str)
@@ -2015,4 +2026,3 @@ function evaluate(n: Node): Val {
       return callFn(n.fn, n.args.map(evaluate));
   }
 }
-export const __dbg = { linFloor, approx, signOf, linPow, linAdd, linQ, linSub, evalLin, ONE, isSafe, bfLog10, bfToFrac, floorFrac, linStr };
