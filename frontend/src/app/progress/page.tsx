@@ -2,9 +2,18 @@
 
 import Link from "next/link";
 import { useCurriculum, useHistory, useMistakes, useProgress } from "@/lib/api";
+import { STANDALONE, usePersistenceStatus } from "@/lib/mode";
+import type { PersistenceMode } from "@/local/types";
 import type { EventOut } from "@/lib/types";
 import { Card, ErrorNote, Loading, ProgressBar, STATE_INFO, StateBadge } from "@/components/ui";
 import { useTerms } from "@/components/TermContext";
+
+/** Standalone build: where everything on this page is kept (see src/local/persistence.ts). */
+const KEPT: Record<PersistenceMode, string> = {
+  account: "Everything here is saved privately to your Claude account and kept between sessions.",
+  browser: "Everything here is saved in this browser only and kept between sessions.",
+  memory: "Nothing here is saved - it will be lost when you close the page (see Settings).",
+};
 
 function describe(e: EventOut, title: (id: string | null) => string, word: (id: string | null) => string): string | null {
   const d = e.data as Record<string, unknown>;
@@ -29,6 +38,7 @@ export default function ProgressPage() {
   const { data: hist } = useHistory(300);
   const { data: mistakes } = useMistakes();
   const { terms } = useTerms();
+  const saved = usePersistenceStatus();
   if (error) return <ErrorNote error={error} />;
   if (!prog || !cur) return <Loading />;
   const title = (id: string | null) => (id ? cur.lessons.find((l) => l.id === id)?.title ?? id : "");
@@ -45,7 +55,7 @@ export default function ProgressPage() {
       <header>
         <h1 className="font-serif text-3xl font-semibold">My progress</h1>
         <p className="mt-2 max-w-2xl text-ink-2">
-          Everything here is stored on your own computer and kept between sessions. An idea becomes <em>understood</em> when you pass its check,
+          {STANDALONE ? (saved ? KEPT[saved.mode] : "") : "Everything here is stored on your own computer and kept between sessions."} An idea becomes <em>understood</em> when you pass its check,
           and <em>mastered</em> when you pass again, with a high score, on a later day.
         </p>
       </header>

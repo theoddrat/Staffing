@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:standalone": "node standalone/build.mjs",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
@@ -22,11 +23,13 @@
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",
+    "@tailwindcss/cli": "4.3.3",
     "@tailwindcss/turbopack": "^4",
     "@types/katex": "^0.16.8",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "esbuild": "0.28.2",
     "eslint": "^9",
     "eslint-config-next": "16.4.3",
     "openapi-typescript": "^7.13.0",

@@ -34,7 +34,30 @@ export class ApiError extends Error {
   }
 }
 
+/** The in-page backend of the standalone build (src/local/server.ts), installed by standalone/main.tsx. */
+type LocalServer = { handle(method: string, path: string, body?: unknown): Promise<unknown> };
+
+async function localRequest<T>(local: LocalServer, path: string, init?: RequestInit): Promise<T> {
+  const body = typeof init?.body === "string" && init.body ? JSON.parse(init.body) : undefined;
+  let result: unknown;
+  try {
+    result = await local.handle((init?.method ?? "GET").toUpperCase(), path, body);
+  } catch (e) {
+    const { status, detail, cause } = (e ?? {}) as { status?: unknown; detail?: unknown; cause?: unknown };
+    if (cause) console.error(`${path}:`, cause); // an "Internal Server Error": a bug in src/local
+    if (typeof status === "number" && detail !== undefined) {
+      const msg = typeof detail === "string" ? detail : Array.isArray(detail) ? detail.map((d) => d?.msg ?? String(d)).join("; ") : String(detail);
+      throw new ApiError(status, msg || `Request failed (${status})`);
+    }
+    throw new ApiError(500, e instanceof Error ? e.message : String(e));
+  }
+  // Like a network response: plain JSON that shares nothing with the server's own state.
+  return (result === undefined ? undefined : JSON.parse(JSON.stringify(result))) as T;
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const local = (globalThis as { __MU_LOCAL__?: LocalServer }).__MU_LOCAL__;
+  if (local) return localRequest<T>(local, path, init);
   let res: Response;
   try {
     res = await fetch(`/api${path}`, {

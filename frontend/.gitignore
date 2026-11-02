@@ -44,3 +44,6 @@ next-env.d.ts
 /test-results/
 /playwright-report/
 /blob-report/
+
+# standalone single-file build (npm run build:standalone)
+/standalone/dist/

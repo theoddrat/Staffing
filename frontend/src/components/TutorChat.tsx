@@ -5,6 +5,7 @@ import { Send } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { mutate } from "swr";
 import { api, useAIStatus, useThread } from "@/lib/api";
+import { STANDALONE } from "@/lib/mode";
 import type { MessageOut } from "@/lib/types";
 import { RichText } from "./RichText";
 import { KindBadge } from "./Statements";
@@ -15,10 +16,18 @@ export function AIOffNotice({ reason }: { reason?: string | null }) {
     <div className="rounded-lg border border-line bg-surface-2/60 p-4 text-sm">
       <p className="font-semibold">The AI tutor is not switched on.</p>
       <p className="mt-1 text-ink-2">{reason ?? "No AI provider is configured."}</p>
-      <p className="mt-2 text-ink-2">
-        Everything else - lessons, the dictionary, practice, assessments and progress - works without it. To enable the tutor, add an
-        Anthropic API key to <code>backend/.env</code> (see <Link href="/settings" className="text-accent hover:underline">Settings</Link>).
-      </p>
+      {STANDALONE ? (
+        <p className="mt-2 text-ink-2">
+          Everything else - lessons, the dictionary, practice, assessments and progress - works without it. The tutor uses Claude on your own
+          claude.ai account: open this page in claude.ai and it will ask your permission the first time you send it a message
+          (see <Link href="/settings" className="text-accent hover:underline">Settings</Link>).
+        </p>
+      ) : (
+        <p className="mt-2 text-ink-2">
+          Everything else - lessons, the dictionary, practice, assessments and progress - works without it. To enable the tutor, add an
+          Anthropic API key to <code>backend/.env</code> (see <Link href="/settings" className="text-accent hover:underline">Settings</Link>).
+        </p>
+      )}
     </div>
   );
 }

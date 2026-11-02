@@ -6,6 +6,7 @@ import { BookOpen, Compass, FlaskConical, GraduationCap, Home, LineChart, Map, M
 import { useState, type ReactNode } from "react";
 import { SWRConfig } from "swr";
 import { useAIStatus, useHealth } from "@/lib/api";
+import { STANDALONE, usePersistenceStatus } from "@/lib/mode";
 import { TermProvider } from "./TermContext";
 
 const NAV = [
@@ -25,15 +26,33 @@ function BackendStatus() {
   const { error } = useHealth();
   const ai = useAIStatus();
   if (error)
-    return (
+    return STANDALONE ? (
+      <p className="rounded-lg bg-bad-soft p-2 text-xs text-bad">Something went wrong inside the app: {error.message.replace(/\.?$/, ".")} Reload the page to try again.</p>
+    ) : (
       <p className="rounded-lg bg-bad-soft p-2 text-xs text-bad">
         Backend not reachable. Start it with <code>uvicorn app.main:app</code> in <code>backend/</code>.
       </p>
     );
   return (
-    <p className="flex items-center gap-1.5 text-xs text-ink-3">
-      <span className={`inline-block h-2 w-2 rounded-full ${ai.data?.configured ? "bg-good" : "bg-line"}`} />
-      {ai.data?.configured ? `AI tutor: ${ai.data.model}` : "AI tutor off (see Settings)"}
+    <>
+      <p className="flex items-center gap-1.5 text-xs text-ink-3">
+        <span className={`inline-block h-2 w-2 rounded-full ${ai.data?.configured ? "bg-good" : "bg-line"}`} />
+        {ai.data?.configured ? `AI tutor: ${STANDALONE ? "Claude (your account)" : ai.data.model}` : "AI tutor off (see Settings)"}
+      </p>
+      {STANDALONE ? <SavedStatus /> : null}
+    </>
+  );
+}
+
+/** Standalone build only: where progress is being saved (the Claude account, this browser, or nowhere). */
+function SavedStatus() {
+  const s = usePersistenceStatus();
+  if (!s) return null;
+  const warn = !!s.error || s.mode === "memory";
+  return (
+    <p className={`mt-1.5 flex items-start gap-1.5 text-xs ${warn ? "text-warn" : "text-ink-3"}`}>
+      <span className={`mt-1 inline-block h-2 w-2 shrink-0 rounded-full ${warn ? "bg-warn" : "bg-good"}`} />
+      {s.error ?? (s.mode === "account" ? "Progress saved to your Claude account" : s.mode === "browser" ? "Progress saved in this browser only" : "Progress is not being saved (see Settings)")}
     </p>
   );
 }
