@@ -76,7 +76,7 @@ export function installFakeClaude({ reply, userId }: FakeClaudeOptions) {
       path,
       get: async () => snap(path),
       set: async (data) => {
-        if (JSON.stringify(data).length > 256 * 1024) throw dbError("document over 256 KiB");
+        if (new TextEncoder().encode(JSON.stringify(data)).length > 256 * 1024) throw dbError("document over 256 KiB");
         docs.set(path, clone(data));
         changed();
       },

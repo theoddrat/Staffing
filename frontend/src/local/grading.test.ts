@@ -126,7 +126,7 @@ describe("parseNumber", () => {
   it.each([
     ["7", new Fraction(7)],
     ["-3", new Fraction(-3)],
-    ["−3", new Fraction(-3)],
+    ["\u22123", new Fraction(-3)],
     ["3/4", new Fraction(3, 4)],
     ["0.75", new Fraction(3, 4)],
     [".5", new Fraction(1, 2)],
@@ -415,7 +415,7 @@ describe("assessments (test_content.py)", () => {
   it("every assessment materialises", () => {
     const rng = new Random(0);
     for (const lesson of lessons) {
-      for (const _ of range(5)) {
+      for (let attempt = 0; attempt < 5; attempt++) {
         const qs = materialise(lesson.assessment, rng);
         expect(qs.length).toBe(lesson.assessment.questions.length);
         for (const q of qs) {
@@ -520,7 +520,7 @@ describe("materialise", () => {
 describe("generated questions (test_learning.py)", () => {
   it.each(Object.keys(GENERATORS).sort())("%s produces gradeable questions", (gid) => {
     const rng = new Random(42);
-    for (const _ of range(200)) {
+    for (let i = 0; i < 200; i++) {
       const q = generate(gid, rng, {});
       q.id = "x";
       prepare(q, rng);

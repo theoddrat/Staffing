@@ -120,6 +120,7 @@ function start() {
   started = true;
   window.addEventListener("hashchange", onHashChange);
   document.addEventListener("click", onDocumentClick);
+  onHashChange(); // the hash may have changed while the app was starting
 }
 
 export function subscribe(listener: () => void) {

@@ -258,8 +258,8 @@ export function parseNumber(raw: unknown): Fraction | null {
   // Python's str() of a list or dict ("[...]", "{...}") never parses as a number.
   if (typeof raw === "object" || typeof raw === "function" || typeof raw === "symbol") return null;
   let s = pyStrip(pyStr(raw).normalize("NFKC"));
-  s = pyStrip(s.replaceAll("−", "-").replaceAll("–", "-").replaceAll(",", "").replaceAll("%", ""));
-  s = s.replaceAll("÷", "/");
+  s = pyStrip(s.replaceAll("\u2212", "-").replaceAll("\u2013", "-").replaceAll(",", "").replaceAll("%", ""));
+  s = s.replaceAll("\u00f7", "/");
   if (!s) return null;
   s = asciiDigits(s);
   const m = MIXED.exec(s);
@@ -291,7 +291,7 @@ export function parseNumber(raw: unknown): Fraction | null {
 export function normaliseText(s: string, mode: string | null = "words"): string {
   s = pyStrip(s.normalize("NFKC").toLowerCase());
   if (mode === "math") {
-    s = s.replaceAll("−", "-").replaceAll("×", "*").replaceAll("x", "*").replaceAll("÷", "/");
+    s = s.replaceAll("\u2212", "-").replaceAll("\u00d7", "*").replaceAll("x", "*").replaceAll("\u00f7", "/");
     return s.replace(SPACE_RUNS, "");
   }
   s = s.replace(NOT_WORDISH, "");
