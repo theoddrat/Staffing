@@ -79,12 +79,17 @@ export function RectangleArranger({ props, goal, onComplete, compact }: WidgetPr
   const [n, setN] = useState(clamp(num(props, "n", 12), 1, maxN));
   const [rows, setRows] = useState(clamp(num(props, "rows", 1), 1, n));
   const [initialRows] = useState(rows);
-  const [found, setFound] = useState<Set<number>>(new Set(n % rows === 0 ? [rows] : []));
+  // Row counts the learner has looked at. Factors are only "all found" once every row count up to the
+  // square root has been tested - the stopping rule taught in the factors lesson - so the widget never
+  // announces a result the learner has not earned.
+  const [tried, setTried] = useState<Set<number>>(new Set([rows]));
   const perRow = Math.floor(n / rows);
   const left = n % rows;
   const perfect = left === 0;
   const all = divisors(n);
-  const allFound = all.every((d) => found.has(d));
+  const found = new Set([...tried].filter((r) => n % r === 0).flatMap((r) => [r, n / r]));
+  const limit = Math.floor(Math.sqrt(n));
+  const allFound = Array.from({ length: limit }, (_, i) => i + 1).every((r) => tried.has(r));
   useGoal(
     (goal?.rows !== undefined && rows === goal.rows && perfect && rows !== initialRows) || (goal?.findAllFactors === true && allFound),
     onComplete,
@@ -92,21 +97,23 @@ export function RectangleArranger({ props, goal, onComplete, compact }: WidgetPr
   );
   const setR = (r: number) => {
     setRows(r);
-    if (n % r === 0) setFound(new Set([...found, r, n / r]));
+    setTried(new Set([...tried, r]));
   };
   const changeN = (v: number) => {
     setN(v);
     setRows(1);
-    setFound(new Set([1, v]));
+    setTried(new Set([1]));
   };
   const W = compact ? 300 : 560;
   const cell = Math.min(compact ? 20 : 30, (W - 20) / Math.max(perRow + (left ? 1 : 0), 1), 220 / (rows + (left ? 1 : 0)));
   const H = (rows + (left ? 1 : 0)) * (cell + 2) + 14;
   const prime = n > 1 && all.length === 2;
+  const rowsText = rows === 1 ? "1 row" : `${rows} rows`;
+  const line = perfect && n > 1 && (rows === 1 || perRow === 1);
   return (
     <div>
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full rounded-lg bg-surface" role="img"
-        aria-label={`${n} tiles in ${rows} rows of ${perRow}${left ? `, with ${left} left over` : ""}`}>
+        aria-label={`${n} tiles in ${rowsText} of ${perRow}${left ? `, with ${left} left over` : ""}`}>
         {perfect ? <rect x={6} y={6} width={perRow * (cell + 2) + 4} height={rows * (cell + 2) + 2} rx={6} fill="none" stroke="var(--good)" strokeWidth={2.5} /> : null}
         {Array.from({ length: rows }, (_, r) =>
           Array.from({ length: perRow }, (_, c) => (
@@ -124,16 +131,21 @@ export function RectangleArranger({ props, goal, onComplete, compact }: WidgetPr
             {editable && props.maxN !== undefined ? <Stepper label="Tiles" value={n} min={1} max={maxN} onChange={changeN} /> : null}
           </Controls>
           <Note tone={perfect ? "good" : "warn"}>
-            {perfect ? (
-              <>A perfect rectangle: <Tex tex={`${n} = ${rows} \\times ${perRow}`} /> ({rows} rows of {perRow}).</>
+            {line ? (
+              <>A single line: <Tex tex={`${n} = ${rows} \\times ${perRow}`} />. Every number can be laid out in one line, so the
+                interesting question is whether any <em>other</em> number of rows works.</>
+            ) : perfect ? (
+              <>A perfect rectangle: <Tex tex={`${n} = ${rows} \\times ${perRow}`} /> ({rowsText} of {perRow}).</>
             ) : (
-              <>{rows} rows of {perRow} uses {rows * perRow} tiles, leaving {left} over - so {rows} is not a factor of {n}.</>
+              <>{rowsText} of {perRow} uses {rows * perRow} tiles, leaving {left} over - so {rows} is not a factor of {n}.</>
             )}
           </Note>
           {editable ? (
             <Note tone={allFound ? "good" : "neutral"}>
-              Factors found so far: {[...found].sort((a, b) => a - b).join(", ")}
-              {allFound ? ` - that is all of them. ${prime ? `${n} is prime: only 1 row or ${n} rows work.` : n === 1 ? "" : `${n} is composite.`}` : ""}
+              Factors found so far: {[...found].sort((a, b) => a - b).join(", ")}.
+              {allFound && n > 1
+                ? ` That is all of them: every number of rows up to ${limit} has been tested, and any bigger factor would pair with one of those (rows × tiles in each row). ${prime ? `${n} is prime - only 1 row or ${n} rows work.` : `${n} is composite.`}`
+                : !allFound ? ` Keep testing other numbers of rows.` : ""}
             </Note>
           ) : null}
         </>
