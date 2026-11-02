@@ -160,7 +160,7 @@ assessment:
           correct: true
         - text: $0.45$
           diagnosis: Compare tenths first - 5 tenths beats 4 tenths. More digits does not mean bigger.
-          revisit: l1-decimals
+          revisit: l1-number-symbols
         - text: They are equal.
           diagnosis: $0.5 = 0.50$, which is 50 hundredths, not 45.
       explanation: $0.5$ has 5 tenths; $0.45$ has 4 tenths and 5 hundredths. $0.5$ is bigger.

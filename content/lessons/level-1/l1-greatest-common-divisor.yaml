@@ -167,7 +167,6 @@ assessment:
           correct: true
         - text: $\tfrac{6}{9}$
           diagnosis: This is equivalent, but 6 and 9 still share the factor 3. Divide by the GCD, 6, to go straight to the simplest form.
-          revisit: l1-greatest-common-divisor
         - text: $\tfrac{4}{6}$
           diagnosis: This is equivalent, but 4 and 6 still share the factor 2.
       explanation: Dividing top and bottom by $\gcd(12, 18) = 6$ gives $\tfrac{2}{3}$.

@@ -354,6 +354,12 @@ def load_content(root: Path, generator_ids: set[str] | None = None) -> ContentBu
             for target in _revisit_targets(q):
                 if target not in nodes:
                     problems.append(f"{owner}: question {q.id} revisits unknown lesson {target}")
+                elif lesson.id in nodes and target not in _ancestor_set(nodes, lesson.id):
+                    # A diagnosis should send the learner back to an idea this lesson builds on,
+                    # never to the lesson itself or to something they have not met yet.
+                    problems.append(
+                        f"{owner}: question {q.id} revisits {target}, which is not an earlier lesson this one builds on"
+                    )
         if generator_ids is not None:
             for g in lesson.practice:
                 if g not in generator_ids:
@@ -395,7 +401,8 @@ def _ancestor_set(nodes: dict[str, LessonNode], lesson_id: str) -> set[str]:
         if cur in seen:
             continue
         seen.add(cur)
-        queue.extend(nodes[cur].pre)
+        if cur in nodes:
+            queue.extend(nodes[cur].pre)
     return seen
 
 

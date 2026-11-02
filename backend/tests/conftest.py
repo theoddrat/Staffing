@@ -65,7 +65,12 @@ def wrong_answer(q: dict[str, Any]) -> dict[str, Any]:
     t = q["type"]
     if t == "choice":
         wrong = [o["id"] for o in q["options"] if not o["correct"]]
-        return {"selected": wrong[:1]}
+        if wrong:
+            return {"selected": wrong[:1]}
+        # Every option is correct (e.g. "which families does 7 belong to?"): missing one is wrong.
+        right = [o["id"] for o in q["options"] if o["correct"]]
+        assert q.get("multi") and len(right) > 1, q
+        return {"selected": right[:1]}
     if t == "number":
         if q.get("common_wrong"):
             return {"value": q["common_wrong"][0]["answer"]}

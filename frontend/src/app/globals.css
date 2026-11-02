@@ -1,26 +1,183 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ---------------------------------------------------------------- theme tokens */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+:root {
+  --bg: #fbfaf7;
+  --surface: #ffffff;
+  --surface-2: #f3f1ec;
+  --ink: #1d1b22;
+  --ink-2: #4a4655;
+  --ink-3: #7b7686;
+  --line: #e4e0d8;
+  --accent: #4f46e5;
+  --accent-ink: #ffffff;
+  --accent-soft: #eceafd;
+  --good: #15803d;
+  --good-soft: #e3f4e8;
+  --warn: #b45309;
+  --warn-soft: #fbefdc;
+  --bad: #b91c1c;
+  --bad-soft: #fbe5e5;
+  --info: #0e7490;
+  --info-soft: #ddf2f6;
+  --rh: #b45309;
+  --pnp: #0e7490;
+  --shadow: 0 1px 2px rgb(20 16 30 / 0.06), 0 4px 16px rgb(20 16 30 / 0.05);
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not([data-theme="light"]) {
+    --bg: #14131a;
+    --surface: #1c1b24;
+    --surface-2: #24232e;
+    --ink: #ecebf2;
+    --ink-2: #c4c1cf;
+    --ink-3: #8f8b9c;
+    --line: #34323f;
+    --accent: #8b85ff;
+    --accent-ink: #14131a;
+    --accent-soft: #2a2850;
+    --good: #4ade80;
+    --good-soft: #163322;
+    --warn: #fbbf24;
+    --warn-soft: #3a2c10;
+    --bad: #f87171;
+    --bad-soft: #3d1717;
+    --info: #67e8f9;
+    --info-soft: #113139;
+    --rh: #fbbf24;
+    --pnp: #67e8f9;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 16px rgb(0 0 0 / 0.25);
   }
 }
 
+:root[data-theme="dark"] {
+  --bg: #14131a;
+  --surface: #1c1b24;
+  --surface-2: #24232e;
+  --ink: #ecebf2;
+  --ink-2: #c4c1cf;
+  --ink-3: #8f8b9c;
+  --line: #34323f;
+  --accent: #8b85ff;
+  --accent-ink: #14131a;
+  --accent-soft: #2a2850;
+  --good: #4ade80;
+  --good-soft: #163322;
+  --warn: #fbbf24;
+  --warn-soft: #3a2c10;
+  --bad: #f87171;
+  --bad-soft: #3d1717;
+  --info: #67e8f9;
+  --info-soft: #113139;
+  --rh: #fbbf24;
+  --pnp: #67e8f9;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 16px rgb(0 0 0 / 0.25);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-good: var(--good);
+  --color-good-soft: var(--good-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-bad: var(--bad);
+  --color-bad-soft: var(--bad-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-rh: var(--rh);
+  --color-pnp: var(--pnp);
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --shadow-card: var(--shadow);
+}
+
+html {
+  color-scheme: light dark;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Long-form lesson text reads like a book */
+.prose-math {
+  font-family: var(--font-serif);
+  font-size: 1.075rem;
+  line-height: 1.7;
+  color: var(--ink);
+}
+.prose-math p + p,
+.prose-math p + ul,
+.prose-math ul + p,
+.prose-math p + ol,
+.prose-math ol + p {
+  margin-top: 0.75em;
+}
+.prose-math ul {
+  list-style: disc;
+  padding-left: 1.4em;
+}
+.prose-math ol {
+  list-style: decimal;
+  padding-left: 1.4em;
+}
+.prose-math li + li {
+  margin-top: 0.3em;
+}
+.prose-math h3 {
+  font-family: var(--font-sans);
+  font-weight: 650;
+  margin-top: 1em;
+}
+
+.term-link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 2px;
+  cursor: help;
+  border-radius: 3px;
+}
+.term-link:hover,
+.term-link:focus-visible {
+  background: var(--accent-soft);
+  outline: none;
+}
+
+.katex {
+  font-size: 1.08em;
+}
+.katex-display {
+  margin: 0.6em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Focus rings for keyboard users */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

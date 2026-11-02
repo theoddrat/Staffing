@@ -3,9 +3,12 @@
 from __future__ import annotations
 
 import random
+import shutil
 from fractions import Fraction
 
-from app.content.loader import iter_strings, iter_widget_refs
+import pytest
+
+from app.content.loader import ContentError, iter_strings, iter_widget_refs, load_content
 from app.content.schema import ChoiceQuestion, GeneratedQuestion, NumberQuestion
 from app.learning.grading import materialise, parse_number
 
@@ -106,6 +109,26 @@ def test_choice_questions_have_diagnoses_for_wrong_options(bundle):
                 for o in q.options:
                     if not o.correct:
                         assert o.diagnosis, f"{lesson.id}/{q.id}: wrong option '{o.text}' needs a diagnosis"
+
+
+def test_diagnoses_only_point_back_to_earlier_lessons(bundle, tmp_path):
+    """A mistake should send the learner to a prerequisite, never to the lesson they are in."""
+    root = tmp_path / "content"
+    shutil.copytree(bundle.root, root)
+    path = root / "lessons" / "level-1" / "l1-prime-numbers.yaml"
+    text = path.read_text()
+    marker = "      diagnosis: Primes are defined to be greater than 1, so 1 is not prime.\n"
+    assert marker in text
+    path.write_text(text.replace(marker, marker + "      revisit: l1-prime-numbers\n"))
+    with pytest.raises(ContentError) as err:
+        load_content(root, set(bundle_generator_ids()))
+    assert "revisits l1-prime-numbers, which is not an earlier lesson" in str(err.value)
+
+
+def bundle_generator_ids() -> list[str]:
+    from app.learning.practice import GENERATORS
+
+    return list(GENERATORS)
 
 
 def test_every_assessment_tests_understanding_in_several_ways(bundle):

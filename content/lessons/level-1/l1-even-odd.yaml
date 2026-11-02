@@ -162,7 +162,6 @@ assessment:
           correct: true
         - text: Odd
           diagnosis: Both numbers are odd. Each has one leftover, and the two leftovers pair up - so the total is even.
-          revisit: l1-even-odd
       explanation: Odd plus odd is always even (the total is 122).
     - id: own-words
       type: explain

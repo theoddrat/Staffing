@@ -179,7 +179,7 @@ assessment:
         - text: $\tfrac{3}{7}$
           diagnosis: |-
             That compares goalkeepers with the other players (a ratio, 3 : 7). The fraction compares goalkeepers with the whole team of 10.
-          revisit: l1-ratios
+          revisit: l1-numerators-denominators
         - text: $\tfrac{7}{10}$
           diagnosis: That is the fraction of players who are not goalkeepers.
       explanation: 3 goalkeepers out of 10 players - $\tfrac{3}{10}$.

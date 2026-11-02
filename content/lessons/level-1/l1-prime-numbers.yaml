@@ -159,7 +159,6 @@ assessment:
       prompt: 'True or false: 1 is a prime number.'
       answer: false
       diagnosis: Primes are defined to be greater than 1, so 1 is not prime.
-      revisit: l1-prime-numbers
       explanation: False. By definition primes are bigger than 1.
     - id: even-prime
       type: choice

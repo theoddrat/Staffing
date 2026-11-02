@@ -178,3 +178,13 @@ def test_readiness_stops_at_known_concepts(bundle):
 def test_path_progress(bundle):
     pp = path_progress(bundle, "pb-research", {"l0-what-is-mathematics": "mastered"})
     assert pp["known"] == 1 and pp["mastered"] == 1 and pp["total"] > 200
+
+
+def test_select_all_family_questions_require_every_family():
+    # For 7 every family is correct; ticking only some of them is a (partial) mistake.
+    q = generate("classify-number", random.Random(0), {"pool": ["7"]})
+    _prepare(q, random.Random(0))
+    ids = [o["id"] for o in q["options"]]
+    assert all(o["correct"] for o in q["options"]) and q["multi"]
+    assert grade(q, {"selected": ids}).correct
+    assert not grade(q, {"selected": ids[:2]}).correct
