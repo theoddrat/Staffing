@@ -760,6 +760,7 @@ function linMul(A: Lin, B: Lin): Lin {
   if (isRat(B)) return linScale(A, ratOf(B));
   A = matchSumBase(A, B);
   B = matchSumBase(B, A);
+  if (A.t.length * B.t.length > 4096) throw new TooComplex();
   const acc = new Map<string, Term>();
   for (const a of A.t) {
     for (const b of B.t) {
@@ -997,10 +998,11 @@ function evalLin(L: Lin, p: number): { v: BF; mag: number } {
 /**
  * How many digits we may compute to tell L from zero: exact ("safe") numbers can be extremely close
  * to zero (e.g. (1+sqrt(2))**n minus an integer), so allow about twice their size; others are
- * treated as zero once they vanish to about 200 digits.
+ * treated as zero once they vanish to about 200 digits beyond the size of their terms.
  */
 function precisionCap(L: Lin, mag: number): number {
-  return isSafe(L) ? Math.max(4600, 2 * Math.ceil(Math.max(mag, 0)) + 600) : 200;
+  const size = Math.ceil(Math.max(mag, 0));
+  return isSafe(L) ? Math.max(4600, 2 * size + 600) : size + 200;
 }
 
 /** L to about `digits` significant digits (zero if L is zero within the precision limit). */
@@ -1093,12 +1095,24 @@ type Group = { s: string; den: boolean; order: string; alone?: string };
 
 function groupsOf(fs: Factor[]): Group[] {
   const out: Group[] = [];
+  // Roots of integers: those with the same denominator share one radical, as SymPy prints a power
+  // of a composite number (12**(1/3), not 2**(2/3)*3**(1/3)); irrational exponents group when equal.
   const ints = new Map<string, { n: bigint; x: Lin }>();
+  const roots = new Map<bigint, { p: bigint; k: bigint }[]>();
   for (const f of fs) {
-    if (f.b.k === "int") {
+    if (f.b.k !== "int") continue;
+    if (isRat(f.x)) {
+      const r = ratOf(f.x); // 0 < r < 1
+      roots.set(r.d, [...(roots.get(r.d) ?? []), { p: f.b.n, k: r.n }]);
+    } else {
       const u = ints.get(f.x.key);
       ints.set(f.x.key, u ? { n: u.n * f.b.n, x: f.x } : { n: f.b.n, x: f.x });
     }
+  }
+  for (const [q, ps] of roots) {
+    const g = ps.reduce((acc, e) => bgcd(acc, e.k), 0n);
+    const n = ps.reduce((acc, e) => acc * e.p ** (e.k / g), 1n);
+    ints.set(`root${q}`, { n, x: linQ(new Fraction(g, q)) });
   }
   for (const { n, x } of ints.values()) {
     const N = n.toString();
@@ -1106,7 +1120,7 @@ function groupsOf(fs: Factor[]): Group[] {
     out.push({
       s: powStr(N, true, neg ? linNeg(x) : x),
       den: neg,
-      order: `0:${N}:${x.key}`,
+      order: `0:${N}!${x.key}`,
       alone: neg ? `${N}**(${linStr(x)})` : undefined,
     });
   }
@@ -1159,11 +1173,14 @@ function linStr(L: Lin): string {
   const atomLike = (t: Term) =>
     (!t.f.length && t.c.gt(0)) || (t.c.eq(1) && t.f.length === 1 && t.f[0].b.k !== "int" && t.f[0].b.k !== "sum" && isRat(t.f[0].x) && ratOf(t.f[0].x).eq(1));
   const negMul = (t: Term) => t.f.length > 0 && t.c.lt(0) && groupsOf(t.f).length === 1;
+  const byValue = (ts: Term[]) => {
+    const vals = new Map(ts.map((t) => [t, termValue(t)]));
+    return ts.sort((x, y) => vals.get(x)! - vals.get(y)!);
+  };
   if (terms.length === 2 && atomLike(terms[0]) !== atomLike(terms[1])) {
     const [a, b] = atomLike(terms[0]) ? terms : [terms[1], terms[0]];
-    if (negMul(b) && !(b.f.length === 0)) terms = [a, b];
-    else terms.sort((x, y) => termValue(x) - termValue(y));
-  } else terms.sort((x, y) => termValue(x) - termValue(y));
+    terms = negMul(b) ? [a, b] : byValue(terms);
+  } else terms = byValue(terms);
   let out = "";
   terms.forEach((t, i) => {
     let s = termStr(t);
