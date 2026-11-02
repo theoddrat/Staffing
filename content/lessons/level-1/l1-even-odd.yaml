@@ -1,0 +1,205 @@
+id: l1-even-odd
+estimated_minutes: 15
+
+goal: |
+  We are learning what even and odd numbers are, how to recognise them instantly, and what happens when
+  they are added together.
+why: |
+  Even and odd is the simplest way to sort the integers into two families, and it is the setting for many
+  first proofs. In complexity theory, the "parity" of a list of bits - whether it contains an even or odd
+  number of 1s - is a famous example in the study of how much computation problems need.
+problem: |
+  Can everyone in a group be paired up with a partner? How can you tell without pairing them all?
+
+plain: |
+  A whole number is **even** if that many objects can be split into **pairs** with nothing left over. It is
+  **odd** if one object is always left without a partner.
+
+  - 8 dots make 4 pairs - even.
+  - 7 dots make 3 pairs with 1 left over - odd.
+  - **0 is even** - there is nothing left over (and nothing to pair).
+
+  **The quick test:** a number is even exactly when its **last digit** is 0, 2, 4, 6 or 8. (Why? Every ten
+  splits into 5 pairs, so only the ones digit can leave something over.)
+
+  Along the number line, even and odd numbers **alternate**: 0 even, 1 odd, 2 even, 3 odd, ... This
+  includes the negatives: $-2$ is even and $-3$ is odd.
+
+  **Adding:** even + even is even; odd + odd is even (the two leftover dots pair up with each other!); even
+  + odd is odd.
+
+analogy:
+  strategy: everyday-objects
+  title: Dancing in pairs
+  text: |
+    At a dance where everyone needs a partner, an even number of people can all dance. With an odd number,
+    one person always waits by the wall. Whether a number is even or odd is just "does everyone get a
+    partner?"
+
+visual:
+  widget: pairs
+  props: {n: 7, editable: true}
+  caption: |
+    What you are seeing: dots arranged in two rows, so that each dot in the top row is paired with the dot
+    below it. If a dot has no partner, it is highlighted on its own. Change the number of dots and watch
+    the leftover dot appear and disappear.
+  prompt: Step from 1 dot up to 10 dots. What pattern do you see?
+
+example_simple:
+  title: Eight
+  problem: Is 8 even or odd?
+  steps:
+    - Make pairs - 2, 4, 6, 8. Four pairs with nothing left over.
+  answer: Even.
+
+example_harder:
+  title: Odd plus odd
+  problem: 7 is odd and 5 is odd. Is 7 + 5 even or odd - and will odd plus odd always behave this way?
+  steps:
+    - 7 dots are 3 pairs and 1 leftover. 5 dots are 2 pairs and 1 leftover.
+    - Put the groups together - 5 pairs, plus the two leftovers.
+    - The two leftovers pair up with each other! So there is nothing left over.
+    - 7 + 5 = 12, which is even. The same reasoning works for any two odd numbers, since each has exactly one leftover.
+  answer: Even - and odd plus odd is always even, because the two leftovers always make a pair.
+
+word:
+  terms: [even-number, odd-number]
+  text: |
+    Numbers that pair up exactly are **even numbers**; numbers that leave one over are **odd numbers**. Whether
+    a number is even or odd is called its **parity**.
+
+symbols: []
+no_symbol_note: |
+  There is no special symbol for "even" or "odd". In Level 4 you will see them written with letters: an even
+  number as $2k$ and an odd number as $2k + 1$, where $k$ can be any integer.
+
+formal:
+  statement: |
+    An integer $n$ is **even** if $n = 2 \times k$ for some integer $k$, and **odd** if $n = 2 \times k + 1$
+    for some integer $k$. Every integer is exactly one of the two.
+  kind: definition
+  glossary:
+    - {word: integer, meaning: 'A whole number or its negative.'}
+    - {word: '2 \times k', meaning: '$k$ pairs - two groups of $k$, or $k$ groups of two.'}
+    - {word: '2 \times k + 1', meaning: '$k$ pairs and one left over.'}
+    - {word: some integer k, meaning: 'There is at least one integer $k$ that makes it true.'}
+
+notation:
+  - expression: '14 = 2 \times 7'
+    read_aloud: fourteen equals two times seven
+    parts:
+      - {symbol: '2 \times 7', meaning: 'Seven pairs - nothing left over.'}
+    english: Fourteen is even.
+  - expression: '15 = 2 \times 7 + 1'
+    read_aloud: fifteen equals two times seven plus one
+    parts:
+      - {symbol: '+\,1', meaning: 'One left over.'}
+    english: Fifteen is odd.
+
+connections_back:
+  - {lesson: l1-equal-groups, how: 'Even numbers are exactly the numbers that split into equal groups of two.'}
+  - {lesson: l1-integers, how: 'Every integer, including negatives and zero, is even or odd.'}
+
+worked:
+  title: The big number
+  problem: Is 3,457,286 even or odd?
+  steps:
+    - Pairing three million objects is not practical - use the last-digit test.
+    - The last digit is 6.
+    - 6 is one of 0, 2, 4, 6, 8.
+  answer: Even.
+
+experiment:
+  widget: pairs
+  props: {n: 6, editable: true}
+  task: Change the number of dots to an odd number, and notice what happens to the pairs.
+  goal: {parity: odd}
+  success: |
+    One dot is left without a partner - that is what makes the number odd. Add one more dot and it finds a
+    partner: the next number is even. Even and odd always alternate.
+
+mistakes:
+  - mistake: Thinking 0 is not even.
+    why: 0 objects leave nothing over, and $0 = 2 \times 0$.
+    fix: Zero is even - it sits between the odd numbers $-1$ and 1.
+  - mistake: Looking at the first digit instead of the last.
+    why: Only the ones digit can leave something over - every ten splits into pairs.
+    fix: Check the last digit - 34 is even, 43 is odd.
+  - mistake: Thinking negative numbers are not even or odd.
+    why: The definitions work for all integers - $-6 = 2 \times (-3)$.
+    fix: Use the same rules - $-6$ is even, $-7$ is odd.
+
+statements:
+  - kind: proven-theorem
+    text: The sum of two odd numbers is always even.
+    note: Each odd number has exactly one leftover, and the two leftovers pair up.
+  - kind: proven-theorem
+    text: The sum of an even number and an odd number is always odd.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: eo-a
+      type: generated
+      generator: even-odd
+    - id: eo-b
+      type: generated
+      generator: even-odd
+      params: {min: -60, max: 60}
+    - id: zero-even
+      type: truefalse
+      kind: recall
+      prompt: 'True or false: 0 is an even number.'
+      answer: true
+      diagnosis: Zero objects leave nothing over, and $0 = 2 \times 0$ - so zero is even.
+      explanation: True.
+    - id: odd-odd
+      type: choice
+      kind: predict
+      prompt: Without calculating, is 37 + 85 even or odd?
+      options:
+        - text: Even
+          correct: true
+        - text: Odd
+          diagnosis: Both numbers are odd. Each has one leftover, and the two leftovers pair up - so the total is even.
+          revisit: l1-even-odd
+      explanation: Odd plus odd is always even (the total is 122).
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: Explain why the sum of two even numbers is always even.
+      rubric:
+        - Each even number can be split into pairs with nothing left over.
+        - Joining two collections of pairs gives only pairs - nothing left over.
+        - So the total is even, whatever the two even numbers are.
+      model_answer: |
+        An even number of dots splits into pairs with none left over. If you join two such groups, you just get
+        more pairs - there is still nothing left over. So the total is even, no matter which even numbers you
+        started with.
+      explanation: Pairs joined to pairs are still pairs.
+
+connections_forward:
+  - {lesson: l7-direct-proof, how: 'Classic first proofs are about even and odd numbers.'}
+  - {lesson: l2-modular-arithmetic, how: 'Even and odd is arithmetic "modulo 2" - remainders on division by 2.'}
+  - {lesson: pa-circuit-complexity, how: 'The parity function is a famous example in circuit complexity.'}
+
+practice: [even-odd]
+
+alternatives:
+  - strategy: physical-activity
+    title: Socks
+    text: |
+      Grab a handful of socks from a basket and pair them up. If every sock finds a partner, you had an even
+      number. If one sock is left alone, you had an odd number. You have been testing parity every laundry
+      day.
+  - strategy: visual
+    title: The zebra number line
+    text: |
+      Colour the integers on a number line: even ones dark, odd ones light. You get a perfectly striped
+      "zebra": dark, light, dark, light - in both directions from zero. Every step of one changes the colour.
+      That striping is why the last-digit test works and why even and odd alternate forever.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      If you and your friends hold hands in twos and nobody is left out, there's an even number of you. If one
+      friend has nobody to hold hands with, there's an odd number. That's it!

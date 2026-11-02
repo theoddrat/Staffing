@@ -1,0 +1,200 @@
+id: l1-numerators-denominators
+estimated_minutes: 20
+
+goal: |
+  We are learning the names of the two parts of a fraction - numerator and denominator - how to compare
+  fractions, and why different fractions can be the same amount.
+why: |
+  Knowing exactly what each number in a fraction does lets you compare fractions, simplify them and,
+  later, calculate with them. Equivalent fractions are the first example of a deep mathematical idea:
+  one object with many different names.
+problem: |
+  Which is bigger, $\tfrac{3}{8}$ or $\tfrac{3}{5}$? And why is $\tfrac{2}{4}$ the same as $\tfrac{1}{2}$?
+
+plain: |
+  In a fraction $\tfrac{a}{b}$:
+
+  - the **denominator** $b$ (bottom) says **how many equal parts make the whole** - it names the size of
+    each part: halves, thirds, quarters, eighths;
+  - the **numerator** $a$ (top) **counts how many** of those parts you have.
+
+  **Comparing.**
+
+  - Same denominator: more parts of the same size means more - $\tfrac{5}{8} > \tfrac{3}{8}$.
+  - Same numerator: fewer, bigger parts means more - $\tfrac{3}{5} > \tfrac{3}{8}$, because fifths are bigger than eighths.
+
+  **Equivalent fractions.** Cut every slice of a half-shaded pizza into 2: the whole now has 4 parts and
+  2 are shaded. Nothing changed except the cutting - so $\tfrac{1}{2} = \tfrac{2}{4}$. Cutting each part
+  into $k$ smaller equal pieces multiplies the numerator and the denominator by the same number $k$, and
+  leaves the amount unchanged.
+
+analogy:
+  strategy: everyday-objects
+  title: Coins of a certain kind
+  text: |
+    "Three quarters" works like "three coins". The denominator says what *kind* of coin (quarter of a
+    whole), and the numerator says *how many* coins. Three quarters is more than three eighths for the same
+    reason that three big coins are worth more than three small ones.
+
+visual:
+  widget: fraction
+  props: {numerator: 1, denominator: 2, shape: bar, editable: true, compare: [2, 4], maxDenominator: 12}
+  caption: |
+    What you are seeing: two bars of exactly the same length, each one whole. The top bar shows the
+    fraction you control; the bottom bar shows a second fraction for comparison. When the shaded lengths
+    line up exactly, the two fractions are equal, even if their numbers look different.
+  prompt: Change the top fraction. Find three different fractions whose shading lines up with $\tfrac{2}{4}$.
+
+example_simple:
+  title: Naming the parts
+  problem: In $\tfrac{3}{5}$, which number is the numerator and which is the denominator?
+  steps:
+    - The bottom number, 5, says the whole has 5 equal parts - the denominator.
+    - The top number, 3, counts the parts we have - the numerator.
+  answer: Numerator 3, denominator 5.
+
+example_harder:
+  title: Equivalent fractions
+  problem: Show that $\tfrac{3}{4} = \tfrac{6}{8}$.
+  steps:
+    - Start with a bar cut into 4 equal parts, 3 shaded.
+    - Cut each of the 4 parts into 2 equal pieces. The bar now has 8 equal parts.
+    - Each shaded part became 2 shaded pieces, so 6 pieces are shaded.
+    - The shaded length did not change - only the cutting did.
+  answer: $\tfrac{3}{4} = \tfrac{6}{8}$. Multiplying top and bottom by the same number gives an equal fraction.
+
+word:
+  terms: [numerator, denominator, equivalent-fractions]
+  text: |
+    The top number is the **numerator** (from Latin *numerare*, "to count") - it counts. The bottom number
+    is the **denominator** (from *denominare*, "to name") - it names the size of the parts. Fractions that
+    are the same amount are **equivalent fractions**. Rewriting a fraction with the smallest possible
+    numbers, as in $\tfrac{6}{8} = \tfrac{3}{4}$, is called **simplifying** it.
+
+symbols:
+  - symbol: '\frac{\text{numerator}}{\text{denominator}}'
+    name: the two positions of a fraction
+    looks_like: The counting number above the bar and the part-size number below.
+    means: Top counts parts; bottom says how many parts make a whole.
+    why: Keeping the roles in fixed positions means anyone can read any fraction at once.
+    read_aloud: '"numerator over denominator".'
+
+formal:
+  statement: |
+    In the fraction $\tfrac{a}{b}$ (with integers $a$, $b$ and $b \neq 0$), $a$ is the **numerator** and
+    $b$ the **denominator**. Two fractions $\tfrac{a}{b}$ and $\tfrac{c}{d}$ are **equivalent** - equal as
+    numbers - exactly when $a \times d = b \times c$. In particular, for any counting number $k$,
+    $\tfrac{a}{b} = \tfrac{a \times k}{b \times k}$.
+  kind: definition
+  glossary:
+    - {word: 'a \times d', meaning: '$a$ groups of $d$ (multiplication, from the lesson on equal groups).'}
+    - {word: equivalent, meaning: 'Equal in value, though written differently.'}
+    - {word: 'k', meaning: 'Any counting number - the number of smaller pieces each part is cut into.'}
+
+notation:
+  - expression: '\frac{3}{4} = \frac{6}{8}'
+    read_aloud: three quarters equals six eighths
+    parts:
+      - {symbol: '\frac{3}{4}', meaning: '3 parts of a whole cut into 4.'}
+      - {symbol: '=', meaning: Is the same amount as.}
+      - {symbol: '\frac{6}{8}', meaning: '6 parts of a whole cut into 8 - the same parts, each cut in two.'}
+    english: Three quarters and six eighths are the same amount.
+
+connections_back:
+  - {lesson: l1-fractions, how: 'This lesson names and studies the two numbers in a fraction.'}
+
+worked:
+  title: Same top number
+  problem: Which is bigger, $\tfrac{3}{8}$ or $\tfrac{3}{5}$?
+  steps:
+    - Both have numerator 3 - three parts each.
+    - Fifths come from cutting the whole into 5 parts; eighths from cutting into 8. Fewer cuts make bigger parts.
+    - So three fifths is three bigger parts than three eighths.
+  answer: $\tfrac{3}{5}$ is bigger.
+
+experiment:
+  widget: fraction
+  props: {numerator: 2, denominator: 3, shape: bar, editable: true, compare: [2, 3], maxDenominator: 12}
+  task: Make a fraction equal to $\tfrac{2}{3}$ that has denominator 6.
+  goal: {value: '2/3', denominator: 6}
+  success: |
+    $\tfrac{4}{6} = \tfrac{2}{3}$. Each third was cut into 2 sixths, so 2 thirds became 4 sixths - top and
+    bottom were both doubled.
+
+mistakes:
+  - mistake: Thinking a bigger denominator means a bigger fraction.
+    why: A bigger denominator means the whole is cut into more, *smaller* parts.
+    fix: Compare pictures - one slice of a pizza cut into 8 is smaller than one slice of a pizza cut into 4.
+  - mistake: Adding the same number to top and bottom (thinking $\tfrac{1}{2} = \tfrac{2}{3}$).
+    why: Adding changes the amount. Only multiplying (cutting each part into equal pieces) keeps it the same.
+    fix: To make an equivalent fraction, multiply top and bottom by the same number.
+  - mistake: Mixing up which number is which.
+    why: The words are unfamiliar.
+    fix: '"Denominator" names the part size (down below); "numerator" numbers the parts (on top).'
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: equiv
+      type: generated
+      generator: equivalent-fraction
+    - id: compare
+      type: generated
+      generator: compare-fractions
+    - id: denominator-of
+      type: number
+      kind: recall
+      prompt: What is the denominator of $\tfrac{7}{10}$?
+      answer: '10'
+      common_wrong:
+        - answer: '7'
+          diagnosis: 7 is the numerator - it counts parts. The denominator, on the bottom, says how many equal parts make the whole.
+      explanation: The denominator is the bottom number, 10.
+    - id: add-trap
+      type: truefalse
+      kind: counterexample
+      prompt: 'True or false: $\tfrac{1}{2} = \tfrac{2}{3}$, because we added 1 to the top and the bottom.'
+      answer: false
+      diagnosis: Adding the same number to top and bottom changes the amount - two thirds is more than one half.
+      explanation: False. Equivalent fractions come from multiplying top and bottom by the same number.
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: Explain, using a picture in words, why $\tfrac{1}{3} = \tfrac{2}{6}$.
+      rubric:
+        - Cut each third into 2 equal pieces, giving 6 equal parts in the whole.
+        - The 1 shaded third becomes 2 shaded sixths.
+        - The shaded amount does not change, so the fractions are equal.
+      model_answer: |
+        Draw a bar cut into 3 equal parts with 1 shaded. Cut every part in half: the bar now has 6 equal
+        parts, and the shaded third has become 2 shaded sixths. The shaded amount has not changed, so
+        $\tfrac{1}{3} = \tfrac{2}{6}$.
+      explanation: Cutting every part into equal pieces changes the numbers but not the amount.
+
+connections_forward:
+  - {lesson: l1-decimals, how: 'Fractions with denominators 10, 100, 1000 become decimals.'}
+  - {lesson: l1-greatest-common-divisor, how: 'Simplifying fractions fully uses the greatest common divisor.'}
+  - {lesson: l2-fraction-arithmetic, how: 'Adding fractions needs a common denominator.'}
+
+practice: [equivalent-fraction, compare-fractions]
+
+alternatives:
+  - strategy: visual
+    title: Fraction walls
+    text: |
+      Draw a strip for one whole. Under it, a strip cut into 2 halves; under that, 3 thirds; then 4
+      quarters, 5 fifths, 6 sixths, all the same total length. Look straight down: the edge of one half
+      lines up exactly with two quarters and three sixths. Look along a column: a third is wider than a
+      quarter, which is wider than a fifth. A fraction wall shows comparisons and equivalences at a glance.
+  - strategy: everyday-objects
+    title: Hours and minutes
+    text: |
+      Half an hour is 30 minutes; two quarters of an hour is also 30 minutes. $\tfrac{1}{2}$ and
+      $\tfrac{2}{4}$ of an hour are the same time - different names, same amount. And a quarter of an hour
+      (15 minutes) is longer than an eighth of an hour (7½ minutes): bigger denominator, smaller part.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      The bottom number tells you how many pieces the cake is cut into. The top number tells you how many
+      pieces you get. If the cake is cut into lots of pieces, each piece is tiny! So $\tfrac{1}{8}$ is a
+      little piece and $\tfrac{1}{2}$ is a big piece.

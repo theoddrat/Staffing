@@ -1,0 +1,229 @@
+id: l0-why-mathematics
+estimated_minutes: 15
+
+goal: |
+  We are learning why people invented mathematics, and the very first mathematical idea they
+  needed: matching things one-to-one.
+why: |
+  Mathematics was not handed down as a finished set of rules. People built it, step by step,
+  to solve real problems - keeping track of animals, trading, sharing, measuring land and
+  following the seasons. Seeing those problems makes the ideas feel natural rather than imposed.
+problem: |
+  How can you be sure none of your sheep went missing - when you do not have words for numbers?
+
+plain: |
+  Long before there were written numbers, people needed to keep track of things: how many
+  animals left in the morning, how many baskets of grain were traded, how many days until the
+  river flooded.
+
+  The oldest trick is beautifully simple: **match things up**. For every sheep that leaves the
+  pen, put one pebble in a bag. In the evening, take out one pebble for every sheep that comes
+  back. If pebbles are left in the bag, some sheep are missing - and you know exactly how many
+  pebbles' worth.
+
+  You do not need number words to do this. You only need to pair each sheep with exactly one
+  pebble. Counting, written numbers and calculation all grew from this idea.
+
+analogy:
+  strategy: everyday-objects
+  title: Coats and hooks
+  text: |
+    At a party every guest hangs their coat on a hook. At the end of the night, if a coat is
+    still hanging, you know a guest has not left yet - even if you never counted the guests.
+    Each guest matched one hook. Matching like this tells you whether two groups are the same
+    size without saying a single number.
+
+visual:
+  widget: shepherd
+  props: {sheep: 6}
+  caption: |
+    What you are seeing: a pen of sheep and a bag of pebbles. In the morning, each sheep that
+    walks out adds one pebble to the bag. In the evening, each sheep that walks back in removes
+    one pebble. Any pebbles left at the end stand for sheep that have not come home.
+  prompt: Send the sheep out, then bring them back. What do the leftover pebbles tell you?
+
+example_simple:
+  title: Cups and saucers
+  problem: There are some cups and some saucers on a table. Without counting, how can you tell whether there are the same number of each?
+  steps:
+    - Put one cup on each saucer.
+    - If every cup has a saucer and every saucer has a cup, the two groups are the same size.
+    - If a cup is left without a saucer, there are more cups. If a saucer is left empty, there are more saucers.
+  answer: Pair them up. Matching tells you which group is bigger, or that they are equal, without any counting.
+
+example_harder:
+  title: The returning flock
+  problem: A shepherd put one pebble in a bag for each of her sheep in the morning. In the evening, she removes one pebble for each returning sheep, and 2 pebbles are left. What does she know?
+  steps:
+    - Every sheep that left was matched with one pebble.
+    - Every sheep that returned removed exactly one pebble.
+    - So each pebble still in the bag belongs to a sheep that did not return.
+    - Two pebbles remain, so two sheep are still out - she knows this without ever saying "how many sheep" she owns.
+  answer: Exactly two sheep are missing.
+
+word:
+  terms: [one-to-one-correspondence]
+  text: |
+    Pairing two groups so that every member of each group has exactly one partner in the other
+    is called a **one-to-one correspondence**. "Correspondence" means "matching up". It is one of
+    the deepest ideas in mathematics: much later you will see it used to compare the sizes of
+    *infinite* collections.
+
+symbols:
+  - symbol: '|\;|\;|\;|'
+    name: tally marks
+    looks_like: Short upright strokes, one for each thing counted, often with every fifth stroke drawn across the other four.
+    means: One stroke stands for one object. A tally is a one-to-one correspondence written down.
+    why: Strokes are the easiest marks to make with a stick, a knife or a piece of chalk - which is why they are among the oldest number symbols in the world.
+    read_aloud: '"Four tally marks", or simply the number they show - "four".'
+
+formal:
+  statement: |
+    A **one-to-one correspondence** between two collections is a way of pairing their members so
+    that every member of each collection is paired with exactly one member of the other.
+    Two collections have the same size exactly when such a pairing exists.
+  kind: definition
+  glossary:
+    - {word: collection, meaning: 'A group of things considered together, such as a flock of sheep or a bag of pebbles.'}
+    - {word: member, meaning: One of the things in a collection.}
+    - {word: pairing, meaning: Linking things two at a time - one from each collection.}
+    - {word: exactly one, meaning: 'Not zero and not two or more - precisely one.'}
+
+notation:
+  - expression: '|\;|\;|\;|\;|\;|'
+    read_aloud: six tally marks
+    parts:
+      - {symbol: '|', meaning: One stroke for one object.}
+    english: Six things have been matched with six strokes, so there are six things.
+
+connections_back:
+  - {lesson: l0-what-is-mathematics, how: 'Keeping track of animals is a problem about quantity - one of the four lenses of mathematics.'}
+
+worked:
+  title: Who is missing from the picnic?
+  problem: Children leave a classroom for a picnic, and each one takes a sticker from a sheet as they go. When they come back, each child sticks their sticker back on the sheet. One space is still empty. What can the teacher conclude?
+  steps:
+    - Each child who left took exactly one sticker - a one-to-one correspondence between children and stickers.
+    - Each child who came back returned exactly one sticker.
+    - An empty space is a sticker that was not returned, so it belongs to a child who has not come back.
+  answer: Exactly one child is still missing. The teacher knows this without counting the class.
+
+experiment:
+  widget: shepherd
+  props: {sheep: 7, missing: 2}
+  task: Use the pebbles to discover how many sheep failed to return. Send all the sheep out, then bring back every sheep that comes home.
+  goal: {complete: true}
+  success: |
+    The leftover pebbles told you how many sheep are missing - and you never needed to count the
+    flock. This is one-to-one correspondence: the idea underneath every act of counting.
+
+mistakes:
+  - mistake: Thinking you must know number words to tell whether two groups are the same size.
+    why: Matching works without any words at all. People (and even some animals) can compare groups by pairing.
+    fix: Remember the cups and saucers. Pairing comes first; counting is a faster way of doing the same job.
+  - mistake: Matching one pebble with two sheep "to save pebbles".
+    why: Then a missing sheep might not be noticed. The method only works if every sheep has exactly one pebble.
+    fix: The rule is *exactly one partner each* - that is what "one-to-one" means.
+
+statements:
+  - kind: established-fact
+    text: Bones with deliberately cut rows of notches, more than 20,000 years old, have been found in Africa.
+  - kind: hypothesis
+    text: Many archaeologists think such notches were tallies used to keep count of something.
+    note: Nobody can be certain what was being counted - possibly days, animals or events.
+  - kind: established-fact
+    text: Small clay tokens used to keep records of goods appear in the ancient Near East from roughly 10,000 years ago, and written number signs developed there several thousand years later.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: reasons
+      type: choice
+      kind: recall
+      multi: true
+      prompt: Which of these were real reasons people developed mathematics? Choose all that apply.
+      options:
+        - text: Keeping track of animals and goods.
+          correct: true
+        - text: Trading and sharing fairly.
+          correct: true
+        - text: Measuring land and building.
+          correct: true
+        - text: Following the seasons and making calendars.
+          correct: true
+        - text: To make school harder.
+          diagnosis: Mathematics existed for thousands of years before schools. It grew from practical needs.
+      explanation: Mathematics grew from practical needs - tracking animals and goods, trade, measuring land and following the seasons.
+    - id: pebbles-left
+      type: number
+      kind: apply
+      prompt: A shepherd puts one pebble in a bag for each sheep that leaves. Later she removes one pebble for each sheep that returns, and 3 pebbles are left. How many sheep have not returned?
+      answer: '3'
+      hint: Each pebble belongs to exactly one sheep.
+      explanation: Each leftover pebble matches one sheep that did not return, so 3 sheep are still out.
+    - id: words-needed
+      type: truefalse
+      kind: recall
+      prompt: 'True or false: to know whether two groups are the same size, you must know the number words.'
+      answer: false
+      diagnosis: Pairing the members of the two groups one-to-one tells you whether they are the same size, with no words needed.
+      explanation: False. A one-to-one correspondence shows that two groups are the same size without counting.
+    - id: which-correspondence
+      type: choice
+      kind: apply
+      prompt: Which of these is a one-to-one correspondence?
+      options:
+        - text: Every child in a class sits on their own chair, and no chair is empty.
+          correct: true
+        - text: Two children share each chair.
+          diagnosis: Each chair has two partners, so the pairing is not one-to-one.
+        - text: Every child sits on a chair, and three chairs are empty.
+          diagnosis: Three chairs have no partner, so not every member of the chairs group is matched.
+      explanation: One-to-one means every child has exactly one chair and every chair has exactly one child.
+    - id: why-works
+      type: explain
+      kind: explain
+      prompt: Explain in your own words why the shepherd's pebble method works, even though she has no words for numbers.
+      rubric:
+        - Each sheep is matched with exactly one pebble.
+        - A pebble left over means its sheep did not come back.
+        - No counting or number words are needed - only matching.
+      model_answer: |
+        Every sheep that leaves gets exactly one pebble, and every sheep that returns takes exactly
+        one pebble away. So any pebble still in the bag belongs to a sheep that did not return. She
+        never needs number words - she only needs to match sheep and pebbles one-to-one.
+      explanation: The method works because of one-to-one matching - exactly one pebble per sheep.
+
+connections_forward:
+  - {lesson: l0-counting, how: 'Counting is one-to-one correspondence with the counting words.'}
+  - {lesson: l1-comparing-numbers, how: 'Pairing objects is the most reliable way to compare two groups.'}
+  - {lesson: l8-functions-mappings, how: 'The formal name for a one-to-one correspondence is a bijection.'}
+  - {lesson: l12-ct-diagonalization, how: 'Cantor used correspondences to show some infinite collections are bigger than others - an idea at the heart of computability.'}
+
+alternatives:
+  - strategy: physical-activity
+    title: Try it with your hands
+    text: |
+      Put some coins on the table in one pile and some buttons in another - grab a random handful
+      of each, without counting. Now place one button on top of each coin. Do not count anything.
+      When you run out of one kind, look at what is left: if coins are left uncovered, there were
+      more coins; if buttons are left over, there were more buttons; if neither, they were the
+      same. You have just compared two quantities using one-to-one correspondence - exactly what
+      the first mathematicians did.
+  - strategy: history
+    title: How tallies became numbers
+    text: |
+      Archaeologists have found bones tens of thousands of years old with neat rows of cut
+      notches. Many think these were tallies - one notch per thing. Much later, in the ancient
+      Near East, people used small clay tokens to stand for goods: one token per jar of oil.
+      Eventually they pressed the tokens' shapes into clay instead of keeping the tokens, and
+      those marks became some of the first written number signs. Each step made the record
+      shorter, but underneath was always the same idea: one mark for one thing.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      Imagine you have some toy cars and some toy garages. You want to know if every car can have
+      its own garage. Don't count! Just drive one car into each garage. If a car has no garage
+      left, there are more cars. If a garage is empty, there are more garages. If everything
+      fits perfectly, they are the same. Grown-up mathematicians call this "one-to-one
+      correspondence".

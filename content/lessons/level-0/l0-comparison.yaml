@@ -1,0 +1,218 @@
+id: l0-comparison
+estimated_minutes: 12
+
+goal: |
+  We are learning what it means to compare two quantities, and three reliable ways to do it.
+why: |
+  "Is there more?", "Is this bigger?", "Is it the same?" are among the first questions anyone
+  asks. Every inequality, every ranking, and every statement that one algorithm is faster than
+  another is a comparison.
+problem: |
+  How do you decide, with certainty, which of two amounts is bigger - or whether they are equal?
+
+plain: |
+  Comparing two quantities means finding out which of three things is true:
+
+  - the first is **more** than the second,
+  - they are **the same**,
+  - the first is **less** than the second.
+
+  Exactly one of these is always true - never two at once, and never none.
+
+  There are three reliable ways to compare:
+
+  1. **Side by side** - stand two children back to back to see who is taller.
+  2. **Matching** - pair the objects of two groups one-to-one. Whichever group has objects left
+     over is bigger. If nothing is left over, they are the same.
+  3. **Counting or measuring** - find a number for each, then compare the numbers.
+
+  One warning: you can only compare quantities **of the same kind**. Three watermelons and five
+  grapes - "more" what? More fruit (five is more), or more weight (the watermelons win)?
+
+analogy:
+  strategy: everyday-objects
+  title: Back to back
+  text: |
+    Two friends stand back to back on flat ground and a third friend lays a book flat across the
+    tops of their heads. If the book tilts, one is taller. If it sits level, they are the same
+    height. Nobody needed a ruler - just a direct comparison.
+
+visual:
+  widget: compare-groups
+  props: {left: 6, right: 4, matching: true}
+  caption: |
+    What you are seeing: two groups of objects, one on the left and one on the right. Lines pair
+    each object on the left with one on the right. Objects with no partner are highlighted. The
+    group with unpartnered objects is the bigger group.
+  prompt: Add or remove objects on either side and watch the matching change.
+
+example_simple:
+  title: Apples and pears
+  problem: There are 5 apples and 3 pears. Which group is bigger?
+  steps:
+    - Pair each pear with an apple - 3 pairs.
+    - 2 apples are left without a partner.
+  answer: There are more apples than pears.
+
+example_harder:
+  title: More of what?
+  problem: A child has 3 big watermelons. Another has 5 grapes. Who has more fruit?
+  steps:
+    - The question is unclear, because "more" could mean two different quantities.
+    - '*More pieces of fruit?* Count them: 5 grapes is more than 3 watermelons.'
+    - '*More weight of fruit?* Weigh them: 3 watermelons are much heavier than 5 grapes.'
+    - To compare, we must first agree which quantity we are comparing.
+  answer: It depends on the quantity. By number, the grapes win; by weight, the watermelons win.
+
+word:
+  terms: [comparison]
+  text: |
+    This is called **comparison**. When we compare, we use the words **more** (or *greater*,
+    *bigger*), **fewer** or **less** (*smaller*), and **the same** (*equal*). Strictly, "fewer" is
+    used for things you count ("fewer apples") and "less" for things you measure ("less water"),
+    though many people use "less" for both.
+
+symbols: []
+no_symbol_note: |
+  Mathematics has special symbols for "greater than", "less than" and "equal to": $>$, $<$ and $=$.
+  You will meet them properly in [[lesson:l1-bigger-smaller|Bigger and smaller]] and
+  [[lesson:l1-equal-quantities|Equal quantities]].
+
+formal:
+  statement: |
+    To **compare** two quantities of the same kind is to determine which one of three possibilities
+    holds: the first is greater than the second, the two are equal, or the first is less than the
+    second.
+  kind: definition
+  glossary:
+    - {word: of the same kind, meaning: 'Both are numbers of things, or both are lengths, or both are weights - not a mixture.'}
+    - {word: greater than, meaning: More than.}
+    - {word: equal, meaning: Exactly the same amount.}
+    - {word: less than, meaning: 'Smaller than, or fewer than.'}
+
+notation: []
+
+connections_back:
+  - {lesson: l0-quantity, how: 'We compare quantities - how many or how much.'}
+  - {lesson: l0-why-mathematics, how: 'Matching one-to-one is the oldest way to compare groups.'}
+
+worked:
+  title: Plates and guests
+  problem: You are laying a table. You put one plate in front of each chair, and two plates are left in your hands. What can you say about plates and chairs?
+  steps:
+    - Putting one plate per chair is a one-to-one matching.
+    - Every chair got a plate, and 2 plates had no chair.
+  answer: There are more plates than chairs - exactly 2 more.
+
+experiment:
+  widget: compare-groups
+  props: {left: 7, right: 4, editable: true, matching: true}
+  task: Change the groups until they are exactly the same size, so every object has a partner.
+  goal: {relation: '='}
+  success: |
+    When every object has exactly one partner, the groups are equal. Notice you did not have to
+    count - matching alone decided it.
+
+mistakes:
+  - mistake: Judging "more" by how much space a group takes up.
+    why: Spread-out objects look like more. Spacing is not quantity.
+    fix: Match one-to-one, or count.
+  - mistake: Comparing quantities of different kinds.
+    why: '"More" is meaningless unless you say more of what - number, length, weight, time.'
+    fix: First decide which quantity you are comparing.
+
+statements:
+  - kind: proven-theorem
+    text: For any two counting numbers, exactly one of these is true - the first is smaller, they are equal, or the first is bigger.
+    note: This is called the law of trichotomy. It can be proved from the basic rules of arithmetic.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: leftover
+      type: choice
+      kind: apply
+      prompt: You pair up cats and dogs, one cat with each dog. Three dogs have no cat. What do you know?
+      options:
+        - text: There are more dogs than cats.
+          correct: true
+        - text: There are more cats than dogs.
+          diagnosis: The animals left without a partner belong to the bigger group - those are the dogs.
+        - text: There are the same number of each.
+          diagnosis: Equal groups pair up with nothing left over. Here three dogs are left.
+      explanation: The group with objects left over is bigger, so there are more dogs - three more.
+    - id: three-outcomes
+      type: choice
+      kind: recall
+      prompt: When you compare two counting numbers, how many of the three possibilities (more, equal, less) are true?
+      options:
+        - text: Exactly one.
+          correct: true
+        - text: Sometimes two.
+          diagnosis: Two amounts cannot be equal and different at once, or each bigger than the other.
+        - text: Sometimes none.
+          diagnosis: Two counting numbers always stand in one of the three relations.
+      explanation: Exactly one of more, equal or less is always true.
+    - id: same-kind
+      type: truefalse
+      kind: apply
+      prompt: 'True or false: "3 metres is more than 5 kilograms" is a sensible comparison.'
+      answer: false
+      diagnosis: Length and weight are different kinds of quantity - one cannot be "more" than the other.
+      explanation: False. We can only compare quantities of the same kind.
+    - id: match-gap
+      type: number
+      kind: solve
+      prompt: You give one sticker to each child in a group. You have 9 stickers and 2 are left over. How many children are in the group?
+      answer: '7'
+      common_wrong:
+        - answer: '11'
+          diagnosis: The 2 leftover stickers had no child, so there are fewer children than stickers.
+      hint: Each child got one sticker, and 2 stickers had nobody.
+      explanation: 9 stickers, 2 unused, so 7 stickers were matched with 7 children.
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: Describe a way to find out which of two groups of objects is bigger without counting either group.
+      rubric:
+        - Pair the objects one-to-one.
+        - The group with objects left over is bigger.
+        - If nothing is left over, the groups are equal.
+      model_answer: |
+        Pair them up: match one object from the first group with one from the second, again and
+        again. If one group has objects left over at the end, it is the bigger group. If everything
+        pairs off with nothing left, the groups are the same size.
+      explanation: One-to-one matching compares groups without counting.
+
+connections_forward:
+  - {lesson: l1-comparing-numbers, how: 'Comparing numbers by matching and by counting.'}
+  - {lesson: l1-bigger-smaller, how: 'The symbols for greater than and less than.'}
+  - {lesson: l0-reasoning, how: 'Chains of comparisons let us reason about things we never compared directly.'}
+  - {lesson: pa-time-complexity, how: 'Complexity theory compares how quickly the running times of algorithms grow.'}
+
+alternatives:
+  - strategy: story
+    title: The fair party
+    text: |
+      Two teams each claim to have brought more balloons to a party. Instead of arguing, the host
+      asks one member of each team to step forward together, each holding one balloon, and pop
+      them into a shared box - one from each side, over and over. When the blue team runs out, the
+      red team still has two balloons. Everyone can now see that red brought more - and by
+      exactly two. Nobody counted; the matching settled the argument.
+  - strategy: smaller-steps
+    title: Three questions in a row
+    text: |
+      When comparing two groups, ask in this order:
+
+      1. **Are they the same kind of thing?** (Both counts? Both lengths?) If not, stop - they cannot be compared.
+      2. **Can I put them side by side or pair them up?** If yes, do it and look for leftovers.
+      3. **If not, can I count or measure both?** Then compare the two numbers.
+
+      Each question is small, and together they always give an answer.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      You have some red blocks and some blue blocks. Put one red block on top of each blue block.
+      Are there any red blocks left over? Then there are more red ones! Any blue ones left
+      without a red block on top? Then there are more blue ones! Nothing left over? Then they are
+      the same!

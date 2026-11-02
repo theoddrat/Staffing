@@ -1,0 +1,187 @@
+id: l1-multiples
+estimated_minutes: 15
+
+goal: |
+  We are learning what multiples are - the numbers you land on when you skip count - and how multiples are
+  the mirror image of factors.
+why: |
+  Multiples appear whenever things repeat at a regular rhythm: bus timetables, flashing lights, calendars.
+  They lead to least common multiples, remainders and modular arithmetic.
+problem: |
+  A bus comes every 7 minutes. Will a bus arrive exactly 91 minutes after the first one?
+
+plain: |
+  The **multiples** of a number are what you get by skip counting by it:
+
+  - multiples of 3 - **3, 6, 9, 12, 15, ...**
+  - multiples of 5 - **5, 10, 15, 20, ...**
+
+  Each multiple is a whole number of "jumps": 15 is 5 jumps of 3. Multiples **never run out** - you can
+  always make one more jump.
+
+  **Factors and multiples are two views of the same fact.** "3 is a factor of 12" and "12 is a multiple of 3"
+  both say that 12 objects make equal groups of 3 with nothing left over.
+
+  (Zero is also a multiple of every number - zero jumps - but lists of multiples usually start with the
+  number itself.)
+
+analogy:
+  strategy: everyday-objects
+  title: Ticket prices
+  text: |
+    If tickets cost 5 coins each, the totals you can pay for a whole number of tickets are 5, 10, 15, 20, ...
+    - the multiples of 5. You can never pay exactly 12 coins for whole tickets: 12 is not a multiple of 5.
+
+visual:
+  widget: multiples-jumps
+  props: {a: 3, b: 0, max: 30, editable: true}
+  caption: |
+    What you are seeing: a number line and a frog that always jumps the same distance. Every place the frog
+    lands is a multiple of its jump size; the landing spots are marked.
+  prompt: Change the jump size. Which numbers does the frog land on each time?
+
+example_simple:
+  title: Multiples of 4
+  problem: List the multiples of 4 up to 40.
+  steps:
+    - Skip count by 4 - 4, 8, 12, 16, 20, 24, 28, 32, 36, 40.
+  answer: 4, 8, 12, 16, 20, 24, 28, 32, 36, 40.
+
+example_harder:
+  title: The bus question
+  problem: A bus comes every 7 minutes. Is 91 a multiple of 7 - will a bus come exactly 91 minutes after the first?
+  steps:
+    - Skip count by 7 - 7, 14, 21, 28, 35, 42, 49, 56, 63, 70.
+    - Continue - 77, 84, 91.
+    - We landed exactly on 91, after 13 jumps.
+  answer: Yes - 91 is 13 jumps of 7, so 91 is a multiple of 7. (It looks prime, but it is not.)
+
+word:
+  terms: [multiple]
+  text: |
+    The numbers landed on by skip counting are **multiples** (from Latin *multiplex*, "many-fold"). "The fifth
+    multiple of 4" means the fifth landing point - 20.
+
+symbols: []
+no_symbol_note: |
+  There is no separate symbol for "is a multiple of". Mathematicians write it the other way round - "4 divides
+  20", $4 \mid 20$ - which is introduced in [[lesson:l1-divisibility|Divisibility]].
+
+formal:
+  statement: |
+    An integer $m$ is a **multiple** of a natural number $d$ if $m = d \times k$ for some integer $k$. The
+    positive multiples of $d$ are $d, 2 \times d, 3 \times d, \ldots$ For natural numbers, $m$ is a multiple of
+    $d$ exactly when $d$ is a factor of $m$.
+  kind: definition
+  glossary:
+    - {word: 'm = d \times k', meaning: '$m$ is $k$ jumps of size $d$.'}
+    - {word: 'd, 2 \times d, 3 \times d, \ldots', meaning: 'One jump, two jumps, three jumps and so on.'}
+    - {word: exactly when, meaning: 'The two statements are always true together and false together.'}
+
+notation:
+  - expression: '3,\ 6,\ 9,\ 12,\ \ldots'
+    read_aloud: three, six, nine, twelve, and so on
+    parts:
+      - {symbol: '3', meaning: 'One jump of 3.'}
+      - {symbol: '6', meaning: 'Two jumps of 3.'}
+      - {symbol: '\ldots', meaning: 'The multiples continue forever.'}
+    english: The multiples of three.
+
+connections_back:
+  - {lesson: l1-factors, how: 'Multiples are the mirror image of factors.'}
+  - {lesson: l1-equal-groups, how: 'Skip counting gives the multiples.'}
+
+worked:
+  title: Two views of one fact
+  problem: State the relationship between 4 and 20 in two ways.
+  steps:
+    - 20 objects make 4 equal groups of 5 - so 4 is a factor of 20.
+    - Skip counting by 4 lands on 20 (5 jumps) - so 20 is a multiple of 4.
+  answer: 4 is a factor of 20, and 20 is a multiple of 4.
+
+experiment:
+  widget: multiples-jumps
+  props: {a: 7, b: 0, max: 50, editable: true}
+  task: Use the frog with jump size 7 to land exactly on 42.
+  goal: {findMultiple: 42}
+  success: |
+    42 is 6 jumps of 7 - a multiple of 7. Notice the frog never lands on 40 or 41: those are not multiples of
+    7.
+
+mistakes:
+  - mistake: Confusing multiples with factors ("the multiples of 12 are 1, 2, 3, 4, 6").
+    why: Those are factors - they go into 12. Multiples are 12, 24, 36, ...
+    fix: Multiples are at least as big as the number; factors are at most as big.
+  - mistake: Thinking the list of multiples ends.
+    why: The frog can always make one more jump.
+    fix: Write multiples with "..." at the end.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: mult-a
+      type: generated
+      generator: is-multiple
+    - id: mult-b
+      type: generated
+      generator: is-multiple
+    - id: relation
+      type: choice
+      kind: apply
+      prompt: 6 is a factor of 30. Which of these says the same thing?
+      options:
+        - text: 30 is a multiple of 6.
+          correct: true
+        - text: 6 is a multiple of 30.
+          diagnosis: Multiples are at least as big as the number - 30, 60, 90, ... are multiples of 30.
+        - text: 30 is a factor of 6.
+          diagnosis: A factor goes into a number exactly - 30 does not go into 6.
+      explanation: '"6 is a factor of 30" and "30 is a multiple of 6" are the same fact.'
+    - id: fifth
+      type: number
+      kind: solve
+      prompt: What is the fifth multiple of 6?
+      answer: '30'
+      common_wrong:
+        - answer: '11'
+          diagnosis: That adds 5 to 6. The fifth multiple is five jumps of 6 - 6, 12, 18, 24, 30.
+      explanation: 6, 12, 18, 24, 30.
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: Explain the difference between the factors of 12 and the multiples of 12, with examples.
+      rubric:
+        - Factors divide 12 exactly (1, 2, 3, 4, 6, 12).
+        - Multiples are what you land on skip counting by 12 (12, 24, 36, ...).
+        - Factors are at most 12 and there are finitely many; multiples go on forever.
+      model_answer: |
+        Factors of 12 are numbers that go into 12 exactly - 1, 2, 3, 4, 6 and 12. Multiples of 12 are the
+        numbers you land on counting in twelves - 12, 24, 36 and so on forever. Factors are never bigger than
+        12; multiples are never smaller.
+      explanation: Factors go into a number; multiples are made from it.
+
+connections_forward:
+  - {lesson: l1-divisibility, how: 'Testing whether one number is a multiple of another.'}
+  - {lesson: l1-least-common-multiple, how: 'Multiples two numbers share.'}
+  - {lesson: l2-modular-arithmetic, how: 'Clock arithmetic ignores whole multiples.'}
+
+practice: [is-multiple, skip-count]
+
+alternatives:
+  - strategy: everyday-objects
+    title: The calendar
+    text: |
+      If you water a plant every 3 days starting on the 3rd, you water it on the 3rd, 6th, 9th, 12th, 15th, ...
+      - the multiples of 3. Will you water it on the 20th? Skip counting by 3 goes 18, 21 - no. The 20th is not
+      a multiple of 3. Regular rhythms in life produce multiples.
+  - strategy: visual
+    title: Shading a hundred square
+    text: |
+      On a grid of the numbers 1 to 100, shade every multiple of 3. They form diagonal stripes. Shade the
+      multiples of 5 in another colour: two vertical columns (ending in 5 and 0). Multiples make beautiful,
+      regular patterns - which is exactly why they are useful for prediction.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      A kangaroo always jumps 2 steps at a time: 2, 4, 6, 8... Those numbers are the multiples of 2 - every
+      place the kangaroo lands. A different kangaroo jumping 5 steps lands on 5, 10, 15 - the multiples of 5.

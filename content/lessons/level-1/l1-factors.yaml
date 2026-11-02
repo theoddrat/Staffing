@@ -1,0 +1,197 @@
+id: l1-factors
+estimated_minutes: 20
+
+goal: |
+  We are learning what the factors of a number are - all the numbers of equal rows its objects can be
+  arranged into - and how to find every factor without missing any.
+why: |
+  Factors describe how a number is built. They are needed for simplifying fractions, finding greatest common
+  divisors, and later for the arithmetic functions that count and add factors - the raw material of Dirichlet
+  series and the zeta function.
+problem: |
+  In how many different ways can 12 chairs be set out in equal rows? Which row sizes work?
+
+plain: |
+  A **factor** of a number is a number that **divides it exactly** - that many equal rows can be made with
+  nothing left over.
+
+  For 12 tiles, the rows that work are 1, 2, 3, 4, 6 and 12. Those are the **factors of 12**.
+
+  Factors come in **pairs**: 2 rows of 6 means 6 rows of 2 also works. So 12's factors pair up:
+  1 and 12, 2 and 6, 3 and 4.
+
+  **Finding all factors systematically:** test 1, 2, 3, ... in order. Each time one works, write down it
+  *and* its partner. Stop when the numbers you are testing meet the partners you have already found.
+
+  Every number has at least two factors, 1 and itself. **Prime numbers have exactly two.**
+
+analogy:
+  strategy: everyday-objects
+  title: Setting out chairs
+  text: |
+    A teacher with 12 chairs can set them out in 1 long row, or 2 rows of 6, or 3 rows of 4, or 4 rows of 3,
+    or 6 rows of 2, or 12 rows of 1. Each possible number of rows is a factor of 12. A number of rows that
+    leaves a chair spare - like 5 - is not a factor.
+
+visual:
+  widget: rectangle-arranger
+  props: {n: 12, editable: true, maxN: 48}
+  caption: |
+    What you are seeing: tiles and a control for the number of rows. Every number of rows that gives a perfect
+    rectangle is recorded in the list of factors, together with its partner (the number of tiles in each row).
+  prompt: Try every number of rows from 1 to 12. Which ones go in the list?
+
+example_simple:
+  title: Factors of 6
+  problem: Find all the factors of 6.
+  steps:
+    - 1 works (1 row of 6). Partner 6.
+    - 2 works (2 rows of 3). Partner 3.
+    - 3 is already a partner, so we have met the partners - stop.
+  answer: The factors of 6 are 1, 2, 3 and 6.
+
+example_harder:
+  title: Factors of 36
+  problem: Find all the factors of 36.
+  steps:
+    - 1 and 36. 2 and 18. 3 and 12. 4 and 9.
+    - 5 does not work - 36 shared into 5 equal rows leaves 1 over.
+    - 6 works - and its partner is 6 itself (6 rows of 6, a square).
+    - The testing number has met its partner, so stop.
+  answer: 1, 2, 3, 4, 6, 9, 12, 18, 36 - nine factors. Because 6 pairs with itself, 36 has an odd number of factors.
+
+word:
+  terms: [factor]
+  text: |
+    A number that divides another exactly is a **factor** of it (from Latin *factor*, "maker" - factors
+    "make" the number). Another word for factor is **divisor**. Two factors that multiply to the number, like
+    3 and 4 for 12, are a **factor pair**.
+
+symbols: []
+no_symbol_note: |
+  The relationship "is a factor of" has its own symbol, a vertical bar - $3 \mid 12$ - which you will meet in
+  [[lesson:l1-divisibility|Divisibility]]. Factor pairs are written with the times sign: $12 = 3 \times 4$.
+
+formal:
+  statement: |
+    A natural number $d$ is a **factor** (or **divisor**) of an integer $n$ if $n = d \times k$ for some
+    integer $k$. Factors come in pairs $d$ and $k$ with $d \times k = n$.
+  kind: definition
+  glossary:
+    - {word: 'd', meaning: 'The candidate factor - the number of equal rows.'}
+    - {word: 'n = d \times k', meaning: '$n$ objects make $d$ rows of $k$.'}
+    - {word: some integer k, meaning: 'There is a whole number that makes it work - the row length.'}
+
+notation:
+  - expression: '12 = 1 \times 12 = 2 \times 6 = 3 \times 4'
+    read_aloud: twelve equals one times twelve equals two times six equals three times four
+    parts:
+      - {symbol: '1 \times 12', meaning: 'The factor pair 1 and 12.'}
+      - {symbol: '2 \times 6', meaning: 'The factor pair 2 and 6.'}
+      - {symbol: '3 \times 4', meaning: 'The factor pair 3 and 4.'}
+    english: Every rectangle 12 tiles can make, written as factor pairs.
+
+connections_back:
+  - {lesson: l1-composite-numbers, how: 'A number has a factor other than 1 and itself exactly when it is composite.'}
+  - {lesson: l1-equal-groups, how: 'Factors are the numbers of equal groups.'}
+
+worked:
+  title: Factors of 20
+  problem: List all the factors of 20.
+  steps:
+    - 1 and 20. 2 and 10.
+    - 3 does not work (2 left over).
+    - 4 and 5.
+    - The next number to test is 5, which is already a partner - stop.
+  answer: 1, 2, 4, 5, 10, 20.
+
+experiment:
+  widget: rectangle-arranger
+  props: {n: 24, editable: true, maxN: 48}
+  task: Find every factor of 24 by testing each number of rows.
+  goal: {findAllFactors: true}
+  success: |
+    24 has eight factors - 1, 2, 3, 4, 6, 8, 12, 24 - in four pairs. Notice you only needed to test up to 4;
+    after that, every factor you found was already a partner.
+
+mistakes:
+  - mistake: Forgetting 1 and the number itself.
+    why: One long row and rows of one always work.
+    fix: Start every list with 1 and the number.
+  - mistake: Confusing factors with multiples.
+    why: Factors go *into* a number (they are at most the number); multiples are what you land on by skip counting (at least the number).
+    fix: Factors of 12 are 1, 2, 3, 4, 6, 12. Multiples of 12 are 12, 24, 36, ...
+  - mistake: Stopping too early or too late.
+    why: Without a system it is easy to miss a pair.
+    fix: Test in order and write each factor with its partner; stop when they meet.
+
+statements:
+  - kind: proven-theorem
+    text: A natural number has an odd number of factors exactly when it can be arranged as a square array (like 1, 4, 9, 16, 25, 36).
+    note: Factors come in pairs, except that a square array pairs its side length with itself.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: check
+      type: generated
+      generator: factor-check
+    - id: count
+      type: generated
+      generator: count-factors
+    - id: one-factor
+      type: truefalse
+      kind: recall
+      prompt: 'True or false: 1 is a factor of every natural number.'
+      answer: true
+      diagnosis: Any number of tiles can be laid out as one long row - so 1 always divides it.
+      explanation: True - every number is 1 row of itself.
+    - id: prime-factors
+      type: number
+      kind: apply
+      prompt: How many factors does the prime number 7 have?
+      answer: '2'
+      common_wrong:
+        - answer: '1'
+          diagnosis: Both 1 and 7 itself are factors of 7.
+      explanation: A prime has exactly two factors - 1 and itself.
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: Describe a method for finding all the factors of a number so that you never miss one.
+      rubric:
+        - Test each number in order, starting from 1.
+        - When a number works, also record its partner (the number it pairs with).
+        - Stop when the numbers being tested reach the partners already found.
+      model_answer: |
+        Test 1, 2, 3 and so on in order. Whenever one divides the number exactly, write it down together with
+        its partner. Stop when the number you are about to test is already in your list as a partner - then
+        every factor has been found.
+      explanation: Test in order, record pairs, stop when they meet.
+
+connections_forward:
+  - {lesson: l1-multiples, how: 'The opposite view - numbers that a given number goes into.'}
+  - {lesson: l1-greatest-common-divisor, how: 'Factors two numbers share.'}
+  - {lesson: l10-arithmetic-functions, how: 'Counting and adding factors defines important functions in number theory.'}
+
+practice: [factor-check, count-factors]
+
+alternatives:
+  - strategy: visual
+    title: A rainbow of pairs
+    text: |
+      Write the factors of 36 in a row: 1, 2, 3, 4, 6, 9, 12, 18, 36. Draw an arc joining 1 to 36, another
+      joining 2 to 18, then 3 to 12, then 4 to 9. The 6 in the middle has no partner but itself. The arcs make a
+      rainbow - and the rainbow shows why you can stop searching once you reach the middle.
+  - strategy: question-led
+    title: Can I share it equally?
+    text: |
+      For each number from 1 to 12, ask: "Can I share 12 sweets equally among this many people, with none
+      left?" 1 person - yes. 2 - yes (6 each). 3 - yes (4 each). 4 - yes (3 each). 5 - no. 6 - yes. 7, 8, 9, 10,
+      11 - no. 12 - yes (1 each). The "yes" answers are the factors.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      You have 6 cookies. Can you share them fairly with 2 friends? Yes, 3 each! With 3 friends? Yes, 2 each!
+      With 4 friends? No - 2 would be left over. The numbers of friends that work - 1, 2, 3 and 6 - are called
+      the factors of 6.

@@ -1,0 +1,216 @@
+id: l0-counting
+estimated_minutes: 15
+
+goal: |
+  We are learning what counting really is: matching each object with one word from a fixed
+  list, so that the last word tells you how many.
+why: |
+  Pebbles work, but they are slow and heavy. Counting does the same job with words you carry in
+  your head. Almost every later idea - numbers, adding, even counting the steps of a computer
+  program - starts here.
+problem: |
+  How do you find out *how many* things there are, quickly and reliably, and tell someone else?
+
+plain: |
+  When you count, you do three things at once:
+
+  1. You point at each object **exactly once**.
+  2. You say the counting words **in the same order every time**: one, two, three, four, ...
+  3. The **last word you say** tells you how many objects there are.
+
+  Counting is the shepherd's pebbles, but with words instead of pebbles. Each object gets
+  matched with one word. Because everybody learns the counting words in the same order, the last
+  word is a name for "how many" that everyone understands.
+
+  One surprising fact: it does not matter where you start or which order you go in. Count
+  the same objects any way you like and - if you are careful - you always get the same answer.
+
+analogy:
+  strategy: everyday-objects
+  title: Raffle tickets
+  text: |
+    Imagine giving out raffle tickets numbered 1, 2, 3, ... to people as they arrive, one
+    ticket each. When the last person arrives, the number on their ticket tells you how many
+    people came. Counting is exactly this - each object receives the next "ticket" (counting
+    word), and the last ticket number is the total.
+
+visual:
+  widget: counting-objects
+  props: {count: 6, tagging: true, editable: false, object: apple}
+  caption: |
+    What you are seeing: a tray of apples. When you tap an apple it receives the next counting
+    number - the first apple you tap gets 1, the next gets 2, and so on. Each apple can only be
+    tapped once. The last number given out is how many apples are on the tray.
+  prompt: Tap every apple. Then press "Start again" and count them in a different order.
+
+example_simple:
+  title: Four cups
+  problem: How many cups are on the shelf? (There are four.)
+  steps:
+    - Point at the first cup and say "one".
+    - Point at the next cup and say "two".
+    - Point at the next cup and say "three".
+    - Point at the last cup and say "four". There are no cups left without a word.
+  answer: The last word was "four", so there are four cups.
+
+example_harder:
+  title: A messy pile of shells
+  problem: Shells are scattered on a table, not in a line. How can you count them without missing any or counting one twice?
+  steps:
+    - The danger with a messy pile is losing track of which shells already have a word.
+    - Fix it by moving each shell to the side as you say its word - counted shells go left, uncounted stay right.
+    - Keep going until no uncounted shells remain.
+    - The last word you said is the number of shells.
+  answer: Separate counted from uncounted objects as you go. That guarantees each object gets exactly one word.
+
+word:
+  terms: [counting]
+  text: |
+    The name for this activity is **counting**, and the ordered list of words - one, two,
+    three, ... - is called the **counting sequence**. Different languages use different words
+    (*un, deux, trois* in French; *ichi, ni, san* in Japanese), but the method is the same
+    everywhere.
+
+symbols: []
+no_symbol_note: |
+  Counting uses words. The written symbols for those words - 1, 2, 3 and so on - are the
+  subject of [[lesson:l1-number-symbols|Number symbols]] in Level 1.
+
+formal:
+  statement: |
+    To **count** a collection is to match its objects one-to-one with the counting words
+    "one, two, three, ...", taken in their fixed order and starting from "one". The last word
+    used is called the **number** of objects in the collection.
+  kind: definition
+  glossary:
+    - {word: collection, meaning: The group of objects being counted.}
+    - {word: one-to-one, meaning: 'Each object gets exactly one word, and each word is used for exactly one object.'}
+    - {word: fixed order, meaning: The counting words are always said in the same sequence.}
+    - {word: number, meaning: 'The answer to "how many?" - here, the last counting word used.'}
+
+notation: []
+
+connections_back:
+  - {lesson: l0-why-mathematics, how: 'Counting is one-to-one correspondence between objects and the counting words, instead of objects and pebbles.'}
+
+worked:
+  title: Stars in a circle
+  problem: Seven stars are drawn in a circle. When you count around the circle, how do you know when to stop?
+  steps:
+    - In a circle there is no natural first or last star, so it is easy to go round twice.
+    - Before you start, mark the starting star (put your finger next to it).
+    - Count around, one star per word.
+    - Stop when you reach the star *before* your marked star - the next one has already been counted.
+  answer: Mark where you began. You will say "seven" on the star just before the marked one.
+
+experiment:
+  widget: counting-objects
+  props: {count: 9, tagging: true, editable: false, rearrange: true, object: star}
+  task: Count all the stars by tapping each one. Then press "Shuffle" and count again in a different order.
+  goal: {tagAll: true}
+  success: |
+    However you count, the last number is always the same. That is why counting gives an answer
+    everyone can agree on: the total does not depend on the order you count in.
+
+mistakes:
+  - mistake: Skipping an object or counting one twice.
+    why: Then the matching is not one-to-one, so the last word is not the true total.
+    fix: Move or mark each object as you count it.
+  - mistake: Saying the words faster than you point.
+    why: Your words and objects drift out of step, so some objects get two words and some get none.
+    fix: Touch each object as you say its word - one touch, one word.
+  - mistake: Thinking the last word names only the last object ("that one is the fifth, not five things").
+    why: The last word does two jobs - it labels the last object *and* tells you the total.
+    fix: After counting, wave at the whole group and say "five apples" - the word describes all of them.
+
+statements:
+  - kind: established-fact
+    text: Psychologists Rochel Gelman and Randy Gallistel (1978) described the principles children must grasp to count correctly, including one word per object, a stable order of words, and the last word giving the total.
+  - kind: proven-theorem
+    text: Counting a finite collection in any order gives the same final number.
+    note: Mathematicians prove this from the definition of counting; it is why counting is reliable.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: count-tray
+      type: generated
+      generator: count-objects
+      params: {min: 4, max: 12}
+    - id: recount
+      type: choice
+      kind: predict
+      prompt: You count 8 shells. Then your friend counts the same shells, starting from a different shell. If you both count carefully, what will your friend get?
+      options:
+        - text: '8'
+          correct: true
+        - text: It depends where they start.
+          diagnosis: The order of counting never changes the total, as long as every shell gets exactly one word.
+        - text: 9, because they started somewhere else.
+          diagnosis: Starting somewhere else changes which shell is "first", not how many shells there are.
+      explanation: Counting in a different order always gives the same total - 8.
+    - id: last-word
+      type: truefalse
+      kind: recall
+      prompt: 'True or false: when you count 5 toys, the word "five" describes only the last toy you touched.'
+      answer: false
+      diagnosis: The last counting word tells you how many there are altogether - it describes the whole group.
+      explanation: False. "Five" is the number of toys in the whole group.
+    - id: mia
+      type: number
+      kind: apply
+      prompt: Mia counts her marbles one at a time and the last word she says is "twelve". How many marbles does she have?
+      answer: '12'
+      explanation: The last counting word is the total, so Mia has 12 marbles.
+    - id: why-order
+      type: explain
+      kind: explain
+      prompt: Explain in your own words what you must do so that counting gives the right answer.
+      rubric:
+        - Each object gets exactly one counting word (none skipped, none counted twice).
+        - The counting words are said in their usual order.
+        - The last word said is the number of objects.
+      model_answer: |
+        You have to give each object exactly one counting word - no skipping and no counting
+        twice - and say the words in the usual order: one, two, three, ... Then the last word
+        you say is how many objects there are.
+      explanation: Correct counting needs one word per object, the fixed order of words, and reading the total from the last word.
+
+connections_forward:
+  - {lesson: l0-quantity, how: 'Counting measures a quantity - how many.'}
+  - {lesson: l1-counting-meaning, how: 'In Level 1 we look at the precise rules of counting and the idea of cardinality.'}
+  - {lesson: pa-computational-steps, how: 'Complexity theory, the field of P versus NP, begins by counting the steps a computation takes.'}
+
+practice: [count-objects, next-number]
+
+alternatives:
+  - strategy: smaller-steps
+    title: One idea at a time
+    text: |
+      Let's split counting into three tiny jobs.
+
+      **Job 1 - say the words in order.** Practise just saying: one, two, three, four, five.
+      Always the same order.
+
+      **Job 2 - one word per thing.** Put three spoons in a row. Touch the first and say a word,
+      touch the second and say the next word, touch the third and say the next word. Touch and
+      word happen together.
+
+      **Job 3 - the last word is the answer.** After touching the last spoon, the word you just
+      said ("three") is how many spoons there are.
+
+      Counting is just doing all three jobs at once.
+  - strategy: contrast
+    title: Reciting is not counting
+    text: |
+      A small child can often say "one, two, three, four, five, six" perfectly - but when asked
+      "how many teddies?" they may point at random and say any word. Saying the words in order is
+      *reciting*. *Counting* is matching each teddy with exactly one of those words. The
+      difference is the matching. Without it, the words are just a song.
+  - strategy: story
+    title: The careless gardener
+    text: |
+      A gardener counted the apple trees in her orchard while walking in circles, and got 23 one
+      day and 26 the next. A friend suggested tying a ribbon to each tree as she counted it. Now
+      she got 24 every time. The ribbons made sure each tree received exactly one counting word -
+      and that is the whole secret of counting.

@@ -1,0 +1,227 @@
+id: l0-measurement
+estimated_minutes: 15
+
+goal: |
+  We are learning that measuring means choosing a unit and counting how many of that unit fit.
+why: |
+  Some quantities - length, weight, time - cannot be counted one by one, because they do not
+  come in separate pieces. Measurement turns them into counting by choosing a "piece" to count
+  with. That one idea lets mathematics describe the physical world.
+problem: |
+  How do you answer "how long is this table?" in a way that someone on the other side of the
+  world will understand exactly?
+
+plain: |
+  To measure something:
+
+  1. **Choose a unit** - a fixed amount to use as "one": a paperclip, a footstep, a centimetre.
+  2. **Count how many units fit** along (or into) the thing you are measuring.
+
+  A pencil that is "6 paperclips long" has had paperclips laid end to end along it, and 6 fitted.
+
+  The number you get **depends on the unit**. With a longer unit fewer fit; with a shorter unit
+  more fit. So a measurement is always two things together: a number *and* a unit. "6" on its own
+  means nothing; "6 paperclips" or "6 centimetres" means something exact.
+
+  This is why the world agreed on standard units such as the metre and the kilogram: if everyone
+  uses the same unit, everyone gets the same number.
+
+analogy:
+  strategy: everyday-objects
+  title: Footsteps across a room
+  text: |
+    Walk across a room heel-to-toe and count your footsteps: perhaps 14. A small child does the
+    same and counts 20. You are both right - your feet are different units. If you both used the
+    same ruler instead of your own feet, you would agree.
+
+visual:
+  widget: measure
+  props: {length: 6, units: [paperclip, finger, cm], object: pencil}
+  caption: |
+    What you are seeing: a pencil, with a row of identical units laid end to end beside it. The
+    number shows how many units fit along the pencil. Choose a different unit and the number
+    changes - but the pencil stays exactly the same length.
+  prompt: Measure the pencil in paperclips, then in finger-widths, then in centimetres.
+
+example_simple:
+  title: A book measured in paperclips
+  problem: Paperclips are laid end to end along a book, and 8 of them fit exactly. How long is the book?
+  steps:
+    - The unit is one paperclip.
+    - Eight units fit along the book.
+  answer: The book is 8 paperclips long.
+
+example_harder:
+  title: Two measurements, both right
+  problem: Sam measures a table and gets 10 hand-spans. His mother measures the same table and gets 8 hand-spans. Who is right?
+  steps:
+    - They used different units - Sam's hand-span is shorter than his mother's.
+    - A shorter unit fits more times, so Sam gets a bigger number.
+    - Both measurements are correct for the unit used. The problem is that "hand-span" is not a fixed unit.
+    - If they both used centimetres, they would get the same number.
+  answer: Both are right. Different units give different numbers - which is why standard units exist.
+
+word:
+  terms: [measurement, unit]
+  text: |
+    This process is called **measurement**, and the fixed amount you count with is called a
+    **unit**. Standard units have names and short symbols: the **metre** (m) and **centimetre**
+    (cm) for length, the **kilogram** (kg) for weight, the **second** (s) for time.
+
+symbols:
+  - symbol: '\text{cm}'
+    name: centimetre
+    looks_like: The two letters c and m, written after a number.
+    means: A unit of length equal to one hundredth of a metre - about the width of a fingernail.
+    why: Writing "cm" is much shorter than "centimetres", and the same abbreviation is used in almost every country.
+    read_aloud: '"Centimetres" - so 15 cm is read "fifteen centimetres".'
+
+formal:
+  statement: |
+    To **measure** a quantity is to compare it with a fixed reference quantity of the same kind,
+    called a **unit**, and to express it as the number of units (and parts of a unit) it equals.
+    A measurement therefore consists of a number together with a unit.
+  kind: definition
+  glossary:
+    - {word: compare, meaning: 'To see how one amount relates to another - here, how many units fit.'}
+    - {word: reference quantity, meaning: 'An agreed amount used as a standard, such as one metre.'}
+    - {word: of the same kind, meaning: 'Lengths are measured with a unit of length, weights with a unit of weight.'}
+    - {word: parts of a unit, meaning: 'When the unit does not fit a whole number of times - this leads to fractions.'}
+
+notation:
+  - expression: '15\,\text{cm}'
+    read_aloud: fifteen centimetres
+    parts:
+      - {symbol: '15', meaning: How many units fit.}
+      - {symbol: '\text{cm}', meaning: 'Which unit - centimetres.'}
+    english: Fifteen copies of a centimetre, laid end to end, are as long as the thing measured.
+
+connections_back:
+  - {lesson: l0-quantity, how: 'Length, weight and time are "how much" quantities, found by measuring.'}
+  - {lesson: l0-counting, how: 'Measuring is counting units.'}
+
+worked:
+  title: A bigger unit
+  problem: A rope is 12 paperclips long. A "double clip" is two paperclips joined end to end. How long is the rope in double clips?
+  steps:
+    - Each double clip covers the same length as 2 paperclips.
+    - Group the 12 paperclips in twos along the rope - each pair is one double clip.
+    - Counting the pairs gives 6.
+  answer: 6 double clips. A unit twice as long fits half as many times.
+
+experiment:
+  widget: measure
+  props: {length: 8, units: [paperclip, finger, cm], object: rope}
+  task: Measure the rope with every unit available. Which unit gives the biggest number, and why?
+  goal: {measured: true}
+  success: |
+    The smallest unit gave the biggest number, because more small units fit along the same rope.
+    The rope never changed. A measurement only makes sense together with its unit.
+
+mistakes:
+  - mistake: Leaving out the unit ("the table is 150").
+    why: 150 what? Centimetres, paperclips and footsteps give very different tables.
+    fix: Always say the number *and* the unit - "150 centimetres".
+  - mistake: Leaving gaps or overlaps between units when measuring.
+    why: Gaps make the count too small; overlaps make it too big.
+    fix: Lay units end to end, touching but not overlapping, starting exactly at one end.
+  - mistake: Thinking two different measurements of the same thing mean one person is wrong.
+    why: They may have used different units.
+    fix: Check the units first. Convert to the same unit before comparing.
+
+statements:
+  - kind: established-fact
+    text: Since 1983, the metre has been defined as the distance light travels in a vacuum in 1/299,792,458 of a second.
+    note: Defining a unit this way means anyone, anywhere, can reproduce exactly the same metre.
+  - kind: convention
+    text: Which unit we choose is a convention. The thing being measured does not change when we change units.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: two-parts
+      type: choice
+      kind: recall
+      prompt: A complete measurement must include...
+      options:
+        - text: a number and a unit.
+          correct: true
+        - text: just a number.
+          diagnosis: A number alone does not say what was counted. "8" could be 8 centimetres or 8 metres.
+        - text: just a unit.
+          diagnosis: A unit alone does not say how many fit.
+      explanation: A measurement is a number together with a unit, such as 8 cm.
+    - id: different-numbers
+      type: truefalse
+      kind: recall
+      prompt: 'True or false: if two people measure the same table and get different numbers, one of them must have made a mistake.'
+      answer: false
+      diagnosis: They may simply have used different units, such as their own hand-spans.
+      explanation: False. Different units give different numbers for the same length.
+    - id: double-unit
+      type: number
+      kind: predict
+      prompt: A path is 10 footsteps long. A giant's footstep is exactly as long as 2 of your footsteps. How many giant footsteps long is the path?
+      answer: '5'
+      common_wrong:
+        - answer: '20'
+          diagnosis: A bigger unit fits *fewer* times, not more. Each giant step covers two of yours.
+        - answer: '12'
+          diagnosis: Adding 2 does not work. Group your footsteps in twos - each pair is one giant step.
+      hint: Group your 10 footsteps into pairs.
+      explanation: Each giant step covers 2 of your steps, so 10 steps make 5 giant steps.
+    - id: smaller-unit
+      type: choice
+      kind: predict
+      prompt: You measure a door with a long unit, then with a shorter unit. What happens to the number you get?
+      options:
+        - text: It gets bigger, because more short units fit.
+          correct: true
+        - text: It gets smaller.
+          diagnosis: Shorter units each cover less, so you need more of them.
+        - text: It stays the same.
+          diagnosis: The door stays the same length, but the number of units that fit changes.
+      explanation: Shorter units fit more times, so the number gets bigger.
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: Explain to someone why "the room is 20 long" is not a good answer, and how to fix it.
+      rubric:
+        - It is missing a unit.
+        - Different units give different numbers, so 20 alone is unclear.
+        - Fix it by saying the unit, such as 20 footsteps or 5 metres.
+      model_answer: |
+        "20" does not say what was counted - 20 footsteps, 20 metres and 20 paperclips are very
+        different lengths. A measurement needs a unit, so you should say something like "the room
+        is 20 footsteps long" or, better, use a standard unit like metres.
+      explanation: Measurements need units, because the number depends on the unit chosen.
+
+connections_forward:
+  - {lesson: l0-comparison, how: 'Measuring lets us compare quantities that cannot be put side by side.'}
+  - {lesson: l1-fractions, how: 'When a unit does not fit an exact number of times, we need parts of units - fractions.'}
+  - {lesson: l5-area, how: 'Area is measured by counting unit squares.'}
+
+alternatives:
+  - strategy: physical-activity
+    title: Measure your desk three ways
+    text: |
+      Measure the width of a table using (1) your hand-span, (2) a spoon, and (3) a book, laying
+      each one end to end. Write down the three numbers *with their units*: "9 hand-spans", "14
+      spoons", "4 books". The table did not change, but the numbers did. Each measurement answered
+      the question "how many of these fit?" - and that is all measurement ever is.
+  - strategy: history
+    title: Why the metre was invented
+    text: |
+      For centuries, lengths were measured with body parts - feet, hands, thumbs - and every town
+      had its own version, which made trading confusing and unfair. In the 1790s, French scientists
+      defined a new unit, the metre, as one ten-millionth of the distance from the North Pole to the
+      equator, so that it belonged to no single country. Today the metre is defined using the speed
+      of light, so it can be reproduced exactly anywhere. The aim was always the same: one unit that
+      everyone shares.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      How long is your teddy bear? Let's line up toy blocks next to it: one, two, three, four, five
+      blocks! Your teddy is "5 blocks long". If we used tiny buttons instead, we might count 15
+      buttons - more, because buttons are smaller. Measuring is just counting how many of
+      something fit.

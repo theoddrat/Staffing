@@ -1,0 +1,224 @@
+id: l1-divisibility
+estimated_minutes: 20
+
+goal: |
+  We are learning what it means for one number to divide another, the symbol $\mid$, what a remainder is, and
+  quick tests for divisibility.
+why: |
+  Divisibility is the central relationship of number theory - primes, greatest common divisors, congruences
+  and the Riemann Hypothesis all rest on it. The symbol $d \mid n$ appears on almost every page of number
+  theory research.
+problem: |
+  Can 17 sweets be shared equally among 5 children? If not, how close can we get, and what is left?
+
+plain: |
+  We say **5 divides 15** when 15 objects can be shared into **5 equal groups with nothing left over** (3 in
+  each). Equally, 15 is **divisible by** 5.
+
+  Sometimes sharing does not come out exactly. 17 sweets among 5 children: each gets 3 (using 15), and **2
+  are left over**. The amount left over is the **remainder**. A remainder is always smaller than the number
+  of groups - if it were not, everyone could have one more.
+
+  Divisibility is the same fact as factors and multiples, in different words:
+
+  - 5 divides 15 - 5 is a factor of 15 - 15 is a multiple of 5.
+
+  **Quick tests** (using the digits):
+
+  - **2** divides a number when its last digit is even (0, 2, 4, 6, 8).
+  - **5** divides it when the last digit is 0 or 5.
+  - **10** divides it when the last digit is 0.
+  - **3** divides it when the **sum of its digits** is divisible by 3 - for 123, $1 + 2 + 3 = 6$, so 3 divides
+    123.
+
+analogy:
+  strategy: everyday-objects
+  title: Dealing cards
+  text: |
+    Deal a pack of cards one at a time around a table. If the pack runs out exactly at the last player, the
+    number of cards was divisible by the number of players. If a few cards are left in your hand that cannot
+    go all the way round, those are the remainder.
+
+visual:
+  widget: sharing
+  props: {items: 17, groups: 5, editable: true}
+  caption: |
+    What you are seeing: items dealt one at a time into equal groups, going round and round. When there are not
+    enough items left to go round once more, the dealing stops. The display shows how many each group got and
+    how many are left over - the remainder.
+  prompt: Change the number of items or groups. When is the remainder zero?
+
+example_simple:
+  title: Fifteen among five
+  problem: Does 5 divide 15?
+  steps:
+    - Deal 15 items into 5 groups - each group gets 3.
+    - Nothing is left over.
+  answer: Yes - $5 \mid 15$, because $15 = 5 \times 3$.
+
+example_harder:
+  title: Seventeen among five
+  problem: Does 5 divide 17? If not, what is the remainder?
+  steps:
+    - Deal 17 items into 5 groups. After 3 rounds, 15 items are used.
+    - 2 items remain - not enough for another round.
+    - The remainder is 2.
+    - So $17 = 5 \times 3 + 2$.
+  answer: No - $5 \nmid 17$. The remainder is 2.
+
+word:
+  terms: [divisible, remainder]
+  text: |
+    When one number shares into another exactly, the second is **divisible** by the first, and the first
+    **divides** the second. What is left when sharing is not exact is the **remainder** (from Latin
+    *remanere*, "to stay behind").
+
+symbols:
+  - symbol: '\mid'
+    name: divides sign
+    looks_like: A single short upright line between two numbers, as in $3 \mid 12$.
+    means: '"Divides" - the left number shares exactly into the right number. A slash through it, $\nmid$, means "does not divide".'
+    why: Mathematicians needed a compact way to write the most common relationship in number theory.
+    read_aloud: '"Divides" - $3 \mid 12$ is "three divides twelve". It is NOT a fraction and NOT "three over twelve".'
+
+formal:
+  statement: |
+    For integers $d$ and $n$ with $d \neq 0$, we say $d$ **divides** $n$, written $d \mid n$, if $n = d \times k$
+    for some integer $k$; then $n$ is **divisible** by $d$. For a whole number $n$ and a natural number $d$,
+    there are unique whole numbers $q$ and $r$ with $n = d \times q + r$ and $0 \le r < d$; the number $r$ is the
+    **remainder**, and $d \mid n$ exactly when $r = 0$.
+  kind: definition
+  glossary:
+    - {word: 'd \neq 0', meaning: '$d$ is not zero - you cannot share into zero groups.'}
+    - {word: 'n = d \times q + r', meaning: '$n$ items make $d$ groups of $q$, with $r$ left over.'}
+    - {word: '0 \le r < d', meaning: 'The remainder is at least 0 (the symbol $\le$ means "less than or equal to") and smaller than the number of groups.'}
+    - {word: unique, meaning: 'There is exactly one such pair $q$ and $r$.'}
+
+notation:
+  - expression: '3 \mid 12 \qquad 5 \nmid 12'
+    read_aloud: three divides twelve; five does not divide twelve
+    parts:
+      - {symbol: '\mid', meaning: Divides exactly.}
+      - {symbol: '\nmid', meaning: 'Does not divide - the slash means "not".'}
+    english: Twelve shares exactly into 3 groups, but not into 5.
+  - expression: '17 = 5 \times 3 + 2'
+    read_aloud: seventeen equals five times three plus two
+    parts:
+      - {symbol: '5 \times 3', meaning: '5 groups of 3 - the part that shares exactly.'}
+      - {symbol: '+\,2', meaning: 'The remainder.'}
+    english: Sharing 17 into 5 groups gives 3 each with 2 left over.
+
+connections_back:
+  - {lesson: l1-factors, how: '"$d$ divides $n$" is the same as "$d$ is a factor of $n$".'}
+  - {lesson: l1-multiples, how: 'It is also the same as "$n$ is a multiple of $d$".'}
+
+worked:
+  title: The digit-sum test
+  problem: Is 123 divisible by 3?
+  steps:
+    - Add the digits - $1 + 2 + 3 = 6$.
+    - 6 is divisible by 3.
+    - So by the digit-sum test, 3 divides 123.
+    - Check by sharing - 123 into 3 groups gives 41 each - $123 = 3 \times 41$.
+  answer: Yes - $3 \mid 123$.
+
+experiment:
+  widget: sharing
+  props: {items: 24, groups: 5, editable: true}
+  task: Keep 24 items, and find a number of groups (not 1 and not 24) that shares them with nothing left over.
+  goal: {remainder: 0}
+  success: |
+    Any number of groups that leaves remainder 0 divides 24 - 2, 3, 4, 6, 8 and 12 all work. These are
+    exactly the factors of 24 (apart from 1 and 24 themselves).
+
+mistakes:
+  - mistake: Reading $3 \mid 12$ as the fraction $\tfrac{3}{12}$.
+    why: The upright bar is a statement - "3 divides 12" - not a number.
+    fix: Read it aloud as "divides". $3 \mid 12$ is true; $\tfrac{3}{12}$ is a quarter.
+  - mistake: Getting the order wrong - writing $12 \mid 3$ to mean "3 divides 12".
+    why: The divider goes on the left.
+    fix: Say it aloud - "three divides twelve" - and write it in that order.
+  - mistake: A remainder bigger than the number of groups.
+    why: If 7 were left from sharing among 5, everyone could have one more.
+    fix: The remainder is always smaller than the number of groups.
+
+statements:
+  - kind: proven-theorem
+    text: A number is divisible by 3 exactly when the sum of its digits is divisible by 3. The same is true for 9.
+    note: This works because 10, 100, 1000, ... each leave remainder 1 on division by 3 and 9. You will prove it with modular arithmetic in Level 10.
+  - kind: proven-theorem
+    text: For any whole number and any number of groups, the quotient and remainder of sharing are unique.
+    note: This is called the division theorem.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: rem
+      type: generated
+      generator: remainder
+    - id: div
+      type: generated
+      generator: divides
+    - id: by-five
+      type: choice
+      kind: apply
+      multi: true
+      prompt: Which of these numbers are divisible by 5? Choose all that apply.
+      options:
+        - text: '135'
+          correct: true
+        - text: '1000'
+          correct: true
+        - text: '552'
+          diagnosis: The last digit is 2, not 0 or 5 - so 5 does not divide 552.
+        - text: '51'
+          diagnosis: 51 ends in 1. (Ending with a 5 at the *start* does not count - only the last digit matters.)
+      explanation: A number is divisible by 5 when its last digit is 0 or 5.
+    - id: bar-meaning
+      type: truefalse
+      kind: recall
+      prompt: 'True or false: $3 \mid 12$ means the fraction three twelfths.'
+      answer: false
+      diagnosis: The upright bar means "divides". $3 \mid 12$ says 3 divides 12 exactly - a true statement, not a number.
+      explanation: False. $3 \mid 12$ is the statement "3 divides 12".
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: Explain what $4 \mid 20$ means, and what the remainder is when 22 is shared into 4 groups.
+      rubric:
+        - $4 \mid 20$ means 20 shares into 4 equal groups with nothing left over (20 = 4 × 5).
+        - 22 into 4 groups gives 5 each with 2 left over.
+        - The remainder is 2.
+      model_answer: |
+        $4 \mid 20$ means "4 divides 20" - 20 can be shared into 4 equal groups of 5 with nothing left over.
+        Sharing 22 into 4 groups gives 5 each (using 20), so 2 are left over - the remainder is 2.
+      explanation: '$4 \mid 20$ because $20 = 4 \times 5$; $22 = 4 \times 5 + 2$, remainder 2.'
+
+connections_forward:
+  - {lesson: l1-greatest-common-divisor, how: 'The largest number dividing two numbers.'}
+  - {lesson: l2-remainders, how: 'Remainders as part of division.'}
+  - {lesson: l10-congruences, how: 'Congruences - arithmetic built from divisibility.'}
+
+practice: [remainder, divides]
+
+alternatives:
+  - strategy: everyday-objects
+    title: Packing eggs
+    text: |
+      A farmer packs eggs into boxes of 6. With 30 eggs, she fills 5 boxes exactly - 6 divides 30. With 32 eggs,
+      she fills 5 boxes and has 2 eggs left over - the remainder. She can never have 6 or more left, because
+      she would simply fill another box.
+  - strategy: smaller-steps
+    title: Three questions
+    text: |
+      To decide whether $d \mid n$:
+
+      1. Share $n$ into $d$ equal groups (deal them out, or skip count by $d$).
+      2. Look at what is left over.
+      3. If nothing is left, $d \mid n$. If something is left, $d \nmid n$, and what is left is the remainder.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      You have 10 stickers and 2 friends. Give them out one at a time: one for Sam, one for Lily, one for Sam...
+      Each friend gets 5 and none are left. So 2 divides 10! With 3 friends, each gets 3 and 1 sticker is left
+      over - that leftover sticker is called the remainder.

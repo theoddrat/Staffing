@@ -1,0 +1,187 @@
+id: l1-positive-numbers
+estimated_minutes: 10
+
+goal: |
+  We are learning what "positive" means: greater than zero, to the right of zero on the number line.
+why: |
+  Once numbers below zero appear in the next lesson, we need a word for the numbers above zero. The
+  ideas "positive", "negative" and "zero" divide the whole number line into three parts.
+problem: |
+  How do we describe, precisely, the numbers that are "more than nothing"?
+
+plain: |
+  A number is **positive** if it is **greater than zero**. On the number line, positive numbers are all
+  the points **to the right of 0**.
+
+  - 1, 2, 3, 100 and a million are positive.
+  - Numbers between whole numbers - like a half - are positive too, if they lie right of 0.
+  - **Zero is not positive.** It is not greater than itself. Zero is the dividing point.
+
+  Sometimes a plus sign is written in front of a positive number for emphasis - **+5** means
+  "positive five" - but 5 and +5 are the same number.
+
+  A positive number's **distance from zero** is the number itself: 6 is six steps from 0.
+
+analogy:
+  strategy: everyday-objects
+  title: Floors above the ground
+  text: |
+    In a lift, the ground floor is 0. Floors above it - 1, 2, 3 - are "above zero". Positive numbers are
+    the floors above ground level. The ground floor itself is not "above ground".
+
+visual:
+  widget: number-line
+  props: {min: -6, max: 6, value: 4, highlight: positive, editable: true}
+  caption: |
+    What you are seeing: a number line from $-6$ to 6 with the part to the right of zero shaded. The
+    shaded part holds the positive numbers. Zero itself sits at the edge of the shading but is not
+    inside it.
+  prompt: Drag the point. When is it on a positive number? What happens exactly at 0?
+
+example_simple:
+  title: Which are positive?
+  problem: Which of these are positive - 3, 0, 7?
+  steps:
+    - 3 is greater than 0 - positive.
+    - 0 is not greater than 0 - not positive.
+    - 7 is greater than 0 - positive.
+  answer: 3 and 7 are positive. 0 is not.
+
+example_harder:
+  title: Half a step
+  problem: Is the point halfway between 0 and 1 positive?
+  steps:
+    - The point halfway between 0 and 1 is to the right of 0.
+    - Everything to the right of 0 is greater than 0.
+  answer: Yes. Positive numbers include parts of a whole, like a half - you will meet these as fractions.
+
+word:
+  terms: [positive-number]
+  text: |
+    A number greater than zero is called a **positive number** (from Latin *positivus*, "laid down,
+    definite"). Zero and the positive numbers together are sometimes called the **non-negative** numbers.
+
+symbols:
+  - symbol: '+5'
+    name: positive sign
+    looks_like: A plus sign written directly in front of a number.
+    means: 'The number is positive - "positive five". +5 and 5 are the same number.'
+    why: Writing + makes it clear a number is positive when negative numbers are around, for example in temperatures (+3°C) or changes (+5 points).
+    read_aloud: '"Positive five" (or "plus five").'
+
+formal:
+  statement: |
+    A number $x$ is **positive** if $x > 0$. Zero is not positive.
+  kind: definition
+  glossary:
+    - {word: 'x', meaning: 'A letter standing for "a number" - any number we want to test.'}
+    - {word: 'x > 0', meaning: '"$x$ is greater than zero" - $x$ lies to the right of 0.'}
+
+notation:
+  - expression: '+5 = 5'
+    read_aloud: positive five equals five
+    parts:
+      - {symbol: '+5', meaning: 'Five, with its positive sign written.'}
+      - {symbol: '5', meaning: Five without a sign - positive is the default.}
+    english: Writing the plus sign does not change the number.
+
+connections_back:
+  - {lesson: l1-number-lines, how: 'Positive numbers are the right-hand side of the number line.'}
+
+worked:
+  title: Distance from zero
+  problem: How far is 6 from 0 on the number line?
+  steps:
+    - Count the steps from 0 to 6 - 1, 2, 3, 4, 5, 6.
+  answer: 6 steps. A positive number's distance from zero is the number itself.
+
+experiment:
+  widget: number-line
+  props: {min: -6, max: 6, value: -3, highlight: positive, editable: true}
+  task: Move the point onto the smallest whole number that is positive.
+  goal: {target: 1}
+  success: |
+    1 is the smallest positive whole number. 0 does not count - zero is not positive.
+
+mistakes:
+  - mistake: Thinking zero is positive.
+    why: Positive means greater than zero, and zero is not greater than itself.
+    fix: Remember that zero is the dividing point - neither positive nor negative.
+  - mistake: Thinking a positive number must have a + sign.
+    why: Numbers without a sign are positive by default.
+    fix: 5 and +5 are the same number.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: which-positive
+      type: choice
+      kind: apply
+      multi: true
+      prompt: Which of these numbers are positive? Choose all that apply.
+      options:
+        - text: '12'
+          correct: true
+        - text: '+3'
+          correct: true
+        - text: 'one half'
+          correct: true
+        - text: '0'
+          diagnosis: Zero is not greater than zero, so it is not positive.
+      explanation: 12, +3 and one half are all greater than 0. Zero is not positive.
+    - id: zero-positive
+      type: truefalse
+      kind: recall
+      prompt: 'True or false: zero is a positive number.'
+      answer: false
+      diagnosis: Positive means greater than zero. Zero is not greater than itself.
+      explanation: False - zero is neither positive nor negative.
+    - id: plus-five
+      type: truefalse
+      kind: recall
+      prompt: 'True or false: +7 and 7 are the same number.'
+      answer: true
+      diagnosis: The plus sign just emphasises that 7 is positive.
+      explanation: True.
+    - id: distance
+      type: number
+      kind: solve
+      prompt: How many steps is 9 from zero on the number line?
+      answer: '9'
+      explanation: A positive number is that many steps to the right of zero.
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: Explain what a positive number is, and say whether zero is positive.
+      rubric:
+        - A positive number is greater than zero (right of zero on the number line).
+        - Zero is not positive.
+      model_answer: A positive number is any number greater than zero - to the right of 0 on the number line. Zero is not positive, because it is not greater than itself.
+      explanation: Positive means greater than zero; zero itself is not positive.
+
+connections_forward:
+  - {lesson: l1-negative-numbers, how: 'The numbers to the left of zero.'}
+  - {lesson: l2-absolute-value, how: 'Distance from zero, for any number.'}
+
+alternatives:
+  - strategy: contrast
+    title: Three regions
+    text: |
+      The number line splits into three parts:
+
+      - **left of 0** - the negative numbers (next lesson),
+      - **exactly 0** - zero, on its own,
+      - **right of 0** - the positive numbers.
+
+      Every number is in exactly one of these three parts. "Positive" is the name of the right-hand part.
+  - strategy: everyday-objects
+    title: Scores and temperatures
+    text: |
+      A weather forecast says "plus 4 degrees" for a mild day - 4 degrees above freezing. A quiz score of
+      +5 means five points gained. In both cases "positive" means "above the zero point". The zero point
+      itself (freezing, or no points) is not above itself.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      Zero is where you start. Numbers that are more than zero - like 1, 2, 3 - are called positive. Zero
+      isn't positive, because it isn't more than zero. It's just zero.

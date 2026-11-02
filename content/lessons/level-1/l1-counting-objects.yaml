@@ -1,0 +1,205 @@
+id: l1-counting-objects
+estimated_minutes: 15
+
+goal: |
+  We are learning how to count large collections reliably by grouping objects into tens.
+why: |
+  Counting one by one works for 5 objects but becomes slow and error-prone for 50 or 500.
+  Grouping into tens is the practical trick - and it is exactly the idea behind the way we write
+  numbers, which comes next.
+problem: |
+  How can you count a big, messy collection without losing your place?
+
+plain: |
+  For a large collection, counting one by one is risky - lose concentration once and you must
+  start again. A better method:
+
+  1. **Make groups of ten.** Count out ten objects and push them together into a bundle.
+  2. **Keep making bundles** until fewer than ten objects are left.
+  3. **Count the bundles in tens** - ten, twenty, thirty, ...
+  4. **Then count on the loose objects** one at a time.
+
+  Because each bundle is checked separately, a mistake only costs you one bundle, not the whole
+  count. And the answer comes out in a very useful form: "4 tens and 7 ones" is 47.
+
+  Grouping never changes the total: it is just counting in a well-organised order, and the order
+  of counting never changes the answer.
+
+analogy:
+  strategy: everyday-objects
+  title: Counting money
+  text: |
+    A shop assistant counting a pile of coins stacks them in piles of ten. Five stacks and three
+    loose coins? That is fifty-three coins - counted in a few seconds, and easy to double-check by
+    glancing at the stacks.
+
+visual:
+  widget: counting-objects
+  props: {count: 34, bundle: true, editable: false, object: star}
+  caption: |
+    What you are seeing: a large group of stars. The "Bundle tens" button gathers loose stars into
+    groups of ten, drawn as boxes. The display shows how many tens and how many loose ones there are,
+    and the total.
+  prompt: Bundle the stars into tens. How many tens and how many ones? What is the total?
+
+example_simple:
+  title: Straws
+  problem: There are some straws on a table. You make 2 bundles of ten, and 3 straws are left over. How many straws are there?
+  steps:
+    - Count the bundles in tens - ten, twenty.
+    - Count on the 3 loose straws - twenty-one, twenty-two, twenty-three.
+  answer: 23 straws.
+
+example_harder:
+  title: A messy pile
+  problem: About fifty buttons are scattered in a heap. Describe how to count them accurately.
+  steps:
+    - Pick up buttons one at a time, counting to ten, and put each ten in its own small pile.
+    - Suppose you make 4 piles of ten, and 7 buttons are left that cannot make another ten.
+    - Count the piles in tens - ten, twenty, thirty, forty.
+    - Count on the loose buttons - forty-one, forty-two, ..., forty-seven.
+  answer: 47 buttons - 4 tens and 7 ones.
+
+word:
+  terms: [counting]
+  text: |
+    A group of ten is simply called **a ten**, and a single loose object **a one**. Grouping in tens
+    is called **base ten** counting, because ten is the "base" size of each group. Humans probably
+    chose ten because we have ten fingers.
+
+symbols: []
+no_symbol_note: |
+  Grouping into tens is the idea behind our numerals: in 47, the 4 counts tens and the 7 counts
+  ones. That is the subject of the next lesson on [[lesson:l1-number-symbols|number symbols]].
+
+formal:
+  statement: |
+    If a finite collection is split into groups of ten with some objects left over (fewer than ten),
+    then its cardinality equals ten for each group, counted on by the number of objects left over.
+    Grouping does not change the cardinality.
+  kind: proven-theorem
+  glossary:
+    - {word: finite collection, meaning: 'A collection whose counting ends.'}
+    - {word: cardinality, meaning: 'The number of objects in the collection.'}
+    - {word: counted on, meaning: 'Continuing to count from a number, rather than from one.'}
+
+notation:
+  - expression: '4\ \text{tens and}\ 7\ \text{ones} = 47'
+    read_aloud: four tens and seven ones equals forty-seven
+    parts:
+      - {symbol: '4\ \text{tens}', meaning: 'Four groups of ten - forty.'}
+      - {symbol: '7\ \text{ones}', meaning: Seven loose objects.}
+      - {symbol: '47', meaning: The total.}
+    english: Four bundles of ten and seven single objects make forty-seven.
+
+connections_back:
+  - {lesson: l1-one-two-three, how: 'Counting on, one more each time.'}
+  - {lesson: l1-counting-meaning, how: 'Grouping is counting in a particular order, so the cardinality is unchanged.'}
+
+worked:
+  title: Counting a jar of marbles
+  problem: You bundle marbles in tens and get 6 full bundles and 0 loose marbles. How many marbles?
+  steps:
+    - Six tens - ten, twenty, thirty, forty, fifty, sixty.
+    - No loose marbles to count on.
+  answer: 60 marbles. The 0 says there are no loose ones.
+
+experiment:
+  widget: counting-objects
+  props: {count: 5, bundle: true, editable: true, object: apple}
+  task: Build a collection of exactly 26 apples, using bundles to check your count.
+  goal: {count: 26}
+  success: |
+    26 is 2 tens and 6 ones. Bundling let you check the count at a glance - and notice the 2 and the
+    6 in the numeral 26 tell you exactly how many tens and ones there are.
+
+mistakes:
+  - mistake: Counting bundles as ones ("4 bundles and 7 loose make 11").
+    why: Each bundle stands for ten objects, not one.
+    fix: Count bundles in tens - ten, twenty, thirty, forty - and then count on the ones.
+  - mistake: Making bundles of different sizes.
+    why: The method only works if every bundle has exactly ten.
+    fix: Check each bundle before setting it aside.
+
+statements:
+  - kind: hypothesis
+    text: Humans probably count in tens because we have ten fingers.
+    note: Some cultures have counted in twenties (fingers and toes) or twelves; the Babylonians used sixty.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: count-many
+      type: generated
+      generator: count-objects
+      params: {min: 12, max: 30}
+    - id: bundles
+      type: number
+      kind: apply
+      prompt: You make 5 bundles of ten pencils, and 3 pencils are left over. How many pencils are there?
+      answer: '53'
+      common_wrong:
+        - answer: '8'
+          diagnosis: Each bundle holds ten pencils, so 5 bundles are fifty, not five.
+        - answer: '35'
+          diagnosis: The 5 bundles are tens (fifty) and the 3 loose pencils are ones - fifty-three.
+      explanation: 5 tens is fifty, and 3 more is 53.
+    - id: why-tens
+      type: choice
+      kind: recall
+      prompt: Why is grouping into tens helpful when counting a large collection?
+      options:
+        - text: Mistakes are easier to avoid and check, and the result matches how we write numbers.
+          correct: true
+        - text: It changes the total to a rounder number.
+          diagnosis: Grouping never changes the total - it only organises the count.
+        - text: Tens are the only numbers that can be counted.
+          diagnosis: Any number can be counted. Tens are just a convenient group size.
+      explanation: Grouping organises the count without changing the total.
+    - id: sixty
+      type: number
+      kind: apply
+      prompt: 'A pile is bundled into 7 tens and 0 loose ones. How many objects is that?'
+      answer: '70'
+      explanation: 7 tens and no ones is 70.
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: Describe how you would count about a hundred paper clips quickly and accurately.
+      rubric:
+        - Make groups (bundles) of ten.
+        - Count the groups in tens.
+        - Count on the loose ones that do not make a full ten.
+      model_answer: |
+        I would count out groups of ten paper clips and put each group in its own pile. Then I would
+        count the piles in tens - ten, twenty, thirty and so on - and count on any loose clips one
+        at a time.
+      explanation: Bundle into tens, count the tens, count on the ones.
+
+connections_forward:
+  - {lesson: l1-number-symbols, how: 'Our way of writing numbers records tens and ones by position.'}
+  - {lesson: l1-equal-groups, how: 'Counting in equal groups of other sizes.'}
+  - {lesson: l2-addition, how: 'Grouping in tens is the secret behind written addition.'}
+
+practice: [count-objects]
+
+alternatives:
+  - strategy: physical-activity
+    title: Do it with pasta
+    text: |
+      Pour out a handful of dried pasta (or rice grains, or coins). Count out ten and put them in a
+      cup. Then ten more in another cup. When you cannot make another ten, stop. Count the cups by
+      saying "ten, twenty, thirty..." and then count the loose pieces. You will find this is much
+      faster - and if you lose your place, you only need to recount one cup.
+  - strategy: everyday-objects
+    title: Eggs in boxes
+    text: |
+      Eggs are sold in boxes of six or twelve, so that shopkeepers can count them quickly - nobody
+      counts eggs one by one in a shop. Bundling into tens is the same idea, with ten as the box
+      size. Box sizes make large counts quick and reliable.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      If you have lots and lots of blocks, it is hard to count them all. So let's make towers of 10
+      blocks! Count the towers: ten, twenty, thirty. Then count the blocks that are left over:
+      thirty-one, thirty-two. That's a much easier way to count lots of things.

@@ -1,0 +1,155 @@
+# Registry of every interactive or static visual the frontend can render.
+# Lessons and dictionary entries may only reference widgets listed here, and
+# only with the props and goals listed here. The frontend has a matching
+# registry (frontend/src/widgets/registry.tsx); a test checks the two agree.
+
+widgets:
+  - id: counting-objects
+    title: Counting objects
+    description: A tray of objects. Tap each object to give it the next counting number; the last number said is how many there are. Objects can be added, removed, spread out or bundled into tens.
+    props: [count, max, object, tagging, rearrange, bundle, editable]
+    goals: [count, tagAll]
+
+  - id: number-line
+    title: Number line
+    description: A straight line with numbers placed in order at equal spacing. Drag the point, add jumps, switch to a vertical thermometer or sea-level view, and zoom into fractions and decimals.
+    props: [min, max, value, step, labelEvery, orientation, theme, points, showDistance, jumps, highlight, snap, editable, fractionLabels]
+    goals: [target, targets, compare]
+
+  - id: compare-groups
+    title: Comparing two groups
+    description: Two groups of objects. Pair them up one-to-one; whichever group has objects left over is bigger. Shows the symbols <, > and = once the idea is clear.
+    props: [left, right, editable, showSymbol, object, matching]
+    goals: [relation]
+
+  - id: balance
+    title: Balance scale
+    description: A two-pan balance. It tips toward the heavier side and sits level when both sides hold equal amounts.
+    props: [left, right, editable, object, showNumbers]
+    goals: [balanced, heavier]
+
+  - id: weighing-puzzle
+    title: Weighing puzzle
+    description: Bags of unknown weight that can only be compared two at a time. Reasoning lets you conclude orders you never directly weighed.
+    props: [bags, seed]
+    goals: [deduceOrder]
+
+  - id: fraction
+    title: Fraction pizza and bar
+    description: A whole cut into equal parts with some parts shaded. Change the number of parts and shaded parts; optionally see the same amount as a decimal and a percentage, or compare with a second fraction.
+    props: [numerator, denominator, shape, editable, maxDenominator, showDecimal, showPercent, compare, wholes]
+    goals: [value, numerator, denominator]
+
+  - id: place-value
+    title: Place-value blocks
+    description: A number shown as hundreds, tens and ones (and optionally tenths and hundredths) blocks, with the expanded form underneath.
+    props: [value, max, editable, showExpanded, decimals]
+    goals: [value]
+
+  - id: numeral-systems
+    title: Many ways to write a number
+    description: One quantity written as dots, tally marks, Roman numerals, our digits and English words, showing that a symbol is a name for a quantity.
+    props: [value, editable, systems]
+    goals: [value]
+
+  - id: hundred-grid
+    title: Hundred grid
+    description: A 10 by 10 grid of squares. Shading squares shows hundredths, decimals and percentages at the same time.
+    props: [shaded, mode, editable]
+    goals: [shaded]
+
+  - id: ratio-mixer
+    title: Ratio mixer
+    description: Two ingredients combined in a fixed ratio. Scale the recipe up and down and watch the ratio stay the same.
+    props: [a, b, labelA, labelB, scale, editable]
+    goals: [a, b]
+
+  - id: sieve
+    title: Sieve of Eratosthenes
+    description: The numbers 2 to N in a grid. Choosing a prime crosses out all of its multiples; the numbers that survive are the primes.
+    props: [max, guided]
+    goals: [complete]
+
+  - id: rectangle-arranger
+    title: Rectangle arranger
+    description: N square tiles arranged into equal rows. A perfect rectangle means the number of rows is a factor. Numbers that only make a single row are prime.
+    props: [n, rows, editable, maxN]
+    goals: [findAllFactors, rows]
+
+  - id: sharing
+    title: Fair sharing
+    description: Items dealt one at a time into equal groups, showing how many each group gets and how many are left over (the remainder).
+    props: [items, groups, editable, object]
+    goals: [remainder, groups]
+
+  - id: pairs
+    title: Pairs (even and odd)
+    description: Objects arranged in pairs. An even number pairs up exactly; an odd number always has one left over.
+    props: [n, editable]
+    goals: [parity]
+
+  - id: multiples-jumps
+    title: Multiples as jumps
+    description: Two frogs jumping along a number line with different jump sizes. The places both frogs land on are common multiples; the first one is the least common multiple.
+    props: [a, b, max, editable]
+    goals: [findLcm, findMultiple]
+
+  - id: common-factors
+    title: Common factors
+    description: The factors of two numbers shown as two overlapping collections. The overlap holds the common factors; the largest one is the greatest common divisor.
+    props: [a, b, editable]
+    goals: [findGcd]
+
+  - id: number-sets
+    title: Families of numbers
+    description: Nested regions for natural numbers, whole numbers, integers and fractions (rational numbers). Place each number in the smallest family it belongs to.
+    props: [numbers, sets]
+    goals: [sortAll]
+
+  - id: measure
+    title: Measuring with units
+    description: An object measured by laying copies of a chosen unit along it. Measuring is counting how many units fit, and the answer depends on the unit.
+    props: [length, units, object]
+    goals: [measured]
+
+  - id: pattern
+    title: Pattern explorer
+    description: A growing pattern of dots or numbers. Predict the next stage before revealing it, and see the rule that produces it.
+    props: [kind, terms, editable]
+    goals: [predict]
+
+  - id: rule-machine
+    title: Rule machine
+    description: A machine that follows a hidden rule. Feed it numbers, watch what comes out, and work out the rule.
+    props: [rule, hidden, inputs]
+    goals: [guessRule]
+
+  - id: pair-proof
+    title: Why even plus even is even
+    description: Two even numbers drawn as pairs of dots. Joining them can never leave a dot without a partner - an argument that works for every case, not just the ones tried.
+    props: [a, b]
+    goals: [tries]
+
+  - id: shepherd
+    title: The shepherd's pebbles
+    description: An ancient way to keep track of sheep without number words - one pebble for each sheep. Matching things one-to-one is the idea underneath counting.
+    props: [sheep, missing]
+    goals: [complete]
+
+  - id: math-lenses
+    title: Mathematical lenses
+    description: One staircase of blocks seen through four lenses - quantity, pattern, shape and reasoning - showing the different things mathematics studies.
+    props: [steps]
+    goals: [lensesViewed]
+
+  - id: symbol-translator
+    title: Words and symbols
+    description: Sentences written in ordinary words and in mathematical symbols side by side, showing how symbols compress ideas.
+    props: [statements]
+    goals: [revealAll]
+
+  - id: model
+    title: Mathematical model
+    description: A real-world situation (savings, tiling a floor, a journey) described by numbers and a rule, used to make a prediction.
+    props: [scenario]
+    goals: [predict]

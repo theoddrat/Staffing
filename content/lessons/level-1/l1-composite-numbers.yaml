@@ -1,0 +1,209 @@
+id: l1-composite-numbers
+estimated_minutes: 12
+
+goal: |
+  We are learning what composite numbers are - whole numbers bigger than 1 that are not prime - and that
+  every whole number bigger than 1 is either prime or composite.
+why: |
+  Splitting the numbers above 1 into primes and composites is the first step toward breaking every number
+  into its prime building blocks - a central tool in number theory.
+problem: |
+  If prime numbers refuse to form rectangles, what do we call the numbers that can?
+
+plain: |
+  A whole number bigger than 1 that **can** be arranged into a real rectangle - at least 2 rows, at least 2
+  in each row - is called **composite**.
+
+  - 4 is 2 rows of 2 - composite.
+  - 6 is 2 rows of 3 - composite.
+  - 9 is 3 rows of 3 - composite.
+  - 12 is 3 rows of 4 (or 2 rows of 6) - composite.
+
+  **Every whole number bigger than 1 is exactly one of the two**: prime (no rectangle) or composite (at
+  least one rectangle). It cannot be both and cannot be neither.
+
+  And **1 is special**: it is neither prime nor composite.
+
+  A composite number is "composed" of smaller pieces: each side of its rectangle is a smaller number, and
+  those can be broken down further until only primes are left - $12 = 3 \times 4 = 3 \times 2 \times 2$.
+
+analogy:
+  strategy: everyday-objects
+  title: A brick wall
+  text: |
+    A composite number is like a wall built from rows of bricks - you can see the rows. A prime number is like
+    a single unbreakable plank: there is no way to stack it into rows.
+
+visual:
+  widget: rectangle-arranger
+  props: {n: 12, rows: 3, editable: true, maxN: 30}
+  caption: |
+    What you are seeing: 12 tiles arranged in equal rows. Each successful rectangle (with at least two rows of
+    at least two tiles) is proof that 12 is composite.
+  prompt: Find every rectangle 12 tiles can make. Then try 13.
+
+example_simple:
+  title: Six
+  problem: Is 6 prime or composite?
+  steps:
+    - Try 2 rows - 3 tiles each, nothing left over.
+    - A real rectangle exists.
+  answer: Composite - 6 is 2 rows of 3.
+
+example_harder:
+  title: Prime, composite or neither?
+  problem: Classify 1, 2 and 25.
+  steps:
+    - 1 is neither - primes and composites are both defined to be bigger than 1.
+    - 2 can only make one row of 2 - prime.
+    - 25 makes 5 rows of 5 - composite, even though it is odd.
+  answer: 1 is neither, 2 is prime, 25 is composite.
+
+word:
+  terms: [composite-number]
+  text: |
+    These are **composite numbers** - from Latin *compositus*, "put together" - because they are put together
+    from smaller factors.
+
+symbols: []
+no_symbol_note: |
+  There is no special symbol for "composite". What we write instead is the rectangle itself, as a
+  multiplication - $12 = 3 \times 4$ shows at once that 12 is composite.
+
+formal:
+  statement: |
+    A natural number $n$ is **composite** if $n > 1$ and $n$ is not prime; equivalently, if $n = a \times b$
+    for some natural numbers $a$ and $b$ with $1 < a < n$ and $1 < b < n$.
+  kind: definition
+  glossary:
+    - {word: 'n > 1', meaning: '$n$ is bigger than 1.'}
+    - {word: 'n = a \times b', meaning: '$n$ tiles make $a$ rows of $b$.'}
+    - {word: '1 < a < n', meaning: '$a$ is bigger than 1 and smaller than $n$ - a real rectangle, not a single row.'}
+
+notation:
+  - expression: '12 = 3 \times 4 = 3 \times 2 \times 2'
+    read_aloud: twelve equals three times four equals three times two times two
+    parts:
+      - {symbol: '3 \times 4', meaning: 'A rectangle of 3 rows of 4 - proof 12 is composite.'}
+      - {symbol: '3 \times 2 \times 2', meaning: 'Breaking the 4 further, until only primes remain.'}
+    english: Twelve is built from the primes 3, 2 and 2.
+
+connections_back:
+  - {lesson: l1-prime-numbers, how: 'Composite numbers are exactly the numbers above 1 that are not prime.'}
+
+worked:
+  title: Four in a row
+  problem: Classify 21, 23, 25 and 27.
+  steps:
+    - 21 - 3 rows of 7 - composite.
+    - 23 - no rectangle works (try 2, 3, 4 and 5 rows - all leave tiles over) - prime.
+    - 25 - 5 rows of 5 - composite.
+    - 27 - 3 rows of 9 - composite.
+  answer: 21, 25 and 27 are composite; 23 is prime.
+
+experiment:
+  widget: rectangle-arranger
+  props: {n: 21, rows: 1, editable: true, maxN: 30}
+  task: Show that 21 is composite by finding a rectangle with more than one row.
+  goal: {rows: 3}
+  success: |
+    21 is 3 rows of 7. One rectangle is all it takes to prove a number is composite - it is a certificate you
+    can check at a glance.
+
+mistakes:
+  - mistake: Thinking 1 is composite (or prime).
+    why: Both words are defined only for numbers bigger than 1.
+    fix: 1 is in a category of its own.
+  - mistake: Thinking only even numbers are composite.
+    why: 9, 15, 21, 25 and 27 are odd and composite.
+    fix: Test for rows of 3, 5 and 7, not just 2.
+
+statements:
+  - kind: definition
+    text: Every natural number greater than 1 is either prime or composite, but not both.
+  - kind: proven-theorem
+    text: Every composite number can be written as a product of prime numbers.
+    note: In fact in exactly one way (apart from order) - the fundamental theorem of arithmetic, proved in Level 10.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: test
+      type: generated
+      generator: is-prime
+      params: {max: 60}
+    - id: which-composite
+      type: choice
+      kind: apply
+      multi: true
+      prompt: Which of these are composite? Choose all that apply.
+      options:
+        - text: '9'
+          correct: true
+        - text: '20'
+          correct: true
+        - text: '17'
+          diagnosis: 17 makes no rectangle except a single row, so it is prime.
+        - text: '1'
+          diagnosis: 1 is neither prime nor composite.
+      explanation: 9 (3 rows of 3) and 20 (4 rows of 5) are composite.
+    - id: neither
+      type: choice
+      kind: recall
+      prompt: Which number is neither prime nor composite?
+      options:
+        - text: '1'
+          correct: true
+        - text: '2'
+          diagnosis: 2 is prime.
+        - text: '0'
+          diagnosis: Good thought - the words prime and composite are only used for natural numbers above 1, so 0 is not described by them either. But among counting numbers the special one is 1.
+      explanation: 1 is neither prime nor composite.
+    - id: odd-composite
+      type: truefalse
+      kind: counterexample
+      prompt: 'True or false: every composite number is even.'
+      answer: false
+      diagnosis: 9 = 3 rows of 3 is odd and composite - a counterexample.
+      explanation: False. 9, 15 and 21 are odd composite numbers.
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: Explain the difference between a prime number and a composite number, with an example of each.
+      rubric:
+        - A composite number (bigger than 1) can be arranged into a rectangle with at least two rows of at least two; a prime cannot.
+        - Gives a correct example of each (for example 7 prime, 8 composite).
+      model_answer: |
+        Both are whole numbers bigger than 1. A composite number can be arranged into a real rectangle, like 8
+        which is 2 rows of 4. A prime cannot - like 7, which only makes a single row.
+      explanation: Composite numbers make rectangles; primes do not.
+
+connections_forward:
+  - {lesson: l1-factors, how: 'The sides of the rectangles are the factors.'}
+  - {lesson: l10-prime-factorization, how: 'Breaking composite numbers all the way down to primes.'}
+  - {lesson: l10-fundamental-theorem, how: 'Why that breakdown is unique.'}
+
+practice: [is-prime]
+
+alternatives:
+  - strategy: contrast
+    title: Two kinds of number (and one oddball)
+    text: |
+      Sort the numbers 1 to 12:
+
+      - **Neither:** 1
+      - **Prime** (only a single row): 2, 3, 5, 7, 11
+      - **Composite** (at least one rectangle): 4, 6, 8, 9, 10, 12
+
+      Every number from 2 onward lands in exactly one of the last two groups.
+  - strategy: everyday-objects
+    title: Packaging
+    text: |
+      A factory packs biscuits in rectangular trays. 24 biscuits can be packed as 4 by 6, 3 by 8 or 2 by 12 -
+      24 is composite. 23 biscuits cannot be packed into any tray with at least two rows, unless every row has
+      only one biscuit - 23 is prime, and the factory would hate it.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      Some numbers of blocks can make a rectangle with rows, like 6 blocks in 2 rows of 3. Those numbers are
+      called composite. Numbers that can only make a line are prime. And 1 block? It's too small to be either!

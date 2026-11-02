@@ -1,0 +1,257 @@
+id: l0-what-is-mathematics
+estimated_minutes: 15
+
+goal: |
+  We are learning what mathematics actually is - and what it is not.
+why: |
+  Many people think mathematics *means* doing sums. Sums are only a small part of it.
+  If you know what mathematics really studies, every later idea - numbers, symbols,
+  equations, proofs - has a place to fit, and nothing feels like a random rule to memorise.
+problem: |
+  It answers the question "What kind of thinking is this, and why would anyone do it?"
+  so that the rest of the journey has a purpose.
+
+plain: |
+  Mathematics is a way of thinking very carefully about a few kinds of question:
+
+  - **How many? How much?** - counting and measuring.
+  - **What comes next?** - noticing things that repeat or grow regularly.
+  - **What shape? How is it built?** - the way things are arranged and connected.
+  - **What must be true?** - working out facts that cannot be otherwise.
+
+  Mathematics is also a *language*. Ordinary language is wonderful for stories and feelings, but
+  it is often vague: "a few", "quite big", "soon". Mathematics is a language where every
+  sentence means exactly one thing, so people can agree completely on whether it is right.
+
+  Doing sums is a small part of mathematics, in the way that spelling words is a small part of
+  writing a novel.
+
+analogy:
+  strategy: everyday-objects
+  title: A new language, learned like a child learns to talk
+  text: |
+    A child learning to speak first understands *things* - a ball, a cup, "more!" - and only later
+    learns the words, and later still the grammar. Mathematics can be learned the same way.
+    In this course every idea comes first as something you can see and touch, then gets its word,
+    then its symbol, and only then its exact definition. You will never be asked to use a word
+    you have not been taught.
+
+visual:
+  widget: math-lenses
+  props: {steps: 4}
+  caption: |
+    What you are seeing: a staircase made of square blocks - 1 block, then 2, then 3, then 4.
+    The buttons are four "lenses". Each lens shows a different kind of mathematical thinking about
+    the *same* staircase: how many blocks (quantity), how the steps grow (pattern), what shape it
+    makes (structure), and what we can be sure of without building it (reasoning).
+  prompt: Switch between the four lenses, then add a step and watch every lens update.
+
+example_simple:
+  title: Counting apples
+  problem: You count the apples in a bowl and find there are 6. Was that mathematics?
+  steps:
+    - You were answering the question "how many?" - a question about **quantity**.
+    - You said one counting word for each apple, in order. That is a precise method.
+    - Anyone else who counts carefully will also get 6. Mathematics gives answers everyone can agree on.
+  answer: Yes. Counting is one of the simplest pieces of mathematics - it deals with quantity.
+
+example_harder:
+  title: Sharing sweets fairly
+  problem: Twelve sweets are to be shared fairly between some friends. What kinds of mathematical thinking does this involve?
+  steps:
+    - '**Quantity**: there are 12 sweets.'
+    - '**Structure**: "fairly" means everyone gets the same amount - we are arranging 12 things into equal groups.'
+    - '**Pattern**: with 2 friends each gets 6, with 3 each gets 4, with 4 each gets 3... There is a regular connection between the number of friends and the share.'
+    - '**Reasoning**: can 12 sweets be shared fairly between 5 friends without cutting any? You can be *certain* the answer is no - try giving 2 each (10 used, 2 left over) or 3 each (15 needed, too many).'
+  answer: All four kinds - quantity, structure, pattern and reasoning - appear in one everyday problem.
+
+word:
+  terms: [mathematics]
+  text: |
+    The name for this way of thinking is **mathematics** (often shortened to "maths" or "math").
+    It comes from the ancient Greek word *máthēma*, which meant "something that is learned".
+    To the ancient Greeks, mathematics was simply *the* subject you learn - the model of careful,
+    reliable knowledge.
+
+symbols: []
+no_symbol_note: |
+  There is no symbol for "mathematics" itself. Mathematics *uses* symbols - and you will meet
+  your first ones in [[lesson:l0-symbols|Why do mathematical symbols exist?]] - but every symbol
+  is just a short name for an idea you will already understand.
+
+formal:
+  statement: |
+    **Mathematics** is the study of quantity, structure, space, change and pattern, carried out by
+    logical reasoning from precisely stated definitions and assumptions.
+
+    (There is no single definition that every mathematician accepts; this is a widely used working
+    description.)
+  kind: definition
+  glossary:
+    - {word: quantity, meaning: How many or how much.}
+    - {word: structure, meaning: 'How something is built or arranged - its parts and how they connect.'}
+    - {word: space, meaning: 'Shapes, sizes, positions and distances.'}
+    - {word: change, meaning: How one thing alters when another thing alters.}
+    - {word: pattern, meaning: 'A regularity that lets you predict what comes next.'}
+    - {word: logical reasoning, meaning: 'Reaching conclusions that *must* be true because of what you already know.'}
+    - {word: definitions, meaning: Exact statements of what words mean.}
+    - {word: assumptions, meaning: The starting facts an argument is allowed to use.}
+
+notation: []
+
+connections_back: []
+
+worked:
+  title: The toy-car pattern
+  problem: A child lines up toy cars in groups - 1 car, then 2 cars, then 3 cars. How many cars will the next group have, and which kinds of mathematical thinking did you use?
+  steps:
+    - 'Look at the groups: 1, 2, 3. Each group has one more car than the group before.'
+    - Noticing that "one more each time" is spotting a **pattern**.
+    - Using the pattern to say the next group has 4 cars is a **prediction**.
+    - Saying "4" at all is answering a question about **quantity**.
+  answer: 4 cars. You used quantity and pattern - and a little reasoning to make the prediction.
+
+experiment:
+  widget: math-lenses
+  props: {steps: 3}
+  task: Look at the staircase through all four lenses. Then add steps until it has 6, and see what each lens tells you.
+  goal: {lensesViewed: 4}
+  success: |
+    You have seen one object four ways. Notice that the *reasoning* lens tells you something about
+    a staircase you have not built yet. That ability - being sure about cases you never checked -
+    is what makes mathematics powerful.
+
+mistakes:
+  - mistake: '"Mathematics is just arithmetic (adding, subtracting, multiplying, dividing)."'
+    why: Arithmetic is one tool inside mathematics, like a hammer inside a toolbox.
+    fix: Think of mathematics as the study of quantity, pattern, structure and reasoning. Arithmetic is the part about calculating with quantities.
+  - mistake: '"Being good at mathematics means being fast."'
+    why: Speed helps with routine calculation, but mathematical discoveries come from slow, careful thinking. Many great mathematicians describe themselves as slow thinkers.
+    fix: Aim for understanding first. Speed, where it matters, comes later on its own.
+  - mistake: '"Some people just have a maths brain, and I don''t."'
+    why: Mathematics is learned like a language - one word, one idea at a time. Difficulty usually means an earlier rung of the ladder is missing, not that the learner cannot climb.
+    fix: When something feels hard, look for the earlier idea it depends on. This course is built to help you find it.
+
+statements:
+  - kind: established-fact
+    text: The word "mathematics" comes from the ancient Greek *máthēma*, meaning "that which is learned".
+  - kind: established-fact
+    text: There is no single definition of mathematics that all mathematicians agree on.
+    note: Philosophers of mathematics still debate what mathematics is *about*.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: best-description
+      type: choice
+      kind: recall
+      prompt: Which of these best describes mathematics?
+      options:
+        - text: The careful study of quantity, pattern, structure and what must be true, using exact reasoning.
+          correct: true
+        - text: Doing sums as quickly as possible.
+          diagnosis: Calculating is one part of mathematics, but mathematics is much more - patterns, shapes and reasoning too.
+        - text: Memorising formulas from a textbook.
+          diagnosis: Formulas are summaries of ideas. Mathematics is about understanding the ideas and why they are true.
+        - text: A collection of rules that were made up and have to be obeyed.
+          diagnosis: Mathematical facts are not arbitrary rules - they follow by reasoning from clear starting points.
+      explanation: Mathematics studies quantity, pattern, structure and logical truth, and it uses exact reasoning to reach answers everyone can agree on.
+    - id: which-activities
+      type: choice
+      kind: apply
+      multi: true
+      prompt: Which of these activities involve mathematical thinking? Choose all that apply.
+      options:
+        - text: Working out whether 20 chairs can be set out in equal rows of 6.
+          correct: true
+        - text: Noticing that the house numbers on one side of a street go up by 2 each time.
+          correct: true
+        - text: Being certain that a staircase with 10 steps (1 block, 2 blocks, ...) needs 10 blocks for its top step.
+          correct: true
+        - text: Choosing your favourite colour.
+          diagnosis: A favourite colour is a preference. There is no quantity, pattern or reasoning that decides it.
+      explanation: Arranging into equal rows (structure), house numbers (pattern) and being sure about the staircase (reasoning) are all mathematical. A favourite colour is a matter of taste.
+    - id: only-sums
+      type: truefalse
+      kind: recall
+      prompt: 'True or false: mathematics is only about calculating the answers to sums.'
+      answer: false
+      diagnosis: Calculating is part of mathematics, but mathematics also studies patterns, shapes, structures and logical truth.
+      explanation: False. Calculation is one tool. Mathematics is the study of quantity, pattern, structure and what must be true.
+    - id: staircase-next
+      type: number
+      kind: predict
+      prompt: A staircase has steps of 1, 2, 3 and 4 blocks. How many blocks will step 5 have?
+      answer: '5'
+      common_wrong:
+        - answer: '10'
+          diagnosis: 10 is the total number of blocks in the first four steps. The question asks how many blocks are in step 5 alone.
+        - answer: '15'
+          diagnosis: 15 is the total for the first five steps. The question asks about step 5 alone.
+      hint: Each step has one more block than the step before.
+      explanation: Each step has one more block than the one before, so step 5 has 5 blocks.
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: In your own words, explain what mathematics is to a friend who thinks it is "just sums".
+      rubric:
+        - Mentions more than calculation - for example patterns, shapes or structure.
+        - Mentions reasoning, or being sure that something must be true.
+        - Mentions that mathematics is precise, or a language where statements mean exactly one thing.
+      model_answer: |
+        Mathematics is much more than sums. It is a precise way of thinking about how many and how
+        much, about patterns and what comes next, about shapes and how things are built, and about
+        what must be true. It is like a language where every sentence means exactly one thing, and
+        you can be certain of an answer because you have reasoned it out.
+      explanation: A good explanation goes beyond sums to include patterns or structure, reasoning, and precision.
+
+connections_forward:
+  - {lesson: l0-why-mathematics, how: 'Next we look at why people invented mathematics in the first place.'}
+  - {lesson: l0-patterns, how: 'Patterns get a lesson of their own.'}
+  - {lesson: l0-proof, how: 'The "what must be true" lens grows into the idea of proof.'}
+  - {lesson: pb-critical-line, how: 'The Riemann Hypothesis is a statement about a deep pattern in the prime numbers.'}
+  - {lesson: pa-class-np, how: 'P versus NP is a question about the structure of problems and how hard they are to solve.'}
+
+alternatives:
+  - strategy: story
+    title: A visitor from another planet
+    text: |
+      Imagine a visitor from another planet who speaks no human language. You cannot tell them
+      your name or the weather - but you can tap three times, then three times again, and they
+      can tap six. You can draw a triangle, a square and a pentagon, and they can draw a hexagon
+      next. You both now share something exact: quantities and patterns. Many scientists think
+      mathematics is the language we would use to talk with such a visitor, because it does not
+      depend on any particular culture. That is what mathematics is: the part of thinking that is
+      precise enough for anyone to share.
+  - strategy: contrast
+    title: What mathematics is NOT
+    text: |
+      Sometimes the clearest way to see something is to see what it is not.
+
+      - Mathematics is **not** a list of tricks for getting answers. The tricks come *after* the ideas.
+      - Mathematics is **not** about being fast. It is about being right, and knowing *why* you are right.
+      - Mathematics is **not** only about numbers. Shapes, patterns, networks and logic are mathematics too.
+      - Mathematics is **not** opinion. Two people who reason correctly always reach the same answer.
+
+      What is left when you remove those misunderstandings? A careful way of thinking about how
+      much, what comes next, how things are built and what must be true.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      Mathematics is the game of being *really* sure. How many cookies are in the jar? Let's count
+      and be sure. What comes after red, blue, red, blue, red? Blue! We can be sure because we see
+      the pattern. If I have more cookies than you, and you have more than your little brother,
+      do I have more than your brother? Yes - we can be sure without even counting his. Being
+      really sure about things like that is what mathematics is.
+  - strategy: question-led
+    title: Four questions
+    text: |
+      Try answering these, and notice the *kind* of thinking each needs.
+
+      1. How many legs do three cats have altogether? (*quantity*)
+      2. What comes next: 5, 10, 15, 20, ...? (*pattern*)
+      3. Can you build a square from 7 identical square tiles? (*structure*)
+      4. If every cat has four legs, and Tom is a cat, how many legs does Tom have? (*reasoning*)
+
+      Each answer is something everyone can agree on, once they think carefully. Mathematics is
+      the study of exactly these kinds of question.

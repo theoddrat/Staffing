@@ -1,0 +1,213 @@
+id: l1-greatest-common-divisor
+estimated_minutes: 20
+
+goal: |
+  We are learning what the greatest common divisor of two numbers is, how to find it by listing factors,
+  and what it is useful for.
+why: |
+  The greatest common divisor (GCD) simplifies fractions and solves sharing problems. It also has one of the
+  oldest algorithms in mathematics - Euclid's algorithm, more than 2,000 years old - which is a classic first
+  example in the study of how fast algorithms run.
+problem: |
+  You have 12 red beads and 18 blue beads and want to make identical bags using every bead. What is the
+  largest number of identical bags you can make?
+
+plain: |
+  A **common divisor** (or common factor) of two numbers is a number that divides **both** of them.
+
+  - Factors of 12 - 1, 2, 3, 4, 6, 12.
+  - Factors of 18 - 1, 2, 3, 6, 9, 18.
+  - Common factors - **1, 2, 3, 6**.
+
+  The **greatest** of the common divisors is the **greatest common divisor**: for 12 and 18 it is **6**.
+
+  For the beads: each bag must get the same number of red beads, so the number of bags must divide 12; and
+  likewise it must divide 18. The largest possible number of bags is the GCD - 6 bags, each with 2 red and
+  3 blue beads.
+
+  When the GCD of two numbers is 1, they share no factor except 1, and are called **coprime** - for example
+  8 and 15.
+
+  The GCD also **simplifies fractions**: divide the top and bottom of $\tfrac{12}{18}$ by 6 to get
+  $\tfrac{2}{3}$, the simplest form.
+
+analogy:
+  strategy: everyday-objects
+  title: Party bags
+  text: |
+    Making identical party bags from 24 sweets and 36 stickers, with nothing left over: the number of bags has
+    to share both piles exactly. The biggest number of bags that works is the greatest common divisor of 24
+    and 36 - which is 12 (2 sweets and 3 stickers in each).
+
+visual:
+  widget: common-factors
+  props: {a: 12, b: 18, editable: true}
+  caption: |
+    What you are seeing: two overlapping circles. The left holds the factors of the first number, the right
+    the factors of the second. Factors of both sit in the overlap. The largest number in the overlap is the
+    greatest common divisor.
+  prompt: Change the numbers. Can you find two numbers whose overlap contains only 1?
+
+example_simple:
+  title: Eight and twelve
+  problem: Find $\gcd(8, 12)$.
+  steps:
+    - Factors of 8 - 1, 2, 4, 8.
+    - Factors of 12 - 1, 2, 3, 4, 6, 12.
+    - Common factors - 1, 2, 4.
+    - The greatest is 4.
+  answer: $\gcd(8, 12) = 4$.
+
+example_harder:
+  title: Simplifying a fraction
+  problem: Write $\tfrac{12}{18}$ in its simplest form.
+  steps:
+    - Find the greatest number dividing both 12 and 18 - $\gcd(12, 18) = 6$.
+    - Divide top and bottom by 6 - think of grouping every 6 small parts into one bigger part.
+    - 12 becomes 2 and 18 becomes 3.
+  answer: $\tfrac{12}{18} = \tfrac{2}{3}$, and it cannot be simplified further because $\gcd(2, 3) = 1$.
+
+word:
+  terms: [greatest-common-divisor]
+  text: |
+    This number is the **greatest common divisor**, often shortened to **GCD**. Some countries call it the
+    **highest common factor** (HCF) or **greatest common factor** - all the same idea.
+
+symbols:
+  - symbol: '\gcd(a, b)'
+    name: GCD notation
+    looks_like: The letters gcd followed by two numbers in round brackets, separated by a comma.
+    means: The greatest common divisor of the two numbers in the brackets.
+    why: A short name for a long phrase. The brackets hold the inputs - the two numbers whose GCD we want.
+    read_aloud: '"The GCD of $a$ and $b$" - $\gcd(12, 18)$ is "the GCD of twelve and eighteen".'
+
+formal:
+  statement: |
+    For integers $a$ and $b$, not both zero, the **greatest common divisor** $\gcd(a, b)$ is the largest natural
+    number $d$ such that $d \mid a$ and $d \mid b$. If $\gcd(a, b) = 1$, then $a$ and $b$ are **coprime**.
+  kind: definition
+  glossary:
+    - {word: not both zero, meaning: 'Every number divides 0, so the GCD of 0 and 0 would not exist.'}
+    - {word: 'd \mid a', meaning: '$d$ divides $a$ exactly.'}
+    - {word: largest natural number, meaning: 'The biggest of all the common divisors.'}
+    - {word: coprime, meaning: 'Sharing no factor bigger than 1.'}
+
+notation:
+  - expression: '\gcd(12, 18) = 6'
+    read_aloud: the GCD of twelve and eighteen equals six
+    parts:
+      - {symbol: '\gcd', meaning: Greatest common divisor.}
+      - {symbol: '(12, 18)', meaning: The two numbers we are comparing.}
+      - {symbol: '6', meaning: 'The largest number dividing both.'}
+    english: Six is the biggest number that divides both twelve and eighteen exactly.
+
+connections_back:
+  - {lesson: l1-divisibility, how: 'A common divisor divides both numbers.'}
+  - {lesson: l1-factors, how: 'We find the GCD by comparing lists of factors.'}
+
+worked:
+  title: Beads in bags
+  problem: You have 24 red beads and 36 blue beads. What is the largest number of identical bags you can make using all the beads, and what goes in each bag?
+  steps:
+    - The number of bags must divide 24 and must divide 36.
+    - Factors of 24 - 1, 2, 3, 4, 6, 8, 12, 24. Factors of 36 - 1, 2, 3, 4, 6, 9, 12, 18, 36.
+    - Common factors - 1, 2, 3, 4, 6, 12. The greatest is 12.
+    - Sharing 24 red beads into 12 bags gives 2 per bag, and sharing 36 blue beads into 12 bags gives 3 per bag.
+  answer: 12 bags, each with 2 red and 3 blue beads.
+
+experiment:
+  widget: common-factors
+  props: {a: 16, b: 24, editable: true}
+  task: Find the greatest common divisor of 16 and 24 by tapping the largest number in the overlap.
+  goal: {findGcd: true}
+  success: |
+    $\gcd(16, 24) = 8$. Notice that every common factor - 1, 2, 4, 8 - is itself a factor of 8. That is no
+    accident: every common divisor divides the GCD, a fact you will prove in Level 10.
+
+mistakes:
+  - mistake: Choosing a common factor that is not the greatest.
+    why: 2 divides both 12 and 18, but 6 is bigger and also divides both.
+    fix: List *all* the common factors and take the largest.
+  - mistake: Confusing the GCD with the least common multiple.
+    why: The GCD goes *into* both numbers (so it is at most the smaller one); a common multiple is something both go into.
+    fix: GCD - smaller than or equal to both numbers. LCM - bigger than or equal to both.
+  - mistake: Thinking the GCD must be prime.
+    why: $\gcd(12, 18) = 6$, which is composite.
+    fix: The GCD is simply the greatest common factor, prime or not.
+
+statements:
+  - kind: established-fact
+    text: Euclid's *Elements* (around 300 BCE) describes a method for finding the greatest common divisor that is still used today - one of the oldest algorithms in existence.
+  - kind: proven-theorem
+    text: Every common divisor of two numbers divides their greatest common divisor.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: gcd-a
+      type: generated
+      generator: gcd
+    - id: gcd-b
+      type: generated
+      generator: gcd
+      params: {max: 60}
+    - id: coprime
+      type: truefalse
+      kind: recall
+      prompt: 'True or false: $\gcd(7, 10) = 1$.'
+      answer: true
+      diagnosis: The factors of 7 are 1 and 7; the factors of 10 are 1, 2, 5 and 10. Only 1 is shared.
+      explanation: True - 7 and 10 are coprime.
+    - id: simplify
+      type: choice
+      kind: apply
+      prompt: What is $\tfrac{12}{18}$ in its simplest form?
+      options:
+        - text: $\tfrac{2}{3}$
+          correct: true
+        - text: $\tfrac{6}{9}$
+          diagnosis: This is equivalent, but 6 and 9 still share the factor 3. Divide by the GCD, 6, to go straight to the simplest form.
+          revisit: l1-greatest-common-divisor
+        - text: $\tfrac{4}{6}$
+          diagnosis: This is equivalent, but 4 and 6 still share the factor 2.
+      explanation: Dividing top and bottom by $\gcd(12, 18) = 6$ gives $\tfrac{2}{3}$.
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: Explain how to find $\gcd(20, 30)$ and what the answer means.
+      rubric:
+        - List the factors of each number and find the common ones (1, 2, 5, 10).
+        - The greatest common one is 10.
+        - It is the largest number that divides both 20 and 30 exactly.
+      model_answer: |
+        Factors of 20 are 1, 2, 4, 5, 10, 20; factors of 30 are 1, 2, 3, 5, 6, 10, 15, 30. The common ones are
+        1, 2, 5 and 10, so the GCD is 10 - the largest number that divides both 20 and 30 exactly.
+      explanation: '$\gcd(20, 30) = 10$.'
+
+connections_forward:
+  - {lesson: l1-least-common-multiple, how: 'The partner idea - the smallest common multiple.'}
+  - {lesson: l2-fraction-arithmetic, how: 'Simplifying fractions uses the GCD.'}
+  - {lesson: l10-euclidean-algorithm, how: 'A much faster way to find GCDs - one of the first algorithms ever studied.'}
+
+practice: [gcd]
+
+alternatives:
+  - strategy: visual
+    title: Tiling a rectangle with squares
+    text: |
+      Draw a rectangle 12 squares long and 18 squares wide on squared paper. What is the biggest square tile
+      that covers it exactly, with no cutting? A 6-by-6 tile fits - 2 tiles along one side and 3 along the
+      other. A 7-by-7 tile does not fit. The side of the biggest square tile is the GCD of the two side lengths.
+  - strategy: question-led
+    title: Count down
+    text: |
+      For $\gcd(12, 18)$, ask of each number from 12 downward: "does it divide both?" 12 - divides 12, not 18.
+      11, 10, 9, 8, 7 - no. 6 - divides 12 (twice) and 18 (three times). Stop! The first "yes" when counting down
+      is the greatest common divisor. (Counting down from the smaller number guarantees the first success is
+      the greatest.)
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      You have 4 apples and 6 bananas, and you want to make fruit bowls that are exactly the same, using all the
+      fruit. You can make 2 bowls - each with 2 apples and 3 bananas! You can't make 3 identical bowls, or 4. The
+      biggest number of bowls that works, 2, is called the greatest common divisor.

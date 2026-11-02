@@ -1,0 +1,252 @@
+id: l1-natural-numbers
+estimated_minutes: 20
+
+goal: |
+  We are learning the natural numbers 1, 2, 3, ..., the symbol $\mathbb{N}$, the idea of a set, and
+  the symbol $\in$ for "belongs to" - plus an honest look at a convention mathematicians disagree on.
+why: |
+  The natural numbers are where number theory lives: primes, divisibility and the Riemann Hypothesis
+  are all about them. The symbols $\mathbb{N}$, $\{\ \}$ and $\in$ appear constantly in research papers,
+  so learning to read them now pays off for the whole journey.
+problem: |
+  How do mathematicians name "all the counting numbers" as one single object, and say that a number
+  belongs to it?
+
+plain: |
+  The **natural numbers** are the counting numbers: **1, 2, 3, 4, ...** - the numbers you use to count
+  sheep in a field. They go on forever.
+
+  Mathematicians like to treat the whole collection as **one object**, called a **set**, and give it a
+  name: $\mathbb{N}$ (a capital N with a double stroke).
+
+  To say "5 is one of the natural numbers", they write $5 \in \mathbb{N}$, read "5 is an element of
+  $\mathbb{N}$" or simply "5 is in $\mathbb{N}$". To say $-2$ is *not* one of them: $-2 \notin \mathbb{N}$.
+
+  **An honest disagreement.** Is 0 a natural number? Mathematicians have never fully agreed. Many - in
+  logic and computer science especially - say yes and start $\mathbb{N}$ at 0. Many others, especially in
+  number theory, start at 1. Neither is "right": it is a **convention**, an agreed choice. A careful
+  writer always says which one they use. This course uses $\mathbb{N} = \{1, 2, 3, \ldots\}$.
+
+analogy:
+  strategy: everyday-objects
+  title: A club and its members
+  text: |
+    A chess club is one thing - "the chess club" - even though it is made of many people. You can ask "is
+    Ana a member?" The set $\mathbb{N}$ is a club whose members are 1, 2, 3, ... The symbol $\in$ says
+    "is a member of": $5 \in \mathbb{N}$ is like "Ana is a member of the chess club".
+
+visual:
+  widget: number-sets
+  props: {numbers: ['1', '5', '0', '-1', '100', '1/2'], sets: [natural, whole]}
+  caption: |
+    What you are seeing: an inner region for the natural numbers $\mathbb{N}$, inside a larger region for
+    the whole numbers. Each number card belongs in the smallest region that contains it - or outside
+    both. Notice that 0 sits in the whole numbers but outside $\mathbb{N}$ (under this course's
+    convention).
+  prompt: Place each card. Where does 0 go, and why might another book put it somewhere else?
+
+example_simple:
+  title: Is 7 natural?
+  problem: Is 7 a natural number? Write the answer in symbols.
+  steps:
+    - 7 is a counting number - you can count seven objects.
+    - So 7 belongs to the set of natural numbers.
+  answer: Yes - $7 \in \mathbb{N}$.
+
+example_harder:
+  title: Is 0 natural?
+  problem: Is 0 a natural number?
+  steps:
+    - Under this course's convention, $\mathbb{N} = \{1, 2, 3, \ldots\}$, so $0 \notin \mathbb{N}$.
+    - Under the other common convention, $\mathbb{N} = \{0, 1, 2, \ldots\}$, so $0 \in \mathbb{N}$.
+    - The mathematics is the same either way - only the name changes.
+  answer: It depends on the convention. This course says no. Always check which convention a book uses.
+
+word:
+  terms: [natural-number, set, element-of, convention]
+  text: |
+    The counting numbers are the **natural numbers**. A collection treated as a single object is a
+    **set**, and the things in it are its **elements** (or members). An agreed choice that could have been
+    made differently is a **convention**.
+
+symbols:
+  - symbol: '\mathbb{N}'
+    name: blackboard-bold N
+    looks_like: A capital N with one of its strokes doubled.
+    means: The set of all natural numbers.
+    why: The double stroke comes from how lecturers wrote bold letters on blackboards. N stands for "natural".
+    read_aloud: '"N", or "the natural numbers".'
+  - symbol: '\{\ \}'
+    name: curly braces
+    looks_like: A pair of curly brackets.
+    means: The set of the things listed inside. $\{1, 2, 3\}$ is the set whose elements are 1, 2 and 3.
+    why: They wrap a collection up into one object.
+    read_aloud: '"The set containing ..." - $\{1, 2, 3\}$ is "the set containing one, two and three".'
+  - symbol: '\in'
+    name: element-of sign
+    looks_like: A rounded letter E, like the Greek letter epsilon.
+    means: '"Is an element of" - belongs to a set. A slash through it, $\notin$, means "is not an element of".'
+    why: It comes from the Greek letter epsilon, the first letter of a Greek word meaning "is". The Italian mathematician Giuseppe Peano introduced it in 1889.
+    read_aloud: '"Is an element of" or "is in". $5 \in \mathbb{N}$ is "five is in N".'
+
+formal:
+  statement: |
+    The **natural numbers** form the set $\mathbb{N} = \{1, 2, 3, \ldots\}$. (Many authors instead use
+    the convention $\mathbb{N} = \{0, 1, 2, \ldots\}$.) For an object $x$, $x \in \mathbb{N}$ means $x$ is
+    a natural number, and $x \notin \mathbb{N}$ means it is not.
+  kind: definition
+  glossary:
+    - {word: set, meaning: 'A collection of things, treated as one object.'}
+    - {word: '\{1, 2, 3, \ldots\}', meaning: 'The set whose elements are 1, 2, 3 and so on forever.'}
+    - {word: 'x', meaning: 'A letter standing for whatever object we are asking about.'}
+    - {word: 'x \in \mathbb{N}', meaning: '"$x$ is an element of the natural numbers".'}
+
+notation:
+  - expression: '\mathbb{N} = \{1, 2, 3, \ldots\}'
+    read_aloud: N equals the set containing one, two, three, and so on
+    parts:
+      - {symbol: '\mathbb{N}', meaning: The natural numbers.}
+      - {symbol: '=', meaning: Is the same thing as.}
+      - {symbol: '\{\ \ \}', meaning: The set of the things inside.}
+      - {symbol: '1, 2, 3, \ldots', meaning: 'One, two, three, continuing forever.'}
+    english: The natural numbers are the counting numbers one, two, three and so on.
+  - expression: '5 \in \mathbb{N} \qquad -2 \notin \mathbb{N}'
+    read_aloud: five is in N; negative two is not in N
+    parts:
+      - {symbol: '\in', meaning: Is an element of.}
+      - {symbol: '\notin', meaning: 'Is not an element of - the slash means "not".'}
+    english: Five is a natural number; negative two is not.
+
+connections_back:
+  - {lesson: l1-whole-numbers, how: 'The natural numbers are the whole numbers without zero (under this course''s convention).'}
+  - {lesson: l1-one-two-three, how: 'Every natural number has a successor, so $\mathbb{N}$ is infinite.'}
+
+worked:
+  title: Membership tests
+  problem: Write $\in$ or $\notin$ for each - 12, 0, $-1$, and one half - with $\mathbb{N}$.
+  steps:
+    - 12 is a counting number - $12 \in \mathbb{N}$.
+    - 0, with this course's convention - $0 \notin \mathbb{N}$.
+    - $-1$ is negative - $-1 \notin \mathbb{N}$.
+    - One half is not a whole number - it is not in $\mathbb{N}$.
+  answer: Only 12 is in $\mathbb{N}$.
+
+experiment:
+  widget: number-sets
+  props: {numbers: ['8', '0', '-3', '1', '2.5', '42'], sets: [natural, whole]}
+  task: Place every card in the smallest family it belongs to, or outside.
+  goal: {sortAll: true}
+  success: |
+    1, 8 and 42 are in $\mathbb{N}$; 0 is a whole number but (in this course) not natural; $-3$ and 2.5
+    are outside both. Each family is a set, and the inner set sits inside the outer one.
+
+mistakes:
+  - mistake: Assuming every book uses the same convention for $\mathbb{N}$.
+    why: Some start at 0, some at 1.
+    fix: When reading, look for the author's definition; when writing, state yours.
+  - mistake: 'Writing the symbols the wrong way round, like $\mathbb{N} \in 5$.'
+    why: The element goes on the left and the set on the right.
+    fix: Read it aloud - "five is in N" - and write it in that order.
+  - mistake: Thinking $\{1, 2, 3\}$ and $\{3, 2, 1\}$ are different sets.
+    why: A set only cares which things are in it, not the order they are listed.
+    fix: Treat a set like a bag, not a queue.
+
+statements:
+  - kind: convention
+    text: Whether 0 counts as a natural number is a convention. This course uses $\mathbb{N} = \{1, 2, 3, \ldots\}$.
+  - kind: established-fact
+    text: Giuseppe Peano introduced the symbol $\in$ (from the Greek letter epsilon) in 1889.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: five-in
+      type: truefalse
+      kind: recall
+      prompt: 'True or false: $5 \in \mathbb{N}$.'
+      answer: true
+      diagnosis: 5 is a counting number, so it is an element of the natural numbers.
+      explanation: True - five is a natural number.
+    - id: zero-natural
+      type: choice
+      kind: recall
+      prompt: Is 0 a natural number?
+      options:
+        - text: It depends on the convention - in this course no, but many authors say yes.
+          correct: true
+        - text: Always yes.
+          diagnosis: Many mathematicians start $\mathbb{N}$ at 1. It is a convention, not a fact.
+        - text: Always no.
+          diagnosis: Many mathematicians, especially in logic and computer science, include 0 in $\mathbb{N}$.
+      explanation: It is a convention. This course starts $\mathbb{N}$ at 1.
+    - id: read-symbol
+      type: choice
+      kind: apply
+      prompt: How is $-4 \notin \mathbb{N}$ read aloud?
+      options:
+        - text: Negative four is not an element of the natural numbers.
+          correct: true
+        - text: Negative four is an element of the natural numbers.
+          diagnosis: The slash through the symbol means "not".
+        - text: The natural numbers are not negative four.
+          diagnosis: '$\notin$ is about membership - whether $-4$ belongs to the set.'
+      explanation: '$\notin$ means "is not an element of".'
+    - id: which-natural
+      type: choice
+      kind: apply
+      multi: true
+      prompt: Which of these are natural numbers (using this course's convention)? Choose all that apply.
+      options:
+        - text: '1'
+          correct: true
+        - text: '1000'
+          correct: true
+        - text: '0'
+          diagnosis: In this course $\mathbb{N}$ starts at 1.
+        - text: '-6'
+          diagnosis: Natural numbers are never negative.
+        - text: '3/4'
+          diagnosis: Natural numbers have no parts.
+      explanation: 1 and 1000 are natural numbers.
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: Explain what $\mathbb{N} = \{1, 2, 3, \ldots\}$ means, symbol by symbol, and mention the convention issue.
+      rubric:
+        - $\mathbb{N}$ is the name of the set of natural numbers.
+        - The braces mean "the set of the things inside", and the dots mean "and so on forever".
+        - Some authors include 0 in $\mathbb{N}$; it is a convention.
+      model_answer: |
+        $\mathbb{N}$ is the name for the set of natural numbers. The curly braces mean "the set
+        containing", and $1, 2, 3, \ldots$ means one, two, three and so on forever. So it says the
+        natural numbers are the counting numbers. Some authors also include 0 - that is a convention.
+      explanation: '$\mathbb{N}$ names the set; braces hold the elements; dots mean forever; 0 is a convention.'
+
+connections_forward:
+  - {lesson: l1-integers, how: 'The integers, $\mathbb{Z}$, add zero and the negatives.'}
+  - {lesson: l3-braces, how: 'Curly braces and set notation in more depth.'}
+  - {lesson: l8-sets, how: 'Sets as a foundation for all of mathematics.'}
+  - {lesson: l7-induction, how: 'Induction proves statements for every element of $\mathbb{N}$.'}
+
+alternatives:
+  - strategy: history
+    title: Why the disagreement exists
+    text: |
+      For most of history, "natural numbers" meant 1, 2, 3, ... - zero was a late arrival. In the late
+      1800s, when logicians such as Giuseppe Peano and Gottlob Frege built arithmetic from scratch, it
+      was more convenient to start from 0. Computer science later adopted 0 as well (counting from 0 is
+      natural for computer memory). Number theorists kept starting at 1, because statements about
+      primes and divisors are simpler without 0. Both traditions survive today.
+  - strategy: everyday-objects
+    title: The bag of numbers
+    text: |
+      Imagine a bag. Into it you put a card with 1, a card with 2, a card with 3, and so on forever (it is
+      a magic bag). That bag is $\mathbb{N}$. Asking "is 5 in the bag?" - yes: $5 \in \mathbb{N}$. Asking
+      "is $-2$ in the bag?" - no: $-2 \notin \mathbb{N}$. A set is just a bag of things, and $\in$ asks
+      whether something is in the bag.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      Natural numbers are the numbers you count with: 1, 2, 3, 4... Grown-ups give this whole group of
+      numbers a short name - a fancy N - and they use a curly E-shape to say "is one of them". So "5 is one
+      of the counting numbers" is written $5 \in \mathbb{N}$.

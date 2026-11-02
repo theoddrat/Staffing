@@ -1,0 +1,188 @@
+id: l1-percentages
+estimated_minutes: 15
+
+goal: |
+  We are learning that "percent" means "out of one hundred", and how percentages connect to fractions
+  and decimals.
+why: |
+  Percentages compare amounts on a common scale of 100 - battery levels, test scores, discounts, chances
+  of rain. Later, probabilities are often written as percentages.
+problem: |
+  How can we compare "18 out of 20" with "40 out of 50" quickly? Put them both out of 100.
+
+plain: |
+  **Per cent** means **"for every hundred"** or **"out of a hundred"**.
+
+  - **25%** means 25 out of 100 - which is $\tfrac{25}{100}$, $0.25$, or one quarter.
+  - **50%** is a half. **100%** is the whole thing. **0%** is none of it.
+  - A percentage can be more than 100%: 150% of something is one and a half times it.
+
+  A percentage is simply a fraction with denominator 100, written with the symbol %.
+
+  To find **a percentage of an amount**, find how much each 1% is worth, or use a fraction you know:
+  25% of 80 is a quarter of 80, which is 20.
+
+analogy:
+  strategy: everyday-objects
+  title: The battery bar
+  text: |
+    A phone battery showing 40% has 40 of its 100 equal "chunks" of charge left. Whatever the actual
+    battery size, 40% always means the same share - that is the point of percentages. They put everything
+    on a scale of 100, so different things can be compared.
+
+visual:
+  widget: hundred-grid
+  props: {shaded: 40, mode: percent, editable: true}
+  caption: |
+    What you are seeing: one whole drawn as 100 equal squares. Each square is 1%. The shaded squares show
+    the percentage, and the same amount is also shown as a fraction of 100 and as a decimal.
+  prompt: Shade 50%, then 25%. Which simple fractions are these?
+
+example_simple:
+  title: Forty percent
+  problem: What fraction is 40%?
+  steps:
+    - 40% means 40 out of 100 - $\tfrac{40}{100}$.
+    - As a decimal, 40 hundredths is $0.40$, which is $0.4$.
+    - It can be simplified - $\tfrac{40}{100} = \tfrac{2}{5}$.
+  answer: $\tfrac{40}{100}$, which is $\tfrac{2}{5}$ or $0.4$.
+
+example_harder:
+  title: A quarter of eighty
+  problem: What is 25% of 80?
+  steps:
+    - 25% is $\tfrac{25}{100}$, which is one quarter.
+    - A quarter of 80 - share 80 into 4 equal parts - is 20.
+    - Check with 1% - 1% of 80 is 0.8, and 25 lots of 0.8 is 20.
+  answer: '20'
+
+word:
+  terms: [percentage]
+  text: |
+    "Per cent" comes from the Latin *per centum*, "for each hundred". A number written with % is a
+    **percentage**.
+
+symbols:
+  - symbol: '\%'
+    name: percent sign
+    looks_like: A small circle, a slanted line, and another small circle.
+    means: '"Out of 100" - divide by 100. $7\%$ is $\tfrac{7}{100}$.'
+    why: It grew from a handwritten abbreviation of *per cento* used by Italian merchants; the slash and two circles echo the 1 and two 0s of 100.
+    read_aloud: '"Percent" - $25\%$ is "twenty-five percent".'
+
+formal:
+  statement: |
+    For a number $p$, $p\%$ means $\tfrac{p}{100}$. The phrase "$p\%$ of a quantity $Q$" means
+    $\tfrac{p}{100}$ of $Q$.
+  kind: definition
+  glossary:
+    - {word: 'p', meaning: 'Any number - the percentage.'}
+    - {word: '\tfrac{p}{100}', meaning: '$p$ hundredths.'}
+    - {word: 'Q', meaning: 'Any amount we are taking a percentage of.'}
+
+notation:
+  - expression: '25\% = \frac{25}{100} = 0.25 = \frac{1}{4}'
+    read_aloud: twenty-five percent equals twenty-five hundredths equals zero point two five equals one quarter
+    parts:
+      - {symbol: '25\%', meaning: Twenty-five out of a hundred.}
+      - {symbol: '\frac{25}{100}', meaning: The same as a fraction.}
+      - {symbol: '0.25', meaning: The same as a decimal.}
+      - {symbol: '\frac{1}{4}', meaning: The same as a simplified fraction.}
+    english: Four names for one amount - one quarter.
+
+connections_back:
+  - {lesson: l1-decimals, how: 'Percentages are hundredths - the second decimal place.'}
+
+worked:
+  title: Ten percent
+  problem: What is 10% of 250?
+  steps:
+    - 10% is $\tfrac{10}{100}$, which is one tenth.
+    - One tenth of 250 - share 250 into 10 equal parts - is 25.
+  answer: '25'
+
+experiment:
+  widget: hundred-grid
+  props: {shaded: 0, mode: percent, editable: true}
+  task: Shade the grid to show 60%.
+  goal: {shaded: 60}
+  success: |
+    60% is 60 of the 100 squares - six full rows. As a fraction that is $\tfrac{60}{100} = \tfrac{3}{5}$,
+    and as a decimal $0.6$.
+
+mistakes:
+  - mistake: Thinking 25% of 80 is 25.
+    why: 25 is the percentage, not the part of 80.
+    fix: Turn the percentage into a fraction first - 25% is a quarter - then take that fraction of the amount.
+  - mistake: Thinking a percentage can never be more than 100%.
+    why: 100% is one whole, and you can have more than one whole - 200% is double.
+    fix: Read $p\%$ as "$p$ hundredths" - $p$ can be any number.
+
+statements:
+  - kind: established-fact
+    text: '"Per cent" comes from the Latin *per centum*, meaning "for each hundred".'
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: pct-of
+      type: generated
+      generator: percent-of
+    - id: f2p
+      type: generated
+      generator: fraction-to-percent
+    - id: hundred
+      type: choice
+      kind: recall
+      prompt: What does 100% of something mean?
+      options:
+        - text: All of it.
+          correct: true
+        - text: A hundred of it.
+          diagnosis: 100% means 100 out of 100 - the whole thing, not a hundred copies.
+        - text: Half of it.
+          diagnosis: Half is 50%.
+      explanation: 100% is 100 out of 100 - the whole.
+    - id: half
+      type: truefalse
+      kind: recall
+      prompt: 'True or false: 50% is the same as $\tfrac{1}{2}$.'
+      answer: true
+      diagnosis: 50 out of 100 is one half.
+      explanation: True.
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: Explain what 75% means, and write it as a fraction and a decimal.
+      rubric:
+        - 75% means 75 out of every 100.
+        - 'As a fraction - $\tfrac{75}{100}$ (or $\tfrac{3}{4}$).'
+        - 'As a decimal - $0.75$.'
+      model_answer: 75% means 75 out of 100. As a fraction that is $\tfrac{75}{100}$, which simplifies to $\tfrac{3}{4}$, and as a decimal it is $0.75$.
+      explanation: 75% is 75 hundredths - $\tfrac{3}{4}$ or $0.75$.
+
+connections_forward:
+  - {lesson: l1-ratios, how: 'Comparing two amounts directly with ratios.'}
+  - {lesson: l8-discrete-probability, how: 'Chances are often written as percentages.'}
+
+practice: [percent-of, fraction-to-percent]
+
+alternatives:
+  - strategy: everyday-objects
+    title: A class of 100
+    text: |
+      Imagine a school year of exactly 100 students. If 30 walk to school, then 30% walk. If 100 of them
+      come, that is 100%. Percentages pretend every group has exactly 100 members, so different groups
+      can be compared fairly - a class of 20 where 6 walk also has 30% walking, because 6 out of 20 is the
+      same share as 30 out of 100.
+  - strategy: visual
+    title: The hundred square
+    text: |
+      Draw a 10-by-10 square. Every small square is 1%. One row is 10%. Half the square - five rows - is
+      50%. A quarter of the square is 25 small squares, two and a half rows. Shading the square makes it
+      obvious why 25% is a quarter and 10% is a tenth.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      Imagine a jar that holds exactly 100 sweets. "Percent" just means "how many out of the 100". If the
+      jar has 50 sweets, it is 50% full - half full! If it has all 100, it is 100% full.

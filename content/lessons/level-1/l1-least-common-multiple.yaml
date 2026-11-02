@@ -1,0 +1,203 @@
+id: l1-least-common-multiple
+estimated_minutes: 18
+
+goal: |
+  We are learning what the least common multiple of two numbers is, how to find it, and how it connects to
+  the greatest common divisor.
+why: |
+  The least common multiple (LCM) answers "when do two rhythms line up?" - buses, flashing lights, gears. It
+  is also the key to adding fractions with different denominators in Level 2.
+problem: |
+  One light flashes every 4 seconds and another every 6 seconds. They flash together now. When will they next
+  flash together?
+
+plain: |
+  A **common multiple** of two numbers is a number that is a multiple of **both**.
+
+  - Multiples of 4 - 4, 8, **12**, 16, 20, **24**, 28, 32, **36**, ...
+  - Multiples of 6 - 6, **12**, 18, **24**, 30, **36**, ...
+  - Common multiples - **12, 24, 36, ...** (they go on forever).
+
+  The **least common multiple** is the smallest positive one: for 4 and 6 it is **12**. So the two lights next
+  flash together after 12 seconds.
+
+  A shortcut that always gives *a* common multiple is to multiply the two numbers: $4 \times 6 = 24$. But it is
+  not always the *least* - here 12 is smaller. Multiplying gives the LCM exactly when the two numbers are
+  coprime, like 3 and 5 (LCM 15).
+
+  And a beautiful connection: the GCD and LCM of two numbers multiply to the same result as the numbers
+  themselves. For 4 and 6: $\gcd = 2$, $\operatorname{lcm} = 12$, and $2 \times 12 = 24 = 4 \times 6$.
+
+analogy:
+  strategy: everyday-objects
+  title: Two buses
+  text: |
+    Bus A leaves the station every 10 minutes and Bus B every 15 minutes. Both leave at 9:00. Bus A also leaves
+    at 9:10, 9:20, 9:30; Bus B at 9:15, 9:30. They next leave together at 9:30 - 30 minutes later, the least
+    common multiple of 10 and 15.
+
+visual:
+  widget: multiples-jumps
+  props: {a: 4, b: 6, max: 30, editable: true}
+  caption: |
+    What you are seeing: two frogs starting at 0 on the same number line. One jumps 4 at a time, the other 6 at
+    a time. Their landing spots are marked in two colours. Where both colours appear, both frogs land - a
+    common multiple. The first such place is the least common multiple.
+  prompt: Watch the frogs jump. Where do they first land on the same number?
+
+example_simple:
+  title: Three and five
+  problem: Find $\operatorname{lcm}(3, 5)$.
+  steps:
+    - Multiples of 3 - 3, 6, 9, 12, 15, 18, ...
+    - Multiples of 5 - 5, 10, 15, 20, ...
+    - The first number in both lists is 15.
+  answer: $\operatorname{lcm}(3, 5) = 15$ - here the same as $3 \times 5$, because 3 and 5 are coprime.
+
+example_harder:
+  title: Six and eight
+  problem: Find $\operatorname{lcm}(6, 8)$.
+  steps:
+    - Multiples of 8 - 8, 16, 24, 32, 40, 48, ...
+    - Test each against 6 - 8 no, 16 no, 24 yes (4 jumps of 6).
+    - The shortcut $6 \times 8 = 48$ is a common multiple, but not the least.
+  answer: $\operatorname{lcm}(6, 8) = 24$. (Tip - list multiples of the bigger number and test each one.)
+
+word:
+  terms: [least-common-multiple]
+  text: |
+    This number is the **least common multiple**, shortened to **LCM** - also called the lowest common
+    multiple.
+
+symbols:
+  - symbol: '\operatorname{lcm}(a, b)'
+    name: LCM notation
+    looks_like: The letters lcm followed by two numbers in round brackets.
+    means: The least common multiple of the two numbers.
+    why: Like gcd, a short name for a long phrase, with the inputs in brackets.
+    read_aloud: '"The LCM of $a$ and $b$" - $\operatorname{lcm}(4, 6)$ is "the LCM of four and six".'
+
+formal:
+  statement: |
+    For natural numbers $a$ and $b$, the **least common multiple** $\operatorname{lcm}(a, b)$ is the smallest
+    natural number $m$ such that $a \mid m$ and $b \mid m$. It satisfies
+    $\gcd(a, b) \times \operatorname{lcm}(a, b) = a \times b$.
+  kind: definition
+  glossary:
+    - {word: smallest natural number, meaning: 'The least positive one - 0 is a multiple of everything, so it is excluded.'}
+    - {word: 'a \mid m', meaning: '$a$ divides $m$ - $m$ is a multiple of $a$.'}
+    - {word: '\gcd(a, b) \times \operatorname{lcm}(a, b) = a \times b', meaning: 'A theorem connecting the two ideas - GCD times LCM equals the product of the numbers.'}
+
+notation:
+  - expression: '\operatorname{lcm}(4, 6) = 12'
+    read_aloud: the LCM of four and six equals twelve
+    parts:
+      - {symbol: '\operatorname{lcm}', meaning: Least common multiple.}
+      - {symbol: '(4, 6)', meaning: The two numbers.}
+      - {symbol: '12', meaning: 'The smallest number both divide.'}
+    english: Twelve is the smallest positive number that both four and six go into exactly.
+
+connections_back:
+  - {lesson: l1-multiples, how: 'Common multiples come from comparing lists of multiples.'}
+  - {lesson: l1-divisibility, how: 'A common multiple is divisible by both numbers.'}
+
+worked:
+  title: The timetable
+  problem: Two buses leave together at 9:00. One returns every 10 minutes, the other every 15 minutes. When do they next leave together?
+  steps:
+    - Multiples of 15 - 15, 30, 45, ...
+    - Test against 10 - 15 no, 30 yes.
+    - So $\operatorname{lcm}(10, 15) = 30$.
+  answer: At 9:30, 30 minutes later.
+
+experiment:
+  widget: multiples-jumps
+  props: {a: 6, b: 9, max: 40, editable: true}
+  task: Find the least common multiple of 6 and 9 by tapping the first place both frogs land.
+  goal: {findLcm: true}
+  success: |
+    $\operatorname{lcm}(6, 9) = 18$ - smaller than $6 \times 9 = 54$, because 6 and 9 share the factor 3. Check the
+    connection - $\gcd(6, 9) \times \operatorname{lcm}(6, 9) = 3 \times 18 = 54 = 6 \times 9$.
+
+mistakes:
+  - mistake: Always multiplying the two numbers.
+    why: That gives a common multiple, but not always the least one.
+    fix: List multiples of the bigger number and test each - stop at the first that works.
+  - mistake: Confusing LCM with GCD.
+    why: The LCM is at least as big as both numbers; the GCD is at most as big as both.
+    fix: Ask - am I looking for something that goes *into* both (GCD) or something both go *into* (LCM)?
+
+statements:
+  - kind: proven-theorem
+    text: For any natural numbers $a$ and $b$, $\gcd(a, b) \times \operatorname{lcm}(a, b) = a \times b$.
+    note: You can check it on examples now; the proof uses prime factorization (Level 10).
+  - kind: proven-theorem
+    text: If $a$ and $b$ are coprime, then $\operatorname{lcm}(a, b) = a \times b$.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: lcm-a
+      type: generated
+      generator: lcm
+    - id: lcm-b
+      type: generated
+      generator: lcm
+      params: {max: 15}
+    - id: product-trap
+      type: truefalse
+      kind: counterexample
+      prompt: 'True or false: the least common multiple of two numbers is always their product.'
+      answer: false
+      diagnosis: For 4 and 6 the product is 24, but 12 is a smaller common multiple.
+      explanation: False - a counterexample is 4 and 6 (LCM 12, product 24).
+    - id: lights
+      type: number
+      kind: apply
+      prompt: One light flashes every 4 seconds and another every 10 seconds. They flash together now. After how many seconds will they next flash together?
+      answer: '20'
+      common_wrong:
+        - answer: '40'
+          diagnosis: 40 is a common multiple, but 20 comes first - both 4 and 10 divide 20.
+        - answer: '2'
+          diagnosis: 2 is the greatest common divisor. The lights flash together at a common multiple.
+      explanation: Multiples of 10 - 10, 20. 4 divides 20, so they next flash together after 20 seconds.
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: Explain how to find $\operatorname{lcm}(6, 10)$, and why $6 \times 10$ is not the answer.
+      rubric:
+        - List multiples (for example of 10) and find the first that is also a multiple of 6.
+        - The answer is 30.
+        - 60 is a common multiple but not the least, because 6 and 10 share the factor 2.
+      model_answer: |
+        Multiples of 10 are 10, 20, 30, ... - 10 and 20 are not multiples of 6, but 30 is. So the LCM is 30.
+        $6 \times 10 = 60$ is also a common multiple, but not the smallest, because 6 and 10 share a factor of 2.
+      explanation: '$\operatorname{lcm}(6, 10) = 30$; the product overcounts the shared factor 2.'
+
+connections_forward:
+  - {lesson: l2-fraction-arithmetic, how: 'The lowest common denominator for adding fractions is an LCM.'}
+  - {lesson: l2-modular-arithmetic, how: 'Repeating cycles and when they line up.'}
+  - {lesson: l10-crt, how: 'The Chinese remainder theorem - solving several cycles at once.'}
+
+practice: [lcm]
+
+alternatives:
+  - strategy: everyday-objects
+    title: Gears
+    text: |
+      A small gear with 4 teeth meshes with a big gear of 6 teeth. Mark a tooth on each where they touch. Turn the
+      gears. The marks meet again after 12 teeth have passed - 3 turns of the small gear and 2 of the big one. Gear
+      designers use the LCM to work out when marked teeth meet again.
+  - strategy: visual
+    title: Two rows of stripes
+    text: |
+      On squared paper, colour every 4th square in one row and every 6th square in the row underneath. Scan along
+      until a coloured square in the top row sits directly above a coloured square in the bottom row. It first
+      happens at square 12. Every 12 squares after that, it happens again - 24, 36, ... - the common multiples.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      You hop on every 2nd stone across a pond and your friend hops on every 3rd stone. You both start on the
+      shore. You land on 2, 4, 6... Your friend lands on 3, 6... At stone 6 you meet! That first meeting stone is
+      called the least common multiple.

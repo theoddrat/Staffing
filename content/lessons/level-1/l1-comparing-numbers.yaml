@@ -1,0 +1,183 @@
+id: l1-comparing-numbers
+estimated_minutes: 15
+
+goal: |
+  We are learning to compare two numbers - deciding which is larger - by matching, by counting
+  order, and by looking at tens and ones.
+why: |
+  Comparing numbers lets us rank, sort and decide. Later, the order of numbers becomes the number
+  line, inequalities, and statements like "this algorithm takes fewer steps than that one".
+problem: |
+  Given two numbers, how can you tell which is larger - even when you cannot see the objects?
+
+plain: |
+  There are three good ways to compare two numbers.
+
+  1. **Match objects.** Make a group for each number and pair them up. The group with objects left
+     over has the larger number.
+  2. **Use counting order.** When counting up from 1, the larger number is the one you reach
+     *later*. 9 comes after 6, so 9 is larger.
+  3. **Look at tens first.** For two-digit numbers, compare the tens digits first: 34 has 3 tens and
+     29 has only 2 tens, so 34 is larger - whatever the ones digits are. Only if the tens are equal do
+     you compare the ones.
+
+  When one number is larger, we can also ask **how many more** it is: 9 is 3 more than 6.
+
+analogy:
+  strategy: everyday-objects
+  title: Queueing up
+  text: |
+    People in a queue are given tickets in order: 1, 2, 3, ... Someone holding ticket 9 arrived later
+    than someone holding ticket 6 - and more people had arrived by then. A later ticket number is a
+    bigger number.
+
+visual:
+  widget: compare-groups
+  props: {left: 7, right: 4, matching: true, editable: true}
+  caption: |
+    What you are seeing: two groups with their numbers shown underneath. Lines pair the objects
+    one-to-one. Objects without a partner are highlighted - they show how many more the larger group
+    has.
+  prompt: Change the two groups. How many objects are left unpaired each time?
+
+example_simple:
+  title: Six or nine?
+  problem: Which is larger, 6 or 9? How many more?
+  steps:
+    - Counting up - one, two, three, four, five, six, seven, eight, nine. 9 comes after 6.
+    - So 9 is larger.
+    - From 6, count on to 9 - seven, eight, nine. That is three more counts.
+  answer: 9 is larger, by 3.
+
+example_harder:
+  title: Tens first
+  problem: Which is larger, 29 or 34?
+  steps:
+    - Look at the tens digits - 29 has 2 tens and 34 has 3 tens.
+    - Three tens (thirty) is more than two tens (twenty).
+    - Even the biggest number with 2 tens, 29, is less than 30, and 34 is beyond 30.
+    - The ones digits (9 and 4) do not matter here.
+  answer: 34 is larger. Comparing tens first avoids being fooled by the 9.
+
+word:
+  terms: [comparison, number]
+  text: |
+    This is **comparison** of numbers. The larger number is also called the **greater** number, and
+    the smaller one the **lesser** number. "How many more" is the **difference** between them - you
+    will learn to calculate differences in Level 2.
+
+symbols: []
+no_symbol_note: |
+  The symbols for "greater than" and "less than" are introduced in the very next lesson,
+  [[lesson:l1-bigger-smaller|Bigger and smaller]].
+
+formal:
+  statement: |
+    For counting numbers $a$ and $b$, $a$ is **less than** $b$ when $a$ comes before $b$ in the counting
+    sequence; equivalently, when a collection of $a$ objects can be matched one-to-one with part of a
+    collection of $b$ objects, leaving some of the $b$ objects unmatched.
+  kind: definition
+  glossary:
+    - {word: 'a, b', meaning: 'Letters standing for any two counting numbers.'}
+    - {word: counting sequence, meaning: 'one, two, three, ... in order.'}
+    - {word: part of a collection, meaning: 'Some, but not all, of its objects.'}
+    - {word: unmatched, meaning: Without a partner.}
+
+notation: []
+
+connections_back:
+  - {lesson: l1-counting-objects, how: 'Tens and ones come from counting in groups of ten.'}
+  - {lesson: l0-comparison, how: 'Comparison of quantities, now applied to numbers.'}
+
+worked:
+  title: Stickers
+  problem: Ana has 34 stickers and Ben has 43. Who has more?
+  steps:
+    - Compare tens first - Ana has 3 tens, Ben has 4 tens.
+    - Four tens is more than three tens.
+  answer: Ben has more. The digits are the same, but their places differ.
+
+experiment:
+  widget: compare-groups
+  props: {left: 5, right: 5, editable: true, matching: true}
+  task: Change the groups so that the left group is smaller than the right group.
+  goal: {relation: '<'}
+  success: |
+    The left group now runs out first when pairing - every left object has a partner, but some right
+    objects do not. That is exactly what "smaller" means.
+
+mistakes:
+  - mistake: Comparing the ones digits first (thinking 29 > 34 because 9 > 4).
+    why: The tens digit is worth ten times as much, so it decides first.
+    fix: Always compare the biggest place first - tens before ones, hundreds before tens.
+  - mistake: Thinking a number made of bigger digits is always larger (thinking 98 > 102).
+    why: 102 has a hundreds digit; 98 has none.
+    fix: Count the digits first - a three-digit counting number is always larger than a two-digit one.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: order
+      type: generated
+      generator: order-numbers
+      params: {count: 4, min: 0, max: 60}
+    - id: tens-first
+      type: choice
+      kind: solve
+      prompt: Which is larger, 52 or 48?
+      options:
+        - text: '52'
+          correct: true
+        - text: '48'
+          diagnosis: 48 has the bigger ones digit, but 52 has more tens - five tens beats four tens.
+      explanation: 5 tens is more than 4 tens, so 52 is larger.
+    - id: how-many-more
+      type: number
+      kind: solve
+      prompt: How many more is 11 than 8? (Count on from 8.)
+      answer: '3'
+      hint: Count on from 8 - nine, ten, eleven.
+      explanation: Counting on from 8 - nine, ten, eleven - takes three counts.
+    - id: digits-trap
+      type: truefalse
+      kind: counterexample
+      prompt: 'True or false: 98 is larger than 102, because 9 and 8 are bigger digits than 1, 0 and 2.'
+      answer: false
+      diagnosis: 102 has one hundred, while 98 has no hundreds. The hundreds place decides first.
+      explanation: False. 102 is larger - it has a hundred.
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: Explain how to decide which of 67 and 76 is larger.
+      rubric:
+        - Compare the tens digits first.
+        - 76 has 7 tens and 67 has 6 tens, so 76 is larger.
+      model_answer: Look at the tens first. 76 has seven tens and 67 has only six tens, so 76 is larger - the ones digits do not matter here.
+      explanation: Compare tens first - 7 tens beats 6 tens.
+
+connections_forward:
+  - {lesson: l1-bigger-smaller, how: 'Symbols for comparing - greater than and less than.'}
+  - {lesson: l1-number-lines, how: 'The order of numbers as positions on a line.'}
+  - {lesson: l2-subtraction, how: '"How many more" becomes subtraction.'}
+
+practice: [order-numbers]
+
+alternatives:
+  - strategy: visual
+    title: Towers of blocks
+    text: |
+      Build a tower of 6 blocks and a tower of 9 blocks side by side. The taller tower is the larger
+      number, and the blocks sticking up above the shorter tower show how many more - 3. For bigger
+      numbers, build towers of tens: 34 is three tall ten-towers and four single blocks; 29 is two
+      ten-towers and nine single blocks. Put them next to each other and 34 clearly wins.
+  - strategy: contrast
+    title: Digits versus places
+    text: |
+      Look at 34 and 43. They use exactly the same digits. But in 34, the 3 is in the tens place and
+      means thirty; in 43, the 4 is in the tens place and means forty. Comparing numbers is about the
+      *values of the places*, not just which digits appear.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      You have 6 sweets and your friend has 9. Line them up, one of yours next to one of theirs. Your
+      line stops first! Your friend still has 3 left with no partner. So 9 is more than 6 - by 3.

@@ -1,0 +1,212 @@
+id: l1-equal-groups
+estimated_minutes: 18
+
+goal: |
+  We are learning to count in equal groups - skip counting by twos, threes and fives - and to see
+  equal rows as rectangles of objects.
+why: |
+  Equal groups are everywhere: pairs of shoes, boxes of eggs, rows of chairs. They are the key to
+  understanding even and odd numbers, factors, multiples and prime numbers later in this level -
+  and they are the idea behind multiplication.
+problem: |
+  If a room has 4 rows of 6 chairs, how can you find the total without counting every chair?
+
+plain: |
+  When things come in **equal groups**, you can count the groups instead of every object.
+
+  Four bags with two apples in each? Count in twos: **2, 4, 6, 8**. That is called **skip counting** -
+  you skip over the numbers in between because each group adds the same amount.
+
+  Equal groups can also be laid out in **rows**. Twelve tiles in 3 rows of 4 make a neat rectangle.
+  Count the rows in fours: 4, 8, 12.
+
+  A wonderful fact: turn the rectangle on its side and it becomes 4 rows of 3 - still 12 tiles,
+  because nothing was added or taken away. So 3 groups of 4 and 4 groups of 3 are the same total.
+
+  Mathematicians have a short way to write "3 groups of 4": $3 \times 4$. We will study it properly in
+  Level 2; for now, read it as "3 groups of 4".
+
+analogy:
+  strategy: everyday-objects
+  title: Egg boxes and pairs of socks
+  text: |
+    Shops pack eggs in boxes of six so you never have to count eggs one by one: two boxes is twelve
+    eggs, three boxes is eighteen. Socks come in pairs: five pairs is ten socks. Counting groups
+    instead of single objects is something you already do without thinking.
+
+visual:
+  widget: rectangle-arranger
+  props: {n: 12, rows: 3, editable: true}
+  caption: |
+    What you are seeing: 12 square tiles arranged in equal rows. The control changes how many rows
+    there are. When the rows come out equal with none left over, the tiles form a perfect
+    rectangle and the counting-in-groups total is shown beside it.
+  prompt: Try 2, 3, 4 and 6 rows. Does the total ever change?
+
+example_simple:
+  title: Bags of apples
+  problem: There are 4 bags with 2 apples in each. How many apples are there?
+  steps:
+    - Each bag adds the same amount - 2 apples.
+    - Skip count in twos, once for each bag - 2, 4, 6, 8.
+  answer: 8 apples - four groups of two.
+
+example_harder:
+  title: Turning the rectangle
+  problem: A tray holds biscuits in 3 rows of 5. Your friend turns it to see 5 rows of 3. Who has more biscuits?
+  steps:
+    - Count 3 rows of 5 - 5, 10, 15.
+    - Count 5 rows of 3 - 3, 6, 9, 12, 15.
+    - Turning the tray moved no biscuits, so the totals had to be equal - and they are.
+  answer: Neither - both see 15 biscuits. 3 groups of 5 is the same total as 5 groups of 3.
+
+word:
+  terms: [skip-counting, array, multiplication]
+  text: |
+    Counting in equal jumps is called **skip counting**. Objects arranged in equal rows and columns
+    form an **array** (from an old French word meaning "to arrange"). Putting together equal groups is
+    called **multiplication** - which has its own symbol.
+
+symbols:
+  - symbol: '\times'
+    name: times sign
+    looks_like: A small diagonal cross, like the letter x tilted on its side.
+    means: '"Groups of". $3 \times 4$ means three groups of four (or three rows of four).'
+    why: Writing "groups of" again and again is slow. The cross was used for multiplication by the English mathematician William Oughtred in 1631.
+    read_aloud: '"Times" - so $3 \times 4$ is "three times four".'
+
+formal:
+  statement: |
+    An **array** with $r$ rows and $c$ objects in every row contains $r \times c$ objects in total,
+    found by skip counting by $c$ a total of $r$ times. The total is the same as for an array with
+    $c$ rows and $r$ objects in every row.
+  kind: proven-theorem
+  glossary:
+    - {word: 'r, c', meaning: 'Letters standing for "the number of rows" and "the number in each row". Any counting numbers can go here.'}
+    - {word: skip counting by c, meaning: 'Counting c, then c more, then c more again.'}
+    - {word: 'r \times c', meaning: 'r groups of c - the total number of objects.'}
+
+notation:
+  - expression: '3 \times 4 = 12'
+    read_aloud: three times four equals twelve
+    parts:
+      - {symbol: '3', meaning: The number of groups (rows).}
+      - {symbol: '\times', meaning: '"Groups of".'}
+      - {symbol: '4', meaning: 'How many in each group.'}
+      - {symbol: '12', meaning: The total.}
+    english: Three groups of four make twelve altogether.
+
+connections_back:
+  - {lesson: l1-counting-objects, how: 'Bundling in tens was counting in equal groups of ten.'}
+  - {lesson: l0-patterns, how: 'Skip counting makes a pattern - each number is the same amount more than the last.'}
+
+worked:
+  title: Chairs in a hall
+  problem: Chairs are set out in 4 rows with 6 chairs in each row. How many chairs are there?
+  steps:
+    - There are 4 equal groups (rows), each of 6.
+    - Skip count by 6, once per row - 6, 12, 18, 24.
+  answer: 24 chairs. In symbols, $4 \times 6 = 24$.
+
+experiment:
+  widget: rectangle-arranger
+  props: {n: 12, rows: 1, editable: true}
+  task: Arrange the 12 tiles into exactly 4 equal rows.
+  goal: {rows: 4}
+  success: |
+    4 rows of 3 tiles - $4 \times 3 = 12$. Now turn it sideways in your mind: 3 rows of 4. Same
+    tiles, same total.
+
+mistakes:
+  - mistake: Adding the number of groups to the group size ("3 groups of 4 is 7").
+    why: '3 + 4 counts only one object per group. Each group holds 4 objects.'
+    fix: Skip count by the group size, once for each group - 4, 8, 12.
+  - mistake: Using groups of different sizes.
+    why: Skip counting only works when every group adds the same amount.
+    fix: Check that every group (row) has the same number before skip counting.
+
+statements:
+  - kind: proven-theorem
+    text: An array of 3 rows of 5 has the same number of objects as an array of 5 rows of 3 - and in general, a rows of b equals b rows of a.
+    note: Turning an array on its side moves no objects. In Level 2 this is called the commutative property of multiplication.
+  - kind: established-fact
+    text: The cross $\times$ for multiplication was used by William Oughtred in 1631.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: skip
+      type: generated
+      generator: skip-count
+    - id: rows
+      type: generated
+      generator: rows-total
+    - id: which-array
+      type: choice
+      kind: recall
+      prompt: Which of these is an array?
+      options:
+        - text: 15 tiles in 3 rows of 5.
+          correct: true
+        - text: 15 tiles in rows of 6, 6 and 3.
+          diagnosis: The rows are not all the same length, so this is not an array.
+        - text: 15 tiles in a heap.
+          diagnosis: An array has equal rows and columns - a heap has no rows at all.
+      explanation: An array has equal rows - 3 rows of 5.
+    - id: turn
+      type: truefalse
+      kind: predict
+      prompt: 'True or false: 3 groups of 5 and 5 groups of 3 make the same total.'
+      answer: true
+      diagnosis: Picture 3 rows of 5 and turn it on its side - you get 5 rows of 3 without moving any object.
+      explanation: True - both are 15.
+    - id: add-trap
+      type: number
+      kind: solve
+      prompt: There are 5 boxes with 3 pens in each box. How many pens are there?
+      answer: '15'
+      common_wrong:
+        - answer: '8'
+          diagnosis: '5 + 3 counts the boxes and one box''s pens. Each of the 5 boxes holds 3 pens - count 3, 6, 9, 12, 15.'
+      explanation: Skip count by 3 five times - 3, 6, 9, 12, 15.
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: Explain how to find the number of tiles in 6 rows of 4 without counting every tile, and what $6 \times 4$ means.
+      rubric:
+        - Skip count by 4 (the row length), once for each of the 6 rows.
+        - Gets 24.
+        - '$6 \times 4$ means six groups (rows) of four.'
+      model_answer: |
+        Count in fours, once for each row - 4, 8, 12, 16, 20, 24. So there are 24 tiles. $6 \times 4$
+        means six groups of four, which is 24.
+      explanation: Skip count by the row length once per row; $6 \times 4$ means six groups of four.
+
+connections_forward:
+  - {lesson: l1-even-odd, how: 'Even numbers are the ones that split into groups of two.'}
+  - {lesson: l1-prime-numbers, how: 'Prime numbers are those that cannot be arranged into a rectangle with more than one row.'}
+  - {lesson: l1-factors, how: 'The possible numbers of equal rows are called factors.'}
+  - {lesson: l2-multiplication, how: 'Multiplication studied fully.'}
+
+practice: [skip-count, rows-total]
+
+alternatives:
+  - strategy: physical-activity
+    title: Clap and count
+    text: |
+      Put your hands out and count in twos while clapping: clap on 2, 4, 6, 8, 10 and whisper the
+      numbers in between (1, 3, 5, 7, 9). Now do it in threes - clap on 3, 6, 9, 12 - whispering the
+      others. The claps are skip counting: you only "land" on the end of each group.
+  - strategy: visual
+    title: Rectangles of dots
+    text: |
+      Draw 3 rows of 4 dots. Now draw a box around each row: three boxes, four dots in each. Count
+      the dots row by row: 4, 8, 12. Now draw boxes around each column instead: four boxes of three
+      dots - 3, 6, 9, 12. The same dots, grouped two different ways, give the same total. Equal groups
+      are just a way of looking at a rectangle.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      You have 3 plates and you put 2 cookies on each plate. How many cookies? Count by twos: 2, 4,
+      6! Six cookies. Counting by twos (or threes, or fives) is a quick way to count when things come
+      in groups that are all the same size.

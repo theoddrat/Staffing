@@ -1,0 +1,916 @@
+# Dictionary entries for words introduced in Level 1: Understanding numbers.
+
+terms:
+  - id: number
+    word: number
+    pronunciation: "NUM-ber"
+    plain: The idea of "how many" that every group of the same size shares.
+    analogy: |
+      Three apples, three claps and three days have nothing physical in common - but they share
+      "threeness". The number three is that shared idea.
+    visual:
+      widget: compare-groups
+      props: {left: 3, right: 3, matching: true}
+      caption: Any two groups of three can be paired off perfectly. "Three" is what they have in common.
+    formal: |
+      A (counting) number is the property shared by all collections that can be put in
+      one-to-one correspondence with one another; it answers the question "how many?". The idea
+      of number is later extended to zero, negatives, fractions, real and complex numbers.
+    example: Five is the number of fingers on one hand.
+    non_example: The digit 5 is a symbol for a number, not the number itself - Romans wrote the same number as V.
+    related: [numeral, quantity, counting, cardinality]
+    used_later:
+      - {lesson: l1-integers, how: 'Numbers extended to include negatives.'}
+      - {lesson: l11-complex-numbers, how: 'The idea of number extended all the way to complex numbers.'}
+    introduced_in: l1-what-is-a-number
+    aliases: [numbers]
+
+  - id: numeral
+    word: numeral
+    pronunciation: "NYOO-mer-ul"
+    plain: A written symbol, or group of symbols, used as a name for a number.
+    analogy: |
+      A person can be called "Grandma", "Mrs. Lee" or "Mum" - three names, one person. "7", "VII"
+      and "seven" are three names for one number.
+    visual:
+      widget: numeral-systems
+      props: {value: 7}
+      caption: One number written as dots, tally marks, a Roman numeral, our digits and an English word.
+    formal: A numeral is a symbol or string of symbols that denotes a number in a particular system of writing numbers.
+    example: '"12", "XII" and "twelve" are numerals for the same number.'
+    non_example: The number of eggs in a box. That is the number itself, not a way of writing it.
+    related: [number, digit, symbol]
+    used_later:
+      - {lesson: l12-cm-floating-point, how: 'Computers store numbers using binary numerals.'}
+    introduced_in: l1-what-is-a-number
+    aliases: [numerals]
+
+  - id: cardinality
+    word: cardinality
+    pronunciation: "kar-dih-NAL-ih-tee"
+    plain: The number of things in a collection - the answer to "how many?".
+    analogy: |
+      The cardinality of a football team on the pitch is eleven, whoever the players are.
+    visual:
+      widget: counting-objects
+      props: {count: 7, tagging: true, editable: false}
+      caption: However you count them, the last number you say is the same. That number is the cardinality.
+    formal: |
+      The cardinality of a finite collection is the counting number that is matched with its
+      last object when the collection is counted; two collections have the same cardinality
+      exactly when they can be put in one-to-one correspondence.
+    example: The cardinality of the collection of days in a week is 7.
+    non_example: The order of the days (Monday first) - order is not part of cardinality.
+    related: [counting, one-to-one-correspondence, number]
+    used_later:
+      - {lesson: l8-sets, how: 'The cardinality of a set.'}
+      - {lesson: l12-ct-diagonalization, how: 'Infinite collections can have different cardinalities.'}
+    introduced_in: l1-counting-meaning
+    aliases: [cardinalities]
+
+  - id: zero
+    word: zero
+    pronunciation: "ZEER-oh"
+    plain: The number of things in an empty box. Also a digit that holds an empty place, as in 305.
+    analogy: |
+      An empty fruit bowl holds zero apples. "There are no apples" is a perfectly good answer to
+      "how many?" - and zero is its number.
+    visual:
+      widget: place-value
+      props: {value: 305, showExpanded: true}
+      caption: 305 has 3 hundreds, no tens and 5 ones. The 0 holds the empty tens place.
+    formal: |
+      Zero, written $0$, is the number of objects in an empty collection. It is the whole number
+      that comes before 1, and adding zero to any number leaves the number unchanged.
+    example: The number of dinosaurs in your kitchen.
+    non_example: '"Nothing" in the sense of "this question has no answer". Zero is an answer: it is a number.'
+    related: [whole-number, place-value, digit]
+    used_later:
+      - {lesson: l1-negative-numbers, how: 'Zero sits between the positive and negative numbers.'}
+      - {lesson: l2-arithmetic-properties, how: 'Zero is the number that changes nothing when added.'}
+      - {lesson: pb-nontrivial-zeros, how: 'In advanced mathematics a "zero" of a function is an input that makes the output 0.'}
+    introduced_in: l1-zero
+    aliases: [nought]
+    symbol: '0'
+
+  - id: successor
+    word: successor
+    pronunciation: "suk-SESS-er"
+    plain: The next counting number - the one you get by adding one more.
+    analogy: |
+      The successor of a step on a staircase is the next step up. Every step has one, and you can
+      always climb one more.
+    visual:
+      widget: number-line
+      props: {min: 0, max: 10, value: 4, jumps: {start: 4, size: 1, count: 1}}
+      caption: One jump to the right from 4 lands on its successor, 5.
+    formal: The successor of a whole number $n$ is $n + 1$, the number that immediately follows $n$ when counting.
+    example: The successor of 9 is 10. The successor of 99 is 100.
+    non_example: 12 is not the successor of 10, because 11 comes in between.
+    related: [natural-number, infinite, addition]
+    used_later:
+      - {lesson: l7-induction, how: 'Proof by induction climbs from each number to its successor.'}
+      - {lesson: l12-fl-first-order-logic, how: 'Formal arithmetic is built from zero and the successor operation.'}
+    introduced_in: l1-one-two-three
+    aliases: [successors]
+
+  - id: infinite
+    word: infinite
+    pronunciation: "IN-fih-nit"
+    plain: Going on forever, without ever coming to an end.
+    analogy: |
+      Imagine a corridor where every door opens onto another corridor with another door. However
+      many doors you pass, there is always one more. The corridor is infinite.
+    visual:
+      widget: number-line
+      props: {min: 0, max: 20, value: 0}
+      caption: The counting numbers carry on past the edge of any picture - there is no last one.
+    formal: |
+      A collection is infinite if it is not finite - that is, if counting its members never
+      comes to an end. The counting numbers are infinite because every one has a successor.
+    example: The collection of all counting numbers 1, 2, 3, ...
+    non_example: The grains of sand on Earth. There are an astonishing number, but counting them would end eventually.
+    related: [successor, natural-number]
+    used_later:
+      - {lesson: l3-infinity, how: 'The symbol for infinity and what it does and does not mean.'}
+      - {lesson: l9-infinite-series, how: 'Adding up infinitely many numbers.'}
+      - {lesson: l10-primes-in-depth, how: 'Proving that there are infinitely many primes.'}
+    introduced_in: l1-one-two-three
+    aliases: [infinitely, infinitely many]
+
+  - id: addition
+    word: addition
+    pronunciation: "uh-DISH-un"
+    plain: Putting amounts together to find the total. Written with the plus sign $+$.
+    analogy: |
+      Pouring two bags of marbles into one bowl and counting them all together is addition.
+    visual:
+      widget: number-line
+      props: {min: 0, max: 12, value: 3, jumps: {start: 3, size: 1, count: 4}}
+      caption: Starting at 3 and making 4 jumps of one lands on 7. So $3 + 4 = 7$.
+    formal: |
+      Addition is the operation that combines two numbers $a$ and $b$ into their sum $a + b$; for
+      counting numbers, $a + b$ is the number of objects in a collection formed by joining a
+      collection of $a$ objects with a separate collection of $b$ objects.
+    example: $2 + 3 = 5$ - two apples and three apples make five apples.
+    non_example: Putting 2 apples next to 3 oranges and calling it "5 apples". You can add the count of fruit (5 fruits), but the apples are still 2.
+    related: [successor, number]
+    used_later:
+      - {lesson: l2-addition, how: 'Addition is studied in full.'}
+    introduced_in: l1-one-two-three
+    aliases: [add, adding, added, plus]
+    symbol: '+'
+
+  - id: digit
+    word: digit
+    pronunciation: "DIJ-it"
+    plain: One of the ten symbols 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 we use to write every number.
+    analogy: |
+      Digits are like the letters of the alphabet for numbers: just ten of them, combined in
+      different orders, can write any whole number.
+    visual:
+      widget: place-value
+      props: {value: 472, showExpanded: true}
+      caption: '472 uses three digits: 4, 7 and 2. Where each digit sits decides what it is worth.'
+    formal: |
+      In the base-ten (decimal) system, a digit is one of the ten symbols $0, 1, \ldots, 9$; a
+      whole number is written as a string of digits.
+    example: The number 2026 is written with the digits 2, 0, 2 and 6.
+    non_example: '"12" is not a digit - it is a numeral made from two digits.'
+    related: [numeral, place-value, zero]
+    used_later:
+      - {lesson: l2-long-multiplication, how: 'Long multiplication works digit by digit.'}
+      - {lesson: pa-time-complexity, how: 'The size of a number for an algorithm is its number of digits.'}
+    introduced_in: l1-number-symbols
+    aliases: [digits]
+
+  - id: place-value
+    word: place value
+    pronunciation: "PLAYSS VAL-yoo"
+    plain: The value a digit has because of where it sits in a number - ones, tens, hundreds and so on.
+    analogy: |
+      In a stack of coins, a coin's worth depends on which pile it is in: the "ones" pile, the
+      "tens" pile or the "hundreds" pile.
+    visual:
+      widget: place-value
+      props: {value: 352, showExpanded: true}
+      caption: 352 is 3 hundreds, 5 tens and 2 ones.
+    formal: |
+      In base-ten place-value notation, a digit in the $k$-th position from the right (counting
+      the rightmost position as position 0) contributes the digit times $10^k$ to the value of
+      the number; for example, $352 = 3 \times 100 + 5 \times 10 + 2 \times 1$.
+    example: In 352 the digit 5 is worth fifty, but in 523 the digit 5 is worth five hundred.
+    non_example: 'Roman numerals: in XXX each X is worth ten wherever it stands, so Roman numerals do not use place value.'
+    related: [digit, zero, decimal]
+    used_later:
+      - {lesson: l1-decimals, how: 'Place value continues to the right of a decimal point.'}
+      - {lesson: l2-long-multiplication, how: 'Long multiplication relies on place value.'}
+    introduced_in: l1-number-symbols
+    aliases: [place values]
+
+  - id: equal
+    word: equal (=)
+    pronunciation: "EE-kwul"
+    plain: Exactly the same amount. The equals sign $=$ says "the thing on the left is the same amount as the thing on the right".
+    analogy: |
+      A balance scale sits perfectly level when both sides hold the same weight. The equals sign
+      is a written version of a level balance.
+    visual:
+      widget: balance
+      props: {left: 4, right: 4}
+      caption: Four on each side - the balance is level, so the two sides are equal.
+    formal: |
+      Two numbers $a$ and $b$ are equal, written $a = b$, when they are the same number; for
+      collections, when they can be put in one-to-one correspondence.
+    example: $3 + 2 = 5$, because three and two more is exactly the same amount as five.
+    non_example: $3 + 2 = 6$ is false - the two sides are different amounts.
+    related: [comparison, greater-than, less-than]
+    used_later:
+      - {lesson: l3-equals, how: 'Reading the equals sign correctly.'}
+      - {lesson: l4-equations, how: 'An equation is a statement that two things are equal.'}
+    introduced_in: l1-equal-quantities
+    aliases: [equals, equal to, equals sign, equal sign, equality]
+    symbol: '='
+
+  - id: greater-than
+    word: greater than (>)
+    pronunciation: "GRAY-ter than"
+    plain: More than. $7 > 3$ is read "seven is greater than three".
+    analogy: |
+      Think of the symbol as a hungry mouth that always opens toward the bigger amount.
+    visual:
+      widget: compare-groups
+      props: {left: 7, right: 3, showSymbol: true}
+      caption: Seven is more than three, so the open side of the symbol faces the 7.
+    formal: For numbers $a$ and $b$, $a > b$ means that $a$ comes after $b$ in the order of numbers, that is, $a$ lies to the right of $b$ on the number line.
+    example: $10 > 9$ and $0 > -4$.
+    non_example: $3 > 7$ is false.
+    related: [less-than, comparison, equal]
+    used_later:
+      - {lesson: l3-greater-than, how: 'Reading inequalities fluently.'}
+      - {lesson: l4-inequalities, how: 'Inequalities with unknown numbers.'}
+    introduced_in: l1-bigger-smaller
+    aliases: [is greater than, greater-than sign]
+    symbol: '>'
+
+  - id: less-than
+    word: less than (<)
+    pronunciation: "LESS than"
+    plain: Fewer than, smaller than. $3 < 7$ is read "three is less than seven".
+    analogy: |
+      The symbol narrows to a point at the smaller number, like an arrow pointing at the little
+      one.
+    visual:
+      widget: compare-groups
+      props: {left: 3, right: 7, showSymbol: true}
+      caption: Three is less than seven, so the point of the symbol faces the 3.
+    formal: For numbers $a$ and $b$, $a < b$ means that $a$ lies to the left of $b$ on the number line; $a < b$ says the same thing as $b > a$.
+    example: $2 < 5$ and $-6 < -1$.
+    non_example: $5 < 5$ is false, because 5 is equal to 5, not less.
+    related: [greater-than, comparison, equal]
+    used_later:
+      - {lesson: l3-less-than, how: 'Less than, and less than or equal to.'}
+      - {lesson: pb-critical-strip, how: 'The critical strip is described by the inequalities $0 < \mathrm{Re}(s) < 1$.'}
+    introduced_in: l1-bigger-smaller
+    aliases: [is less than, less-than sign]
+    symbol: '<'
+
+  - id: number-line
+    word: number line
+    pronunciation: "NUM-ber LINE"
+    plain: A straight line with numbers marked in order at equal spacing.
+    analogy: |
+      A number line is like a long street where the houses are numbered in order and are all the
+      same distance apart.
+    visual:
+      widget: number-line
+      props: {min: -5, max: 10, value: 3}
+      caption: Numbers increase to the right and decrease to the left, with zero in the middle.
+    formal: |
+      A number line is a straight line on which a point is chosen to represent 0 and a fixed
+      length to represent 1; each number is then represented by the point at that many unit
+      lengths from 0 - to the right for positive numbers and to the left for negative numbers.
+    example: On a number line, 3 is three equal steps to the right of 0.
+    non_example: A list of numbers written in random order - it has no spacing and no direction.
+    related: [positive-number, negative-number, greater-than]
+    used_later:
+      - {lesson: l5-cartesian-plane, how: 'Two number lines at right angles make a coordinate plane.'}
+      - {lesson: l11-complex-plane, how: 'Complex numbers need a whole plane, not just a line.'}
+    introduced_in: l1-number-lines
+    aliases: [number lines]
+
+  - id: positive-number
+    word: positive number
+    pronunciation: "POZ-ih-tiv NUM-ber"
+    plain: A number greater than zero.
+    analogy: |
+      Floors above the ground floor of a building: 1st, 2nd, 3rd. They are "above zero".
+    visual:
+      widget: number-line
+      props: {min: -6, max: 6, value: 4, highlight: positive}
+      caption: Positive numbers are everything to the right of zero.
+    formal: A number $x$ is positive if $x > 0$. Zero itself is neither positive nor negative.
+    example: 5, 0.3 and $\tfrac{1}{2}$ are all positive.
+    non_example: 0 is not positive - it is exactly zero.
+    related: [negative-number, zero, number-line]
+    used_later:
+      - {lesson: l2-absolute-value, how: 'The absolute value of a number is never negative.'}
+    introduced_in: l1-positive-numbers
+    aliases: [positive numbers, positive]
+
+  - id: negative-number
+    word: negative number
+    pronunciation: "NEG-uh-tiv NUM-ber"
+    plain: A number less than zero, written with a minus sign, such as $-3$.
+    analogy: |
+      A temperature of 3 degrees below freezing is written $-3$°C; a debt of 5 coins is like
+      having $-5$ coins.
+    visual:
+      widget: number-line
+      props: {min: -10, max: 10, value: -3, orientation: vertical, theme: temperature}
+      caption: A thermometer is a vertical number line. Temperatures below zero are negative.
+    formal: A number $x$ is negative if $x < 0$. For every positive number $a$ there is a negative number $-a$ the same distance from zero on the opposite side.
+    example: $-1$, $-40$ and $-\tfrac{1}{2}$.
+    non_example: 0 is not negative; it is neither negative nor positive.
+    related: [positive-number, integer, zero, number-line]
+    used_later:
+      - {lesson: l2-integer-arithmetic, how: 'Arithmetic with negative numbers.'}
+      - {lesson: pb-trivial-zeros, how: 'The trivial zeros of the zeta function are the negative even numbers.'}
+    introduced_in: l1-negative-numbers
+    aliases: [negative numbers, negative, negatives]
+
+  - id: whole-number
+    word: whole number
+    pronunciation: "HOLE NUM-ber"
+    plain: One of the numbers 0, 1, 2, 3, ... - no parts, no minus signs.
+    analogy: |
+      Whole numbers are the answers you could get to "how many eggs are in the box?" - including
+      zero, but never half an egg and never minus an egg.
+    visual:
+      widget: number-sets
+      props: {numbers: ['0', '4', '12', '-2', '1/2']}
+      caption: Whole numbers are the counting numbers together with zero.
+    formal: |
+      The whole numbers are $0, 1, 2, 3, \ldots$ - zero together with the counting numbers.
+      (Usage varies between countries and textbooks; this is the most common school convention.)
+    example: 0, 7 and 1000 are whole numbers.
+    non_example: $-3$ and $2.5$ are not whole numbers.
+    related: [natural-number, integer, zero]
+    used_later:
+      - {lesson: l1-integers, how: 'Integers add the negatives of the whole numbers.'}
+    introduced_in: l1-whole-numbers
+    aliases: [whole numbers]
+
+  - id: natural-number
+    word: natural number
+    pronunciation: "NACH-er-ul NUM-ber"
+    plain: A counting number - 1, 2, 3, and so on forever. (Some mathematicians include 0 as well.)
+    analogy: |
+      The natural numbers are the numbers you would naturally use to count the sheep in a field.
+    visual:
+      widget: number-sets
+      props: {numbers: ['1', '5', '0', '-1', '100']}
+      caption: The natural numbers sit at the centre of the families of numbers.
+    formal: |
+      The natural numbers are $\mathbb{N} = \{1, 2, 3, \ldots\}$. Many mathematicians, especially
+      in logic and computer science, use the convention $\mathbb{N} = \{0, 1, 2, \ldots\}$; a
+      careful author always says which convention is in use.
+    example: 1, 2 and 2026 are natural numbers.
+    non_example: $\tfrac{1}{2}$ and $-5$ are not natural numbers under either convention.
+    related: [whole-number, integer, set, convention, successor]
+    used_later:
+      - {lesson: l7-induction, how: 'Induction proves statements for every natural number.'}
+      - {lesson: l10-dirichlet-series, how: 'Dirichlet series add up a term for every natural number.'}
+    introduced_in: l1-natural-numbers
+    aliases: [natural numbers, counting number, counting numbers]
+    symbol: '\mathbb{N}'
+
+  - id: set
+    word: set
+    pronunciation: "SET"
+    plain: A collection of things, thought of together as one object.
+    analogy: |
+      A set is like a bag: what matters is what is inside it, not the order things were put in.
+    visual:
+      widget: number-sets
+      props: {numbers: ['3', '0', '-4', '2/3']}
+      caption: Each region is a set of numbers.
+    formal: |
+      A set is a well-defined collection of distinct objects, called its elements. Sets are
+      written with curly braces, for example $\{1, 2, 3\}$.
+    example: The set of vowels $\{a, e, i, o, u\}$.
+    non_example: '"Some big numbers" - it is not clear what belongs, so it is not a well-defined set.'
+    related: [element-of, natural-number, integer]
+    used_later:
+      - {lesson: l3-braces, how: 'Curly braces for writing sets.'}
+      - {lesson: l8-sets, how: 'Sets are studied as the foundation of modern mathematics.'}
+    introduced_in: l1-natural-numbers
+    aliases: [sets]
+
+  - id: element-of
+    word: element of (∈)
+    pronunciation: "EL-uh-ment of"
+    plain: Belongs to. $5 \in \mathbb{N}$ is read "five is an element of the natural numbers".
+    analogy: |
+      Saying "Ana is a member of the chess club" is like writing Ana $\in$ Chess Club.
+    visual:
+      widget: number-sets
+      props: {numbers: ['5', '-2']}
+      caption: 5 lies inside the natural numbers; $-2$ lies outside them but inside the integers.
+    formal: For an object $x$ and a set $A$, $x \in A$ means $x$ is one of the elements of $A$; $x \notin A$ means it is not.
+    example: $-3 \in \mathbb{Z}$, but $-3 \notin \mathbb{N}$.
+    non_example: Writing $\mathbb{N} \in 5$ - the set must be on the right.
+    related: [set, natural-number, integer]
+    used_later:
+      - {lesson: l8-elements, how: 'Elements and membership in general sets.'}
+    introduced_in: l1-natural-numbers
+    aliases: [element, elements, is an element of, belongs to]
+    symbol: '\in'
+
+  - id: convention
+    word: convention
+    pronunciation: "kun-VEN-shun"
+    plain: An agreed way of doing or writing something. It is a choice, not a fact that could be proved.
+    analogy: |
+      Driving on the left in some countries and on the right in others is a convention. Neither is
+      "true" - but everyone in one place must agree.
+    visual:
+      widget: number-sets
+      props: {numbers: ['0', '1']}
+      caption: Is 0 a natural number? It depends on the convention an author chooses.
+    formal: A convention is a choice of notation, terminology or normalisation adopted by agreement; different conventions describe the same mathematics.
+    example: Whether $\mathbb{N}$ includes 0 is a convention.
+    non_example: '"2 + 2 = 4" is not a convention; it follows from what the symbols mean.'
+    related: [definition, symbol]
+    used_later:
+      - {lesson: l2-order-of-operations, how: 'The order of operations is a convention.'}
+    introduced_in: l1-natural-numbers
+    aliases: [conventions]
+
+  - id: integer
+    word: integer
+    pronunciation: "IN-tuh-jer"
+    plain: A whole number or the negative of a whole number - ..., −2, −1, 0, 1, 2, ...
+    analogy: |
+      The floors of a building with basements: ..., B2, B1, ground, 1, 2, ... - no half-floors.
+    visual:
+      widget: number-line
+      props: {min: -8, max: 8, value: -2, highlight: integers}
+      caption: The integers are the evenly spaced marks in both directions from zero.
+    formal: The integers are $\mathbb{Z} = \{\ldots, -3, -2, -1, 0, 1, 2, 3, \ldots\}$, the whole numbers together with their negatives.
+    example: $-7$, $0$ and $15$ are integers.
+    non_example: $\tfrac{1}{2}$ and $-0.5$ are not integers - they lie between the marks.
+    related: [whole-number, natural-number, negative-number]
+    used_later:
+      - {lesson: l2-integer-arithmetic, how: 'Calculating with integers.'}
+      - {lesson: l10-congruences, how: 'Number theory studies the integers deeply.'}
+    introduced_in: l1-integers
+    aliases: [integers]
+    symbol: '\mathbb{Z}'
+
+  - id: fraction
+    word: fraction
+    pronunciation: "FRAK-shun"
+    plain: A number that describes some equal parts of a whole, such as $\tfrac{3}{4}$ - three of four equal parts.
+    analogy: |
+      Cut a pizza into 8 equal slices and eat 3. You ate three-eighths of the pizza, $\tfrac{3}{8}$.
+    visual:
+      widget: fraction
+      props: {numerator: 3, denominator: 8, shape: circle}
+      caption: A pizza cut into 8 equal slices with 3 shaded - three-eighths.
+    formal: |
+      A fraction is a number of the form $\tfrac{a}{b}$, where $a$ and $b$ are integers and
+      $b \neq 0$. It represents $a$ parts when one whole is divided into $b$ equal parts.
+    example: $\tfrac{1}{2}$, $\tfrac{3}{4}$, $\tfrac{7}{3}$ and $\tfrac{-2}{5}$.
+    non_example: 'A pizza cut into 4 slices of different sizes: one slice is not a quarter, because the parts are not equal.'
+    related: [numerator, denominator, equivalent-fractions, rational-number, decimal]
+    used_later:
+      - {lesson: l2-fraction-arithmetic, how: 'Adding and multiplying fractions.'}
+      - {lesson: l9-infinite-series, how: 'Infinite sums of fractions such as $1 + \tfrac{1}{2} + \tfrac{1}{3} + \cdots$ lead toward the zeta function.'}
+    introduced_in: l1-fractions
+    aliases: [fractions]
+
+  - id: rational-number
+    word: rational number
+    pronunciation: "RASH-uh-nul NUM-ber"
+    plain: Any number that can be written as a fraction of two integers. Every integer is one too ($5 = \tfrac{5}{1}$).
+    analogy: |
+      "Rational" comes from "ratio": a rational number compares two whole amounts, like 3 parts out
+      of 4.
+    visual:
+      widget: number-sets
+      props: {numbers: ['1/2', '-3', '0.75', '5']}
+      caption: The rational numbers contain all the other families shown here.
+    formal: |-
+      The rational numbers are $\mathbb{Q} = \{\tfrac{a}{b} : a, b \in \mathbb{Z},\ b \neq 0\}$.
+    example: $\tfrac{2}{3}$, $-4$ (which is $\tfrac{-4}{1}$) and $0.25$ (which is $\tfrac{1}{4}$).
+    non_example: The square root of 2 cannot be written as a fraction of integers - a famous theorem.
+    related: [fraction, integer, decimal]
+    used_later:
+      - {lesson: l11-real-numbers, how: 'The real numbers fill the gaps between the rational numbers.'}
+    introduced_in: l1-fractions
+    aliases: [rational numbers, rationals]
+    symbol: '\mathbb{Q}'
+
+  - id: numerator
+    word: numerator
+    pronunciation: "NYOO-mer-ay-ter"
+    plain: The top number of a fraction - how many of the equal parts we have.
+    analogy: |
+      If the bottom number names the size of the slices, the top number counts how many slices
+      are on your plate.
+    visual:
+      widget: fraction
+      props: {numerator: 3, denominator: 5, shape: bar}
+      caption: In $\tfrac{3}{5}$ the numerator 3 counts the shaded parts.
+    formal: In the fraction $\tfrac{a}{b}$, the integer $a$ is the numerator.
+    example: In $\tfrac{7}{10}$ the numerator is 7.
+    non_example: In $\tfrac{7}{10}$, 10 is not the numerator - it is the denominator.
+    related: [denominator, fraction]
+    used_later:
+      - {lesson: l2-fraction-arithmetic, how: 'Numerators combine when fractions are added.'}
+    introduced_in: l1-numerators-denominators
+    aliases: [numerators]
+
+  - id: denominator
+    word: denominator
+    pronunciation: "dih-NOM-ih-nay-ter"
+    plain: The bottom number of a fraction - how many equal parts make one whole.
+    analogy: |
+      The denominator "names" the fraction: it tells you whether you are talking about halves,
+      thirds, quarters or eighths - like the kind of coin.
+    visual:
+      widget: fraction
+      props: {numerator: 1, denominator: 4, shape: circle}
+      caption: The denominator 4 says the whole is cut into 4 equal parts.
+    formal: In the fraction $\tfrac{a}{b}$, the non-zero integer $b$ is the denominator.
+    example: In $\tfrac{2}{9}$ the denominator is 9.
+    non_example: 0 can never be a denominator - you cannot cut a whole into zero equal parts.
+    related: [numerator, fraction]
+    used_later:
+      - {lesson: l2-fraction-arithmetic, how: 'Finding a common denominator to add fractions.'}
+      - {lesson: l10-dirichlet-series, how: 'Dirichlet series divide by powers of $n$ in the denominator.'}
+    introduced_in: l1-numerators-denominators
+    aliases: [denominators]
+
+  - id: equivalent-fractions
+    word: equivalent fractions
+    pronunciation: "ih-KWIV-uh-lent FRAK-shunz"
+    plain: Different-looking fractions that are the same amount, like $\tfrac{1}{2}$ and $\tfrac{2}{4}$.
+    analogy: |
+      Half a pizza is the same amount whether it is one big slice or two smaller slices.
+    visual:
+      widget: fraction
+      props: {numerator: 1, denominator: 2, shape: bar, compare: [2, 4]}
+      caption: One half and two quarters cover exactly the same length.
+    formal: Two fractions $\tfrac{a}{b}$ and $\tfrac{c}{d}$ are equivalent (equal) when $a \times d = b \times c$.
+    example: $\tfrac{3}{4} = \tfrac{6}{8} = \tfrac{9}{12}$.
+    non_example: $\tfrac{1}{2}$ and $\tfrac{2}{3}$ - two thirds is more than one half.
+    related: [fraction, numerator, denominator]
+    used_later:
+      - {lesson: l2-fraction-arithmetic, how: 'Rewriting fractions with a common denominator.'}
+    introduced_in: l1-numerators-denominators
+    aliases: [equivalent fraction]
+
+  - id: decimal
+    word: decimal
+    pronunciation: "DESS-ih-mul"
+    plain: A way of writing parts of a whole using place value after a point - tenths, hundredths and so on.
+    analogy: |
+      Money: 2.75 means 2 whole coins and 75 hundredths of a coin.
+    visual:
+      widget: hundred-grid
+      props: {shaded: 75, mode: decimal}
+      caption: 75 of 100 squares shaded is 0.75.
+    formal: |
+      A decimal numeral writes a number using base-ten place value, with digits to the right of
+      the decimal point representing tenths, hundredths, thousandths and so on:
+      $0.75 = \tfrac{7}{10} + \tfrac{5}{100}$.
+    example: $0.5 = \tfrac{1}{2}$ and $3.25 = 3 + \tfrac{1}{4}$.
+    non_example: Writing a quarter as 1.4 - the point is not a fraction bar.
+    related: [place-value, fraction, percentage]
+    used_later:
+      - {lesson: l11-real-numbers, how: 'Endless decimals describe every real number.'}
+      - {lesson: l12-cm-floating-point, how: 'How computers store decimals approximately.'}
+    introduced_in: l1-decimals
+    aliases: [decimals, decimal number, decimal numbers]
+
+  - id: percentage
+    word: percentage (%)
+    pronunciation: "per-SEN-tij"
+    plain: An amount out of one hundred. 25% means 25 out of every 100.
+    analogy: |
+      A phone battery at 40% has 40 of its 100 equal "chunks" of charge left.
+    visual:
+      widget: hundred-grid
+      props: {shaded: 40, mode: percent}
+      caption: 40 of 100 squares shaded - 40%.
+    formal: For a number $p$, $p\%$ means $\tfrac{p}{100}$.
+    example: 50% is a half, 25% is a quarter, 100% is the whole.
+    non_example: '"25" on its own - without the % sign it is just twenty-five.'
+    related: [fraction, decimal, ratio]
+    used_later:
+      - {lesson: l8-discrete-probability, how: 'Probabilities are often expressed as percentages.'}
+    introduced_in: l1-percentages
+    aliases: [percent, per cent, percentages]
+    symbol: '\%'
+
+  - id: ratio
+    word: ratio
+    pronunciation: "RAY-shee-oh"
+    plain: |-
+      A comparison of two amounts, like "2 cups of flour for every 3 eggs", written $2 : 3$.
+    analogy: |
+      A paint colour made from 1 tin of blue for every 2 tins of white stays the same colour
+      whether you mix 3 tins or 30 - as long as the ratio stays the same.
+    visual:
+      widget: ratio-mixer
+      props: {a: 2, b: 3, labelA: flour, labelB: eggs}
+      caption: Two parts of one ingredient for every three parts of another.
+    formal: |
+      The ratio of two quantities $a$ and $b$ (with $b \neq 0$), written $a : b$, compares them
+      multiplicatively; the ratios $a : b$ and $c : d$ are equal when $a \times d = b \times c$.
+    example: |-
+      A class with 12 girls and 8 boys has a girls-to-boys ratio of $12 : 8$, the same as $3 : 2$.
+    non_example: '"12 girls and 8 boys, so 4 more girls" - that compares by subtracting, which is a difference, not a ratio.'
+    related: [fraction, rational-number, percentage]
+    used_later:
+      - {lesson: l3-proportional, how: 'Quantities in a fixed ratio are proportional.'}
+      - {lesson: l5-gradients, how: 'The steepness of a line is a ratio.'}
+    introduced_in: l1-ratios
+    aliases: [ratios]
+
+  - id: skip-counting
+    word: skip counting
+    pronunciation: "SKIP KOWN-ting"
+    plain: Counting in equal jumps, like 2, 4, 6, 8 or 5, 10, 15, 20.
+    analogy: |
+      Counting pairs of socks two at a time, or coins worth 5 each, five at a time.
+    visual:
+      widget: number-line
+      props: {min: 0, max: 20, value: 0, jumps: {start: 0, size: 5, count: 4}}
+      caption: Jumps of 5 land on 5, 10, 15 and 20.
+    formal: Skip counting by $k$ lists the numbers $k, 2k, 3k, \ldots$ - each one $k$ more than the one before.
+    example: Skip counting by 3 gives 3, 6, 9, 12, 15, ...
+    non_example: 3, 6, 10, 15 - the jumps are not all equal.
+    related: [multiple, array, multiplication]
+    used_later:
+      - {lesson: l1-multiples, how: 'The numbers you land on are the multiples.'}
+      - {lesson: l2-times-tables, how: 'Times tables are skip counting written down.'}
+    introduced_in: l1-equal-groups
+
+  - id: array
+    word: array
+    pronunciation: "uh-RAY"
+    plain: Objects arranged in equal rows and equal columns, making a rectangle.
+    analogy: |
+      An egg box with 2 rows of 6 eggs, or seats in a cinema arranged in neat rows.
+    visual:
+      widget: rectangle-arranger
+      props: {n: 12, rows: 3, editable: false}
+      caption: 12 tiles in an array of 3 rows of 4.
+    formal: An array of $r$ rows and $c$ columns is a rectangular arrangement of $r \times c$ objects with $c$ objects in every row.
+    example: 3 rows of 4 tiles is a 3-by-4 array holding 12 tiles.
+    non_example: 'Tiles in rows of 4, 4 and 3: the rows are not equal, so it is not an array.'
+    related: [multiplication, factor, skip-counting]
+    used_later:
+      - {lesson: l2-multiplication, how: 'Arrays show why multiplication works.'}
+      - {lesson: l12-la-matrices, how: 'A matrix is an array of numbers.'}
+    introduced_in: l1-equal-groups
+    aliases: [arrays]
+
+  - id: multiplication
+    word: multiplication (×)
+    pronunciation: "mul-tih-plih-KAY-shun"
+    plain: Putting together equal groups. $3 \times 4$ means "3 groups of 4", which is 12.
+    analogy: |
+      Three bags each holding four oranges: $3 \times 4 = 12$ oranges in all.
+    visual:
+      widget: rectangle-arranger
+      props: {n: 12, rows: 3, editable: false}
+      caption: 3 rows of 4 make 12, so $3 \times 4 = 12$.
+    formal: |
+      For whole numbers $a$ and $b$, the product $a \times b$ is the total number of objects in
+      $a$ groups of $b$ objects each. (Multiplication is studied fully in Level 2.)
+    example: $2 \times 5 = 10$, because two groups of five make ten.
+    non_example: 3 groups of 4 is not $3 + 4$, which is only 7.
+    related: [array, skip-counting, factor, multiple]
+    used_later:
+      - {lesson: l2-multiplication, how: 'Multiplication is studied in full.'}
+      - {lesson: l10-euler-products, how: 'Euler products multiply infinitely many numbers together.'}
+    introduced_in: l1-equal-groups
+    aliases: [multiply, multiplied, times, product]
+    symbol: '\times'
+
+  - id: prime-number
+    word: prime number
+    pronunciation: "PRYM NUM-ber"
+    plain: A whole number bigger than 1 that can only be split into equal rows as one single row - its only factors are 1 and itself.
+    analogy: |
+      Primes are like atoms: every whole number bigger than 1 is built by multiplying primes
+      together, but primes themselves cannot be broken into smaller whole-number pieces.
+    visual:
+      widget: rectangle-arranger
+      props: {n: 7, editable: true}
+      caption: 7 tiles can only make one long row (or one column). 7 is prime.
+    formal: A natural number $p$ is prime if $p > 1$ and the only natural numbers that divide $p$ are $1$ and $p$.
+    example: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 are the first ten primes.
+    non_example: 1 is not prime (by definition primes are bigger than 1), and 9 is not prime because $9 = 3 \times 3$.
+    related: [composite-number, factor, divisible]
+    used_later:
+      - {lesson: l10-fundamental-theorem, how: 'Every number above 1 is a product of primes in exactly one way.'}
+      - {lesson: l10-prime-counting, how: 'Counting how many primes there are up to a given size.'}
+      - {lesson: pb-euler-product, how: 'The zeta function is a product over all the primes.'}
+    introduced_in: l1-prime-numbers
+    aliases: [prime numbers, prime, primes]
+
+  - id: composite-number
+    word: composite number
+    pronunciation: "kum-POZ-it NUM-ber"
+    plain: A whole number bigger than 1 that is not prime - it can be arranged into a real rectangle.
+    analogy: |
+      A composite number is "composed" of smaller pieces, like a wall made of rows of bricks.
+    visual:
+      widget: rectangle-arranger
+      props: {n: 12, rows: 3, editable: true}
+      caption: 12 tiles make a 3 by 4 rectangle (and others), so 12 is composite.
+    formal: A natural number $n$ is composite if $n > 1$ and $n$ is not prime; equivalently, $n = a \times b$ for some natural numbers $a, b$ with $1 < a, b < n$.
+    example: 4, 6, 8, 9, 10 and 12 are composite.
+    non_example: 1 is neither prime nor composite. 13 is prime.
+    related: [prime-number, factor]
+    used_later:
+      - {lesson: l10-prime-factorization, how: 'Breaking composite numbers into primes.'}
+    introduced_in: l1-composite-numbers
+    aliases: [composite numbers, composite]
+
+  - id: even-number
+    word: even number
+    pronunciation: "EE-vun NUM-ber"
+    plain: A whole number that splits into pairs with nothing left over.
+    analogy: |
+      If everyone at a party can dance in pairs with nobody left out, the number of people is
+      even.
+    visual:
+      widget: pairs
+      props: {n: 8}
+      caption: 8 dots form 4 complete pairs - 8 is even.
+    formal: An integer $n$ is even if $n = 2k$ for some integer $k$.
+    example: 0, 2, 14, 100 and $-6$ are even.
+    non_example: 7 is not even - pairing 7 dots leaves one alone.
+    related: [odd-number, divisible, factor]
+    used_later:
+      - {lesson: l7-direct-proof, how: 'Classic first proofs are about even and odd numbers.'}
+      - {lesson: pa-circuit-complexity, how: 'The parity function (even or odd number of 1s) is a famous example in circuit lower bounds.'}
+    introduced_in: l1-even-odd
+    aliases: [even numbers, even]
+
+  - id: odd-number
+    word: odd number
+    pronunciation: "OD NUM-ber"
+    plain: A whole number that always leaves one left over when you split it into pairs.
+    analogy: |
+      Three people on a see-saw: two can pair up, but one is always the odd one out.
+    visual:
+      widget: pairs
+      props: {n: 7}
+      caption: 7 dots form 3 pairs with one left over - 7 is odd.
+    formal: An integer $n$ is odd if $n = 2k + 1$ for some integer $k$.
+    example: 1, 3, 15 and $-7$ are odd.
+    non_example: 10 is not odd, it pairs up exactly.
+    related: [even-number]
+    used_later:
+      - {lesson: l7-direct-proof, how: 'Proving that odd plus odd is even.'}
+    introduced_in: l1-even-odd
+    aliases: [odd numbers, odd]
+
+  - id: factor
+    word: factor
+    pronunciation: "FAK-ter"
+    plain: A number that divides another number exactly. The factors of 12 are 1, 2, 3, 4, 6 and 12.
+    analogy: |
+      The factors of 12 are all the ways to set out 12 chairs in equal rows with none left over:
+      1, 2, 3, 4, 6 or 12 rows.
+    visual:
+      widget: rectangle-arranger
+      props: {n: 12, editable: true}
+      caption: Try every number of rows. The ones that make a perfect rectangle are the factors.
+    formal: A natural number $d$ is a factor (or divisor) of an integer $n$ if $n = d \times k$ for some integer $k$.
+    example: 4 is a factor of 20 because $20 = 4 \times 5$.
+    non_example: 3 is not a factor of 20, because 20 shared into 3 equal groups leaves 2 over.
+    related: [multiple, divisible, prime-number, greatest-common-divisor]
+    used_later:
+      - {lesson: l4-factorization, how: 'Factoring algebraic expressions.'}
+      - {lesson: l10-arithmetic-functions, how: 'Counting and adding factors defines important arithmetic functions.'}
+    introduced_in: l1-factors
+    aliases: [factors, divisor, divisors]
+
+  - id: multiple
+    word: multiple
+    pronunciation: "MUL-tih-pul"
+    plain: A number you land on when you skip count. The multiples of 3 are 3, 6, 9, 12, ...
+    analogy: |
+      If tickets cost 5 coins each, the amounts you could pay for whole tickets - 5, 10, 15, ... -
+      are the multiples of 5.
+    visual:
+      widget: multiples-jumps
+      props: {a: 3, b: 4, max: 24}
+      caption: A frog jumping by 3 lands on the multiples of 3.
+    formal: An integer $m$ is a multiple of a natural number $d$ if $m = d \times k$ for some integer $k$.
+    example: 35 is a multiple of 7 because $35 = 7 \times 5$.
+    non_example: 20 is not a multiple of 3 - jumps of 3 go 18, 21 and skip over 20.
+    related: [factor, skip-counting, least-common-multiple, divisible]
+    used_later:
+      - {lesson: l2-modular-arithmetic, how: 'Clock arithmetic ignores multiples of the clock size.'}
+    introduced_in: l1-multiples
+    aliases: [multiples]
+
+  - id: divisible
+    word: divisible
+    pronunciation: "dih-VIZ-ih-bul"
+    plain: When one number shares exactly into equal groups of another, with nothing left over.
+    analogy: |
+      12 sweets are divisible among 4 friends (3 each) but not among 5 friends (2 would be left).
+    visual:
+      widget: sharing
+      props: {items: 12, groups: 4}
+      caption: 12 shared among 4 groups - 3 each, nothing left over.
+    formal: |
+      For integers $n$ and $d$ with $d \neq 0$, we say $d$ divides $n$, written $d \mid n$, and
+      that $n$ is divisible by $d$, if $n = d \times k$ for some integer $k$.
+    example: $3 \mid 12$ ("3 divides 12") because $12 = 3 \times 4$.
+    non_example: 5 does not divide 12, written $5 \nmid 12$.
+    related: [factor, multiple, remainder]
+    used_later:
+      - {lesson: l2-division, how: 'Division as an operation.'}
+      - {lesson: l10-congruences, how: 'Congruences are built from divisibility.'}
+    introduced_in: l1-divisibility
+    aliases: [divisibility, divides, divisible by, divide]
+    symbol: '\mid'
+
+  - id: remainder
+    word: remainder
+    pronunciation: "rih-MAYN-der"
+    plain: What is left over after sharing things out equally as far as possible.
+    analogy: |
+      13 biscuits for 4 people: everyone gets 3 and 1 biscuit remains. That 1 is the remainder.
+    visual:
+      widget: sharing
+      props: {items: 13, groups: 4}
+      caption: 13 shared among 4 groups - 3 each, with 1 left over.
+    formal: |
+      For a whole number $n$ and a natural number $d$, the remainder on dividing $n$ by $d$ is
+      the unique whole number $r$ with $0 \le r < d$ such that $n = d \times q + r$ for some
+      whole number $q$.
+    example: Dividing 17 by 5 gives 3 groups of 5 with remainder 2, since $17 = 5 \times 3 + 2$.
+    non_example: Saying 17 divided by 5 has remainder 7. The remainder must be smaller than 5, otherwise another group of 5 could be made.
+    related: [divisible, factor]
+    used_later:
+      - {lesson: l2-remainders, how: 'Remainders as part of division.'}
+      - {lesson: l10-euclidean-algorithm, how: 'The Euclidean algorithm repeats remainder steps.'}
+    introduced_in: l1-divisibility
+    aliases: [remainders]
+
+  - id: greatest-common-divisor
+    word: greatest common divisor
+    pronunciation: "GRAY-test KOM-un dih-VY-zer"
+    plain: The largest number that divides two numbers exactly. For 12 and 18 it is 6.
+    analogy: |
+      You have 12 red and 18 blue beads and want identical bags using all of them, with no bead
+      left over. The greatest number of identical bags you can make is the GCD, 6.
+    visual:
+      widget: common-factors
+      props: {a: 12, b: 18}
+      caption: The factors 12 and 18 share are 1, 2, 3 and 6. The greatest is 6.
+    formal: |
+      For integers $a$ and $b$, not both zero, the greatest common divisor $\gcd(a, b)$ is the
+      largest natural number that divides both $a$ and $b$.
+    example: $\gcd(8, 12) = 4$ and $\gcd(7, 10) = 1$.
+    non_example: 2 divides both 12 and 18, but it is not the greatest common divisor - 6 is bigger.
+    related: [factor, least-common-multiple, divisible]
+    used_later:
+      - {lesson: l2-fraction-arithmetic, how: 'Simplifying fractions divides top and bottom by their GCD.'}
+      - {lesson: l10-euclidean-algorithm, how: 'A fast algorithm for the GCD.'}
+    introduced_in: l1-greatest-common-divisor
+    aliases: [greatest common divisors, GCD, highest common factor, HCF, greatest common factor]
+    symbol: '\gcd'
+
+  - id: least-common-multiple
+    word: least common multiple
+    pronunciation: "LEEST KOM-un MUL-tih-pul"
+    plain: The smallest positive number that both of two numbers divide into exactly. For 4 and 6 it is 12.
+    analogy: |
+      One light flashes every 4 seconds and another every 6 seconds. They flash together for the
+      first time after 12 seconds - the least common multiple.
+    visual:
+      widget: multiples-jumps
+      props: {a: 4, b: 6, max: 30}
+      caption: Frogs jumping by 4 and by 6 first land on the same number at 12.
+    formal: For natural numbers $a$ and $b$, the least common multiple $\operatorname{lcm}(a, b)$ is the smallest natural number that is a multiple of both $a$ and $b$.
+    example: $\operatorname{lcm}(3, 5) = 15$ and $\operatorname{lcm}(6, 8) = 24$.
+    non_example: 48 is a common multiple of 6 and 8, but not the least one.
+    related: [multiple, greatest-common-divisor]
+    used_later:
+      - {lesson: l2-fraction-arithmetic, how: 'The lowest common denominator for adding fractions is an LCM.'}
+    introduced_in: l1-least-common-multiple
+    aliases: [least common multiples, LCM, lowest common multiple]
+    symbol: '\operatorname{lcm}'

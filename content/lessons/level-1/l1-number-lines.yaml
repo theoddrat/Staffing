@@ -1,0 +1,191 @@
+id: l1-number-lines
+estimated_minutes: 15
+
+goal: |
+  We are learning to picture numbers as positions on a straight line, equally spaced, getting bigger
+  to the right.
+why: |
+  The number line turns numbers into places you can see. It makes order, distance, negative numbers
+  and fractions visible - and later it grows into the coordinate plane and the complex plane, where
+  the zeros of the zeta function live.
+problem: |
+  How can we draw numbers so that their order and the distances between them can be seen at a glance?
+
+plain: |
+  Draw a straight line. Choose one point and call it **0**. Choose a fixed step length, and mark
+  points one step apart going right: **1, 2, 3, 4, ...** That is a **number line**.
+
+  - Numbers get **bigger to the right** and smaller to the left.
+  - The gaps are all **equal**: 0 to 1 is the same length as 7 to 8.
+  - The **distance** between two numbers is the number of steps between them: from 2 to 7 is 5 steps.
+  - An arrow on the end means the line carries on forever.
+
+  Because the gaps are equal, a number line is like a ruler: it shows *how far apart* numbers are, not
+  just which comes first.
+
+analogy:
+  strategy: everyday-objects
+  title: A street of evenly spaced houses
+  text: |
+    Picture a long straight street where the houses are numbered 0, 1, 2, 3, ... and every house is
+    exactly the same distance from the next. To walk from house 2 to house 7 you pass 5 gaps. A number
+    line is that street - and a ruler is a number line you can hold.
+
+visual:
+  widget: number-line
+  props: {min: 0, max: 10, value: 3, editable: true, showDistance: true}
+  caption: |
+    What you are seeing: a straight line with marks at equal spacing, labelled 0 to 10 from left to
+    right. The dot is a movable point; its number is shown above it. The highlighted span shows its
+    distance from zero - the number of equal steps between them.
+  prompt: Drag the point. As it moves right, what happens to its number?
+
+example_simple:
+  title: Finding 7
+  problem: Where is 7 on a number line marked 0 to 10?
+  steps:
+    - Start at 0.
+    - Count 7 equal steps to the right - 1, 2, 3, 4, 5, 6, 7.
+  answer: 7 is the seventh mark to the right of 0.
+
+example_harder:
+  title: Which is closer?
+  problem: Is 7 or 14 closer to 10?
+  steps:
+    - From 7 to 10 is 3 steps - 8, 9, 10.
+    - From 10 to 14 is 4 steps - 11, 12, 13, 14.
+    - 3 steps is less than 4 steps.
+  answer: 7 is closer to 10 - by one step.
+
+word:
+  terms: [number-line]
+  text: |
+    This picture is called a **number line**. The marks are called **tick marks**, and the fixed step
+    length is the **unit** - one unit is the length from 0 to 1.
+
+symbols: []
+no_symbol_note: |
+  The number line is a picture rather than a symbol. Its arrowheads mean "the line continues forever"
+  - the same idea as the ellipsis $\ldots$ in $1, 2, 3, \ldots$.
+
+formal:
+  statement: |
+    A **number line** is a straight line on which one point represents 0 and a fixed length represents
+    one unit; each counting number $n$ is represented by the point $n$ units to the right of 0. For
+    numbers on the line, $a < b$ exactly when $a$ lies to the left of $b$, and the distance between them
+    is the number of units separating them.
+  kind: definition
+  glossary:
+    - {word: represents, meaning: Stands for.}
+    - {word: unit, meaning: 'The fixed length from 0 to 1.'}
+    - {word: 'n', meaning: 'Any counting number.'}
+    - {word: distance, meaning: 'How many units apart two points are.'}
+
+notation: []
+
+connections_back:
+  - {lesson: l1-bigger-smaller, how: 'Bigger numbers sit further right - the order becomes left-to-right position.'}
+  - {lesson: l1-number-symbols, how: 'The labels on the line are our numerals.'}
+  - {lesson: l0-measurement, how: 'The number line is a ruler - it measures with a unit.'}
+
+worked:
+  title: Reading a line marked in fives
+  problem: A number line has labels only at 0, 5, 10, 15 and 20, with a tick mark at every whole number. A point sits three ticks to the right of 10. What number is it?
+  steps:
+    - Each tick mark is one unit.
+    - Start at the label 10 and count three ticks right - 11, 12, 13.
+  answer: '13'
+
+experiment:
+  widget: number-line
+  props: {min: 0, max: 20, value: 0, editable: true, labelEvery: 5}
+  task: The line is labelled only every 5. Move the point exactly to 13.
+  goal: {target: 13}
+  success: |
+    You used the equal spacing to find 13 even without a label there. Equal spacing is what makes a
+    number line work like a ruler.
+
+mistakes:
+  - mistake: Counting tick marks instead of steps (saying 2 to 7 is 6, because there are 6 marks).
+    why: The distance is the number of gaps (jumps), not the number of marks.
+    fix: Count the jumps - start at 2 and jump - 3, 4, 5, 6, 7 - five jumps.
+  - mistake: Drawing marks with uneven gaps.
+    why: Then distances on the drawing do not match the numbers.
+    fix: Every gap must be the same length - one unit.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: order
+      type: generated
+      generator: order-numbers
+      params: {count: 5, min: 0, max: 99}
+    - id: jumps
+      type: number
+      kind: solve
+      prompt: How many equal steps are there from 2 to 7 on a number line?
+      answer: '5'
+      common_wrong:
+        - answer: '6'
+          diagnosis: That counts the tick marks 2, 3, 4, 5, 6, 7. The distance is the number of jumps between them.
+      hint: Put your finger on 2 and count each jump.
+      explanation: Jumps - 2 to 3, 3 to 4, 4 to 5, 5 to 6, 6 to 7 - five steps.
+    - id: further-right
+      type: choice
+      kind: apply
+      prompt: Which number is further to the right on a number line, 18 or 81?
+      options:
+        - text: '81'
+          correct: true
+        - text: '18'
+          diagnosis: Further right means bigger. 81 has 8 tens; 18 has 1 ten.
+      explanation: 81 is bigger, so it is further right.
+    - id: bigger-right
+      type: truefalse
+      kind: recall
+      prompt: 'True or false: on a number line, numbers get bigger as you move to the right.'
+      answer: true
+      diagnosis: Counting up moves to the right on a number line.
+      explanation: True.
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: Describe how to draw a number line, and what makes it different from just writing numbers in a row.
+      rubric:
+        - Choose a point for 0 and mark equal steps.
+        - Numbers increase to the right.
+        - The equal spacing means distances on the line match differences between numbers.
+      model_answer: |
+        Draw a straight line, mark 0, then mark points at equal steps going right - 1, 2, 3 and so on.
+        Unlike a list of numbers, the equal spacing means distances on the line show how far apart the
+        numbers are, and position shows which is bigger.
+      explanation: Equal spacing from 0, increasing to the right - so position shows order and distance.
+
+connections_forward:
+  - {lesson: l1-negative-numbers, how: 'Extending the line to the left of zero.'}
+  - {lesson: l1-fractions, how: 'Points between the whole numbers.'}
+  - {lesson: l5-cartesian-plane, how: 'Two number lines at right angles make a map of the plane.'}
+  - {lesson: l11-complex-plane, how: 'Complex numbers need a plane rather than a line - the stage where the zeta zeros live.'}
+
+practice: [order-numbers]
+
+alternatives:
+  - strategy: physical-activity
+    title: A number line on the floor
+    text: |
+      Put a strip of tape on the floor and mark it with chalk every footstep: 0, 1, 2, ..., 10. Stand on
+      0. Walk to 4 - you take 4 steps. Walk from 4 to 9 - 5 steps. Notice that bigger numbers are always
+      further along, and that the number of steps between two marks is how far apart the numbers are.
+      You are walking on a number line.
+  - strategy: everyday-objects
+    title: The ruler you already have
+    text: |
+      A ruler is a number line: 0 at one end, equal spaces marked 1, 2, 3, ... centimetres. When you
+      measure a pencil and read "12", you are reading a point on a number line. Everything true of
+      rulers - equal gaps, bigger numbers further along - is true of number lines.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      Imagine a long road with numbers painted on it, all the same distance apart. 0 is at the start.
+      Walking along the road, the numbers get bigger: 1, 2, 3... If you're on 3 and your friend is on 8,
+      your friend is further along - so 8 is bigger than 3.

@@ -1,0 +1,230 @@
+id: l1-zero
+estimated_minutes: 18
+
+goal: |
+  We are learning that zero is a number - the number of things in an empty collection - and that
+  the digit 0 holds empty places in numerals like 305.
+why: |
+  Zero took humanity thousands of years to accept as a number. Without it, our way of writing
+  numbers would not work, arithmetic would be clumsy, and there would be no negative numbers. In
+  advanced mathematics the word "zero" appears everywhere - the Riemann Hypothesis is about the
+  *zeros* of a function.
+problem: |
+  What is the answer to "how many?" when there is nothing there - and how do we write 3 hundreds
+  and 5 ones with no tens?
+
+plain: |
+  Zero has two jobs.
+
+  **Job 1 - zero is a number.** How many elephants are in your kitchen? None. "None" is a perfectly
+  good answer to "how many?", and its number is **zero**, written **0**. Zero is the cardinality of
+  an empty collection. It comes just before 1 when counting up from nothing.
+
+  **Job 2 - zero is a placeholder.** In 305, the digits say "3 hundreds, 0 tens, 5 ones". The 0
+  holds the tens place open, so the 3 stays in the hundreds place. Without it, 305 would become 35 -
+  a completely different number.
+
+  Zero is also special in arithmetic: adding zero to a number leaves it unchanged. $7 + 0 = 7$.
+
+analogy:
+  strategy: everyday-objects
+  title: The empty fruit bowl and the scoreboard
+  text: |
+    An empty fruit bowl holds zero apples - the bowl is still there; the number of apples is 0. A
+    football scoreboard reads 0 before anyone scores - it does not go blank. "Zero" means "we
+    counted, and the count is nothing", which is different from "we don't know".
+
+visual:
+  widget: place-value
+  props: {value: 305, showExpanded: true}
+  caption: |
+    What you are seeing: the number 305 shown as blocks - big squares are hundreds, long sticks are
+    tens and small cubes are ones. There are 3 hundred-squares, no ten-sticks and 5 single cubes.
+    The 0 in the middle of the numeral tells you the tens column is empty, not missing.
+  prompt: Change the number so a different column is empty. Where does the 0 appear?
+
+example_simple:
+  title: The empty box
+  problem: A box held 4 crayons. All 4 were taken out. How many crayons are in the box now?
+  steps:
+    - Count the crayons in the box. There are none to point at.
+    - The number of things in an empty collection is zero.
+  answer: 0 crayons.
+
+example_harder:
+  title: 305 versus 35
+  problem: Why do we need the 0 in 305?
+  steps:
+    - 305 means 3 hundreds, 0 tens and 5 ones.
+    - If we just wrote the non-empty parts, we would get 35.
+    - But 35 means 3 tens and 5 ones - thirty-five, much smaller than three hundred and five.
+    - The 0 keeps each digit in its correct place.
+  answer: The 0 holds the empty tens place, so the 3 means hundreds rather than tens.
+
+word:
+  terms: [zero]
+  text: |
+    The word **zero** comes, through Italian and Latin, from the Arabic *sifr*, meaning "empty" -
+    which also gave English the word *cipher*. When zero holds an empty place in a numeral, it is
+    called a **placeholder**.
+
+symbols:
+  - symbol: '0'
+    name: zero
+    looks_like: An oval or circle, usually a little narrower than the letter O.
+    means: The number of things in an empty collection; as a digit, "nothing in this place".
+    why: Indian mathematicians used a dot or small circle to mark an empty place. By the 600s they also treated zero as a number with its own rules of arithmetic.
+    read_aloud: '"Zero", "nought" or "oh" (as in phone numbers).'
+
+formal:
+  statement: |
+    **Zero**, written $0$, is the number of objects in an empty collection. It is the whole number
+    that immediately precedes 1, and for every number $a$, $a + 0 = a$.
+  kind: definition
+  glossary:
+    - {word: empty collection, meaning: 'A collection with nothing in it.'}
+    - {word: whole number, meaning: 'One of 0, 1, 2, 3, ... (a later lesson studies these).'}
+    - {word: immediately precedes, meaning: Comes just before.}
+    - {word: 'a + 0 = a', meaning: 'Adding zero to any number $a$ leaves it unchanged. The letter $a$ stands for "any number at all" - letters are explained fully in Level 4.'}
+
+notation:
+  - expression: '305 = 3\ \text{hundreds} + 0\ \text{tens} + 5\ \text{ones}'
+    read_aloud: three hundred and five equals three hundreds plus zero tens plus five ones
+    parts:
+      - {symbol: '305', meaning: The numeral.}
+      - {symbol: '3\ \text{hundreds}', meaning: The digit 3 in the hundreds place.}
+      - {symbol: '0\ \text{tens}', meaning: 'The 0 says the tens place is empty.'}
+      - {symbol: '5\ \text{ones}', meaning: The digit 5 in the ones place.}
+    english: 305 is made of three hundreds, no tens and five ones.
+  - expression: '7 + 0 = 7'
+    read_aloud: seven plus zero equals seven
+    parts:
+      - {symbol: '+\,0', meaning: Adding nothing.}
+    english: Adding zero to seven leaves seven unchanged.
+
+connections_back:
+  - {lesson: l1-counting-meaning, how: 'Zero is the cardinality of an empty collection.'}
+
+worked:
+  title: How many tens?
+  problem: How many tens are in the number 407?
+  steps:
+    - Read the digits by place - 4 in the hundreds place, 0 in the tens place, 7 in the ones place.
+    - The 0 means the tens place is empty.
+  answer: Zero tens. (407 is 4 hundreds and 7 ones.)
+
+experiment:
+  widget: place-value
+  props: {value: 12, editable: true, showExpanded: true}
+  task: Use the blocks to make 207. Notice what you must do with the tens column.
+  goal: {value: 207}
+  success: |
+    To make 207 you needed an empty tens column - and the numeral shows it with a 0. Without the
+    placeholder, your 2 hundreds would read as 2 tens.
+
+mistakes:
+  - mistake: Thinking zero is "not a number" because it means nothing.
+    why: '"How many?" can have the answer "none", and that answer is the number 0.'
+    fix: Treat 0 like any other number - it has a place on the number line, and you can add with it.
+  - mistake: Leaving zeros out of numerals (writing 35 for "three hundred and five").
+    why: Without the placeholder, the digits slide into the wrong places.
+    fix: Say the number by places - hundreds, tens, ones - and write 0 for any empty place.
+  - mistake: Thinking 0 is positive.
+    why: Positive numbers are those greater than zero; zero is not greater than itself.
+    fix: Zero is neither positive nor negative - it is the dividing point between them.
+
+statements:
+  - kind: established-fact
+    text: The Indian mathematician Brahmagupta, writing in 628 CE, gave rules for calculating with zero as a number in its own right.
+  - kind: definition
+    text: For every number $a$, $a + 0 = a$.
+    note: In formal arithmetic this is one of the defining rules of addition.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: build-number
+      type: generated
+      generator: build-number
+    - id: zero-number
+      type: truefalse
+      kind: recall
+      prompt: 'True or false: zero is not a number, because it means "nothing".'
+      answer: false
+      diagnosis: Zero is the number that answers "how many?" for an empty collection. It is a number like any other.
+      explanation: False. Zero is a number - the cardinality of an empty collection.
+    - id: bigger
+      type: choice
+      kind: apply
+      prompt: Which is bigger - 50 or 5?
+      options:
+        - text: '50'
+          correct: true
+        - text: '5'
+          diagnosis: In 50 the 5 is in the tens place, so it means five tens - fifty. The 0 holds the ones place.
+        - text: They are the same, because zero is nothing.
+          diagnosis: The zero is a placeholder. It moves the 5 into the tens place, making it ten times as big.
+      explanation: 50 is five tens; 5 is five ones. The placeholder 0 makes all the difference.
+    - id: eggs-left
+      type: number
+      kind: apply
+      prompt: A box had 6 eggs. All 6 were used for a cake. How many eggs are in the box?
+      answer: '0'
+      explanation: The box is empty, and the number of things in an empty collection is 0.
+    - id: add-zero
+      type: number
+      kind: solve
+      prompt: What is $15 + 0$?
+      answer: '15'
+      common_wrong:
+        - answer: '0'
+          diagnosis: Adding zero means adding nothing - the number stays the same.
+        - answer: '150'
+          diagnosis: Writing a 0 after a number is not the same as adding zero. Adding nothing leaves 15 unchanged.
+      explanation: Adding zero leaves a number unchanged - 15.
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: Describe the two jobs zero does, with an example of each.
+      rubric:
+        - Zero is a number - the number of things in an empty collection (with an example).
+        - Zero is a placeholder that holds an empty place in a numeral (with an example such as 305).
+      model_answer: |
+        First, zero is a number: an empty box of crayons has 0 crayons. Second, it is a placeholder:
+        in 305 the 0 shows there are no tens, which keeps the 3 in the hundreds place.
+      explanation: Zero is both a number (empty collection) and a placeholder (empty place).
+
+connections_forward:
+  - {lesson: l1-number-symbols, how: 'Place value, which zero makes possible.'}
+  - {lesson: l1-negative-numbers, how: 'Zero sits between the positive and negative numbers.'}
+  - {lesson: pb-nontrivial-zeros, how: 'A "zero" of a function is an input that gives output 0 - the zeros of the zeta function are what the Riemann Hypothesis is about.'}
+
+practice: [build-number, digit-value]
+
+alternatives:
+  - strategy: history
+    title: The number that took thousands of years
+    text: |
+      The Babylonians, about 4,000 years ago, wrote numbers using place value but at first simply
+      left a gap for an empty place, which caused confusion. Later they used a special mark as a
+      placeholder - but they never treated it as a number you could add. In India, by the 600s CE,
+      mathematicians such as Brahmagupta treated zero as a genuine number and gave rules like
+      "a number plus zero is the number". Those ideas travelled through the Islamic world to Europe,
+      where some people distrusted zero for centuries. Today it seems obvious - but zero is one of
+      humanity's great inventions.
+  - strategy: contrast
+    title: Zero versus "no answer"
+    text: |
+      Compare two questions:
+
+      - "How many moons does Venus have?" Answer: zero. We know exactly - none.
+      - "How many moons does a planet nobody has discovered have?" Answer: we don't know.
+
+      Zero is not "don't know" and not "doesn't apply". It is a definite answer: we counted, and
+      the count was nothing.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      You had 3 cookies. You ate one - 2 left. You ate another - 1 left. You ate the last one. How
+      many now? Zero! Zero is the number for "all gone". And in big numbers, zero is like an empty
+      chair that keeps a seat in the row, so the other digits don't move into the wrong seats.

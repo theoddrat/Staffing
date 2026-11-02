@@ -1,0 +1,224 @@
+id: l1-what-is-a-number
+estimated_minutes: 18
+
+goal: |
+  We are learning what a number actually *is* - and why a number is different from the symbol
+  we write for it.
+why: |
+  Numbers are the most basic objects in mathematics. The Riemann Hypothesis is a statement about
+  certain numbers; P versus NP is about how many steps computations take. If "number" is a vague
+  idea, everything built on it wobbles.
+problem: |
+  Three apples, three claps and three days have nothing physical in common. What exactly is the
+  "three" that they share?
+
+plain: |
+  Put three apples next to three stars. Pair each apple with one star: they match perfectly, with
+  nothing left over. Do the same with three claps, three days, three friends - any group of three
+  can be matched perfectly with any other group of three.
+
+  A **number** is the thing all those groups share: their "how-many-ness". The number three is not
+  an apple, a star or a clap. It is the idea that every group matching "one, two, three" has in
+  common.
+
+  That makes a number an **idea**, not an object you can touch. What we *can* touch or write is a
+  **name** for the number: the word "three", the mark 3, the Roman III, the tally ||| . Many names,
+  one number.
+
+analogy:
+  strategy: everyday-objects
+  title: Redness
+  text: |
+    A red car, a red apple and a red balloon are completely different objects, but they share
+    something: redness. You cannot pick up "redness" on its own - it only exists in red things. A
+    number is like that. "Three-ness" is what every group of three things shares. You can hold three
+    apples, but not "three" by itself.
+
+visual:
+  widget: compare-groups
+  props: {left: 3, right: 3, matching: true, object: [apple, star]}
+  caption: |
+    What you are seeing: three apples on the left, three stars on the right, with lines pairing
+    each apple with one star. Every apple has exactly one partner and so does every star. Whatever
+    the objects are, any two groups that pair up perfectly like this have the same number.
+  prompt: Change the size of either group. When do they stop matching perfectly?
+
+example_simple:
+  title: Cats and hats
+  problem: There are 4 cats and 4 hats. What do the two groups have in common?
+  steps:
+    - Put one hat on each cat. Every cat gets a hat, and every hat is used.
+    - The groups match perfectly, one-to-one.
+    - Cats and hats are very different things, but the *number* of each is the same.
+  answer: They have the same number - four.
+
+example_harder:
+  title: Is "7" the number seven?
+  problem: 'The symbol 7, the Roman numeral VII, the English word "seven" and the French word "sept". How many different numbers are named here?'
+  steps:
+    - Each is a different way of *writing* a number.
+    - A group of 7 objects, a group counted as VII and a group counted as "sept" all match perfectly with each other.
+    - So all four names point at the same idea.
+  answer: Just one number - seven. The four are different numerals (names) for it.
+
+word:
+  terms: [number, numeral]
+  text: |
+    The shared "how-many-ness" is called a **number**. A written name for a number is called a
+    **numeral**. The digits we use (0 to 9) are called **Hindu-Arabic numerals** because they were
+    developed in India and reached Europe through scholars writing in Arabic.
+
+symbols:
+  - symbol: '3'
+    name: the numeral 3
+    looks_like: A curvy mark like a backwards E with rounded arms.
+    means: The number three - the "how-many-ness" of any group that matches one, two, three.
+    why: Our digit shapes descend from forms used in India more than 1,500 years ago, carried to Europe by scholars writing in Arabic. One mark per digit makes numbers quick to write.
+    read_aloud: '"Three".'
+
+formal:
+  statement: |
+    A (counting) **number** is the property shared by all collections that can be put in
+    one-to-one correspondence with one another. It answers the question "how many?". A **numeral**
+    is a symbol or group of symbols used as a name for a number.
+  kind: definition
+  glossary:
+    - {word: property, meaning: 'A feature something has.'}
+    - {word: collections, meaning: Groups of things.}
+    - {word: one-to-one correspondence, meaning: 'Pairing so that every member of each group has exactly one partner in the other.'}
+    - {word: symbol, meaning: 'A mark that stands for an idea.'}
+
+notation:
+  - expression: '3 \quad\text{III}\quad\text{three}\quad\text{|||}'
+    read_aloud: three, written four different ways
+    parts:
+      - {symbol: '3', meaning: The Hindu-Arabic numeral.}
+      - {symbol: '\text{III}', meaning: The Roman numeral.}
+      - {symbol: '\text{three}', meaning: The English word.}
+      - {symbol: '\text{|||}', meaning: Tally marks.}
+    english: Four different names for one and the same number.
+
+connections_back:
+  - {lesson: l0-quantity, how: 'A number is the idea that names a quantity.'}
+  - {lesson: l0-why-mathematics, how: 'One-to-one correspondence is what decides whether two groups have the same number.'}
+  - {lesson: l0-symbols, how: 'Numerals are symbols for numbers.'}
+
+worked:
+  title: Which groups share a number?
+  problem: Which of these groups have the same number - the fingers on one hand, the days of a school week (Monday to Friday), the seasons of the year, the wheels on a tricycle?
+  steps:
+    - Fingers on one hand - five.
+    - School days Monday to Friday - five. These match the fingers one-to-one (one finger per day).
+    - Seasons - four. Matching with the fingers leaves one finger over.
+    - Tricycle wheels - three.
+  answer: The fingers and the school days share the number five. The seasons and the wheels each have a different number.
+
+experiment:
+  widget: numeral-systems
+  props: {value: 4, editable: true}
+  task: Change the quantity until it is twelve, and look at every way of writing it.
+  goal: {value: 12}
+  success: |
+    Dots, tally marks, XII, 12 and "twelve" all name the same number. The number is the idea; each
+    of these is just a different way to write it down.
+
+mistakes:
+  - mistake: Thinking a number and its numeral are the same thing.
+    why: The Romans wrote seven as VII, but they had the same number seven that we have.
+    fix: Remember - many names, one number.
+  - mistake: Judging a number's size by how long its numeral is.
+    why: VIII is longer to write than X, but eight is smaller than ten.
+    fix: Compare the quantities the numerals stand for, not the length of the writing.
+
+statements:
+  - kind: established-fact
+    text: Our digits 0 to 9 developed in India and spread to Europe through texts written in Arabic, which is why they are called Hindu-Arabic numerals.
+  - kind: established-fact
+    text: The idea that a number is what all equally sized collections have in common was made precise by the logician Gottlob Frege in 1884.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: shared
+      type: choice
+      kind: recall
+      prompt: Three cups, three birds and three songs. What do these groups share?
+      options:
+        - text: The number three - they can all be matched with one another one-to-one.
+          correct: true
+        - text: Nothing, because they are different kinds of thing.
+          diagnosis: Different things can still share a number. Any two of these groups can be paired off perfectly.
+        - text: They are all made of the same material.
+          diagnosis: The number has nothing to do with what things are made of - only with how many there are.
+      explanation: Groups that match one-to-one share the same number.
+    - id: number-vs-numeral
+      type: truefalse
+      kind: recall
+      prompt: 'True or false: the number five and the symbol 5 are exactly the same thing.'
+      answer: false
+      diagnosis: The symbol 5 is a *name* for the number five. V and "five" are other names for the same number.
+      explanation: False. 5 is a numeral - a name. The number itself is the idea.
+    - id: how-many-numbers
+      type: number
+      kind: apply
+      prompt: How many different numbers are named by "4", "IV" and "four"?
+      answer: '1'
+      common_wrong:
+        - answer: '3'
+          diagnosis: There are three different numerals, but they all name the same number.
+      explanation: Three names, one number - four.
+    - id: not-seven
+      type: choice
+      kind: apply
+      prompt: Which of these is NOT a name for the number seven?
+      options:
+        - text: VI
+          correct: true
+        - text: '7'
+          diagnosis: This is the Hindu-Arabic numeral for seven.
+        - text: VII
+          diagnosis: This is the Roman numeral for seven (five and two more).
+        - text: seven
+          diagnosis: This is the English word for seven.
+      explanation: VI is the Roman numeral for six (five and one more).
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: Explain in your own words what a number is, and how it is different from a numeral.
+      rubric:
+        - A number is the "how many" shared by groups that match one-to-one.
+        - A number is an idea, not a physical object.
+        - A numeral is a written name or symbol for a number; one number can have many numerals.
+      model_answer: |
+        A number is the "how many" that groups of the same size share - any two groups that can be
+        paired off perfectly have the same number. It is an idea, not a thing. A numeral is just a
+        written name for the number, like 3, III or "three" - many numerals can name one number.
+      explanation: A number is the shared "how many"; a numeral is a name for it.
+
+connections_forward:
+  - {lesson: l1-counting-meaning, how: 'How counting finds the number of a collection.'}
+  - {lesson: l1-number-symbols, how: 'Our numerals - digits and place value - in detail.'}
+  - {lesson: l11-complex-numbers, how: 'The idea of "number" keeps growing - all the way to complex numbers, the inputs of the zeta function.'}
+
+alternatives:
+  - strategy: physical-activity
+    title: Match anything with anything
+    text: |
+      Gather three spoons, three pencils and three coins. Line up the spoons. Put a pencil next to
+      each spoon - a perfect match. Put a coin next to each pencil - a perfect match again. Now try
+      four socks against the three spoons: one sock is left over. The three spoons, pencils and
+      coins all share something the four socks do not. That shared something is the number three.
+  - strategy: contrast
+    title: The name and the thing
+    text: |
+      Your name is not you - it is a word people use for you. If you moved to another country you
+      might be called something different, but you would be the same person. Numbers are the same:
+      "7", "VII", "seven", "sieben" and "sept" are different names in different systems and
+      languages, but the number they all point to does not change.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      You have three teddies. Your friend has three toy cars. They are not the same toys at all! But
+      if each teddy sits in one car, every teddy has a car and every car has a teddy. What is the
+      same? How many there are! That "how many" is called a number. Three is the number of your
+      teddies and also the number of the cars.

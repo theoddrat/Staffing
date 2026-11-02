@@ -1,0 +1,252 @@
+id: l0-symbols
+estimated_minutes: 15
+
+goal: |
+  We are learning why mathematics uses symbols, and how to read our first two: $+$ and $=$.
+why: |
+  Mathematical writing can look frightening - a wall of strange marks. But every symbol is just a
+  short name for an idea you can understand in words. Knowing *why* symbols exist turns them from
+  a barrier into a convenience.
+problem: |
+  Mathematical ideas described only in words become long, slow and easy to misread. How can we
+  write them quickly, exactly, and in a way any reader in any country understands?
+
+plain: |
+  A **symbol** is a short mark that stands for an idea. Mathematics uses symbols for three reasons:
+
+  1. **They are short.** "Three added to four is the same amount as seven" becomes $3 + 4 = 7$.
+  2. **They are exact.** A symbol means one agreed thing, with none of the vagueness of everyday words.
+  3. **They are shared.** A French, a Chinese and an Arabic speaker all read $3 + 4 = 7$ the same way,
+     though they would say it with completely different words.
+
+  There is a fourth, deeper reason: once ideas are written compactly, you can *work* with them -
+  rearrange them, spot patterns in them, and reason with them - far more easily than with long
+  sentences.
+
+  Every symbol you will ever meet in this course will be introduced only after you understand the
+  idea it stands for. Symbols are names, not mysteries.
+
+analogy:
+  strategy: everyday-objects
+  title: Road signs
+  text: |
+    A road sign with a picture of a bicycle inside a red circle means "no cycling" in many countries,
+    whatever language you speak. Drivers read it in a fraction of a second. Mathematical symbols do
+    the same job for ideas: short, exact, and understood across languages.
+
+visual:
+  widget: symbol-translator
+  props:
+    statements:
+      - {words: three added to four is the same amount as seven, symbols: '3 + 4 = 7'}
+      - {words: ten is the same amount as five added to five, symbols: '10 = 5 + 5'}
+      - {words: one added to one added to one is the same amount as three, symbols: '1 + 1 + 1 = 3'}
+  caption: |
+    What you are seeing: sentences written two ways - in ordinary English on the left, and in
+    mathematical symbols on the right. Tap a sentence to switch between its two forms. The meaning is
+    identical; only the writing changes.
+  prompt: Tap each sentence to see it in symbols. Which version is quicker to read?
+
+example_simple:
+  title: Into symbols
+  problem: Write "five added to two is the same amount as seven" in symbols.
+  steps:
+    - '"Five" becomes 5, "two" becomes 2 and "seven" becomes 7.'
+    - '"Added to" becomes the plus sign $+$.'
+    - '"Is the same amount as" becomes the equals sign $=$.'
+  answer: $5 + 2 = 7$
+
+example_harder:
+  title: A long sentence made short
+  problem: 'An old arithmetic book might say - "If you take some number, double it, and then add three, you obtain eleven." How much shorter can this become?'
+  steps:
+    - We do not know the number yet, so put an empty box in its place - $\square$.
+    - '"Double it" means two of that number - written $2 \times \square$ (you will meet $\times$ in Level 1).'
+    - '"Then add three" becomes $+\;3$, and "you obtain eleven" becomes $=\;11$.'
+    - The whole sentence becomes $2 \times \square + 3 = 11$.
+  answer: Twenty words become a handful of symbols. In Level 4 the box will be replaced by a letter, and you will learn to find the hidden number.
+
+word:
+  terms: [symbol]
+  text: |
+    A mark that stands for an idea is called a **symbol**. A line of symbols that says something
+    complete, like $3 + 4 = 7$, is often called a **mathematical sentence** or **statement**.
+
+symbols:
+  - symbol: '+'
+    name: plus sign
+    looks_like: A small upright cross - one horizontal stroke and one vertical stroke.
+    means: '"Added to", "and", "put together with". $3 + 4$ means three put together with four.'
+    why: Writing "and" or "added to" over and over was slow. The cross first appeared in print in a German arithmetic book in 1489, and possibly grew out of a quick way of writing the Latin word *et*, meaning "and".
+    read_aloud: '"Plus" - so $3 + 4$ is "three plus four".'
+  - symbol: '='
+    name: equals sign
+    looks_like: Two short horizontal lines, one above the other, the same length.
+    means: '"Is the same amount as". It says the thing on the left and the thing on the right are equal.'
+    why: Robert Recorde invented it in 1557, writing that he chose two parallel lines "bicause noe .2. thynges, can be moare equalle".
+    read_aloud: '"Equals" or "is equal to" - so $3 + 4 = 7$ is "three plus four equals seven".'
+
+formal:
+  statement: |
+    A **mathematical symbol** is a written sign that, by agreed convention, stands for a specific
+    mathematical object (such as a number), operation (such as adding) or relation (such as
+    equality).
+  kind: definition
+  glossary:
+    - {word: written sign, meaning: 'A mark on paper or screen.'}
+    - {word: agreed convention, meaning: 'Everyone has agreed what it means - the meaning is shared, not personal.'}
+    - {word: object, meaning: 'A thing mathematics talks about, such as a number or a shape.'}
+    - {word: operation, meaning: 'Something you do to objects, such as adding them.'}
+    - {word: relation, meaning: 'A way two objects can be connected, such as "is equal to".'}
+
+notation:
+  - expression: '3 + 4 = 7'
+    read_aloud: three plus four equals seven
+    parts:
+      - {symbol: '3', meaning: The number three.}
+      - {symbol: '+', meaning: 'Plus - put together with.'}
+      - {symbol: '4', meaning: The number four.}
+      - {symbol: '=', meaning: Is the same amount as.}
+      - {symbol: '7', meaning: The number seven.}
+    english: Three and four put together make exactly the same amount as seven.
+
+connections_back:
+  - {lesson: l0-counting, how: 'The digits 3, 4 and 7 are symbols for counting words.'}
+  - {lesson: l0-rules, how: 'Rules become much easier to state once we have symbols.'}
+
+worked:
+  title: Reading aloud
+  problem: Read $8 = 3 + 5$ aloud, and say what it means.
+  steps:
+    - Read left to right, one symbol at a time - "eight", "equals", "three", "plus", "five".
+    - Notice the answer is on the left this time. That is fine - $=$ only says the two sides are the same amount.
+    - Meaning - eight is the same amount as three and five put together.
+  answer: '"Eight equals three plus five" - eight is the same amount as three and five together.'
+
+experiment:
+  widget: symbol-translator
+  props:
+    statements:
+      - {words: two added to two is the same amount as four, symbols: '2 + 2 = 4'}
+      - {words: six is the same amount as one added to five, symbols: '6 = 1 + 5'}
+      - {words: nine added to zero is the same amount as nine, symbols: '9 + 0 = 9'}
+      - {words: four added to three is the same amount as three added to four, symbols: '4 + 3 = 3 + 4'}
+  task: Before revealing each symbolic version, try to write it yourself. Then reveal all four.
+  goal: {revealAll: true}
+  success: |
+    Notice the last one, $4 + 3 = 3 + 4$. Neither side is "the answer" - the equals sign just says
+    the two sides are the same amount. Keeping that meaning in mind will make algebra much easier.
+
+mistakes:
+  - mistake: 'Reading "=" as "here comes the answer".'
+    why: Then $8 = 3 + 5$ or $4 + 3 = 3 + 4$ look wrong, though both are true. The equals sign is a statement that two things are the same amount.
+    fix: Read $=$ as "is the same amount as", every time.
+  - mistake: Thinking symbols are a separate, secret language.
+    why: Every symbol abbreviates an idea that can be said in ordinary words.
+    fix: When you meet a symbol, ask, "how would I say this in words?"
+
+statements:
+  - kind: established-fact
+    text: The equals sign was invented by the Welsh mathematician Robert Recorde in his 1557 book *The Whetstone of Witte*.
+  - kind: established-fact
+    text: The plus sign first appeared in print in a German arithmetic book by Johannes Widmann in 1489.
+  - kind: convention
+    text: The shape of a symbol is a matter of agreement. What matters is that everyone uses it the same way.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: why-symbols
+      type: choice
+      kind: recall
+      multi: true
+      prompt: Why does mathematics use symbols? Choose all that apply.
+      options:
+        - text: They make ideas quick to write and read.
+          correct: true
+        - text: They have exact, agreed meanings.
+          correct: true
+        - text: They are understood by readers of many different languages.
+          correct: true
+        - text: To keep mathematics secret from ordinary people.
+          diagnosis: Symbols are abbreviations for ideas that can always be explained in words - they make mathematics easier to share, not harder.
+      explanation: Symbols are short, exact and shared across languages.
+    - id: write-symbols
+      type: text
+      kind: apply
+      mode: math
+      prompt: Write "six added to three is the same amount as nine" in symbols.
+      accept: ['6+3=9', '9=6+3']
+      hint: Use 6, 3, 9, the plus sign and the equals sign.
+      explanation: $6 + 3 = 9$.
+    - id: equals-meaning
+      type: truefalse
+      kind: recall
+      prompt: 'True or false: the equals sign means "here comes the answer".'
+      answer: false
+      diagnosis: '"=" says both sides are the same amount. $7 = 3 + 4$ and $3 + 4 = 4 + 3$ are both true.'
+      explanation: False. It means "is the same amount as".
+    - id: read-aloud
+      type: choice
+      kind: apply
+      prompt: How do you read $10 = 6 + 4$ aloud?
+      options:
+        - text: Ten equals six plus four.
+          correct: true
+        - text: Ten plus six equals four.
+          diagnosis: Read the symbols in order - the plus sign sits between 6 and 4.
+        - text: This cannot be read, because the answer is on the wrong side.
+          diagnosis: There is no wrong side. "=" just says both sides are the same amount.
+      explanation: Reading left to right - "ten equals six plus four".
+    - id: is-it-true
+      type: truefalse
+      kind: apply
+      prompt: 'True or false: $5 + 2 = 2 + 5$ is a true statement.'
+      answer: true
+      diagnosis: Both sides make seven, so they are the same amount.
+      explanation: True. Both sides equal 7.
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: Explain in your own words what a mathematical symbol is, using $=$ as an example.
+      rubric:
+        - A symbol is a short mark that stands for an idea.
+        - Its meaning is agreed, so everyone reads it the same way.
+        - Correctly explains that $=$ means "is the same amount as".
+      model_answer: |
+        A symbol is a short mark that stands for an idea, with a meaning everyone has agreed on.
+        For example, $=$ stands for "is the same amount as" - so $3 + 4 = 7$ says three and four
+        together are the same amount as seven.
+      explanation: A symbol is an agreed short name for an idea; $=$ means "is the same amount as".
+
+connections_forward:
+  - {lesson: l1-number-symbols, how: 'The symbols for numbers - digits and place value.'}
+  - {lesson: l1-equal-quantities, how: 'What "equal" really means.'}
+  - {lesson: l3-what-is-a-symbol, how: 'Level 3 is entirely about reading mathematical symbols.'}
+  - {lesson: l4-why-letters, how: 'Letters are symbols for numbers we do not know yet.'}
+
+alternatives:
+  - strategy: everyday-objects
+    title: Music notation
+    text: |
+      A musician reading sheet music sees dots on lines and instantly knows which note to play, how
+      long to hold it and how loud. Writing the same information in words - "play the note A for
+      half a beat, fairly softly" - would fill pages. Musical symbols were invented because words
+      were too slow. Mathematical symbols were invented for exactly the same reason.
+  - strategy: history
+    title: Before symbols
+    text: |
+      For most of history, mathematics was written entirely in words. A problem might read "a
+      quantity, and its double, and three more, together make twenty-four". Mathematicians spent
+      enormous effort just *reading* their own problems. Between the 1400s and 1600s, European
+      writers gradually introduced the symbols $+$, $-$ and $=$, and later letters for unknown
+      numbers. Once problems became short enough to see at a glance, mathematics sped up
+      dramatically. Symbols did not make mathematics harder - they made modern mathematics
+      possible.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      Instead of saying "I have three sweets and you give me two more sweets and now I have five
+      sweets", we can write a tiny secret code that is not really secret at all: $3 + 2 = 5$. The
+      little cross means "and some more", and the two lines mean "makes the same as". It is just a
+      quick way of writing the same thing.

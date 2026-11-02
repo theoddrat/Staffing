@@ -1,0 +1,214 @@
+id: l1-decimals
+estimated_minutes: 20
+
+goal: |
+  We are learning how decimals extend place value to the right of a point - tenths, hundredths,
+  thousandths - and how they connect to fractions.
+why: |
+  Decimals are how measurements, money and computer calculations are usually written. Understanding
+  them as place value (not as "numbers with a dot") avoids the most common decimal mistakes - and later
+  helps explain why computers store numbers only approximately.
+problem: |
+  How can we write parts of a whole using the same place-value idea that writes whole numbers?
+
+plain: |
+  Place value works to the left: ones, tens, hundreds - each place ten times bigger. Run it the other way
+  and each place to the **right** is ten times **smaller**:
+
+  - after the ones come the **tenths** ($\tfrac{1}{10}$),
+  - then the **hundredths** ($\tfrac{1}{100}$),
+  - then the **thousandths** ($\tfrac{1}{1000}$).
+
+  A **decimal point** marks where the ones end and the parts begin. So **3.25** means 3 ones, 2 tenths
+  and 5 hundredths - three and a quarter.
+
+  Some useful facts:
+
+  - $0.5 = \tfrac{5}{10} = \tfrac{1}{2}$ (one half),
+  - $0.25 = \tfrac{25}{100} = \tfrac{1}{4}$ (one quarter),
+  - $0.75 = \tfrac{3}{4}$.
+
+  **Comparing decimals:** compare place by place from the left, exactly as with whole numbers. $0.5$ is
+  bigger than $0.45$ - it has 5 tenths, while $0.45$ has only 4 tenths - even though "45" looks bigger
+  than "5".
+
+analogy:
+  strategy: everyday-objects
+  title: Money
+  text: |
+    In many currencies, 2.75 means 2 whole units and 75 hundredths of a unit (75 cents or pence). The point
+    separates whole units from the parts. A price of 0.50 is half a unit - 50 hundredths - which is the same
+    as 0.5, five tenths.
+
+visual:
+  widget: hundred-grid
+  props: {shaded: 75, mode: decimal, editable: true}
+  caption: |
+    What you are seeing: one whole drawn as a square of 100 small squares (10 rows of 10). Each small
+    square is one hundredth; each full row is one tenth. The shaded amount is shown as a fraction of 100
+    and as a decimal.
+  prompt: Shade exactly one row. Then shade 5 rows. What decimals do you get?
+
+example_simple:
+  title: Seven tenths
+  problem: Write $\tfrac{7}{10}$ as a decimal.
+  steps:
+    - $\tfrac{7}{10}$ is 7 tenths.
+    - Tenths go in the first place after the decimal point.
+    - There are no ones, so write 0 before the point.
+  answer: $0.7$
+
+example_harder:
+  title: The longer-looks-bigger trap
+  problem: Which is bigger, $0.5$ or $0.45$?
+  steps:
+    - Compare from the left. Both have 0 ones.
+    - Tenths - $0.5$ has 5 tenths; $0.45$ has 4 tenths. 5 tenths is more.
+    - We can stop there - the tenths place decides.
+    - Check with hundredths - $0.5 = 0.50$, which is 50 hundredths, against 45 hundredths.
+  answer: $0.5$ is bigger. More digits does not mean bigger.
+
+word:
+  terms: [decimal]
+  text: |
+    Numbers written with a point and place values for parts are called **decimals** (from Latin *decimus*,
+    "tenth"). The point is the **decimal point**, and the digits after it are **decimal places**: $3.25$
+    has two decimal places.
+
+symbols:
+  - symbol: '.'
+    name: decimal point
+    looks_like: A full stop placed between digits, as in 3.25.
+    means: Separates the whole-number part (on the left) from the parts of a whole (on the right).
+    why: It marks where the ones place is, so every other digit's place is known. In many countries a comma is used instead - 3,25.
+    read_aloud: '"Point" - $3.25$ is "three point two five".'
+
+formal:
+  statement: |
+    A **decimal** numeral extends base-ten place value to the right of a decimal point: the digits after
+    the point count tenths, hundredths, thousandths and so on, each place being one tenth of the place to
+    its left. For example $3.25 = 3 + \tfrac{2}{10} + \tfrac{5}{100}$.
+  kind: definition
+  glossary:
+    - {word: base-ten place value, meaning: 'Each place is worth ten times the place to its right.'}
+    - {word: 'tenths, hundredths', meaning: 'Parts of a whole cut into 10, or into 100, equal pieces.'}
+    - {word: one tenth of, meaning: 'Ten times smaller than.'}
+
+notation:
+  - expression: '3.25 = 3 + \frac{2}{10} + \frac{5}{100}'
+    read_aloud: three point two five equals three plus two tenths plus five hundredths
+    parts:
+      - {symbol: '3', meaning: 'Three ones.'}
+      - {symbol: '.', meaning: The decimal point.}
+      - {symbol: '2', meaning: 'Two tenths.'}
+      - {symbol: '5', meaning: 'Five hundredths.'}
+    english: Three and a quarter - three wholes and twenty-five hundredths.
+
+connections_back:
+  - {lesson: l1-numerators-denominators, how: 'Tenths and hundredths are fractions with denominators 10 and 100.'}
+  - {lesson: l1-number-symbols, how: 'Decimals continue place value to the right.'}
+
+worked:
+  title: Comparing a third pair
+  problem: Which is bigger, $0.3$ or $0.25$?
+  steps:
+    - Tenths first - $0.3$ has 3 tenths; $0.25$ has 2 tenths.
+    - 3 tenths beats 2 tenths.
+  answer: $0.3$ is bigger. (As hundredths - 30 against 25.)
+
+experiment:
+  widget: hundred-grid
+  props: {shaded: 0, mode: decimal, editable: true}
+  task: Shade the grid to show $0.35$.
+  goal: {shaded: 35}
+  success: |
+    $0.35$ is 3 full rows (3 tenths) and 5 more squares (5 hundredths) - 35 hundredths in all. The digits
+    after the point tell you exactly what to shade.
+
+mistakes:
+  - mistake: Thinking a decimal with more digits is bigger ($0.45 > 0.5$).
+    why: Place value decides - compare tenths first.
+    fix: Line the numbers up at the decimal point and compare from the left. Add zeros if it helps - $0.50$ against $0.45$.
+  - mistake: Writing a quarter as $1.4$.
+    why: The decimal point is not a fraction bar.
+    fix: Convert to hundredths first - a quarter is 25 hundredths, $0.25$.
+  - mistake: Thinking $0.7$ and $0.70$ are different.
+    why: Adding a zero at the end adds "zero hundredths" - nothing.
+    fix: Trailing zeros after the point do not change the value.
+
+statements:
+  - kind: established-fact
+    text: The Flemish mathematician Simon Stevin popularised decimal fractions in Europe in his 1585 booklet *De Thiende* ("The Tenth").
+  - kind: convention
+    text: Some countries write the decimal point as a comma (3,25) and others as a full stop (3.25).
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: f2d
+      type: generated
+      generator: fraction-to-decimal
+    - id: d2f
+      type: generated
+      generator: decimal-to-fraction
+    - id: compare
+      type: choice
+      kind: solve
+      prompt: Which is bigger, $0.5$ or $0.45$?
+      options:
+        - text: $0.5$
+          correct: true
+        - text: $0.45$
+          diagnosis: Compare tenths first - 5 tenths beats 4 tenths. More digits does not mean bigger.
+          revisit: l1-decimals
+        - text: They are equal.
+          diagnosis: $0.5 = 0.50$, which is 50 hundredths, not 45.
+      explanation: $0.5$ has 5 tenths; $0.45$ has 4 tenths and 5 hundredths. $0.5$ is bigger.
+    - id: quarter
+      type: truefalse
+      kind: recall
+      prompt: 'True or false: $0.25$ is the same as $\tfrac{1}{4}$.'
+      answer: true
+      diagnosis: $0.25$ is 25 hundredths, and 25 of 100 is one quarter.
+      explanation: True - $0.25 = \tfrac{25}{100} = \tfrac{1}{4}$.
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: Explain what each digit in $4.62$ is worth.
+      rubric:
+        - 4 is four ones (wholes).
+        - 6 is six tenths.
+        - 2 is two hundredths.
+      model_answer: In $4.62$, the 4 is four wholes, the 6 is six tenths and the 2 is two hundredths - four and sixty-two hundredths.
+      explanation: Ones, then tenths, then hundredths.
+
+connections_forward:
+  - {lesson: l1-percentages, how: 'Percentages are hundredths with a different name.'}
+  - {lesson: l2-estimation, how: 'Rounding decimals to estimate.'}
+  - {lesson: l11-real-numbers, how: 'Endless decimals describe every point on the number line.'}
+  - {lesson: l12-cm-floating-point, how: 'Computers store decimals approximately - a source of numerical error.'}
+
+practice: [fraction-to-decimal, decimal-to-fraction]
+
+alternatives:
+  - strategy: everyday-objects
+    title: A metre stick
+    text: |
+      A metre stick is marked in 100 centimetres. 1 centimetre is $0.01$ metres (one hundredth). 10
+      centimetres is $0.1$ metres (one tenth). A pencil 15 centimetres long is $0.15$ metres - 1 tenth and 5
+      hundredths of a metre. Measuring in metres with a centimetre ruler is reading decimals.
+  - strategy: smaller-steps
+    title: Line them up
+    text: |
+      To compare or read decimals:
+
+      1. Write them one above the other with the decimal points lined up.
+      2. Fill any empty places with 0 so they have the same number of digits after the point.
+      3. Compare digit by digit from the left, as with whole numbers.
+
+      $0.5$ becomes $0.50$; line it up with $0.45$; 5 tenths against 4 tenths - done.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      The dot in a number like 2.5 is like a fence. On the left are whole things - 2 whole apples. On the
+      right are pieces - 5 tenths of an apple, which is half an apple. So 2.5 is two and a half apples.

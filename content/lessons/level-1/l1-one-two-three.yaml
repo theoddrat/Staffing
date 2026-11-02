@@ -1,0 +1,214 @@
+id: l1-one-two-three
+estimated_minutes: 15
+
+goal: |
+  We are learning that every counting number has a next one, so the counting numbers go on
+  forever - and why there is no biggest number.
+why: |
+  "There is always one more" is the simplest infinite idea in mathematics. It is the reason proof
+  by induction works, the reason there are infinitely many primes to study, and the reason
+  mathematicians must think about infinity carefully.
+problem: |
+  Do the numbers ever run out? Is there a biggest number?
+
+plain: |
+  Start at 1. The next number is 2 - one more. The next is 3. Every counting number has a **next**
+  number, made by adding one more.
+
+  Can this ever stop? Suppose someone claims, "This is the biggest number." Then add one more to
+  it. The result is a counting number, and it is bigger - so the claim was wrong. Whatever number
+  anyone names, there is a bigger one.
+
+  So the counting numbers go on **forever**. Mathematicians say there are **infinitely many** of
+  them. Notice how we know this: not by counting forever (impossible), but by **reasoning** - an
+  argument that works for whatever number someone might name.
+
+analogy:
+  strategy: everyday-objects
+  title: The endless staircase
+  text: |
+    Imagine a staircase where, whenever you reach a step, there is always another step above it.
+    You could climb for a lifetime and never reach the top - not because you are slow, but because
+    there is no top step. The counting numbers are that staircase: each number is a step, and the
+    next number is always one step higher.
+
+visual:
+  widget: number-line
+  props: {min: 0, max: 20, value: 0, jumps: {start: 0, size: 1, count: 0}, editable: true}
+  caption: |
+    What you are seeing: a number line - numbers placed in order along a line with equal spacing -
+    starting at 0. Each press of "+1" makes one jump to the right, landing on the next number. The
+    line runs off the right edge of the screen: the numbers keep going beyond anything we can
+    draw.
+  prompt: Make jumps of +1 and say each number you land on. Could you ever run out of jumps?
+
+example_simple:
+  title: What comes next?
+  problem: What number comes just after 7?
+  steps:
+    - The next counting number is one more.
+    - One more than 7 is 8.
+  answer: '8'
+
+example_harder:
+  title: Is there a biggest number?
+  problem: A friend says, "A googol - 1 followed by a hundred zeros - is the biggest number." Are they right?
+  steps:
+    - A googol is a counting number, just a very large one.
+    - Add one more - a googol plus one. This is also a counting number.
+    - It is bigger than a googol.
+    - The same argument works for *any* number anyone names - there is always one more.
+  answer: No. Every number has a successor, so there is no biggest number.
+
+word:
+  terms: [successor, infinite, addition]
+  text: |
+    The next number - one more - is called the **successor**. A collection that goes on forever
+    without ending is **infinite**. Making "one more" is the simplest kind of **addition**.
+
+symbols: []
+no_symbol_note: |
+  You met the plus sign in [[lesson:l0-symbols|Why do mathematical symbols exist?]]: "one more than
+  7" is written $7 + 1$. The special symbol for infinity, $\infty$, has its own lesson later -
+  [[lesson:l3-infinity|What does infinity mean?]] - because it is not an ordinary number.
+
+formal:
+  statement: |
+    Every counting number $n$ has a **successor** $n + 1$, the number immediately after it.
+    Starting from 1 and taking successors again and again produces every counting number, and the
+    process never ends - there is no largest counting number. The counting numbers form an
+    **infinite** collection.
+  kind: proven-theorem
+  glossary:
+    - {word: 'n', meaning: 'A letter standing for "any counting number" - letters are explained in Level 4. Here it just saves writing "the number".'}
+    - {word: 'n + 1', meaning: One more than that number.}
+    - {word: immediately after, meaning: 'Next - nothing in between.'}
+    - {word: infinite, meaning: 'Never ending.'}
+
+notation:
+  - expression: '1,\ 2,\ 3,\ 4,\ \ldots'
+    read_aloud: one, two, three, four, and so on
+    parts:
+      - {symbol: '1,\ 2,\ 3,\ 4', meaning: The first counting numbers.}
+      - {symbol: '\ldots', meaning: 'And so on forever, each one more than the last.'}
+    english: The counting numbers, continuing without end.
+  - expression: '7 + 1 = 8'
+    read_aloud: seven plus one equals eight
+    parts:
+      - {symbol: '+\,1', meaning: One more.}
+    english: The successor of 7 is 8.
+
+connections_back:
+  - {lesson: l1-counting-meaning, how: 'Counting words come in an order where each is one more than the last.'}
+  - {lesson: l0-reasoning, how: 'We know there is no biggest number by reasoning, not by checking.'}
+
+worked:
+  title: Big successors
+  problem: What are the successors of 99, of 999 and of 1,000,000?
+  steps:
+    - One more than 99 is 100 - the ones and tens are full, so we move to a new hundred.
+    - One more than 999 is 1000.
+    - One more than 1,000,000 (one million) is 1,000,001.
+  answer: 100, 1000 and 1,000,001. Every number, however big, has a successor.
+
+experiment:
+  widget: number-line
+  props: {min: 0, max: 20, value: 0, jumps: {start: 0, size: 1, count: 0}, editable: true}
+  task: Starting at 0, make jumps of +1 until you land on 12, saying each number aloud.
+  goal: {target: 12}
+  success: |
+    Each jump took you to the successor of the number before. You could keep jumping forever - the
+    number line has no end.
+
+mistakes:
+  - mistake: Thinking there must be a biggest number (perhaps a googol, or "infinity").
+    why: Any number named has a successor that is bigger.
+    fix: Use the one-more argument - whatever number is named, add one.
+  - mistake: Thinking infinity is the biggest counting number.
+    why: Infinity is not a counting number at all - it describes the fact that counting never ends.
+    fix: Say "the counting numbers go on forever" rather than "they stop at infinity".
+
+statements:
+  - kind: proven-theorem
+    text: There is no largest counting number.
+    note: Proof - if $N$ were the largest, $N + 1$ would be a larger counting number, which is impossible.
+  - kind: definition
+    text: A googol is the number written as 1 followed by one hundred zeros.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: next
+      type: generated
+      generator: next-number
+    - id: biggest
+      type: truefalse
+      kind: recall
+      prompt: 'True or false: there is a biggest counting number, but it is too big to write down.'
+      answer: false
+      diagnosis: Whatever number is the "biggest", adding one gives a bigger one - so no biggest number exists.
+      explanation: False. Every counting number has a successor, so there is no largest.
+    - id: successor-999
+      type: number
+      kind: solve
+      prompt: What is the successor of 999?
+      answer: '1000'
+      common_wrong:
+        - answer: '9910'
+          diagnosis: When the ones, tens and hundreds are all 9, one more fills them up and makes a new thousand - 1000.
+        - answer: '998'
+          diagnosis: That is the number just before 999. The successor is one more.
+      explanation: One more than 999 is 1000.
+    - id: infinity-number
+      type: choice
+      kind: recall
+      prompt: Is infinity the biggest counting number?
+      options:
+        - text: No - infinity describes the fact that the counting numbers never end; it is not a counting number.
+          correct: true
+        - text: Yes - it comes right after the biggest number we can write.
+          diagnosis: Every counting number has a successor that is also a counting number, so there is no last one for infinity to follow.
+      explanation: Infinity is not a counting number; it describes "going on forever".
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: A friend thinks there must be a biggest number. Explain, in your own words, why there is not.
+      rubric:
+        - Whatever number is named, you can add one to it.
+        - The result is a bigger counting number.
+        - So no number can be the biggest - the reasoning works for every number.
+      model_answer: |
+        Whatever number you say is the biggest, I can add one to it and get a counting number that
+        is even bigger. That works for any number at all, so no number can be the biggest - the
+        counting numbers go on forever.
+      explanation: The "add one" argument shows there is no largest number.
+
+connections_forward:
+  - {lesson: l1-natural-numbers, how: 'The collection of all counting numbers gets a name and a symbol, $\mathbb{N}$.'}
+  - {lesson: l7-induction, how: 'Proof by induction climbs the staircase of successors.'}
+  - {lesson: l10-primes-in-depth, how: 'A cleverer version of the "one more" idea proves there are infinitely many primes.'}
+
+practice: [next-number]
+
+alternatives:
+  - strategy: question-led
+    title: The game you always win
+    text: |
+      Play this game with a friend: whoever names the bigger number wins. Let your friend go first.
+      Whatever they say - a hundred, a million, a googol - you say their number plus one. You win
+      every time. Why? Because every number has a next number. The game shows there can be no
+      biggest number: if there were, your friend could say it and you could not beat it - but you
+      always can.
+  - strategy: visual
+    title: Picture the line
+    text: |
+      Draw a line and mark 0, 1, 2, 3, ... with equal gaps. To show the next number you just make
+      another gap. The line can always be extended by one more gap - paper may run out, but the
+      numbers do not. The arrow at the end of a number line means exactly this: "and it keeps
+      going".
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      Can you count to the end of the numbers? Let's try: one, two, three... a hundred... a
+      million... There's always one more! Whatever number you think of, you can add one more and get
+      a bigger one. So the numbers never, ever end.

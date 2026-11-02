@@ -1,0 +1,235 @@
+id: l0-rules
+estimated_minutes: 15
+
+goal: |
+  We are learning what a mathematical rule is: an exact instruction that always turns the same
+  starting point into the same result.
+why: |
+  Patterns are produced by rules. Rules are also the seed of two huge ideas: *functions*
+  (rules that turn inputs into outputs) and *algorithms* (rules written as exact steps a
+  computer can follow) - and algorithms are what P versus NP is about.
+problem: |
+  How can an instruction be made so precise that everyone who follows it gets exactly the same
+  answer?
+
+plain: |
+  A **rule** is an instruction that tells you exactly what to do with something - and always gives
+  the same result when you start from the same thing.
+
+  "Double the number" is a rule. Give it 3 and it gives back 6. Give it 3 again tomorrow and it
+  still gives 6.
+
+  A good rule must be **exact**: there must be no choices left to the person following it.
+  "Pick a bigger number" is not a mathematical rule, because two people could pick differently.
+
+  Rules can be **combined**: "double it, then add one" is a rule made of two steps, done in a
+  fixed order.
+
+  Finally, a surprising fact: seeing a few results does not tell you the rule for certain.
+  If a rule turns 1 into 2 and 2 into 4, it might be "double it" (so 3 becomes 6) - but it could
+  just as well be a different rule that turns 3 into 5. You need more evidence, or to be told
+  the rule.
+
+analogy:
+  strategy: everyday-objects
+  title: The vending machine
+  text: |
+    Press B4 on a vending machine and out comes the same snack every time. The machine follows a
+    rule: each button produces one particular snack. It never thinks "I'll give a different one
+    today". Mathematical rules are perfectly reliable machines like that - except they work on
+    numbers, shapes and other mathematical objects.
+
+visual:
+  widget: rule-machine
+  props: {rule: double, hidden: false, inputs: [1, 2, 3, 5, 10]}
+  caption: |
+    What you are seeing: a machine with a slot on the left where you put a number in, and a slot
+    on the right where a number comes out. The label shows the rule the machine follows. A table
+    underneath records every number you have put in and what came out.
+  prompt: Put in several numbers. Then put in the same number twice and check you get the same result.
+
+example_simple:
+  title: Add three
+  problem: A rule says "add 3". What comes out when you put in 4?
+  steps:
+    - The rule tells you exactly what to do - count on 3 from 4.
+    - Five, six, seven.
+  answer: '7'
+
+example_harder:
+  title: Finding a hidden rule
+  problem: 'A hidden rule turns 1 into 3, 2 into 5, and 3 into 7. What does it turn 10 into?'
+  steps:
+    - The outputs 3, 5, 7 go up by 2 each time the input goes up by 1.
+    - Going up by 2 for each step suggests "double it" is involved. Doubling gives 2, 4, 6 - each one less than the outputs.
+    - So the rule seems to be "double it, then add 1" - check - 1 gives 3, 2 gives 5, 3 gives 7. It fits every example.
+    - Applying it to 10 - double 10 is 20, add 1 gives 21.
+  answer: 21 - if the rule really is "double, then add 1". Three examples fit, but only being told the rule would make us certain.
+
+word:
+  terms: [rule]
+  text: |
+    The word is **rule**. The thing you start with is often called the **input** and the result the
+    **output**. Later in the course, a rule that gives exactly one output for every input will be
+    called a **function** - but that is a story for Level 4.
+
+symbols:
+  - symbol: '\mapsto'
+    name: maps-to arrow
+    looks_like: An arrow pointing right, with a small upright bar at its tail.
+    means: '"Goes to" or "is turned into" by a rule. $3 \mapsto 6$ means "3 is turned into 6".'
+    why: It shows a single step of a rule compactly, without writing a sentence.
+    read_aloud: '"Maps to" or "goes to" - so $3 \mapsto 6$ is "three maps to six".'
+
+formal:
+  statement: |
+    A **rule** is a precise procedure that assigns to each allowed input exactly one output. Applying
+    a rule to the same input always produces the same output.
+  kind: definition
+  glossary:
+    - {word: precise procedure, meaning: 'Exact instructions with no choices left open.'}
+    - {word: assigns, meaning: Gives or attaches.}
+    - {word: allowed input, meaning: 'Something the rule is designed to work on - for example, a number.'}
+    - {word: exactly one output, meaning: 'One result - never none, never several.'}
+
+notation:
+  - expression: '3 \mapsto 6'
+    read_aloud: three maps to six
+    parts:
+      - {symbol: '3', meaning: The input.}
+      - {symbol: '\mapsto', meaning: '"Is turned into by the rule."'}
+      - {symbol: '6', meaning: The output.}
+    english: Following the rule, 3 becomes 6 (for example, the rule "double it").
+
+connections_back:
+  - {lesson: l0-patterns, how: 'Patterns are produced by rules - the rule explains why the pattern continues.'}
+
+worked:
+  title: Two rules, same start
+  problem: 'Rule A is "double it". Rule B is "if the input is 1, add 1; otherwise, add 2". Do these rules agree?'
+  steps:
+    - Rule A turns 1 into 2, 2 into 4 and 3 into 6.
+    - Rule B turns 1 into 2 (it adds 1), 2 into 4 (it adds 2) and 3 into 5 (it adds 2).
+    - Both rules agree on the inputs 1 and 2, but give different outputs for 3.
+    - So knowing that 1 goes to 2 and 2 goes to 4 is not enough to know what 3 goes to.
+  answer: Only partly - they agree on 1 and 2 but disagree on 3. Two different rules can agree on some inputs and differ on others, so a few examples never pin a rule down completely.
+
+experiment:
+  widget: rule-machine
+  props: {rule: add-3, hidden: true, inputs: [0, 1, 2, 5, 10]}
+  task: This machine's rule is hidden. Feed it numbers, watch the outputs, and work out the rule.
+  goal: {guessRule: true}
+  success: |
+    You found the rule by experimenting and looking for a pattern in the outputs. This is how much
+    of mathematics begins - experiment, notice, guess - before anyone writes a proof.
+
+mistakes:
+  - mistake: Accepting a vague instruction as a rule ("make it bigger").
+    why: Different people would get different results, so it is not exact.
+    fix: A rule must say *exactly* what to do - "add 3", "double it".
+  - mistake: Doing the steps of a combined rule in the wrong order.
+    why: '"Double, then add 1" turns 5 into 11. "Add 1, then double" turns 5 into 12. Order matters.'
+    fix: Follow the steps in the order they are written.
+  - mistake: Being certain of a hidden rule after one or two examples.
+    why: Many different rules fit a few examples.
+    fix: Test your guess on more inputs, and remember it is still a guess until confirmed.
+
+statements:
+  - kind: established-fact
+    text: 'Any finite list of examples fits more than one rule - for instance, 1 to 2 and 2 to 4 fits both "double it" and many other rules.'
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: double-seven
+      type: number
+      kind: solve
+      prompt: The rule is "double it". What does 7 turn into?
+      answer: '14'
+      common_wrong:
+        - answer: '9'
+          diagnosis: That adds 2. Doubling means taking two lots of the number - 7 and 7 more.
+      explanation: Two lots of 7 is 14.
+    - id: hidden-plus-three
+      type: number
+      kind: predict
+      prompt: 'A hidden rule turns 1 into 4, 2 into 5 and 3 into 6. If the rule is the simplest one that fits, what does it turn 10 into?'
+      answer: '13'
+      common_wrong:
+        - answer: '7'
+          diagnosis: The rule is applied to the input you put in - 10 - not to the last output.
+      hint: How much bigger is each output than its input?
+      explanation: Each output is 3 more than its input, so the rule is "add 3" and 10 becomes 13.
+    - id: which-is-rule
+      type: choice
+      kind: apply
+      prompt: Which of these is a mathematical rule?
+      options:
+        - text: Add 5 to the number.
+          correct: true
+        - text: Choose any number bigger than the one you were given.
+          diagnosis: This leaves a choice, so two people could get different results.
+        - text: Make the number feel larger.
+          diagnosis: This is not exact - there is no single result.
+      explanation: '"Add 5" is exact - every input has exactly one output.'
+    - id: same-input
+      type: truefalse
+      kind: recall
+      prompt: 'True or false: a mathematical rule can give different outputs for the same input on different days.'
+      answer: false
+      diagnosis: A rule always gives the same output for the same input - that is what makes it a rule.
+      explanation: False. The same input always produces the same output.
+    - id: order-matters
+      type: number
+      kind: apply
+      prompt: The rule is "add 1, then double". What does 5 turn into?
+      answer: '12'
+      common_wrong:
+        - answer: '11'
+          diagnosis: That doubles first and adds 1 second. This rule adds 1 first, then doubles.
+      explanation: Add 1 to get 6, then double to get 12.
+    - id: why-not-sure
+      type: explain
+      kind: explain
+      prompt: A rule turns 1 into 2 and 2 into 4. Explain why you cannot be completely sure what it turns 3 into.
+      rubric:
+        - Different rules can produce the same outputs for 1 and 2.
+        - Gives or describes two possibilities for 3 (for example 6 by doubling, or something else).
+        - Knowing a few examples does not determine the rule; you need the rule itself or more evidence.
+      model_answer: |
+        Lots of different rules turn 1 into 2 and 2 into 4. "Double it" would turn 3 into 6, but
+        another rule could agree on 1 and 2 and still turn 3 into 5. A few examples cannot pin the
+        rule down - you would need to be told the rule, or test many more inputs.
+      explanation: Several rules fit any few examples, so the examples alone do not decide the next output.
+
+connections_forward:
+  - {lesson: l0-reasoning, how: 'Following rules exactly is the beginning of logical reasoning.'}
+  - {lesson: l4-functions-intuition, how: 'A rule from inputs to outputs is called a function.'}
+  - {lesson: pa-algorithms, how: 'An algorithm is a rule written as exact steps - the subject of P versus NP.'}
+
+alternatives:
+  - strategy: everyday-objects
+    title: A recipe card
+    text: |
+      A recipe is a rule for cooks: "Take 2 eggs, add 100 g of flour, mix, bake for 20 minutes."
+      Follow it exactly and you get the same cake each time. If a recipe said "add some flour",
+      different cooks would get different cakes - that is not a precise rule. Mathematical rules
+      are like perfect recipes: every step exact, so the result is always the same.
+  - strategy: question-led
+    title: Be the machine
+    text: |
+      Pretend you are a machine with the rule "times ten".
+
+      - Someone gives you 4. What do you hand back? (40)
+      - Someone gives you 4 again. What now? (Still 40 - a machine does not change its mind.)
+      - Someone gives you 0. What now? (0)
+
+      Now be a machine with the rule "think of a bigger number". Someone gives you 4 - what do
+      you hand back? You have to *choose*. A real mathematical rule never asks you to choose.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      Imagine a magic box. When you put one toy in, two toys come out! Put in two, four come out!
+      The box always does exactly the same thing - it doubles. That "always the same" instruction
+      is a rule. If the box gave you a different number of toys every time, it would not have a
+      rule - it would just be a surprise box.

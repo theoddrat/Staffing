@@ -1,0 +1,206 @@
+id: l1-counting-meaning
+estimated_minutes: 15
+
+goal: |
+  We are learning the exact rules that make counting work, and the word for the result of
+  counting: cardinality.
+why: |
+  You can already count. Now we make the method precise - every rule stated, nothing left to
+  habit. This is how mathematics treats every idea: make the familiar exact. The same habit, later,
+  lets us count the steps of algorithms and even compare the sizes of infinite collections.
+problem: |
+  Exactly what rules must you follow so that counting always gives the right answer?
+
+plain: |
+  Counting works because of five simple rules:
+
+  1. **One word per object.** Every object gets exactly one counting word, and no word is used twice.
+  2. **Same order every time.** The words always come in the order one, two, three, four, ...
+  3. **The last word is the answer.** The last word said tells you how many there are.
+  4. **Anything can be counted.** Apples, sounds, ideas, or a mixture of different things.
+  5. **Order of objects does not matter.** Count left to right, right to left or in any jumble - same answer.
+
+  The answer counting gives - "how many objects are in this collection" - has a special name:
+  the **cardinality** of the collection.
+
+analogy:
+  strategy: everyday-objects
+  title: Numbered seats
+  text: |
+    Picture an empty cinema whose seats are numbered 1, 2, 3, ... in order. People walk in and fill
+    the seats from seat 1 upward, one person per seat. When everyone is seated, the number on the
+    last filled seat is how many people came. Counting is filling numbered seats: one object per
+    seat, seats in order, last seat number is the total.
+
+visual:
+  widget: counting-objects
+  props: {count: 8, tagging: true, editable: false, rearrange: true, object: ball}
+  caption: |
+    What you are seeing: a tray of balls. Tapping a ball gives it the next counting number, so the
+    tags always go 1, 2, 3, ... in order. A ball that already has a number cannot be tapped again.
+    The total shown is the last number given out. Shuffle and recount to test rule 5.
+  prompt: Count the balls in two different orders. Do you ever get a different total?
+
+example_simple:
+  title: Two orders, one answer
+  problem: Six coins are counted left to right, then right to left. What happens?
+  steps:
+    - Left to right - one, two, three, four, five, six.
+    - Right to left - one, two, three, four, five, six. Different coins get each word this time.
+    - In both counts each coin got exactly one word, in the standard order.
+  answer: Both counts end on six. The cardinality is 6 whichever order we use.
+
+example_harder:
+  title: Counting a mixture
+  problem: A bowl contains 2 apples and 3 oranges. Can you count them together, and what does the answer mean?
+  steps:
+    - Rule 4 says anything can be counted - so yes.
+    - One (apple), two (apple), three (orange), four (orange), five (orange).
+    - The answer counts *pieces of fruit*, not apples or oranges separately.
+  answer: There are 5 pieces of fruit. You can count any collection - you just have to be clear what you are counting.
+
+word:
+  terms: [cardinality, counting]
+  text: |
+    The number of objects in a collection - the result of counting it - is called the
+    **cardinality** of the collection, from the Latin *cardo*, "hinge" or "pivot", because it is
+    the pivotal fact about how big the collection is. Numbers used this way ("how many") are
+    sometimes called **cardinal numbers**.
+
+symbols: []
+no_symbol_note: |
+  In later levels, mathematicians write the cardinality of a collection $A$ as $|A|$ - see
+  [[lesson:l8-sets|Sets]]. For now, "the number of things in the collection" is all we need.
+
+formal:
+  statement: |
+    The **cardinality** of a finite collection is the counting number reached by matching its
+    objects one-to-one with the counting words "one, two, three, ..." in their standard order; it is
+    the last word used. Two finite collections have the same cardinality exactly when they can be
+    put in one-to-one correspondence.
+  kind: definition
+  glossary:
+    - {word: finite, meaning: 'Ending - a collection whose counting stops.'}
+    - {word: one-to-one, meaning: 'One word per object and one object per word.'}
+    - {word: standard order, meaning: 'one, two, three, ... - the same every time.'}
+    - {word: correspondence, meaning: 'A matching between two collections.'}
+
+notation: []
+
+connections_back:
+  - {lesson: l1-what-is-a-number, how: 'Counting finds which number a collection has.'}
+  - {lesson: l0-counting, how: 'Here the method of counting is made precise.'}
+
+worked:
+  title: A broken count
+  problem: A child counts four toys by saying "one, two, three, five". Which rule did they break, and how many toys are there?
+  steps:
+    - Each toy got exactly one word, so rule 1 was followed.
+    - But the words were not in the standard order - "four" was skipped. Rule 2 was broken.
+    - Because the order was broken, the last word ("five") is not the cardinality.
+    - Recount correctly - one, two, three, four.
+  answer: Rule 2 (same order every time) was broken. There are 4 toys.
+
+experiment:
+  widget: counting-objects
+  props: {count: 2, editable: true, tagging: true, object: fish}
+  task: Build a tray with exactly 8 fish, then count them by tapping to check.
+  goal: {count: 8}
+  success: |
+    Your tray has cardinality 8. Whatever order you tapped them in, the last number was 8 - that is
+    rule 5 at work.
+
+mistakes:
+  - mistake: Skipping or repeating a counting word ("one, two, four").
+    why: The last word then no longer matches the number of objects.
+    fix: Say the counting words in their exact order.
+  - mistake: Thinking you cannot count a mixture of different things.
+    why: Counting works for any collection - but the answer counts the whole mixture.
+    fix: Say what you are counting ("pieces of fruit") and count away.
+
+statements:
+  - kind: established-fact
+    text: 'The psychologists Rochel Gelman and Randy Gallistel (1978) identified five principles of counting - one-to-one, stable order, cardinal (last word is the total), abstraction (anything can be counted) and order-irrelevance.'
+  - kind: proven-theorem
+    text: Counting a finite collection in any order gives the same cardinality.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: count-tray
+      type: generated
+      generator: count-objects
+      params: {min: 5, max: 15}
+    - id: which-rule
+      type: choice
+      kind: apply
+      prompt: 'Ravi counts five cups - "one, two, three, four, five" - but points at the first cup twice. Which counting rule did he break?'
+      options:
+        - text: One word per object.
+          correct: true
+        - text: Same order every time.
+          diagnosis: His words were in the right order - the problem is that one cup received two words.
+        - text: Anything can be counted.
+          diagnosis: Cups can certainly be counted - that is not where things went wrong.
+      explanation: One cup got two words, so the count is too big - there are really 4 cups.
+    - id: mixture
+      type: truefalse
+      kind: recall
+      prompt: 'True or false: you can count a collection made of 3 pencils and 2 rubbers together, getting 5 objects.'
+      answer: true
+      diagnosis: Anything can be counted together - the answer is the number of objects in the whole collection.
+      explanation: True - the collection has cardinality 5.
+    - id: last-word
+      type: number
+      kind: recall
+      prompt: When counting the books on a shelf, the last word said is "nineteen". What is the cardinality of the collection of books?
+      answer: '19'
+      explanation: The last counting word is the cardinality.
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: In your own words, list the rules that make counting give the right answer.
+      rubric:
+        - Each object gets exactly one counting word.
+        - The counting words are said in their standard order.
+        - The last word is the number of objects (the cardinality).
+        - The order of the objects does not matter (or anything can be counted).
+      model_answer: |
+        Give each object exactly one counting word, say the words in the usual order (one, two,
+        three...), and the last word you say is how many there are. It does not matter which order
+        you go through the objects in, and you can count any kind of things.
+      explanation: One word per object, standard order, last word is the total, order of objects irrelevant.
+
+connections_forward:
+  - {lesson: l1-zero, how: 'What is the cardinality of an empty collection?'}
+  - {lesson: l8-sets, how: 'Cardinality of sets, written $|A|$.'}
+  - {lesson: l12-ct-diagonalization, how: 'Cantor showed some infinite collections have bigger cardinality than others - an idea used to prove limits of computation.'}
+
+practice: [count-objects]
+
+alternatives:
+  - strategy: story
+    title: The robot that could not count
+    text: |
+      An engineer built a robot to count boxes in a warehouse. On day one it counted some boxes
+      twice. The engineer added a rule: "mark each box after counting it". On day two it said "one,
+      three, two..." because it chose words at random. Rule two: "say the words in order". On day
+      three it said the last word but reported "box 47 is the last one" instead of "there are 47
+      boxes". Rule three: "the last word is the total". With three rules in place, the robot counted
+      perfectly. Children learn these same rules - usually without anyone saying them out loud.
+  - strategy: smaller-steps
+    title: Check each rule, one at a time
+    text: |
+      After any count, ask three quick questions:
+
+      1. Did every object get a word, and only one? (If unsure, count again, moving each object as you go.)
+      2. Did I say the words in the right order, without skipping? (Say them slowly.)
+      3. Am I using the last word as the answer? (Not the first, not a favourite.)
+
+      Three "yes" answers mean the count is right.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      When you count your toys, touch each toy once - only once! - and say the numbers in order:
+      one, two, three. Don't skip any numbers. When you touch the last toy, the number you say is how
+      many toys you have. That's all counting is.

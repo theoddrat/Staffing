@@ -1,0 +1,427 @@
+# Dictionary entries for words introduced in Level 0: What is mathematics?
+# Every entry has the ten parts required by the specification.
+
+terms:
+  - id: mathematics
+    word: mathematics
+    pronunciation: "math-uh-MAT-iks"
+    plain: The careful study of how many, how much, what shape, what comes next and what must be true.
+    analogy: |
+      Mathematics is like a language that is unusually exact. An ordinary sentence such as
+      "a few apples" can mean different things to different people; a mathematical sentence
+      means exactly one thing to everyone.
+    visual:
+      widget: math-lenses
+      props: {steps: 4}
+      caption: One staircase of blocks seen through four mathematical lenses - quantity, pattern, shape and reasoning.
+    formal: |
+      Mathematics is the study of quantity, structure, space, change and pattern, carried out
+      by logical reasoning from precisely stated definitions and assumptions. (Mathematicians
+      do not all agree on one definition; this is a widely used working description.)
+    example: Working out that a staircase with steps of 1, 2, 3 and 4 blocks uses 10 blocks, and being sure step 5 needs 5 more.
+    non_example: Memorising a phone number. It involves digits, but nothing is being reasoned about.
+    related: [quantity, pattern, reasoning, proof]
+    used_later:
+      - {lesson: l7-theorems, how: 'Theorems are the facts mathematics establishes by proof.'}
+      - {lesson: pb-critical-line, how: 'The Riemann Hypothesis is a precise mathematical statement about a pattern in the prime numbers.'}
+      - {lesson: pa-class-np, how: 'P versus NP is a mathematical question about the structure of problems.'}
+    introduced_in: l0-what-is-mathematics
+    aliases: [maths, math]
+
+  - id: quantity
+    word: quantity
+    pronunciation: "KWON-tih-tee"
+    plain: How many or how much of something there is.
+    analogy: |
+      If you pour juice from a tall thin glass into a short wide glass, it looks different but
+      you still have the same amount to drink. That unchanged amount is the quantity.
+    visual:
+      widget: counting-objects
+      props: {count: 6, rearrange: true, editable: false}
+      caption: Six stars. Spread them out or bunch them up - there are still six.
+    formal: |
+      A quantity is a property of a collection or an object that can be counted or measured
+      and that does not change when the collection is rearranged or the object is moved.
+    example: The number of chairs in a room, the length of a table, the weight of a bag of rice.
+    non_example: The colour of a chair. Colour is a property, but it is not an amount.
+    related: [counting, measurement, comparison, number]
+    used_later:
+      - {lesson: l1-what-is-a-number, how: 'A number is the idea that names a quantity.'}
+      - {lesson: l2-addition, how: 'Addition combines two quantities into one.'}
+    introduced_in: l0-quantity
+    aliases: [quantities, amount, amounts]
+
+  - id: counting
+    word: counting
+    pronunciation: "KOWN-ting"
+    plain: Saying number words in order, one for each object, to find out how many there are.
+    analogy: |
+      Counting is like handing out raffle tickets numbered 1, 2, 3, ... - one ticket per person,
+      in order. The number on the last ticket tells you how many people there are.
+    visual:
+      widget: counting-objects
+      props: {count: 5, tagging: true, editable: false}
+      caption: Tapping each apple gives it the next counting word; the last word is how many apples there are.
+    formal: |
+      Counting a collection means matching its objects one-to-one with the counting words
+      "one, two, three, ..." taken in their fixed order; the last word used is the number of
+      objects in the collection.
+    example: Pointing at three cups in turn and saying "one, two, three" - there are three cups.
+    non_example: Reciting "one, two, three, four" without pointing at anything. That is saying the words, not counting.
+    related: [one-to-one-correspondence, number, quantity, cardinality]
+    used_later:
+      - {lesson: l1-counting-meaning, how: 'The precise rules of counting are made explicit.'}
+      - {lesson: l8-counting-principles, how: 'Counting huge collections without listing them.'}
+      - {lesson: pa-computational-steps, how: 'Complexity theory counts the steps an algorithm takes.'}
+    introduced_in: l0-counting
+    aliases: [count, counts, counted]
+
+  - id: one-to-one-correspondence
+    word: one-to-one correspondence
+    pronunciation: "WUN-too-WUN kor-uh-SPON-dunss"
+    plain: Matching two groups so that every thing in one group has exactly one partner in the other.
+    analogy: |
+      At a dance where everyone has exactly one partner and nobody is left standing, the dancers
+      on one side are in one-to-one correspondence with the dancers on the other side - so there
+      must be the same number on each side, even if nobody counted.
+    visual:
+      widget: shepherd
+      props: {sheep: 5}
+      caption: One pebble for each sheep. If every pebble and every sheep has a partner, the two groups are the same size.
+    formal: |
+      A one-to-one correspondence between two collections is a way of pairing their members so
+      that every member of each collection is paired with exactly one member of the other.
+    example: Five cups and five saucers, one cup on each saucer.
+    non_example: Five cups on four saucers - one saucer has to hold two cups, so the pairing is not one-to-one.
+    related: [counting, comparison, cardinality]
+    used_later:
+      - {lesson: l1-comparing-numbers, how: 'Pairing objects is the surest way to compare two groups.'}
+      - {lesson: l8-functions-mappings, how: 'The formal name for a one-to-one correspondence is a bijection.'}
+      - {lesson: l12-ct-diagonalization, how: 'Cantor used correspondences to compare the sizes of infinite collections.'}
+    introduced_in: l0-why-mathematics
+    aliases: [one-to-one correspondences, matching one-to-one]
+
+  - id: measurement
+    word: measurement
+    pronunciation: "MEZH-er-ment"
+    plain: Finding how big something is by counting how many copies of a chosen unit fit into it.
+    analogy: |
+      Saying a rug is "six footsteps long" is a measurement: your footstep is the unit and six is
+      how many of them fit along the rug.
+    visual:
+      widget: measure
+      props: {length: 6, units: [paperclip, finger]}
+      caption: A pencil measured with paperclips. The number you get depends on the unit you choose.
+    formal: |
+      To measure a quantity is to compare it with a fixed reference amount called a unit, and to
+      express it as how many units (or parts of a unit) it equals.
+    example: A table that is 150 centimetres long - the unit is the centimetre and 150 of them fit.
+    non_example: Saying a table is "quite long". That is a description, not a measurement, because no unit is counted.
+    related: [unit, quantity, comparison]
+    used_later:
+      - {lesson: l1-fractions, how: 'When a unit does not fit exactly, we need parts of units - fractions.'}
+      - {lesson: l5-area, how: 'Area is measured by counting unit squares.'}
+    introduced_in: l0-measurement
+    aliases: [measurements, measure, measuring, measured]
+
+  - id: unit
+    word: unit
+    pronunciation: "YOO-nit"
+    plain: A fixed amount we agree to use as "one" when measuring.
+    analogy: |
+      A scoop used to measure rice is a unit. "Three scoops" only makes sense if everyone uses the
+      same scoop.
+    visual:
+      widget: measure
+      props: {length: 8, units: [cm, paperclip]}
+      caption: The same pencil measured in two different units gives two different numbers.
+    formal: |
+      A unit of measurement is a chosen, fixed quantity of a given kind (length, weight, time, ...)
+      against which other quantities of that kind are compared.
+    example: The metre, the kilogram, the second, a cup in a recipe.
+    non_example: '"A bit" - it is not fixed, so two people would measure differently.'
+    related: [measurement, quantity]
+    used_later:
+      - {lesson: l1-fractions, how: 'A fraction describes parts of a unit.'}
+      - {lesson: l5-area, how: 'The unit square is the unit of area.'}
+    introduced_in: l0-measurement
+    aliases: [units]
+
+  - id: comparison
+    word: comparison
+    pronunciation: "kum-PAIR-ih-sun"
+    plain: Deciding whether one quantity is more than, less than, or the same as another.
+    analogy: |
+      Two children compare heights by standing back to back. Nobody needs a ruler to see who is
+      taller.
+    visual:
+      widget: compare-groups
+      props: {left: 5, right: 3}
+      caption: Pair the objects up. The group with objects left over is bigger.
+    formal: |
+      Comparing two quantities of the same kind means determining which one of three
+      possibilities holds: the first is greater than the second, the two are equal, or the first
+      is less than the second.
+    example: Five apples and three apples - pairing them leaves two apples without partners, so five is more than three.
+    non_example: Comparing three apples with a temperature. They are different kinds of quantity, so "more" has no meaning.
+    related: [quantity, one-to-one-correspondence, greater-than, less-than, equal]
+    used_later:
+      - {lesson: l1-comparing-numbers, how: 'Comparing numbers by matching and by counting.'}
+      - {lesson: l4-inequalities, how: 'Inequalities are statements built from comparisons.'}
+      - {lesson: pa-time-complexity, how: 'Comparing how fast running times grow.'}
+    introduced_in: l0-comparison
+    aliases: [compare, comparing, compared, comparisons]
+
+  - id: pattern
+    word: pattern
+    pronunciation: "PAT-ern"
+    plain: Something that repeats or grows in a regular way, so you can predict what comes next.
+    analogy: |
+      Wallpaper with flowers repeating every hand-width has a pattern: once you have seen one
+      section you know what the rest looks like.
+    visual:
+      widget: pattern
+      props: {kind: squares}
+      caption: Squares of dots that grow in a regular way. Can you predict the next one?
+    formal: |
+      A pattern is a regularity in a sequence of objects or numbers that can be described by a
+      rule, so that later members can be predicted from earlier ones.
+    example: 2, 4, 6, 8, ... - each number is two more than the one before, so the next is 10.
+    non_example: The order of winning lottery numbers. There is no rule that predicts them.
+    related: [rule, mathematics, conjecture]
+    used_later:
+      - {lesson: l6-sequences, how: 'A sequence is an ordered list of numbers, often following a pattern.'}
+      - {lesson: l10-prime-distribution, how: 'The search for patterns in the prime numbers leads to the Riemann Hypothesis.'}
+    introduced_in: l0-patterns
+    aliases: [patterns]
+
+  - id: rule
+    word: rule
+    pronunciation: "ROOL"
+    plain: An exact instruction that always gives the same result when you start from the same thing.
+    analogy: |
+      A vending machine follows a rule: press B4 and you always get the same snack. It never
+      decides differently on a Tuesday.
+    visual:
+      widget: rule-machine
+      props: {rule: double, hidden: false}
+      caption: A machine that follows one rule. Put in a number and the rule decides what comes out.
+    formal: |
+      A rule is a precise procedure that assigns to each allowed input exactly one output; the
+      same input always produces the same output.
+    example: '"Double the number." Put in 3, get 6. Put in 3 again, get 6 again.'
+    non_example: '"Pick any bigger number." Put in 3 and you might get 4 or 100, so this is not a rule.'
+    related: [pattern, mathematics]
+    used_later:
+      - {lesson: l4-functions-intuition, how: 'A rule from inputs to outputs is called a function.'}
+      - {lesson: pa-algorithms, how: 'An algorithm is a rule written as a list of exact steps.'}
+    introduced_in: l0-rules
+    aliases: [rules]
+
+  - id: reasoning
+    word: reasoning
+    pronunciation: "REE-zun-ing"
+    plain: Working out what must be true from what you already know.
+    analogy: |
+      A detective who knows "the thief left before 9" and "Sam was here until 10" concludes that
+      Sam is not the thief - without seeing anything else.
+    visual:
+      widget: weighing-puzzle
+      props: {bags: 3}
+      caption: If bag A is heavier than B, and B is heavier than C, reasoning tells you A is heavier than C - without weighing them together.
+    formal: |
+      Mathematical reasoning is the process of deriving new statements from accepted facts,
+      definitions and assumptions, where each step follows necessarily from the steps before.
+    example: Everyone in the room is over 12; Ana is in the room; so Ana is over 12.
+    non_example: '"It rained the last three Mondays, so it will rain next Monday." That is a guess based on a pattern, not something that must follow.'
+    related: [conclusion, proof, definition]
+    used_later:
+      - {lesson: l7-arguments, how: 'Logical arguments make reasoning precise.'}
+      - {lesson: l7-direct-proof, how: 'A direct proof is reasoning written down step by step.'}
+    introduced_in: l0-reasoning
+    aliases: [reason, logical reasoning]
+
+  - id: conclusion
+    word: conclusion
+    pronunciation: "kun-KLOO-zhun"
+    plain: The new fact you reach at the end of a piece of reasoning.
+    analogy: |
+      In a recipe, the cake is the conclusion: the ingredients are what you started with and the
+      steps are the reasoning.
+    visual:
+      widget: weighing-puzzle
+      props: {bags: 3}
+      caption: Two weighings give two facts. The order of all three bags is the conclusion.
+    formal: |
+      A conclusion is the statement that an argument establishes, derived from its starting
+      statements (premises) by valid steps.
+    example: From "all squares have four sides" and "this shape is a square", the conclusion is "this shape has four sides".
+    non_example: A starting fact you were simply told, such as "this shape is a square". It is a premise, not a conclusion.
+    related: [reasoning, proof]
+    used_later:
+      - {lesson: l7-conclusions, how: 'Conclusions and the assumptions they rest on are studied formally.'}
+    introduced_in: l0-reasoning
+    aliases: [conclusions, conclude]
+
+  - id: definition
+    word: definition
+    pronunciation: "def-ih-NISH-un"
+    plain: An exact statement of what a word means, so that everyone uses it the same way.
+    analogy: |
+      The rules of a board game define what counts as "winning". Without that definition players
+      could argue forever.
+    visual:
+      widget: pairs
+      props: {n: 6}
+      caption: '"Even" is defined as "can be split into pairs with nothing left over". The definition decides every case.'
+    formal: |
+      A mathematical definition gives a name to an object or property by stating exactly which
+      conditions something must satisfy to have that name.
+    example: '"A triangle is a flat shape with exactly three straight sides."'
+    non_example: '"A triangle is a pointy shape." Many shapes are pointy; this does not decide which ones are triangles.'
+    related: [reasoning, proof, theorem]
+    used_later:
+      - {lesson: l7-definitions, how: 'How definitions are written and used in proofs.'}
+    introduced_in: l0-reasoning
+    aliases: [definitions, define, defined]
+
+  - id: proof
+    word: proof
+    pronunciation: "PROOF"
+    plain: An explanation that shows something is true in every possible case, not just the ones you checked.
+    analogy: |
+      Testing a bridge with ten lorries shows it held ten lorries. An engineer's calculation that
+      shows it can hold any lorry up to 40 tonnes is more like a proof.
+    visual:
+      widget: pair-proof
+      props: {a: 4, b: 6}
+      caption: Two even numbers drawn as pairs. Joining them can never leave a dot alone - in every case, not just this one.
+    formal: |
+      A proof of a statement is a finite sequence of steps, each of which is an accepted
+      assumption, a definition, a previously proved result, or follows logically from earlier
+      steps, ending with the statement itself.
+    example: Showing that even + even is always even by drawing both numbers as pairs, which join into pairs again.
+    non_example: Checking 2 + 4, 6 + 8 and 10 + 12. Those are examples; they do not cover every case.
+    related: [reasoning, theorem, counterexample, conjecture]
+    used_later:
+      - {lesson: l7-direct-proof, how: 'The first formal method of proof.'}
+      - {lesson: l7-writing-proofs, how: 'Writing rigorous proofs.'}
+      - {lesson: l12-fl-lean, how: 'Proofs a computer can check, line by line.'}
+    introduced_in: l0-proof
+    aliases: [proofs, prove, proved, proving]
+
+  - id: counterexample
+    word: counterexample
+    pronunciation: "KOWN-ter-ig-ZAM-pul"
+    plain: One example that shows a claim about "all" cases is false.
+    analogy: |
+      If someone says "all swans are white", one black swan is enough to show they are wrong.
+    visual:
+      widget: rectangle-arranger
+      props: {n: 9, rows: 3, editable: false}
+      caption: The claim "every odd number is prime" is broken by 9, which makes 3 equal rows of 3.
+    formal: |
+      A counterexample to a statement of the form "every object of a certain kind has a certain
+      property" is a single object of that kind that does not have the property.
+    example: The claim "every odd number is prime" has the counterexample 9.
+    non_example: Finding the number 3 when testing "every odd number is prime". 3 agrees with the claim, so it is not a counterexample.
+    related: [proof, conjecture]
+    used_later:
+      - {lesson: l7-counterexamples, how: 'Counterexamples as a method of disproof.'}
+      - {lesson: pb-equivalent-formulations, how: 'A single zero off the critical line would be a counterexample to the Riemann Hypothesis.'}
+    introduced_in: l0-proof
+    aliases: [counterexamples, counter-example]
+
+  - id: theorem
+    word: theorem
+    pronunciation: "THEER-um"
+    plain: A mathematical statement that has been proved.
+    analogy: |
+      A theorem is like a law of a game that has been checked so carefully that it can never be
+      broken - it is settled forever.
+    visual:
+      widget: pair-proof
+      props: {a: 2, b: 8}
+      caption: '"Even plus even is even" has been proved, so it is a theorem.'
+    formal: |
+      A theorem is a statement that has been established by a proof from accepted definitions
+      and assumptions.
+    example: '"There are infinitely many prime numbers" - proved by Euclid more than 2000 years ago.'
+    non_example: '"Every even number greater than 2 is the sum of two primes." It has been checked for enormous numbers but never proved, so it is a conjecture.'
+    related: [proof, conjecture, definition]
+    used_later:
+      - {lesson: l7-theorems, how: 'Theorems, lemmas and corollaries.'}
+      - {lesson: l10-primes-in-depth, how: 'Euclid''s theorem on the infinitude of primes.'}
+    introduced_in: l0-proof
+    aliases: [theorems]
+
+  - id: conjecture
+    word: conjecture
+    pronunciation: "kun-JEK-cher"
+    plain: A statement mathematicians believe is true but have not yet proved.
+    analogy: |
+      A conjecture is like a detective's strong suspicion: the clues all point one way, but the
+      case is not closed until there is proof.
+    visual:
+      widget: sieve
+      props: {max: 50}
+      caption: Primes such as 11 and 13, or 17 and 19, come in close pairs. Do such pairs go on forever? Nobody knows - it is a conjecture.
+    formal: |
+      A conjecture is a mathematical statement proposed as true, usually on the basis of evidence
+      or intuition, for which no proof (and no counterexample) is yet known.
+    example: The Riemann Hypothesis, and the twin prime conjecture that there are infinitely many pairs of primes two apart.
+    non_example: '"There are infinitely many primes." This has been proved, so it is a theorem.'
+    related: [theorem, proof, counterexample, pattern]
+    used_later:
+      - {lesson: l7-conjectures, how: 'How conjectures are made, tested and settled.'}
+      - {lesson: pb-critical-line, how: 'The Riemann Hypothesis is the most famous conjecture in mathematics.'}
+      - {lesson: pa-class-np, how: 'Most experts conjecture that P is not equal to NP.'}
+    introduced_in: l0-proof
+    aliases: [conjectures, conjectured]
+
+  - id: symbol
+    word: symbol
+    pronunciation: "SIM-bul"
+    plain: A short mark that stands for an idea, a number or an action.
+    analogy: |
+      A road sign showing a picture of a bicycle means "bicycles allowed" without a single word.
+      Mathematical symbols do the same job for ideas.
+    visual:
+      widget: symbol-translator
+      props: {}
+      caption: The same sentence written in words and written in symbols.
+    formal: |
+      A mathematical symbol is a written sign that, by agreed convention, denotes a specific
+      mathematical object, operation or relation.
+    example: The symbol $+$ stands for "add"; the symbol $=$ stands for "is equal to"; the digit 7 stands for the number seven.
+    non_example: A doodle in the margin. It does not stand for anything agreed.
+    related: [numeral, convention, mathematics]
+    used_later:
+      - {lesson: l3-what-is-a-symbol, how: 'Learning to read mathematical symbols fluently.'}
+      - {lesson: l3-reading-aloud, how: 'Reading whole expressions aloud.'}
+    introduced_in: l0-symbols
+    aliases: [symbols]
+
+  - id: mathematical-model
+    word: mathematical model
+    pronunciation: "math-uh-MAT-ih-kul MOD-ul"
+    plain: A description of a real situation using numbers and rules, so we can make predictions.
+    analogy: |
+      A map is a model of a city. It leaves out almost everything - trees, people, colours - but
+      keeps exactly what you need to find your way.
+    visual:
+      widget: model
+      props: {scenario: savings}
+      caption: Money in a jar described by a starting amount and a weekly rule, used to predict the future.
+    formal: |
+      A mathematical model is a simplified representation of a real-world system in which the
+      relevant quantities are represented by numbers or variables and their relationships by
+      mathematical rules.
+    example: '"I save 5 coins every week, starting with 10." This predicts 30 coins after 4 weeks.'
+    non_example: A photograph of a piggy bank. It shows the situation but does not let you calculate anything.
+    related: [rule, measurement, pattern]
+    used_later:
+      - {lesson: l4-why-letters, how: 'Models use letters for quantities that change.'}
+      - {lesson: l12-pr-random-models-primes, how: 'A probabilistic model of the primes predicts their behaviour.'}
+    introduced_in: l0-real-world
+    aliases: [mathematical models, model, models]

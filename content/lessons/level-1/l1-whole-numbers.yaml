@@ -1,0 +1,199 @@
+id: l1-whole-numbers
+estimated_minutes: 10
+
+goal: |
+  We are learning which numbers are called whole numbers: 0, 1, 2, 3, and so on - no parts and no
+  negatives.
+why: |
+  Numbers come in families. Knowing exactly which numbers belong to which family lets us say
+  precisely what a statement is about - "for every whole number..." means something different from
+  "for every number...".
+problem: |
+  When a question can only have answers like "none", "one", "two" - never "half" or "minus one" - how
+  do we name that collection of possible answers?
+
+plain: |
+  The **whole numbers** are **0, 1, 2, 3, 4, ...** and so on forever.
+
+  They are exactly the possible answers to "how many?" for a collection of separate objects - including
+  zero, for an empty collection.
+
+  Whole numbers have:
+
+  - **no parts** - a half or 2.5 is not a whole number;
+  - **no minus sign** - $-3$ is not a whole number.
+
+  A small warning: not every book uses the words in exactly the same way. In some countries "whole
+  numbers" also include the negatives. In this course, whole numbers means 0, 1, 2, 3, ...
+
+analogy:
+  strategy: everyday-objects
+  title: Eggs in a box
+  text: |
+    How many eggs are in the box? The answer could be 0, 1, 2, 3, ... up to 12. It could never be half
+    an egg or minus one egg. Every possible answer is a whole number.
+
+visual:
+  widget: number-sets
+  props: {numbers: ['0', '4', '12', '-2', '1/2', '7'], sets: [whole]}
+  caption: |
+    What you are seeing: a region labelled "whole numbers" and some number cards outside it. Tap a card,
+    then tap where it belongs - inside the region if it is a whole number, outside if not.
+  prompt: Sort every card. Which ones stay outside, and why?
+
+example_simple:
+  title: Sorting four numbers
+  problem: Which of these are whole numbers - 0, 5, 2.5, $-1$?
+  steps:
+    - 0 is a whole number - the number for "none".
+    - 5 is a whole number.
+    - 2.5 has a part (half), so it is not whole.
+    - $-1$ has a minus sign, so it is not whole.
+  answer: 0 and 5.
+
+example_harder:
+  title: Goals in a match
+  problem: Why is the number of goals scored in a football match always a whole number?
+  steps:
+    - Goals are separate events you can count one by one.
+    - A team cannot score half a goal or minus one goal.
+    - The count can be zero - a 0-0 draw.
+  answer: Because goals are counted, and every count is 0, 1, 2, 3, ... - a whole number.
+
+word:
+  terms: [whole-number]
+  text: |
+    The numbers 0, 1, 2, 3, ... are called **whole numbers** because none of them is broken into parts.
+    Mathematicians often call them the **non-negative integers** - a name that will make sense after the
+    lesson on integers.
+
+symbols: []
+no_symbol_note: |
+  There is no universally agreed single symbol for the whole numbers. Mathematicians usually write them
+  as $\mathbb{N}_0$ or $\{0, 1, 2, \ldots\}$ - you will learn to read both in the next lesson,
+  [[lesson:l1-natural-numbers|Natural numbers]].
+
+formal:
+  statement: |
+    The **whole numbers** are $0, 1, 2, 3, \ldots$ - zero together with the counting numbers. (This
+    course follows the most common school convention; some books use the term differently.)
+  kind: definition
+  glossary:
+    - {word: '0, 1, 2, 3, ...', meaning: 'Zero, one, two, three and so on forever.'}
+    - {word: counting numbers, meaning: '1, 2, 3, ... - the numbers used to count objects.'}
+    - {word: convention, meaning: 'An agreed choice of meaning.'}
+
+notation:
+  - expression: '0,\ 1,\ 2,\ 3,\ \ldots'
+    read_aloud: zero, one, two, three, and so on
+    parts:
+      - {symbol: '0', meaning: The first whole number.}
+      - {symbol: '\ldots', meaning: 'Continuing forever, each one more than the last.'}
+    english: The whole numbers, starting at zero and never ending.
+
+connections_back:
+  - {lesson: l1-zero, how: 'Zero is the first whole number.'}
+  - {lesson: l1-number-lines, how: 'Whole numbers are the tick marks from 0 rightward.'}
+
+worked:
+  title: Smallest and largest
+  problem: What is the smallest whole number? Is there a largest?
+  steps:
+    - The whole numbers start at 0, so 0 is the smallest.
+    - Every whole number has a successor (one more), so there is no largest.
+  answer: The smallest is 0; there is no largest.
+
+experiment:
+  widget: number-sets
+  props: {numbers: ['3', '0', '-5', '2.5', '100', '1/4'], sets: [whole]}
+  task: Place every number card either inside the whole numbers or outside.
+  goal: {sortAll: true}
+  success: |
+    Only 0, 3 and 100 belong. Numbers with parts (2.5, a quarter) and negatives ($-5$) are not whole
+    numbers - they belong to bigger families you are about to meet.
+
+mistakes:
+  - mistake: Leaving out zero.
+    why: Zero is the answer to "how many?" for an empty collection, so it belongs.
+    fix: Whole numbers start at 0.
+  - mistake: Including negative numbers.
+    why: In this course, whole numbers have no minus sign.
+    fix: Negatives join in the integers, coming soon.
+
+statements:
+  - kind: convention
+    text: In this course, "whole numbers" means $0, 1, 2, 3, \ldots$
+    note: Some countries and books include the negative numbers too, or leave out zero. Always check how an author uses the term.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: which-whole
+      type: choice
+      kind: apply
+      multi: true
+      prompt: Which of these are whole numbers? Choose all that apply.
+      options:
+        - text: '0'
+          correct: true
+        - text: '15'
+          correct: true
+        - text: '3.5'
+          diagnosis: 3.5 has a part (a half), so it is not a whole number.
+        - text: '-4'
+          diagnosis: Whole numbers have no minus sign.
+      explanation: 0 and 15 are whole numbers.
+    - id: smallest
+      type: number
+      kind: recall
+      prompt: What is the smallest whole number?
+      answer: '0'
+      common_wrong:
+        - answer: '1'
+          diagnosis: Whole numbers start at zero - the number for an empty collection.
+      explanation: The whole numbers start at 0.
+    - id: has-largest
+      type: truefalse
+      kind: recall
+      prompt: 'True or false: there is a largest whole number.'
+      answer: false
+      diagnosis: Every whole number has a successor, one more, which is also a whole number.
+      explanation: False - there is no largest.
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: In your own words, which numbers are whole numbers, and which kinds of number are not?
+      rubric:
+        - 'Whole numbers are 0, 1, 2, 3, ... (including zero).'
+        - Numbers with parts (like 2.5 or a half) are not whole numbers.
+        - Negative numbers are not whole numbers.
+      model_answer: Whole numbers are 0, 1, 2, 3 and so on - the possible answers to "how many?". Numbers with parts, like 2.5, and negative numbers, like $-3$, are not whole numbers.
+      explanation: Whole numbers are 0, 1, 2, 3, ... - no parts, no negatives.
+
+connections_forward:
+  - {lesson: l1-natural-numbers, how: 'The counting numbers, with or without zero, and their symbol.'}
+  - {lesson: l1-integers, how: 'Add the negatives to get the integers.'}
+
+alternatives:
+  - strategy: question-led
+    title: Could it be the answer?
+    text: |
+      For any number, ask: "could this be the answer to *how many eggs are in a box*?"
+
+      - 4? Yes - whole number.
+      - 0? Yes (an empty box) - whole number.
+      - 2.5? No - you can't have half an egg in the count. Not whole.
+      - $-1$? No - you can't have minus one egg. Not whole.
+
+      The whole numbers are exactly the numbers that pass this test.
+  - strategy: visual
+    title: Only the tick marks
+    text: |
+      On a number line, the whole numbers are the tick marks at 0, 1, 2, 3, ... going right. Every point
+      *between* two tick marks (like 2.5) is not a whole number, and everything to the *left* of 0 is not
+      a whole number either.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      Whole numbers are the numbers you use for counting things - and zero for when there's nothing.
+      0, 1, 2, 3... No half cookies, and no "minus cookies"!

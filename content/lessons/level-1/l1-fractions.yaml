@@ -1,0 +1,212 @@
+id: l1-fractions
+estimated_minutes: 20
+
+goal: |
+  We are learning what a fraction is - a number describing some equal parts of a whole - and where
+  fractions live on the number line.
+why: |
+  Many quantities fall between whole numbers: half a cake, three quarters of an hour, a rope 2½ metres
+  long. Fractions fill the gaps between the integers. Infinite sums of fractions, like
+  $1 + \tfrac{1}{2} + \tfrac{1}{3} + \cdots$, eventually lead to the Riemann zeta function itself.
+problem: |
+  When a pizza is shared and you get some of the slices, what number describes how much you got?
+
+plain: |
+  Cut a whole into **equal parts**. A **fraction** says how many of those parts you have.
+
+  If a pizza is cut into **8 equal slices** and you take **3**, you have **three-eighths** of the pizza,
+  written $\tfrac{3}{8}$.
+
+  - The **bottom** number says how many equal parts make the whole (8).
+  - The **top** number says how many of those parts you have (3).
+
+  The parts **must be equal**. If one slice is huge and another tiny, "one slice" is not a fair eighth.
+
+  Fractions are numbers, so they have places on the number line - **between** the integers. $\tfrac{1}{2}$
+  sits halfway from 0 to 1. Fractions can also be bigger than one: $\tfrac{5}{4}$ is five quarters - one
+  whole pizza and one more quarter.
+
+  And every integer is a fraction too: $3 = \tfrac{3}{1}$ (three wholes, each "cut" into 1 part).
+
+analogy:
+  strategy: everyday-objects
+  title: Sharing a pizza
+  text: |
+    A pizza cut into 8 equal slices: each slice is one-eighth. Take 3 slices and you have three-eighths.
+    Your friend takes 5 slices - five-eighths. Together you took $\tfrac{8}{8}$, the whole pizza. The
+    "eighths" tell you the slice size; the 3 and the 5 count slices.
+
+visual:
+  widget: fraction
+  props: {numerator: 3, denominator: 8, shape: circle, editable: true, maxDenominator: 12}
+  caption: |
+    What you are seeing: a circle (a pizza) cut into equal slices, with some slices shaded. The bottom
+    control sets how many equal slices the whole pizza is cut into; the top control sets how many are
+    shaded. The fraction shown is "shaded slices over total slices".
+  prompt: Cut the pizza into different numbers of slices and shade some. When does the shaded part look like exactly half?
+
+example_simple:
+  title: A quarter of a pizza
+  problem: A pizza is cut into 4 equal slices and you eat 1. What fraction did you eat?
+  steps:
+    - The whole is cut into 4 equal parts - the bottom number is 4.
+    - You ate 1 of them - the top number is 1.
+  answer: $\tfrac{1}{4}$ - one quarter.
+
+example_harder:
+  title: Fractions on the number line
+  problem: Where is $\tfrac{3}{4}$ on the number line?
+  steps:
+    - Look at the stretch from 0 to 1 - one whole.
+    - Cut it into 4 equal parts, making marks at a quarter, a half and three quarters.
+    - Count 3 parts from 0.
+  answer: $\tfrac{3}{4}$ is three quarters of the way from 0 to 1 - more than a half, less than 1.
+
+word:
+  terms: [fraction, rational-number]
+  text: |
+    Numbers like these are **fractions**, from Latin *fractio*, "breaking". Mathematicians call every
+    number that can be written as one integer over another a **rational number** - from "ratio" - and the
+    set of them is written $\mathbb{Q}$ (for *quotient*, a word for the result of dividing).
+
+symbols:
+  - symbol: '\frac{a}{b}'
+    name: fraction bar
+    looks_like: One number written above a horizontal line, and another number below it. Sometimes typed with a slash - 3/8.
+    means: The whole is cut into $b$ equal parts, and we take $a$ of them.
+    why: Writing one number over the other shows clearly that the bottom number shares the whole and the top number counts parts. The horizontal bar was used by Arab mathematicians and popularised in Europe by Fibonacci.
+    read_aloud: '"Three eighths" or "three over eight" for $\tfrac{3}{8}$; "one half", "one third", "one quarter" for the commonest ones.'
+  - symbol: '\mathbb{Q}'
+    name: blackboard-bold Q
+    looks_like: A capital Q with a doubled stroke.
+    means: The set of all rational numbers - all fractions of integers.
+    why: Q for "quotient".
+    read_aloud: '"Q", or "the rational numbers".'
+
+formal:
+  statement: |
+    A **fraction** is a number written $\tfrac{a}{b}$, where $a$ and $b$ are integers and $b \neq 0$.
+    It represents $a$ parts when one whole is divided into $b$ equal parts. The set of all such numbers
+    is the set of **rational numbers**, $\mathbb{Q}$. Every integer $n$ is rational, since $n = \tfrac{n}{1}$.
+  kind: definition
+  glossary:
+    - {word: 'a, b', meaning: 'Any integers - the top and bottom numbers.'}
+    - {word: 'b \neq 0', meaning: '"$b$ is not equal to zero". The slash through the equals sign means "not". A whole cannot be cut into zero parts.'}
+    - {word: equal parts, meaning: 'Parts that are all exactly the same size.'}
+    - {word: 'n = \tfrac{n}{1}', meaning: 'Any integer $n$ is $n$ wholes, each counted as one part out of one.'}
+
+notation:
+  - expression: '\frac{3}{8}'
+    read_aloud: three eighths
+    parts:
+      - {symbol: '3', meaning: 'How many parts we have - the numerator (next lesson).'}
+      - {symbol: '\text{---}', meaning: The fraction bar.}
+      - {symbol: '8', meaning: 'How many equal parts make one whole - the denominator.'}
+    english: Three of the eight equal parts of a whole.
+
+connections_back:
+  - {lesson: l1-equal-quantities, how: 'Fractions depend on parts being exactly equal.'}
+  - {lesson: l1-number-lines, how: 'Fractions are points between the integers on the number line.'}
+  - {lesson: l0-measurement, how: 'When a unit does not fit an exact number of times, fractions measure the leftover.'}
+
+worked:
+  title: A chocolate bar
+  problem: A chocolate bar has 12 equal pieces. You eat 5. What fraction of the bar did you eat, and what fraction is left?
+  steps:
+    - The whole bar is 12 equal pieces - the bottom number is 12.
+    - You ate 5 - so you ate $\tfrac{5}{12}$.
+    - 7 pieces are left - $\tfrac{7}{12}$ of the bar remains.
+    - Check - 5 twelfths and 7 twelfths make 12 twelfths, the whole bar.
+  answer: You ate $\tfrac{5}{12}$; $\tfrac{7}{12}$ is left.
+
+experiment:
+  widget: fraction
+  props: {numerator: 1, denominator: 2, shape: circle, editable: true, maxDenominator: 12}
+  task: Make exactly three quarters of a pizza.
+  goal: {value: '3/4'}
+  success: |
+    Three quarters - and if you used 8 slices with 6 shaded, or 12 with 9, that is three quarters too.
+    Different-looking fractions can be the same amount; the next lesson explains why.
+
+mistakes:
+  - mistake: Ignoring whether the parts are equal.
+    why: A fraction only makes sense if every part is the same size.
+    fix: Check the parts are equal before naming the fraction.
+  - mistake: Thinking $\tfrac{1}{8}$ is bigger than $\tfrac{1}{4}$ because 8 is bigger than 4.
+    why: Cutting into more parts makes each part *smaller*.
+    fix: Picture the pizzas - one slice of 8 is thinner than one slice of 4.
+  - mistake: Thinking whole numbers are not fractions.
+    why: '$3 = \tfrac{3}{1}$ - every integer can be written as a fraction.'
+    fix: Remember the families are nested - integers sit inside the rational numbers.
+
+statements:
+  - kind: established-fact
+    text: The Rhind Mathematical Papyrus, written in Egypt around 1550 BCE, contains tables and problems using fractions.
+  - kind: proven-theorem
+    text: Between any two different fractions there is another fraction.
+    note: For example, halfway between them. So the fractions, unlike the integers, have no "next" fraction.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: shape
+      type: generated
+      generator: fraction-of-shape
+    - id: equal-parts
+      type: choice
+      kind: recall
+      prompt: A cake is cut into 4 pieces of very different sizes. Is one piece "one quarter" of the cake?
+      options:
+        - text: Not necessarily - quarters must be equal parts.
+          correct: true
+        - text: Yes - there are 4 pieces, so each is a quarter.
+          diagnosis: A fraction counts equal parts. Unequal pieces are not quarters.
+      explanation: Fractions are about equal parts. Unequal pieces are not quarters.
+    - id: whole-as-fraction
+      type: truefalse
+      kind: recall
+      prompt: 'True or false: the integer 3 can be written as the fraction $\tfrac{3}{1}$.'
+      answer: true
+      diagnosis: Three wholes, each counted as one part out of one, is $\tfrac{3}{1}$.
+      explanation: True - every integer is a rational number.
+    - id: families
+      type: generated
+      generator: classify-number
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: Explain what $\tfrac{2}{5}$ means, using a picture or example in words.
+      rubric:
+        - The whole is divided into 5 equal parts.
+        - We take (shade) 2 of those parts.
+        - Gives a concrete example such as a bar or pizza.
+      model_answer: $\tfrac{2}{5}$ means a whole cut into 5 equal parts with 2 of them taken - like a chocolate bar of 5 equal pieces where you eat 2.
+      explanation: The bottom number counts equal parts in the whole; the top counts parts taken.
+
+connections_forward:
+  - {lesson: l1-numerators-denominators, how: 'The names and roles of the top and bottom numbers.'}
+  - {lesson: l1-decimals, how: 'Another way to write fractions, using place value.'}
+  - {lesson: l2-fraction-arithmetic, how: 'Adding and multiplying fractions.'}
+  - {lesson: l9-infinite-series, how: 'Adding infinitely many fractions - the road to the zeta function.'}
+
+practice: [fraction-of-shape, classify-number]
+
+alternatives:
+  - strategy: physical-activity
+    title: Fold a sheet of paper
+    text: |
+      Fold a sheet of paper in half and open it - two equal parts. Colour one: you have coloured
+      $\tfrac{1}{2}$. Fold another sheet in half and then in half again - four equal parts. Colour three:
+      $\tfrac{3}{4}$. Folding guarantees the parts are equal, which is exactly what a fraction requires.
+  - strategy: visual
+    title: On the ruler
+    text: |
+      Look at a ruler between 0 and 1 centimetre. There are small marks dividing it into 10 equal parts
+      (millimetres). The 3rd mark is $\tfrac{3}{10}$ of a centimetre. Fractions are simply the points
+      between the whole-number marks - the number line was full of them all along.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      You and three friends share a pizza. Cut it into 4 equal slices - one for each of you. Each slice is
+      one quarter, $\tfrac{1}{4}$. If you sneak one more slice, you've had two quarters - $\tfrac{2}{4}$,
+      which is half the pizza!

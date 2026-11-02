@@ -1,0 +1,582 @@
+# THE MATHEMATICAL UNIVERSE - curriculum graph
+#
+# Every lesson in the journey is listed here with its prerequisites ("pre").
+# A lesson is "available" when a file content/lessons/**/<id>.yaml exists;
+# otherwise it is "planned" and shown honestly as not yet written.
+# The order of this file is the suggested teaching order; the prerequisite
+# graph (which must have no cycles) is what the teaching engine uses to
+# decide what comes next.
+
+stages:
+  - id: L0
+    kind: level
+    number: 0
+    title: What is mathematics?
+    summary: "Before numbers and symbols: what mathematics is, why people invented it, and the kinds of thinking it uses."
+    why: "Everything else rests on these ideas. Counting, comparing, patterns, rules and reasoning are the raw materials of every theorem, including the ones about primes and computation."
+  - id: L1
+    kind: level
+    number: 1
+    title: Understanding numbers
+    summary: "What a number is, how we write numbers, and the families of numbers: whole numbers, negatives, fractions, decimals, primes and more."
+    why: "The Riemann Hypothesis is a statement about prime numbers, and P versus NP is about counting steps. Both start with a clear idea of what a number is."
+  - id: L2
+    kind: level
+    number: 2
+    title: Basic operations
+    summary: "Adding, subtracting, multiplying and dividing - why each operation exists and how it works - then powers, roots and remainders."
+    why: "Operations are the verbs of mathematics. Counting the operations an algorithm performs is the heart of complexity theory; powers and remainders lead to number theory."
+  - id: L3
+    kind: level
+    number: 3
+    title: Learning the language of mathematics
+    summary: "How to read mathematical symbols and say any expression aloud in plain English."
+    why: "Research papers are written in this language. Being able to read notation fluently is what makes advanced mathematics approachable."
+  - id: L4
+    kind: level
+    number: 4
+    title: Introduction to algebra
+    summary: "Letters that stand for numbers, equations that keep both sides balanced, and how to find unknowns."
+    why: "Algebra lets us talk about all numbers at once. Every general statement - every theorem - is written using variables."
+  - id: L5
+    kind: level
+    number: 5
+    title: Graphs, geometry and spatial thinking
+    summary: "Points, lines, shapes, coordinates and graphs: turning numbers into pictures and pictures into numbers."
+    why: "Complex numbers live on a plane, and the zeros of the zeta function are points on it. Graphs of growth make complexity visible."
+  - id: L6
+    kind: level
+    number: 6
+    title: Advanced algebra and functions
+    summary: "Functions as machines that turn inputs into outputs, and the important families of functions."
+    why: "The zeta function is a function; an algorithm's running time is a function. Understanding functions is essential for both destinations."
+  - id: L7
+    kind: level
+    number: 7
+    title: Logic and proof
+    summary: "Statements, truth, implication, quantifiers and the main methods of proof."
+    why: "Research means proving things. Both Millennium problems ask for proofs, and the P versus NP problem is itself partly about the nature of proof."
+  - id: L8
+    kind: level
+    number: 8
+    title: Discrete mathematics
+    summary: "Sets, counting, graphs and Boolean logic - the mathematics of separate, countable things."
+    why: "Computation is discrete. Satisfiability, graph colouring and counting arguments are the everyday tools of complexity theory."
+  - id: L9
+    kind: level
+    number: 9
+    title: Calculus and mathematical analysis
+    summary: "Change, limits, derivatives, integrals and infinite series - first by picture, then rigorously."
+    why: "The zeta function is defined by an infinite series and studied with calculus. Analysis is the language of the Riemann Hypothesis."
+  - id: L10
+    kind: level
+    number: 10
+    title: Number theory
+    summary: "Primes, divisibility, congruences and the functions number theorists use to study them."
+    why: "The Riemann Hypothesis is ultimately a precise statement about how the prime numbers are distributed."
+  - id: L11
+    kind: level
+    number: 11
+    title: Complex numbers
+    summary: "Numbers with a real part and an imaginary part, pictured as points on a plane."
+    why: "The Riemann zeta function takes complex inputs, and the hypothesis says where its zeros lie in the complex plane."
+  - id: L12
+    kind: level
+    number: 12
+    title: Advanced mathematical subjects
+    summary: "The parts of university and graduate mathematics that the two research problems actually need - and nothing extra."
+    why: "Each module below says exactly which destination it serves and why."
+    modules:
+      - id: real-analysis
+        title: Real analysis
+        why: "Rigorous limits, convergence and asymptotic notation. Error terms in prime counting and running-time bounds are both stated this way."
+        goals: [rh, pnp]
+      - id: linear-algebra
+        title: Linear algebra
+        why: "Matrices and eigenvalues appear in the Hilbert-Polya idea for the Riemann Hypothesis and in algebraic approaches to complexity lower bounds."
+        goals: [rh, pnp]
+      - id: abstract-algebra
+        title: Abstract algebra
+        why: "Groups, rings and finite fields underlie Dirichlet characters (RH) and algebraic techniques such as algebrization and error-correcting codes (P vs NP)."
+        goals: [rh, pnp]
+      - id: probability
+        title: Probability
+        why: "Randomized algorithms and the probabilistic method are central to complexity; random models predict how primes behave."
+        goals: [pnp, rh]
+      - id: algorithms
+        title: Algorithms and data structures
+        why: "Concrete algorithm design gives intuition for which problems are easy, which seem hard, and why."
+        goals: [pnp]
+      - id: computational-math
+        title: Computational mathematics
+        why: "Experiments only count as evidence if the computer arithmetic behind them is trustworthy."
+        goals: [rh, pnp]
+      - id: numerical-analysis
+        title: Numerical analysis
+        why: "Computing zeta zeros accurately - and knowing how accurate the answer is - needs numerical analysis."
+        goals: [rh]
+      - id: optimization
+        title: Mathematical optimization
+        why: "Linear programming is solvable efficiently, integer programming is NP-hard: the boundary is instructive."
+        goals: [pnp]
+      - id: complex-analysis
+        title: Complex analysis
+        why: "Holomorphic functions, contour integrals and the argument principle are how mathematicians study and count zeta zeros."
+        goals: [rh]
+      - id: analytic-number-theory
+        title: Analytic number theory
+        why: "The bridge from the zeta function back to prime numbers."
+        goals: [rh]
+      - id: complexity-theory
+        title: Computational complexity theory (foundations)
+        why: "Turing machines, decidability and diagonalization - the formal setting in which P versus NP is stated."
+        goals: [pnp]
+      - id: formal-logic
+        title: Formal logic
+        why: "First-order logic and formal proof, including machine-checked proofs in Lean 4."
+        goals: [pnp, rh]
+      - id: proof-theory
+        title: Proof theory
+        why: "Proof complexity asks how long proofs must be; it is one of the known routes toward separating complexity classes."
+        goals: [pnp]
+      - id: combinatorics-graphs
+        title: Advanced combinatorics and graph theory
+        why: "Extremal set systems and expander graphs drive circuit lower bounds and appear, through graph zeta functions, alongside the Riemann Hypothesis."
+        goals: [pnp, rh]
+  - id: PA
+    kind: path
+    title: "Research path A: P versus NP"
+    summary: "From 'what is an algorithm?' to the frontier of computational complexity theory."
+    why: "P versus NP asks whether every problem whose solutions can be checked quickly can also be solved quickly. It is one of the seven Millennium Prize Problems."
+    goals: [pnp]
+    target: pa-research
+  - id: PB
+    kind: path
+    title: "Research path B: The Riemann Hypothesis"
+    summary: "From prime numbers to the zeros of the zeta function and the frontier of analytic number theory."
+    why: "The Riemann Hypothesis predicts where the zeros of the zeta function lie, which controls how regularly the primes are spread out. It is one of the seven Millennium Prize Problems."
+    goals: [rh]
+    target: pb-research
+
+lessons:
+  # ---------------------------------------------------------------- LEVEL 0
+  - {id: l0-what-is-mathematics, stage: L0, title: "What is mathematics?", summary: "Mathematics is a language for quantities, patterns, shapes, relationships and logical truths - not just calculation.", pre: []}
+  - {id: l0-why-mathematics, stage: L0, title: "Why did humans invent mathematics?", summary: "Keeping track of animals, sharing food, trading and measuring land led people to invent counting and calculation.", pre: [l0-what-is-mathematics]}
+  - {id: l0-counting, stage: L0, title: "What is counting?", summary: "Counting matches each object with one word from a fixed list; the last word says how many.", pre: [l0-why-mathematics]}
+  - {id: l0-quantity, stage: L0, title: "What is quantity?", summary: "A quantity is 'how much' or 'how many' - something that stays the same when you rearrange things.", pre: [l0-counting]}
+  - {id: l0-measurement, stage: L0, title: "What is measurement?", summary: "Measuring is counting how many copies of a chosen unit fit into something.", pre: [l0-quantity]}
+  - {id: l0-comparison, stage: L0, title: "What is comparison?", summary: "Comparing decides which of two quantities is more, less, or whether they are the same.", pre: [l0-quantity]}
+  - {id: l0-patterns, stage: L0, title: "What is a mathematical pattern?", summary: "A pattern is a regularity that lets you predict what comes next.", pre: [l0-counting]}
+  - {id: l0-rules, stage: L0, title: "What is a mathematical rule?", summary: "A rule is a precise instruction that always produces the same result from the same starting point.", pre: [l0-patterns]}
+  - {id: l0-reasoning, stage: L0, title: "What is mathematical reasoning?", summary: "Reasoning is reaching conclusions that must be true because of what we already know.", pre: [l0-rules, l0-comparison]}
+  - {id: l0-proof, stage: L0, title: "What is a mathematical proof?", summary: "A proof is an argument that shows something is true in every possible case, not just the ones we tried.", pre: [l0-reasoning]}
+  - {id: l0-symbols, stage: L0, title: "Why do mathematical symbols exist?", summary: "Symbols are short, precise names for ideas, which make long sentences quick to write and easy to work with.", pre: [l0-counting, l0-rules]}
+  - {id: l0-real-world, stage: L0, title: "How mathematics describes the real world", summary: "A mathematical model describes a real situation with numbers and rules so we can make predictions.", pre: [l0-measurement, l0-rules, l0-symbols]}
+
+  # ---------------------------------------------------------------- LEVEL 1
+  - {id: l1-what-is-a-number, stage: L1, title: "What is a number?", summary: "A number is the idea of 'how many' that all groups of the same size share.", pre: [l0-quantity, l0-symbols]}
+  - {id: l1-counting-meaning, stage: L1, title: "What does counting mean?", summary: "The precise rules of counting: one word per object, always the same order, and the last word answers 'how many?'.", pre: [l1-what-is-a-number, l0-counting]}
+  - {id: l1-zero, stage: L1, title: "The number zero", summary: "Zero is the number of things in an empty collection, and a placeholder that makes our way of writing numbers work.", pre: [l1-counting-meaning]}
+  - {id: l1-one-two-three, stage: L1, title: "One, two, three and beyond", summary: "Every counting number has a next number, so the counting numbers never end.", pre: [l1-counting-meaning]}
+  - {id: l1-counting-objects, stage: L1, title: "Counting objects", summary: "Practical counting of larger collections by grouping into tens.", pre: [l1-one-two-three]}
+  - {id: l1-equal-groups, stage: L1, title: "Counting in equal groups", summary: "Counting by twos, threes and fives, and arranging objects in equal rows.", pre: [l1-counting-objects]}
+  - {id: l1-comparing-numbers, stage: L1, title: "Comparing numbers", summary: "Deciding which of two numbers is larger by pairing objects one-to-one or by counting.", pre: [l1-counting-objects, l0-comparison]}
+  - {id: l1-bigger-smaller, stage: L1, title: "Bigger and smaller", summary: "The symbols > and < and the order of the numbers.", pre: [l1-comparing-numbers]}
+  - {id: l1-equal-quantities, stage: L1, title: "Equal quantities", summary: "What 'equal' really means and the equals sign =.", pre: [l1-comparing-numbers]}
+  - {id: l1-number-symbols, stage: L1, title: "Number symbols", summary: "The ten digits and place value: why 305 and 35 are different numbers.", pre: [l1-zero, l1-counting-objects, l0-symbols]}
+  - {id: l1-number-lines, stage: L1, title: "Number lines", summary: "Numbers placed in order along a line at equal spacing.", pre: [l1-bigger-smaller, l1-number-symbols]}
+  - {id: l1-positive-numbers, stage: L1, title: "Positive numbers", summary: "Numbers greater than zero, to the right of zero on the number line.", pre: [l1-number-lines]}
+  - {id: l1-negative-numbers, stage: L1, title: "Negative numbers", summary: "Numbers less than zero: temperatures below freezing, depths below sea level, debts.", pre: [l1-positive-numbers, l1-zero]}
+  - {id: l1-whole-numbers, stage: L1, title: "Whole numbers", summary: "The numbers 0, 1, 2, 3, ... with no parts and no minus sign.", pre: [l1-zero, l1-number-lines]}
+  - {id: l1-natural-numbers, stage: L1, title: "Natural numbers", summary: "The counting numbers, written with the symbol N, and the two conventions about whether 0 is included.", pre: [l1-whole-numbers]}
+  - {id: l1-integers, stage: L1, title: "Integers", summary: "All whole numbers and their negatives, written with the symbol Z.", pre: [l1-negative-numbers, l1-whole-numbers]}
+  - {id: l1-fractions, stage: L1, title: "Fractions", summary: "Numbers that describe equal parts of a whole.", pre: [l1-equal-quantities, l1-number-lines]}
+  - {id: l1-numerators-denominators, stage: L1, title: "Numerators and denominators", summary: "The top number counts parts taken; the bottom number says how many equal parts make a whole.", pre: [l1-fractions]}
+  - {id: l1-decimals, stage: L1, title: "Decimals", summary: "Place value extended to the right of the decimal point: tenths, hundredths, thousandths.", pre: [l1-numerators-denominators, l1-number-symbols]}
+  - {id: l1-percentages, stage: L1, title: "Percentages", summary: "Percent means 'out of one hundred'.", pre: [l1-decimals]}
+  - {id: l1-ratios, stage: L1, title: "Ratios", summary: "A ratio compares two quantities, like 2 cups of flour for every 3 eggs.", pre: [l1-numerators-denominators, l1-equal-groups]}
+  - {id: l1-prime-numbers, stage: L1, title: "Prime numbers", summary: "Numbers bigger than 1 that cannot be arranged into a rectangle with more than one row - the building blocks of all whole numbers.", pre: [l1-equal-groups, l1-natural-numbers]}
+  - {id: l1-composite-numbers, stage: L1, title: "Composite numbers", summary: "Numbers bigger than 1 that can be arranged into a real rectangle.", pre: [l1-prime-numbers]}
+  - {id: l1-even-odd, stage: L1, title: "Even and odd numbers", summary: "Even numbers split into pairs exactly; odd numbers always leave one over.", pre: [l1-equal-groups, l1-integers]}
+  - {id: l1-factors, stage: L1, title: "Factors", summary: "The numbers of equal rows a collection can be arranged into.", pre: [l1-composite-numbers]}
+  - {id: l1-multiples, stage: L1, title: "Multiples", summary: "The numbers you land on when you count in equal jumps.", pre: [l1-factors]}
+  - {id: l1-divisibility, stage: L1, title: "Divisibility", summary: "When one number shares equally into another with nothing left over.", pre: [l1-factors, l1-multiples]}
+  - {id: l1-greatest-common-divisor, stage: L1, title: "Greatest common divisors", summary: "The largest number that divides two numbers exactly.", pre: [l1-divisibility]}
+  - {id: l1-least-common-multiple, stage: L1, title: "Least common multiples", summary: "The smallest positive number that is a multiple of two numbers.", pre: [l1-multiples, l1-divisibility]}
+
+  # ---------------------------------------------------------------- LEVEL 2
+  - {id: l2-addition, stage: L2, title: "Addition", summary: "Putting quantities together, and counting on along the number line.", pre: [l1-counting-objects, l1-number-lines]}
+  - {id: l2-subtraction, stage: L2, title: "Subtraction", summary: "Taking away and finding the difference between two quantities.", pre: [l2-addition]}
+  - {id: l2-multiplication, stage: L2, title: "Multiplication", summary: "Combining equal groups; the area of a rectangle of tiles.", pre: [l2-addition, l1-equal-groups, l1-factors]}
+  - {id: l2-division, stage: L2, title: "Division", summary: "Sharing equally and asking how many groups fit.", pre: [l2-multiplication, l2-subtraction, l1-divisibility]}
+  - {id: l2-repeated-addition, stage: L2, title: "Repeated addition", summary: "Why multiplication can be understood as adding the same number again and again.", pre: [l2-multiplication]}
+  - {id: l2-repeated-subtraction, stage: L2, title: "Repeated subtraction", summary: "Why division can be understood as taking away the same number again and again.", pre: [l2-division]}
+  - {id: l2-times-tables, stage: L2, title: "Multiplication tables", summary: "The patterns inside the times tables, and how to rebuild any fact you forget.", pre: [l2-repeated-addition]}
+  - {id: l2-long-multiplication, stage: L2, title: "Long multiplication", summary: "Multiplying big numbers by splitting them into place-value parts.", pre: [l2-times-tables, l1-number-symbols]}
+  - {id: l2-long-division, stage: L2, title: "Long division", summary: "Dividing big numbers one place value at a time.", pre: [l2-long-multiplication, l2-repeated-subtraction]}
+  - {id: l2-integer-arithmetic, stage: L2, title: "Arithmetic with negative numbers", summary: "Adding, subtracting and multiplying negative numbers, and why negative times negative is positive.", pre: [l2-subtraction, l2-multiplication, l1-integers]}
+  - {id: l2-fraction-arithmetic, stage: L2, title: "Arithmetic with fractions", summary: "Adding, multiplying and dividing fractions, with pictures that show why the methods work.", pre: [l2-division, l1-numerators-denominators, l1-least-common-multiple]}
+  - {id: l2-order-of-operations, stage: L2, title: "Order of operations", summary: "The agreed order for doing calculations so that every expression has one meaning.", pre: [l2-division]}
+  - {id: l2-powers, stage: L2, title: "Powers", summary: "Repeated multiplication: 2 x 2 x 2 x 2 written short.", pre: [l2-times-tables]}
+  - {id: l2-squares, stage: L2, title: "Squares", summary: "A number times itself - the area of a square.", pre: [l2-powers]}
+  - {id: l2-cubes, stage: L2, title: "Cubes", summary: "A number times itself three times - the volume of a cube.", pre: [l2-squares]}
+  - {id: l2-roots, stage: L2, title: "Roots", summary: "Undoing a power: which number, squared, gives 49?", pre: [l2-squares, l2-cubes]}
+  - {id: l2-absolute-value, stage: L2, title: "Absolute value", summary: "How far a number is from zero, ignoring direction.", pre: [l1-integers, l2-subtraction]}
+  - {id: l2-remainders, stage: L2, title: "Remainders", summary: "What is left over when sharing does not come out exactly.", pre: [l2-division]}
+  - {id: l2-modular-arithmetic, stage: L2, title: "Modular arithmetic", summary: "Clock arithmetic: numbers that wrap around after reaching a fixed size.", pre: [l2-remainders]}
+  - {id: l2-estimation, stage: L2, title: "Estimation", summary: "Finding a sensible approximate answer quickly, and checking answers for reasonableness.", pre: [l2-multiplication, l1-decimals]}
+  - {id: l2-mental-arithmetic, stage: L2, title: "Mental arithmetic", summary: "Strategies for calculating in your head.", pre: [l2-times-tables, l2-estimation]}
+  - {id: l2-arithmetic-properties, stage: L2, title: "Arithmetic properties", summary: "The laws every calculation obeys: order does not matter for adding, grouping does not matter, multiplying distributes over adding.", pre: [l2-multiplication, l2-order-of-operations, l2-integer-arithmetic]}
+
+  # ---------------------------------------------------------------- LEVEL 3
+  - {id: l3-what-is-a-symbol, stage: L3, title: "What is a mathematical symbol?", summary: "A symbol is a mark that stands for an idea, an object or an action.", pre: [l0-symbols, l2-addition]}
+  - {id: l3-plus, stage: L3, title: "What does + mean?", summary: "The plus sign: putting together, and its history.", pre: [l3-what-is-a-symbol]}
+  - {id: l3-minus, stage: L3, title: "What does - mean?", summary: "The minus sign has two jobs: subtracting, and marking a negative number.", pre: [l3-plus, l2-integer-arithmetic]}
+  - {id: l3-equals, stage: L3, title: "What does = mean?", summary: "The equals sign says two things are the same - not 'here comes the answer'.", pre: [l3-what-is-a-symbol, l1-equal-quantities]}
+  - {id: l3-not-equal, stage: L3, title: "What does 'not equal' mean?", summary: "The symbol for 'these two things are different'.", pre: [l3-equals]}
+  - {id: l3-greater-than, stage: L3, title: "What does 'greater than' mean?", summary: "Reading and writing > correctly, including with negative numbers.", pre: [l3-equals, l1-bigger-smaller]}
+  - {id: l3-less-than, stage: L3, title: "What does 'less than' mean?", summary: "Reading and writing <, and 'less than or equal to'.", pre: [l3-greater-than]}
+  - {id: l3-parentheses, stage: L3, title: "What do parentheses mean?", summary: "Round brackets group things together: 'do this part first'.", pre: [l2-order-of-operations, l3-what-is-a-symbol]}
+  - {id: l3-brackets, stage: L3, title: "What do brackets mean?", summary: "Square brackets: grouping inside grouping, and intervals of numbers.", pre: [l3-parentheses]}
+  - {id: l3-braces, stage: L3, title: "What do braces mean?", summary: "Curly braces hold a collection of things.", pre: [l3-brackets]}
+  - {id: l3-fraction-bar, stage: L3, title: "What does a fraction bar mean?", summary: "The fraction bar means divide, and it groups what is above and below it.", pre: [l3-what-is-a-symbol, l2-fraction-arithmetic]}
+  - {id: l3-square-root-symbol, stage: L3, title: "What does a square root symbol mean?", summary: "Reading the radical sign and what it asks for.", pre: [l2-roots, l3-what-is-a-symbol]}
+  - {id: l3-exponent, stage: L3, title: "What does an exponent mean?", summary: "The small raised number that says how many times to multiply.", pre: [l2-powers, l3-what-is-a-symbol]}
+  - {id: l3-summation, stage: L3, title: "What does a summation symbol mean?", summary: "The capital Greek letter sigma as a compact instruction to add up a list of terms.", pre: [l3-plus, l3-parentheses, l2-repeated-addition]}
+  - {id: l3-infinity, stage: L3, title: "What does infinity mean?", summary: "The infinity symbol describes 'without end' - it is not an ordinary number.", pre: [l1-one-two-three, l3-what-is-a-symbol]}
+  - {id: l3-approximately, stage: L3, title: "What does 'approximately equal' mean?", summary: "The wavy equals sign: close, but not exactly the same.", pre: [l2-estimation, l3-equals]}
+  - {id: l3-proportional, stage: L3, title: "What does 'proportional to' mean?", summary: "Two quantities that grow together in a fixed ratio.", pre: [l1-ratios, l3-equals]}
+  - {id: l3-greek-alphabet, stage: L3, title: "What does the Greek alphabet look like?", summary: "The 24 Greek letters, how to say them, and which ones mathematicians use most.", pre: [l3-what-is-a-symbol]}
+  - {id: l3-why-greek, stage: L3, title: "Why do mathematicians use Greek letters?", summary: "History and habit: why pi, sigma, zeta and epsilon each have a traditional meaning.", pre: [l3-greek-alphabet]}
+  - {id: l3-reading-aloud, stage: L3, title: "How to read mathematical expressions aloud", summary: "Putting it all together: say any expression in words and explain what it means.", pre: [l3-exponent, l3-fraction-bar, l3-summation, l3-square-root-symbol, l3-less-than, l3-not-equal, l3-braces, l3-approximately, l3-minus, l3-greek-alphabet, l3-why-greek]}
+
+  # ---------------------------------------------------------------- LEVEL 4
+  - {id: l4-why-letters, stage: L4, title: "Why letters appear in mathematics", summary: "Letters let us talk about a number we do not know yet, or about every number at once.", pre: [l3-reading-aloud, l2-arithmetic-properties, l0-real-world]}
+  - {id: l4-unknowns, stage: L4, title: "What is an unknown number?", summary: "A specific number we have not found yet, given a temporary name.", pre: [l4-why-letters]}
+  - {id: l4-variables, stage: L4, title: "What is a variable?", summary: "A letter whose value can change, or that stands for any number from a collection.", pre: [l4-unknowns]}
+  - {id: l4-constants, stage: L4, title: "What is a constant?", summary: "A quantity that stays fixed while the variables change.", pre: [l4-variables]}
+  - {id: l4-expressions, stage: L4, title: "What is an expression?", summary: "A combination of numbers, letters and operations - a mathematical phrase.", pre: [l4-variables, l4-constants, l2-order-of-operations]}
+  - {id: l4-equations, stage: L4, title: "What is an equation?", summary: "A mathematical sentence saying two expressions are equal.", pre: [l4-expressions, l3-equals]}
+  - {id: l4-inequalities, stage: L4, title: "What is an inequality?", summary: "A sentence saying one expression is bigger or smaller than another.", pre: [l4-equations, l3-less-than]}
+  - {id: l4-simplifying, stage: L4, title: "How to simplify expressions", summary: "Rewriting an expression more simply without changing its value.", pre: [l4-expressions, l2-arithmetic-properties]}
+  - {id: l4-substitution, stage: L4, title: "How to substitute numbers", summary: "Replacing letters by numbers to find an expression's value.", pre: [l4-expressions]}
+  - {id: l4-one-step-equations, stage: L4, title: "Solving one-step equations", summary: "Undoing a single operation while keeping both sides balanced.", pre: [l4-equations, l4-substitution]}
+  - {id: l4-two-step-equations, stage: L4, title: "Solving two-step equations", summary: "Undoing two operations in the right order.", pre: [l4-one-step-equations]}
+  - {id: l4-equations-brackets, stage: L4, title: "Solving equations with brackets", summary: "Expanding or undoing brackets to find the unknown.", pre: [l4-two-step-equations, l4-simplifying, l3-parentheses]}
+  - {id: l4-rearranging, stage: L4, title: "Rearranging equations", summary: "Making a different letter the subject of a formula.", pre: [l4-equations-brackets]}
+  - {id: l4-linear-equations, stage: L4, title: "Linear equations", summary: "Equations where the unknown is never squared, and why they have at most one solution.", pre: [l4-rearranging]}
+  - {id: l4-polynomials, stage: L4, title: "Polynomials", summary: "Expressions built from powers of a variable, like 3x^2 + 2x - 5.", pre: [l4-simplifying, l3-exponent]}
+  - {id: l4-identities, stage: L4, title: "Algebraic identities", summary: "Equations true for every value of the variable, like (a + b)^2 = a^2 + 2ab + b^2.", pre: [l4-polynomials]}
+  - {id: l4-factorization, stage: L4, title: "Factorization", summary: "Writing an expression as a product of simpler pieces.", pre: [l4-identities, l1-factors]}
+  - {id: l4-quadratic-equations, stage: L4, title: "Quadratic equations", summary: "Equations with a squared unknown, solved by factoring, completing the square and the quadratic formula.", pre: [l4-factorization, l2-roots, l4-linear-equations]}
+  - {id: l4-simultaneous-equations, stage: L4, title: "Simultaneous equations", summary: "Several equations that must all be true at once.", pre: [l4-linear-equations]}
+  - {id: l4-functions-intuition, stage: L4, title: "Functions introduced intuitively", summary: "A rule that turns each input number into exactly one output number.", pre: [l4-substitution, l0-rules]}
+
+  # ---------------------------------------------------------------- LEVEL 5
+  - {id: l5-points, stage: L5, title: "Points", summary: "A point marks an exact location and has no size.", pre: [l0-measurement, l1-number-lines]}
+  - {id: l5-lines, stage: L5, title: "Lines", summary: "A straight path that goes on forever in both directions.", pre: [l5-points]}
+  - {id: l5-segments, stage: L5, title: "Line segments", summary: "The part of a line between two endpoints, which has a length.", pre: [l5-lines]}
+  - {id: l5-angles, stage: L5, title: "Angles", summary: "The amount of turn between two lines that meet, measured in degrees.", pre: [l5-segments]}
+  - {id: l5-shapes, stage: L5, title: "Shapes", summary: "Triangles, rectangles, polygons and circles, and how they are defined.", pre: [l5-angles]}
+  - {id: l5-perimeter, stage: L5, title: "Perimeter", summary: "The distance all the way around a shape.", pre: [l5-shapes, l2-addition]}
+  - {id: l5-area, stage: L5, title: "Area", summary: "How much flat surface a shape covers, counted in unit squares.", pre: [l5-shapes, l2-multiplication]}
+  - {id: l5-volume, stage: L5, title: "Volume", summary: "How much space a solid takes up, counted in unit cubes.", pre: [l5-area, l2-cubes]}
+  - {id: l5-pythagoras, stage: L5, title: "The Pythagorean theorem", summary: "In a right-angled triangle, the squares on the two short sides add up to the square on the long side.", pre: [l5-area, l2-roots, l5-angles]}
+  - {id: l5-coordinates, stage: L5, title: "Coordinates", summary: "A pair of numbers that pins down a location.", pre: [l5-points, l1-negative-numbers]}
+  - {id: l5-cartesian-plane, stage: L5, title: "The Cartesian plane", summary: "Two number lines crossing at right angles make a map of the plane.", pre: [l5-coordinates]}
+  - {id: l5-x-axis, stage: L5, title: "The x-axis", summary: "The horizontal number line: how far left or right.", pre: [l5-cartesian-plane]}
+  - {id: l5-y-axis, stage: L5, title: "The y-axis", summary: "The vertical number line: how far up or down.", pre: [l5-x-axis]}
+  - {id: l5-plotting, stage: L5, title: "Plotting points", summary: "Placing points on the plane from their coordinates, and reading coordinates back.", pre: [l5-y-axis]}
+  - {id: l5-straight-line-graphs, stage: L5, title: "Straight-line graphs", summary: "The picture of a linear equation is a straight line.", pre: [l5-plotting, l4-linear-equations, l3-proportional]}
+  - {id: l5-curves, stage: L5, title: "Curves", summary: "Graphs of quadratics and other equations bend.", pre: [l5-straight-line-graphs, l4-quadratic-equations]}
+  - {id: l5-gradients, stage: L5, title: "Gradients", summary: "Steepness: how much a line rises for each step to the right.", pre: [l5-straight-line-graphs, l2-fraction-arithmetic]}
+  - {id: l5-intersections, stage: L5, title: "Intersections", summary: "Where two graphs cross is where both equations are true.", pre: [l5-straight-line-graphs, l4-simultaneous-equations]}
+  - {id: l5-circles, stage: L5, title: "Circles", summary: "All points at a fixed distance from a centre; the number pi.", pre: [l5-pythagoras, l5-plotting, l5-perimeter]}
+  - {id: l5-symmetry, stage: L5, title: "Symmetry", summary: "A shape is symmetric if some movement leaves it looking unchanged.", pre: [l5-shapes]}
+  - {id: l5-transformations, stage: L5, title: "Transformations", summary: "Sliding, turning, reflecting and stretching shapes.", pre: [l5-symmetry, l5-plotting]}
+  - {id: l5-vectors, stage: L5, title: "Vectors", summary: "Arrows with a length and a direction, which can be added.", pre: [l5-transformations, l5-pythagoras]}
+  - {id: l5-3d-coordinates, stage: L5, title: "Three-dimensional coordinates", summary: "Three numbers to locate a point in space.", pre: [l5-cartesian-plane, l5-volume]}
+
+  # ---------------------------------------------------------------- LEVEL 6
+  - {id: l6-relations, stage: L6, title: "Relations", summary: "Any rule that pairs inputs with outputs, even if one input has several outputs.", pre: [l5-plotting, l4-functions-intuition]}
+  - {id: l6-functions, stage: L6, title: "Functions", summary: "A relation where every input has exactly one output.", pre: [l6-relations]}
+  - {id: l6-inputs-outputs, stage: L6, title: "Inputs and outputs", summary: "What goes into a function and what comes out.", pre: [l6-functions]}
+  - {id: l6-domain, stage: L6, title: "Domain", summary: "The collection of allowed inputs.", pre: [l6-inputs-outputs]}
+  - {id: l6-range, stage: L6, title: "Range", summary: "The collection of outputs a function actually produces.", pre: [l6-domain]}
+  - {id: l6-one-to-one, stage: L6, title: "One-to-one functions", summary: "Different inputs always give different outputs.", pre: [l6-range]}
+  - {id: l6-onto, stage: L6, title: "Onto functions", summary: "Every possible output is actually reached.", pre: [l6-range]}
+  - {id: l6-inverse-functions, stage: L6, title: "Inverse functions", summary: "A function that undoes another function.", pre: [l6-one-to-one, l6-onto, l4-rearranging, l6-composite-functions]}
+  - {id: l6-composite-functions, stage: L6, title: "Composite functions", summary: "Feeding the output of one function into another.", pre: [l6-inputs-outputs]}
+  - {id: l6-function-notation, stage: L6, title: "Mathematical notation for functions", summary: "Reading f(x), f: A -> B and similar notation.", pre: [l6-functions, l6-domain]}
+  - {id: l6-exponential-functions, stage: L6, title: "Exponential functions", summary: "Functions like 2^x that multiply by the same amount at each step - very fast growth.", pre: [l6-functions, l2-powers, l5-curves]}
+  - {id: l6-logarithmic-functions, stage: L6, title: "Logarithmic functions", summary: "The inverse of exponentials: 'how many times must I multiply?' - very slow growth.", pre: [l6-exponential-functions, l6-inverse-functions]}
+  - {id: l6-trigonometric-functions, stage: L6, title: "Trigonometric functions", summary: "Sine and cosine: positions on a circle as an angle turns.", pre: [l6-functions, l5-circles, l5-pythagoras]}
+  - {id: l6-sequences, stage: L6, title: "Sequences", summary: "An ordered, possibly endless, list of numbers - a function of the position.", pre: [l6-functions, l1-natural-numbers]}
+  - {id: l6-series, stage: L6, title: "Series", summary: "Adding up the terms of a sequence.", pre: [l6-sequences, l3-summation, l6-arithmetic-sequences]}
+  - {id: l6-arithmetic-sequences, stage: L6, title: "Arithmetic sequences", summary: "Sequences that go up by the same amount each time.", pre: [l6-sequences]}
+  - {id: l6-geometric-sequences, stage: L6, title: "Geometric sequences", summary: "Sequences that multiply by the same amount each time.", pre: [l6-sequences, l2-powers]}
+  - {id: l6-recursion, stage: L6, title: "Recursion", summary: "Defining each term using earlier terms.", pre: [l6-sequences]}
+  - {id: l6-limits-intuition, stage: L6, title: "Limits introduced intuitively", summary: "The value a sequence gets closer and closer to.", pre: [l6-sequences, l6-geometric-sequences, l3-infinity]}
+
+  # ---------------------------------------------------------------- LEVEL 7
+  - {id: l7-statements, stage: L7, title: "What is a statement?", summary: "A sentence that is definitely either true or false.", pre: [l0-reasoning, l3-equals]}
+  - {id: l7-truth, stage: L7, title: "What makes a statement true or false?", summary: "Truth in mathematics comes from definitions and proof, not opinion.", pre: [l7-statements]}
+  - {id: l7-arguments, stage: L7, title: "What is a logical argument?", summary: "A chain of statements where each follows from the ones before.", pre: [l7-truth]}
+  - {id: l7-assumptions, stage: L7, title: "What is an assumption?", summary: "What an argument takes as its starting point.", pre: [l7-arguments]}
+  - {id: l7-conclusions, stage: L7, title: "What is a conclusion?", summary: "What an argument establishes at its end.", pre: [l7-assumptions]}
+  - {id: l7-implication, stage: L7, title: "What is an implication?", summary: "'If A then B' - and why it is true whenever A is false.", pre: [l7-conclusions]}
+  - {id: l7-iff, stage: L7, title: "If and only if", summary: "Two statements that are always true together and false together.", pre: [l7-implication]}
+  - {id: l7-and, stage: L7, title: "AND", summary: "A combined statement true only when both parts are true.", pre: [l7-truth]}
+  - {id: l7-or, stage: L7, title: "OR", summary: "Mathematical 'or' is true when at least one part is true.", pre: [l7-and]}
+  - {id: l7-not, stage: L7, title: "NOT", summary: "Negation flips true and false.", pre: [l7-truth]}
+  - {id: l7-truth-tables, stage: L7, title: "Truth tables", summary: "Listing every combination of true and false to see exactly when a statement holds.", pre: [l7-and, l7-or, l7-not, l7-implication]}
+  - {id: l7-quantifiers, stage: L7, title: "Quantifiers", summary: "Words that say how many things a statement is about: all, some, none.", pre: [l7-statements, l4-variables]}
+  - {id: l7-for-all, stage: L7, title: "For all", summary: "The upside-down A: a claim about every member of a collection.", pre: [l7-quantifiers]}
+  - {id: l7-there-exists, stage: L7, title: "There exists", summary: "The backwards E: a claim that at least one example exists.", pre: [l7-quantifiers]}
+  - {id: l7-negation, stage: L7, title: "Negation", summary: "How to say precisely the opposite of a statement, including ones with quantifiers.", pre: [l7-not, l7-for-all, l7-there-exists]}
+  - {id: l7-contradictions, stage: L7, title: "Contradictions", summary: "A statement and its opposite cannot both be true.", pre: [l7-negation, l7-truth-tables]}
+  - {id: l7-direct-proof, stage: L7, title: "Direct proof", summary: "Start from what you know and reason step by step to what you want.", pre: [l7-implication, l0-proof, l4-expressions, l1-even-odd]}
+  - {id: l7-proof-by-contradiction, stage: L7, title: "Proof by contradiction", summary: "Assume the opposite and show it leads to something impossible.", pre: [l7-contradictions, l7-direct-proof]}
+  - {id: l7-induction, stage: L7, title: "Proof by induction", summary: "Prove the first case, then prove each case implies the next - like toppling dominoes.", pre: [l7-direct-proof, l7-for-all, l1-natural-numbers]}
+  - {id: l7-counterexamples, stage: L7, title: "Counterexamples", summary: "One example is enough to show a 'for all' claim is false.", pre: [l7-for-all, l7-negation]}
+  - {id: l7-necessary, stage: L7, title: "Necessary conditions", summary: "Something that must hold for a statement to be true.", pre: [l7-implication]}
+  - {id: l7-sufficient, stage: L7, title: "Sufficient conditions", summary: "Something that is enough to guarantee a statement.", pre: [l7-necessary]}
+  - {id: l7-definitions, stage: L7, title: "Mathematical definitions", summary: "Precise meanings that every proof relies on.", pre: [l7-statements, l7-iff]}
+  - {id: l7-theorems, stage: L7, title: "Theorems", summary: "Important statements that have been proved.", pre: [l7-direct-proof, l7-definitions]}
+  - {id: l7-lemmas, stage: L7, title: "Lemmas", summary: "Helper results proved on the way to a bigger theorem.", pre: [l7-theorems]}
+  - {id: l7-corollaries, stage: L7, title: "Corollaries", summary: "Results that follow quickly from a theorem.", pre: [l7-theorems]}
+  - {id: l7-conjectures, stage: L7, title: "Conjectures", summary: "Statements believed true but not yet proved - like the Riemann Hypothesis.", pre: [l7-theorems, l7-counterexamples]}
+  - {id: l7-fallacies, stage: L7, title: "Logical fallacies", summary: "Common ways arguments go wrong.", pre: [l7-arguments, l7-implication]}
+  - {id: l7-circular-reasoning, stage: L7, title: "Circular reasoning", summary: "Arguments that secretly assume what they claim to prove.", pre: [l7-fallacies]}
+  - {id: l7-writing-proofs, stage: L7, title: "How to write a rigorous mathematical proof", summary: "Structure, clarity and checking every step.", pre: [l7-proof-by-contradiction, l7-induction, l7-lemmas, l7-circular-reasoning, l7-sufficient, l7-counterexamples, l7-corollaries, l7-conjectures]}
+
+  # ---------------------------------------------------------------- LEVEL 8
+  - {id: l8-sets, stage: L8, title: "Sets", summary: "A collection of distinct objects, considered as one thing.", pre: [l3-braces, l7-statements]}
+  - {id: l8-elements, stage: L8, title: "Elements", summary: "The members of a set and the symbol for 'belongs to'.", pre: [l8-sets]}
+  - {id: l8-subsets, stage: L8, title: "Subsets", summary: "A set all of whose elements belong to another set.", pre: [l8-elements, l7-implication]}
+  - {id: l8-set-operations, stage: L8, title: "Set operations", summary: "Union, intersection, difference and complement.", pre: [l8-subsets, l7-and, l7-or]}
+  - {id: l8-ordered-pairs, stage: L8, title: "Ordered pairs", summary: "Pairs where order matters: (2, 3) is not (3, 2).", pre: [l8-sets, l5-coordinates]}
+  - {id: l8-cartesian-products, stage: L8, title: "Cartesian products", summary: "All ordered pairs made from two sets.", pre: [l8-ordered-pairs]}
+  - {id: l8-relations, stage: L8, title: "Relations (as sets)", summary: "A relation is a set of ordered pairs.", pre: [l8-cartesian-products, l6-relations]}
+  - {id: l8-functions-mappings, stage: L8, title: "Functions as mappings", summary: "Functions between sets; injections, surjections and bijections.", pre: [l8-relations, l6-one-to-one, l6-onto]}
+  - {id: l8-counting-principles, stage: L8, title: "Counting principles", summary: "The rules of sum and product for counting possibilities.", pre: [l8-set-operations, l2-multiplication]}
+  - {id: l8-permutations, stage: L8, title: "Permutations", summary: "Counting arrangements where order matters.", pre: [l8-counting-principles]}
+  - {id: l8-combinations, stage: L8, title: "Combinations", summary: "Counting selections where order does not matter.", pre: [l8-permutations, l2-division]}
+  - {id: l8-binomial-coefficients, stage: L8, title: "Binomial coefficients", summary: "'n choose k', Pascal's triangle and the binomial theorem.", pre: [l8-combinations, l4-polynomials]}
+  - {id: l8-pigeonhole, stage: L8, title: "Pigeonhole principle", summary: "If more pigeons than holes, some hole holds two pigeons.", pre: [l8-functions-mappings, l7-proof-by-contradiction]}
+  - {id: l8-graphs, stage: L8, title: "Graphs", summary: "Dots joined by lines: a picture of connections.", pre: [l8-sets, l8-ordered-pairs]}
+  - {id: l8-vertices, stage: L8, title: "Vertices", summary: "The dots of a graph and their degrees.", pre: [l8-graphs]}
+  - {id: l8-edges, stage: L8, title: "Edges", summary: "The connections of a graph.", pre: [l8-vertices]}
+  - {id: l8-paths, stage: L8, title: "Paths", summary: "Walking from vertex to vertex along edges.", pre: [l8-edges]}
+  - {id: l8-cycles, stage: L8, title: "Cycles", summary: "Paths that return to their start.", pre: [l8-paths]}
+  - {id: l8-connected-graphs, stage: L8, title: "Connected graphs", summary: "Graphs where every vertex can reach every other.", pre: [l8-paths]}
+  - {id: l8-trees, stage: L8, title: "Trees", summary: "Connected graphs with no cycles.", pre: [l8-cycles, l8-connected-graphs, l7-induction]}
+  - {id: l8-graph-colouring, stage: L8, title: "Graph colouring", summary: "Colouring vertices so neighbours differ - a famous hard problem.", pre: [l8-edges, l8-functions-mappings]}
+  - {id: l8-boolean-algebra, stage: L8, title: "Boolean algebra", summary: "Algebra with only two values, true and false.", pre: [l7-truth-tables, l2-arithmetic-properties]}
+  - {id: l8-propositional-logic, stage: L8, title: "Propositional logic", summary: "Formulas built from AND, OR and NOT, and when they can be made true.", pre: [l8-boolean-algebra, l7-iff]}
+  - {id: l8-combinatorics, stage: L8, title: "Combinatorics", summary: "The art of counting without listing.", pre: [l8-binomial-coefficients, l8-pigeonhole]}
+  - {id: l8-recurrence-relations, stage: L8, title: "Recurrence relations", summary: "Sequences defined from earlier terms, and how to solve them.", pre: [l6-recursion, l7-induction]}
+  - {id: l8-discrete-probability, stage: L8, title: "Discrete probability", summary: "Chances computed by counting equally likely outcomes.", pre: [l8-combinations, l1-fractions, l1-percentages]}
+
+  # ---------------------------------------------------------------- LEVEL 9
+  - {id: l9-change, stage: L9, title: "What is change?", summary: "How one quantity changes as another changes.", pre: [l6-functions, l5-gradients]}
+  - {id: l9-rate-of-change, stage: L9, title: "What is a rate of change?", summary: "How fast something changes: speed, growth rate, slope.", pre: [l9-change]}
+  - {id: l9-limits, stage: L9, title: "What is a limit?", summary: "The value a function approaches as its input approaches a point.", pre: [l6-limits-intuition, l9-rate-of-change]}
+  - {id: l9-approaching, stage: L9, title: "What does approaching mean?", summary: "Getting as close as we like, measured with distance.", pre: [l9-limits, l2-absolute-value]}
+  - {id: l9-continuity, stage: L9, title: "Continuity", summary: "Functions whose graphs have no jumps or gaps.", pre: [l9-approaching]}
+  - {id: l9-derivatives, stage: L9, title: "Derivatives", summary: "The exact rate of change at a single instant.", pre: [l9-limits, l9-rate-of-change]}
+  - {id: l9-differentiation, stage: L9, title: "Differentiation", summary: "Rules for computing derivatives.", pre: [l9-derivatives, l4-polynomials]}
+  - {id: l9-area-under-curve, stage: L9, title: "Area under a curve", summary: "Approximating the area under a graph with thin rectangles.", pre: [l5-area, l9-limits, l3-summation]}
+  - {id: l9-integrals, stage: L9, title: "Integrals", summary: "The exact area as a limit of rectangle sums.", pre: [l9-area-under-curve]}
+  - {id: l9-integration, stage: L9, title: "Integration", summary: "Computing integrals, and why integration undoes differentiation.", pre: [l9-integrals, l9-differentiation]}
+  - {id: l9-infinite-sequences, stage: L9, title: "Infinite sequences", summary: "Endless lists and whether they settle down.", pre: [l9-limits, l6-sequences]}
+  - {id: l9-infinite-series, stage: L9, title: "Infinite series", summary: "Adding infinitely many numbers - sometimes the total is finite.", pre: [l9-infinite-sequences, l6-series]}
+  - {id: l9-convergence, stage: L9, title: "Convergence", summary: "When an infinite process settles on a definite value.", pre: [l9-infinite-series]}
+  - {id: l9-divergence, stage: L9, title: "Divergence", summary: "When it does not - like 1 + 1/2 + 1/3 + 1/4 + ...", pre: [l9-convergence]}
+  - {id: l9-power-series, stage: L9, title: "Power series", summary: "Infinite polynomials.", pre: [l9-convergence, l4-polynomials]}
+  - {id: l9-taylor-series, stage: L9, title: "Taylor series", summary: "Writing a function as a power series using its derivatives.", pre: [l9-power-series, l9-differentiation]}
+  - {id: l9-improper-integrals, stage: L9, title: "Improper integrals", summary: "Integrals over infinite ranges.", pre: [l9-integration, l9-convergence]}
+  - {id: l9-multivariable, stage: L9, title: "Multivariable calculus", summary: "Calculus for functions of several inputs.", pre: [l9-differentiation, l9-integration, l5-3d-coordinates]}
+  - {id: l9-rigorous-limits, stage: L9, title: "Rigorous definitions of limits", summary: "Turning 'gets close to' into a precise statement with quantifiers.", pre: [l9-approaching, l7-for-all, l7-there-exists]}
+  - {id: l9-epsilon-delta, stage: L9, title: "Epsilon-delta reasoning", summary: "Proving limits and continuity with the epsilon-delta definition.", pre: [l9-rigorous-limits, l7-writing-proofs, l9-continuity]}
+
+  # ---------------------------------------------------------------- LEVEL 10
+  - {id: l10-primes-in-depth, stage: L10, title: "Prime numbers in greater depth", summary: "Euclid's proof that there are infinitely many primes.", pre: [l1-prime-numbers, l7-proof-by-contradiction, l2-division]}
+  - {id: l10-prime-factorization, stage: L10, title: "Prime factorization", summary: "Breaking a number into primes with factor trees.", pre: [l10-primes-in-depth]}
+  - {id: l10-gcd, stage: L10, title: "Greatest common divisors in depth", summary: "GCDs from prime factorizations, and their key properties.", pre: [l1-greatest-common-divisor, l10-prime-factorization]}
+  - {id: l10-euclidean-algorithm, stage: L10, title: "Euclidean algorithm", summary: "A fast, ancient algorithm for GCDs - and one of the first algorithms ever analysed.", pre: [l10-gcd, l2-remainders, l7-induction]}
+  - {id: l10-fundamental-theorem, stage: L10, title: "Fundamental theorem of arithmetic", summary: "Every whole number above 1 is a product of primes in exactly one way.", pre: [l10-prime-factorization, l10-euclidean-algorithm, l7-writing-proofs]}
+  - {id: l10-unique-factorization, stage: L10, title: "Unique prime factorization", summary: "Why uniqueness is special, and number systems where it fails.", pre: [l10-fundamental-theorem]}
+  - {id: l10-modular-arithmetic, stage: L10, title: "Modular arithmetic (in depth)", summary: "Arithmetic of remainders as a number system in its own right.", pre: [l2-modular-arithmetic, l10-euclidean-algorithm]}
+  - {id: l10-congruences, stage: L10, title: "Congruences", summary: "The notation a = b (mod n) and solving congruences.", pre: [l10-modular-arithmetic]}
+  - {id: l10-fermats-little-theorem, stage: L10, title: "Fermat's little theorem", summary: "For a prime p, a^p and a leave the same remainder - the basis of fast primality tests.", pre: [l10-congruences, l10-primes-in-depth]}
+  - {id: l10-eulers-totient, stage: L10, title: "Euler's totient function", summary: "Counting the numbers that share no factor with n.", pre: [l10-fermats-little-theorem, l10-gcd]}
+  - {id: l10-crt, stage: L10, title: "Chinese remainder theorem", summary: "Solving several remainder conditions at once.", pre: [l10-congruences, l10-euclidean-algorithm]}
+  - {id: l10-diophantine, stage: L10, title: "Diophantine equations", summary: "Equations that need whole-number solutions.", pre: [l10-euclidean-algorithm, l4-linear-equations]}
+  - {id: l10-prime-distribution, stage: L10, title: "Prime distribution", summary: "How the primes thin out, and the logarithm that describes it.", pre: [l10-primes-in-depth, l6-logarithmic-functions]}
+  - {id: l10-prime-counting, stage: L10, title: "Prime-counting functions", summary: "pi(x), the number of primes up to x, and its estimates.", pre: [l10-prime-distribution, l6-function-notation]}
+  - {id: l10-prime-gaps, stage: L10, title: "Prime gaps", summary: "The distances between consecutive primes and what is known about them.", pre: [l10-prime-distribution]}
+  - {id: l10-arithmetic-functions, stage: L10, title: "Arithmetic functions", summary: "Functions on whole numbers: number of divisors, sum of divisors, Mobius function.", pre: [l10-fundamental-theorem, l6-functions]}
+  - {id: l10-multiplicative-functions, stage: L10, title: "Multiplicative functions", summary: "Functions determined by their values on prime powers.", pre: [l10-arithmetic-functions, l10-eulers-totient]}
+  - {id: l10-dirichlet-series, stage: L10, title: "Dirichlet series", summary: "Infinite series built from an arithmetic function, divided by powers n^s.", pre: [l10-multiplicative-functions, l9-convergence]}
+  - {id: l10-euler-products, stage: L10, title: "Euler products", summary: "A sum over all whole numbers rewritten as a product over the primes.", pre: [l10-dirichlet-series, l10-unique-factorization]}
+
+  # ---------------------------------------------------------------- LEVEL 11
+  - {id: l11-why-insufficient, stage: L11, title: "Why ordinary numbers are sometimes insufficient", summary: "Some equations, like x^2 + 1 = 0, have no solution among the numbers we know.", pre: [l4-quadratic-equations, l5-curves, l5-intersections]}
+  - {id: l11-negatives-revisited, stage: L11, title: "What negative numbers are", summary: "Negative numbers were once rejected too: how number systems grow.", pre: [l11-why-insufficient, l2-integer-arithmetic]}
+  - {id: l11-sqrt-negatives, stage: L11, title: "Why square roots of negative numbers appear", summary: "Formulas for real solutions sometimes pass through square roots of negatives.", pre: [l11-negatives-revisited, l2-roots]}
+  - {id: l11-imaginary-unit, stage: L11, title: "The imaginary unit i", summary: "A new number whose square is -1.", pre: [l11-sqrt-negatives]}
+  - {id: l11-real-numbers, stage: L11, title: "Real numbers", summary: "All points on the number line, including irrational numbers like the square root of 2.", pre: [l1-decimals, l2-roots, l7-proof-by-contradiction]}
+  - {id: l11-imaginary-numbers, stage: L11, title: "Imaginary numbers", summary: "Real multiples of i.", pre: [l11-imaginary-unit, l11-real-numbers]}
+  - {id: l11-complex-numbers, stage: L11, title: "Complex numbers", summary: "Numbers a + bi combining a real and an imaginary part.", pre: [l11-imaginary-numbers]}
+  - {id: l11-real-parts, stage: L11, title: "Real parts", summary: "Re(z), the ordinary-number part of z.", pre: [l11-complex-numbers]}
+  - {id: l11-imaginary-parts, stage: L11, title: "Imaginary parts", summary: "Im(z), the coefficient of i.", pre: [l11-real-parts]}
+  - {id: l11-complex-plane, stage: L11, title: "Complex-plane coordinates", summary: "Picturing a + bi as the point (a, b).", pre: [l11-imaginary-parts, l5-cartesian-plane]}
+  - {id: l11-modulus, stage: L11, title: "Modulus", summary: "The distance of a complex number from zero.", pre: [l11-complex-plane, l5-pythagoras, l2-absolute-value]}
+  - {id: l11-argument, stage: L11, title: "Argument", summary: "The angle a complex number makes with the positive real axis.", pre: [l11-complex-plane, l6-trigonometric-functions]}
+  - {id: l11-conjugates, stage: L11, title: "Complex conjugates", summary: "Reflecting a + bi to a - bi.", pre: [l11-complex-plane]}
+  - {id: l11-complex-arithmetic, stage: L11, title: "Complex arithmetic", summary: "Adding, multiplying and dividing complex numbers.", pre: [l11-conjugates, l4-simplifying]}
+  - {id: l11-polar-form, stage: L11, title: "Polar form", summary: "Describing a complex number by its distance and angle.", pre: [l11-modulus, l11-argument]}
+  - {id: l11-eulers-formula, stage: L11, title: "Euler's formula", summary: "e^(i theta) = cos theta + i sin theta, connecting exponentials to circles.", pre: [l11-polar-form, l9-taylor-series, l6-exponential-functions]}
+  - {id: l11-complex-exponentials, stage: L11, title: "Complex exponentials", summary: "Raising numbers to complex powers, like n^(-s).", pre: [l11-eulers-formula]}
+  - {id: l11-complex-logarithms, stage: L11, title: "Complex logarithms", summary: "Undoing complex exponentials, and why there are infinitely many answers.", pre: [l11-complex-exponentials, l6-logarithmic-functions]}
+  - {id: l11-complex-functions, stage: L11, title: "Complex functions", summary: "Functions whose inputs and outputs are complex numbers, pictured with colours.", pre: [l11-complex-arithmetic, l6-functions]}
+  - {id: l11-complex-differentiation, stage: L11, title: "Complex differentiation", summary: "Derivatives in the complex plane, and why they are so much stronger than real ones.", pre: [l11-complex-functions, l9-derivatives, l9-rigorous-limits]}
+
+  # ---------------------------------------------------------------- LEVEL 12
+  - {id: l12-ra-asymptotics, stage: L12, module: real-analysis, title: "Asymptotic notation (big O)", summary: "Describing how fast a quantity grows while ignoring details - used for running times and prime-counting errors alike.", pre: [l9-rigorous-limits, l6-logarithmic-functions], goals: [pnp, rh]}
+  - {id: l12-ra-real-number-system, stage: L12, module: real-analysis, title: "Completeness of the real numbers", summary: "Why the real number line has no holes.", pre: [l11-real-numbers, l9-epsilon-delta]}
+  - {id: l12-ra-sequences-rigorous, stage: L12, module: real-analysis, title: "Sequences and series, rigorously", summary: "Proving convergence with epsilon arguments and comparison tests.", pre: [l12-ra-real-number-system, l9-convergence]}
+  - {id: l12-ra-continuity-rigorous, stage: L12, module: real-analysis, title: "Continuity, rigorously", summary: "The intermediate value theorem and other consequences of continuity.", pre: [l9-epsilon-delta, l12-ra-real-number-system]}
+  - {id: l12-ra-uniform-convergence, stage: L12, module: real-analysis, title: "Uniform convergence", summary: "When an infinite sum of functions behaves like a single nice function.", pre: [l12-ra-sequences-rigorous, l12-ra-continuity-rigorous, l9-power-series]}
+  - {id: l12-ra-riemann-integral, stage: L12, module: real-analysis, title: "The Riemann integral", summary: "A precise definition of area under a curve.", pre: [l12-ra-continuity-rigorous, l9-integrals]}
+
+  - {id: l12-la-vector-spaces, stage: L12, module: linear-algebra, title: "Vector spaces", summary: "Collections that can be added and scaled, generalising arrows.", pre: [l5-vectors, l8-sets]}
+  - {id: l12-la-matrices, stage: L12, module: linear-algebra, title: "Matrices", summary: "Grids of numbers that encode linear transformations and systems of equations.", pre: [l12-la-vector-spaces, l4-simultaneous-equations]}
+  - {id: l12-la-linear-maps, stage: L12, module: linear-algebra, title: "Linear maps", summary: "Functions that preserve adding and scaling.", pre: [l12-la-matrices, l8-functions-mappings]}
+  - {id: l12-la-determinants, stage: L12, module: linear-algebra, title: "Determinants", summary: "A number measuring how a matrix stretches area or volume.", pre: [l12-la-matrices, l8-permutations]}
+  - {id: l12-la-eigenvalues, stage: L12, module: linear-algebra, title: "Eigenvalues and eigenvectors", summary: "Directions a transformation only stretches.", pre: [l12-la-linear-maps, l12-la-determinants, l4-polynomials]}
+  - {id: l12-la-inner-products, stage: L12, module: linear-algebra, title: "Inner products and self-adjoint operators", summary: "Lengths and angles in vector spaces; operators whose eigenvalues are real - the Hilbert-Polya idea.", pre: [l12-la-eigenvalues, l11-conjugates]}
+
+  - {id: l12-aa-groups, stage: L12, module: abstract-algebra, title: "Groups", summary: "The algebra of symmetry: a set with one well-behaved operation.", pre: [l8-functions-mappings, l2-arithmetic-properties, l10-modular-arithmetic]}
+  - {id: l12-aa-lagrange, stage: L12, module: abstract-algebra, title: "Subgroups and Lagrange's theorem", summary: "Why the size of a subgroup divides the size of the group.", pre: [l12-aa-groups]}
+  - {id: l12-aa-rings, stage: L12, module: abstract-algebra, title: "Rings", summary: "Number systems with adding and multiplying, such as the integers and polynomials.", pre: [l12-aa-groups, l4-polynomials]}
+  - {id: l12-aa-fields, stage: L12, module: abstract-algebra, title: "Fields", summary: "Rings where you can also divide.", pre: [l12-aa-rings]}
+  - {id: l12-aa-finite-fields, stage: L12, module: abstract-algebra, title: "Finite fields", summary: "Number systems with finitely many elements, essential in coding theory and in the Riemann Hypothesis for curves.", pre: [l12-aa-fields, l10-congruences]}
+  - {id: l12-aa-polynomial-rings, stage: L12, module: abstract-algebra, title: "Polynomials over fields", summary: "Roots, factoring and degree arguments for polynomials.", pre: [l12-aa-fields, l4-factorization]}
+  - {id: l12-aa-characters, stage: L12, module: abstract-algebra, title: "Characters of groups", summary: "Turning a group into complex numbers on the unit circle.", pre: [l12-aa-lagrange, l11-complex-exponentials]}
+
+  - {id: l12-pr-random-variables, stage: L12, module: probability, title: "Random variables", summary: "Numbers that depend on chance.", pre: [l8-discrete-probability, l6-functions]}
+  - {id: l12-pr-expectation, stage: L12, module: probability, title: "Expectation", summary: "The long-run average value of a random quantity.", pre: [l12-pr-random-variables, l3-summation]}
+  - {id: l12-pr-variance, stage: L12, module: probability, title: "Variance", summary: "How spread out a random quantity is.", pre: [l12-pr-expectation, l2-squares]}
+  - {id: l12-pr-concentration, stage: L12, module: probability, title: "Concentration inequalities", summary: "Why averages of many random things are very predictable.", pre: [l12-pr-variance, l6-exponential-functions]}
+  - {id: l12-pr-probabilistic-method, stage: L12, module: probability, title: "The probabilistic method", summary: "Proving something exists by showing a random choice works with positive probability.", pre: [l12-pr-expectation, l8-combinatorics]}
+  - {id: l12-pr-random-models-primes, stage: L12, module: probability, title: "Random models of the primes", summary: "Pretending primes are random to predict their behaviour - and where the model breaks.", pre: [l12-pr-variance, l10-prime-distribution], goals: [rh]}
+
+  - {id: l12-al-data-structures, stage: L12, module: algorithms, title: "Data structures", summary: "Lists, stacks, queues, heaps and hash tables: organising data for fast access.", pre: [pa-computational-steps]}
+  - {id: l12-al-searching-sorting, stage: L12, module: algorithms, title: "Searching and sorting", summary: "Binary search, merge sort, and why sorting needs about n log n comparisons.", pre: [l12-al-data-structures, l6-logarithmic-functions]}
+  - {id: l12-al-divide-conquer, stage: L12, module: algorithms, title: "Divide and conquer", summary: "Split a problem, solve the parts, combine the answers.", pre: [l12-al-searching-sorting, l8-recurrence-relations]}
+  - {id: l12-al-graph-algorithms, stage: L12, module: algorithms, title: "Graph algorithms", summary: "Breadth-first search, shortest paths and spanning trees.", pre: [l12-al-searching-sorting, l8-trees]}
+  - {id: l12-al-dynamic-programming, stage: L12, module: algorithms, title: "Dynamic programming", summary: "Solving big problems by remembering answers to smaller ones.", pre: [l12-al-divide-conquer]}
+  - {id: l12-al-greedy, stage: L12, module: algorithms, title: "Greedy algorithms", summary: "Making the locally best choice - and when that is globally best.", pre: [l12-al-graph-algorithms]}
+
+  - {id: l12-cm-floating-point, stage: L12, module: computational-math, title: "How computers store numbers", summary: "Integers and floating-point numbers, and the rounding that comes with them.", pre: [l1-decimals, l3-exponent, pa-algorithms]}
+  - {id: l12-cm-numerical-errors, stage: L12, module: computational-math, title: "Numerical error", summary: "How rounding errors grow, and how to keep them under control.", pre: [l12-cm-floating-point, l2-estimation]}
+  - {id: l12-cm-computer-algebra, stage: L12, module: computational-math, title: "Exact arithmetic and computer algebra", summary: "Computing with exact fractions and symbols instead of approximations.", pre: [l12-cm-floating-point, l4-simplifying]}
+  - {id: l12-cm-interval-arithmetic, stage: L12, module: computational-math, title: "Interval arithmetic and rigorous computation", summary: "Computing with guaranteed error bounds, so that a computer check can be part of a proof.", pre: [l12-cm-numerical-errors, l4-inequalities, l12-cm-computer-algebra]}
+
+  - {id: l12-na-newtons-method, stage: L12, module: numerical-analysis, title: "Newton's method", summary: "Finding where a function is zero by following tangent lines.", pre: [l9-differentiation, l12-cm-numerical-errors]}
+  - {id: l12-na-numerical-integration, stage: L12, module: numerical-analysis, title: "Numerical integration", summary: "Approximating integrals with error estimates.", pre: [l9-integrals, l12-cm-numerical-errors]}
+  - {id: l12-na-series-acceleration, stage: L12, module: numerical-analysis, title: "Computing slowly converging series", summary: "Summation tricks that make infinite series practical to evaluate.", pre: [l9-convergence, l12-cm-numerical-errors]}
+  - {id: l12-na-complex-zeros, stage: L12, module: numerical-analysis, title: "Locating zeros in the complex plane", summary: "Sign changes, the argument principle and certified zero counting.", pre: [l12-na-newtons-method, l11-complex-functions, l12-na-series-acceleration, l12-na-numerical-integration, l12-ca-argument-principle]}
+
+  - {id: l12-op-linear-programming, stage: L12, module: optimization, title: "Linear programming", summary: "Optimising a linear quantity under linear constraints - solvable in polynomial time.", pre: [l12-la-matrices, l4-inequalities]}
+  - {id: l12-op-duality, stage: L12, module: optimization, title: "Duality", summary: "Every optimisation problem has a mirror-image problem that certifies its answer.", pre: [l12-op-linear-programming]}
+  - {id: l12-op-integer-programming, stage: L12, module: optimization, title: "Integer programming", summary: "The same problem restricted to whole numbers becomes NP-hard.", pre: [l12-op-linear-programming]}
+  - {id: l12-op-convexity, stage: L12, module: optimization, title: "Convexity", summary: "The geometric property that makes optimisation tractable.", pre: [l9-derivatives, l12-op-linear-programming]}
+
+  - {id: l12-ca-holomorphic, stage: L12, module: complex-analysis, title: "Holomorphic functions", summary: "Complex functions that have a derivative everywhere in a region.", pre: [l11-complex-differentiation]}
+  - {id: l12-ca-cauchy-riemann, stage: L12, module: complex-analysis, title: "The Cauchy-Riemann equations", summary: "The condition linking real and imaginary parts of a holomorphic function.", pre: [l12-ca-holomorphic, l9-multivariable]}
+  - {id: l12-ca-contour-integrals, stage: L12, module: complex-analysis, title: "Contour integrals", summary: "Integrating along paths in the complex plane.", pre: [l12-ca-holomorphic, l9-integration, l11-polar-form, l12-ra-riemann-integral]}
+  - {id: l12-ca-cauchy-theorem, stage: L12, module: complex-analysis, title: "Cauchy's theorem and integral formula", summary: "Integrals of holomorphic functions around loops vanish - with remarkable consequences.", pre: [l12-ca-contour-integrals, l12-ca-cauchy-riemann]}
+  - {id: l12-ca-analytic, stage: L12, module: complex-analysis, title: "Holomorphic functions are analytic", summary: "Every holomorphic function is given locally by a power series.", pre: [l12-ca-cauchy-theorem, l9-power-series, l12-ra-uniform-convergence]}
+  - {id: l12-ca-zeros-poles, stage: L12, module: complex-analysis, title: "Zeros and poles", summary: "Where complex functions vanish or blow up.", pre: [l12-ca-analytic]}
+  - {id: l12-ca-residues, stage: L12, module: complex-analysis, title: "Residues", summary: "Computing contour integrals from the behaviour near poles.", pre: [l12-ca-zeros-poles]}
+  - {id: l12-ca-argument-principle, stage: L12, module: complex-analysis, title: "The argument principle", summary: "Counting the zeros inside a loop by watching how the function winds around zero.", pre: [l12-ca-residues, l11-argument]}
+  - {id: l12-ca-entire-functions, stage: L12, module: complex-analysis, title: "Entire functions and infinite products", summary: "Functions holomorphic everywhere, built from their zeros.", pre: [l12-ca-analytic, l12-ca-zeros-poles]}
+  - {id: l12-ca-gamma-function, stage: L12, module: complex-analysis, title: "The gamma function", summary: "The function that extends factorials to complex numbers, needed for the zeta functional equation.", pre: [l9-improper-integrals, l12-ca-entire-functions]}
+
+  - {id: l12-ant-chebyshev, stage: L12, module: analytic-number-theory, title: "Chebyshev's functions", summary: "Weighted prime counts that are easier to analyse than pi(x).", pre: [l10-prime-counting, l12-ra-asymptotics]}
+  - {id: l12-ant-partial-summation, stage: L12, module: analytic-number-theory, title: "Partial summation", summary: "Converting between sums over primes and integrals.", pre: [l12-ant-chebyshev, l9-integration]}
+  - {id: l12-ant-pnt, stage: L12, module: analytic-number-theory, title: "The prime number theorem", summary: "pi(x) is approximately x / log x - proved in 1896 using the zeta function.", pre: [l12-ant-partial-summation, l10-prime-distribution]}
+  - {id: l12-ant-dirichlet-characters, stage: L12, module: analytic-number-theory, title: "Dirichlet characters", summary: "Characters of remainder groups, used to study primes in arithmetic progressions.", pre: [l12-aa-characters, l10-modular-arithmetic, l10-crt]}
+  - {id: l12-ant-l-functions, stage: L12, module: analytic-number-theory, title: "Dirichlet L-functions", summary: "Relatives of the zeta function, with their own generalized Riemann Hypothesis.", pre: [l12-ant-dirichlet-characters, l10-euler-products]}
+  - {id: l12-ant-perron, stage: L12, module: analytic-number-theory, title: "Perron's formula", summary: "Recovering sums of arithmetic functions from their Dirichlet series by contour integration.", pre: [l10-dirichlet-series, l12-ca-residues]}
+
+  - {id: l12-ct-turing-machines, stage: L12, module: complexity-theory, title: "Turing machines", summary: "The mathematical model of a computer used to define running time precisely.", pre: [pa-computational-steps, l8-functions-mappings]}
+  - {id: l12-ct-decidability, stage: L12, module: complexity-theory, title: "Decidability and the halting problem", summary: "Some well-defined questions cannot be answered by any algorithm at all.", pre: [l12-ct-turing-machines, l7-proof-by-contradiction]}
+  - {id: l12-ct-diagonalization, stage: L12, module: complexity-theory, title: "Diagonalization", summary: "Cantor's trick for showing one collection is strictly bigger than another - and its limits.", pre: [l12-ct-decidability]}
+
+  - {id: l12-fl-first-order-logic, stage: L12, module: formal-logic, title: "First-order logic", summary: "A precise language for mathematical statements with quantifiers.", pre: [l8-propositional-logic, l7-quantifiers]}
+  - {id: l12-fl-models, stage: L12, module: formal-logic, title: "Models and truth", summary: "What it means for a structure to make a formula true.", pre: [l12-fl-first-order-logic, l8-sets]}
+  - {id: l12-fl-completeness, stage: L12, module: formal-logic, title: "Completeness and soundness", summary: "Provable exactly when true in every model.", pre: [l12-fl-models, l7-writing-proofs]}
+  - {id: l12-fl-incompleteness, stage: L12, module: formal-logic, title: "Incompleteness", summary: "Godel: any consistent system for arithmetic leaves some statements unprovable.", pre: [l12-fl-completeness, l12-ct-decidability]}
+  - {id: l12-fl-lean, stage: L12, module: formal-logic, title: "Formal proofs in Lean 4", summary: "Writing proofs a computer can check, using Lean 4 and Mathlib.", pre: [l12-fl-first-order-logic, l7-writing-proofs], goals: [pnp, rh]}
+
+  - {id: l12-pt-proof-systems, stage: L12, module: proof-theory, title: "Proof systems", summary: "Formal rules for deriving statements, viewed as objects of study.", pre: [l12-fl-first-order-logic]}
+  - {id: l12-pt-resolution, stage: L12, module: proof-theory, title: "Resolution", summary: "A simple proof system that underlies modern SAT solvers.", pre: [l12-pt-proof-systems, pa-sat]}
+  - {id: l12-pt-proof-complexity, stage: L12, module: proof-theory, title: "Proof complexity", summary: "How long must proofs of certain tautologies be? Super-polynomial lower bounds for all proof systems would separate NP from coNP.", pre: [l12-pt-resolution, pa-complexity-classes]}
+
+  - {id: l12-co-generating-functions, stage: L12, module: combinatorics-graphs, title: "Generating functions", summary: "Encoding a sequence as the coefficients of a power series.", pre: [l8-recurrence-relations, l9-power-series], goals: [pnp, rh]}
+  - {id: l12-co-extremal, stage: L12, module: combinatorics-graphs, title: "Extremal combinatorics", summary: "How large can a structure be before a pattern is forced?", pre: [l8-combinatorics, l8-graphs]}
+  - {id: l12-co-sunflowers, stage: L12, module: combinatorics-graphs, title: "Sunflowers and set systems", summary: "A combinatorial lemma at the heart of monotone circuit lower bounds.", pre: [l12-co-extremal, l12-pr-probabilistic-method]}
+  - {id: l12-gt-matchings, stage: L12, module: combinatorics-graphs, title: "Matchings", summary: "Pairing up vertices - a problem with a clever polynomial-time algorithm.", pre: [l12-al-graph-algorithms]}
+  - {id: l12-gt-expanders, stage: L12, module: combinatorics-graphs, title: "Expander graphs", summary: "Sparse but extremely well-connected graphs, and their eigenvalues.", pre: [l12-la-eigenvalues, l8-connected-graphs]}
+
+  # ---------------------------------------------------------- PATH A: P vs NP
+  - {id: pa-algorithms, stage: PA, title: "Algorithms", summary: "A precise, step-by-step procedure that solves every instance of a problem.", pre: [l0-rules, l4-variables]}
+  - {id: pa-computational-steps, stage: PA, title: "Computational steps", summary: "What counts as one step, and how to count them.", pre: [pa-algorithms, l2-arithmetic-properties, l2-long-multiplication, l2-long-division]}
+  - {id: pa-time-complexity, stage: PA, title: "Time complexity", summary: "How the number of steps grows as the input gets bigger.", pre: [pa-computational-steps, l6-function-notation, l12-ra-asymptotics]}
+  - {id: pa-polynomial-growth, stage: PA, title: "Polynomial growth", summary: "Running times like n^2 or n^3: the working definition of 'efficient'.", pre: [pa-time-complexity, l4-polynomials]}
+  - {id: pa-exponential-growth, stage: PA, title: "Exponential growth", summary: "Running times like 2^n that quickly exceed the age of the universe.", pre: [pa-polynomial-growth, l6-exponential-functions]}
+  - {id: pa-decision-problems, stage: PA, title: "Decision problems", summary: "Problems whose answer is yes or no.", pre: [pa-algorithms, l7-statements, l8-sets]}
+  - {id: pa-verification, stage: PA, title: "Verification", summary: "Checking a proposed solution can be much easier than finding one.", pre: [pa-decision-problems, pa-polynomial-growth, pa-exponential-growth]}
+  - {id: pa-class-p, stage: PA, title: "P", summary: "The class of decision problems solvable in polynomial time.", pre: [pa-polynomial-growth, pa-decision-problems, l12-ct-turing-machines, l12-al-graph-algorithms, l12-al-dynamic-programming, l12-gt-matchings, l12-al-greedy]}
+  - {id: pa-class-np, stage: PA, title: "NP", summary: "The class of decision problems whose yes-answers can be verified in polynomial time.", pre: [pa-class-p, pa-verification, l7-there-exists]}
+  - {id: pa-reductions, stage: PA, title: "Polynomial-time reductions", summary: "Translating one problem into another to compare their difficulty.", pre: [pa-class-np, l8-functions-mappings]}
+  - {id: pa-np-hardness, stage: PA, title: "NP-hardness", summary: "Problems at least as hard as every problem in NP.", pre: [pa-reductions]}
+  - {id: pa-np-completeness, stage: PA, title: "NP-completeness", summary: "The hardest problems inside NP.", pre: [pa-np-hardness, l8-graph-colouring]}
+  - {id: pa-sat, stage: PA, title: "SAT", summary: "Can this logical formula be made true? The first problem proved NP-complete.", pre: [l8-propositional-logic, pa-class-np]}
+  - {id: pa-cook-levin, stage: PA, title: "Cook-Levin theorem", summary: "Why every problem in NP reduces to SAT.", pre: [pa-sat, pa-np-completeness, l12-ct-turing-machines]}
+  - {id: pa-complexity-classes, stage: PA, title: "Complexity classes", summary: "coNP, PSPACE, EXP, BPP and the polynomial hierarchy; the hierarchy theorems.", pre: [pa-cook-levin, l12-ct-diagonalization, l12-pr-concentration]}
+  - {id: pa-circuit-complexity, stage: PA, title: "Circuit complexity", summary: "Measuring the size of logic circuits needed to compute a function.", pre: [pa-complexity-classes, l8-boolean-algebra, l8-graphs]}
+  - {id: pa-lower-bounds, stage: PA, title: "Lower bounds", summary: "Proving that a problem needs many steps - the hard direction of complexity theory.", pre: [pa-circuit-complexity, l12-co-sunflowers]}
+  - {id: pa-relativization, stage: PA, title: "Relativization", summary: "Baker-Gill-Solovay: techniques that work equally with any oracle cannot settle P versus NP.", pre: [pa-complexity-classes, l12-ct-diagonalization]}
+  - {id: pa-natural-proofs, stage: PA, title: "Natural proofs", summary: "Razborov-Rudich: a broad class of circuit lower-bound arguments would break widely believed cryptography.", pre: [pa-lower-bounds, l12-pr-probabilistic-method]}
+  - {id: pa-algebrization, stage: PA, title: "Algebrization", summary: "Aaronson-Wigderson: a third barrier, covering techniques that extend relativization with polynomials.", pre: [pa-relativization, l12-aa-finite-fields, l12-aa-polynomial-rings]}
+  - {id: pa-known-approaches, stage: PA, title: "Known approaches to P versus NP", summary: "Circuit lower bounds, proof complexity, algebraic and geometric complexity, and what each has achieved.", pre: [pa-natural-proofs, pa-algebrization, l12-pt-proof-complexity, l12-la-determinants, l12-op-duality, l12-op-integer-programming, l12-op-convexity, l12-fl-incompleteness, l12-gt-expanders]}
+  - {id: pa-research, stage: PA, title: "Research-level complexity theory", summary: "Reading current papers, formulating precise questions and testing ideas against the known barriers.", pre: [pa-known-approaches, l7-writing-proofs, l12-fl-lean, l7-conjectures]}
+
+  # ------------------------------------------------ PATH B: Riemann Hypothesis
+  - {id: pb-primes, stage: PB, title: "Prime numbers: the questions behind the hypothesis", summary: "How many primes are there up to x, and how regularly are they spread out?", pre: [l10-primes-in-depth, l10-prime-counting, l10-prime-gaps]}
+  - {id: pb-number-theory, stage: PB, title: "The number theory toolkit", summary: "Unique factorization, arithmetic functions and Euler products, gathered for the journey.", pre: [pb-primes, l10-euler-products]}
+  - {id: pb-infinite-series, stage: PB, title: "Infinite series for the zeta function", summary: "The series 1 + 1/2^s + 1/3^s + ... and when it converges.", pre: [pb-number-theory, l9-convergence, l9-divergence]}
+  - {id: pb-limits-convergence, stage: PB, title: "Limits and convergence for functions", summary: "Uniform convergence and why the zeta series defines a nice function.", pre: [pb-infinite-series, l12-ra-uniform-convergence]}
+  - {id: pb-complex-numbers, stage: PB, title: "Complex numbers for the zeta function", summary: "Complex powers n^(-s) and how they wind around the origin.", pre: [l11-complex-exponentials, l11-polar-form, l11-complex-logarithms]}
+  - {id: pb-complex-functions, stage: PB, title: "Complex functions for the zeta function", summary: "Picturing functions of a complex variable.", pre: [pb-complex-numbers, l11-complex-functions]}
+  - {id: pb-complex-differentiation, stage: PB, title: "Differentiation in the complex plane", summary: "Why complex differentiability is so powerful.", pre: [pb-complex-functions, l11-complex-differentiation]}
+  - {id: pb-analytic-functions, stage: PB, title: "Analytic functions", summary: "Functions given by convergent power series, and their rigidity.", pre: [pb-complex-differentiation, l12-ca-analytic]}
+  - {id: pb-analytic-continuation, stage: PB, title: "Analytic continuation", summary: "Extending a function beyond where its formula works - in only one possible way.", pre: [pb-analytic-functions, l12-ca-zeros-poles]}
+  - {id: pb-zeta-function, stage: PB, title: "The zeta function", summary: "Riemann's zeta function, defined by a series and extended to the whole complex plane.", pre: [pb-analytic-continuation, pb-limits-convergence]}
+  - {id: pb-euler-product, stage: PB, title: "Euler's product formula", summary: "The zeta function as a product over primes - the link between zeta and primes.", pre: [pb-zeta-function]}
+  - {id: pb-functional-equation, stage: PB, title: "The functional equation", summary: "A symmetry relating zeta at s and at 1 - s.", pre: [pb-zeta-function, l12-ca-gamma-function]}
+  - {id: pb-trivial-zeros, stage: PB, title: "Trivial zeros", summary: "The zeros at -2, -4, -6, ... forced by the functional equation.", pre: [pb-functional-equation]}
+  - {id: pb-nontrivial-zeros, stage: PB, title: "Non-trivial zeros", summary: "All the other zeros - the mysterious ones.", pre: [pb-trivial-zeros, pb-euler-product]}
+  - {id: pb-critical-strip, stage: PB, title: "The critical strip", summary: "The region 0 < Re(s) < 1 where every non-trivial zero lies.", pre: [pb-nontrivial-zeros]}
+  - {id: pb-critical-line, stage: PB, title: "The critical line", summary: "The line Re(s) = 1/2. The Riemann Hypothesis says every non-trivial zero lies on it.", pre: [pb-critical-strip]}
+  - {id: pb-prime-counting, stage: PB, title: "Prime-counting functions and zeta", summary: "How pi(x) and psi(x) are controlled by the zeta function.", pre: [pb-critical-line, l12-ant-pnt]}
+  - {id: pb-explicit-formula, stage: PB, title: "The explicit formula", summary: "An exact formula for prime counts as a sum over the zeta zeros.", pre: [pb-prime-counting, l12-ant-perron, l12-ca-argument-principle]}
+  - {id: pb-zero-free-regions, stage: PB, title: "Zero-free regions", summary: "Proven regions with no zeros, and why they give the prime number theorem.", pre: [pb-explicit-formula]}
+  - {id: pb-equivalent-formulations, stage: PB, title: "Equivalent formulations of the Riemann Hypothesis", summary: "Statements about primes, divisor sums and the Mobius function that are each equivalent to RH.", pre: [pb-zero-free-regions, l10-multiplicative-functions]}
+  - {id: pb-barriers, stage: PB, title: "Existing proof attempts and known barriers", summary: "Hilbert-Polya, random matrices, the function-field analogue, numerical verification and why each falls short of a proof.", pre: [pb-equivalent-formulations, l12-la-inner-products, l12-aa-finite-fields, l12-cm-interval-arithmetic, l12-pr-random-models-primes, l12-gt-expanders, l12-na-complex-zeros]}
+  - {id: pb-research, stage: PB, title: "Research-level analytic number theory", summary: "Reading current papers, formulating precise questions and testing ideas against what is known.", pre: [pb-barriers, l7-writing-proofs, l12-fl-lean, l12-ant-l-functions, l7-conjectures]}

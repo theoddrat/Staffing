@@ -1,0 +1,238 @@
+id: l0-reasoning
+estimated_minutes: 18
+
+goal: |
+  We are learning what mathematical reasoning is: reaching conclusions that *must* be true
+  because of facts we already know.
+why: |
+  Reasoning is what makes mathematics different from guessing. A pattern suggests; reasoning
+  guarantees. Every proof, including any future proof about prime numbers or computation, is a
+  chain of reasoning steps.
+problem: |
+  How can you know something for certain without checking it directly?
+
+plain: |
+  **Reasoning** means starting from facts you are sure of, and working out new facts that
+  **must** follow.
+
+  Here is a tiny example. Suppose you know two things:
+
+  - Every cat has whiskers.
+  - Tom is a cat.
+
+  Then you can be completely sure that Tom has whiskers - without ever seeing Tom.
+
+  Notice the difference from patterns. "The sun has risen every day I remember, so it will rise
+  tomorrow" is a reasonable *guess* from a pattern. But "every cat has whiskers, Tom is a cat, so
+  Tom has whiskers" is not a guess - if the starting facts are true, the conclusion *cannot* be
+  false.
+
+  Reasoning can also go wrong. "Every cat has four legs, my dog has four legs, so my dog is a
+  cat" sounds similar, but the conclusion does not follow - plenty of four-legged things are not
+  cats. Learning to tell good reasoning from bad is a central skill in mathematics.
+
+analogy:
+  strategy: story
+  title: The detective
+  text: |
+    A detective knows the thief left the house before 9 o'clock, and knows that Sam was at the
+    house until 10 o'clock. The detective concludes that Sam is not the thief - without fingerprints,
+    without a confession, purely by reasoning. If both facts are true, the conclusion must be true.
+    Mathematicians are detectives whose clues are definitions and proven facts.
+
+visual:
+  widget: weighing-puzzle
+  props: {bags: 3, seed: 7}
+  caption: |
+    What you are seeing: three bags labelled A, B and C. Their weights are hidden. You can put any
+    two bags on the balance, and it tips toward the heavier one. Every weighing is recorded as a
+    fact. The panel on the right shows what can be *concluded* from those facts - including
+    comparisons you never made directly.
+  prompt: Find the order of the three bags from heaviest to lightest using as few weighings as you can.
+
+example_simple:
+  title: Whiskers
+  problem: 'Facts - every cat has whiskers; Tom is a cat. What can you conclude?'
+  steps:
+    - The first fact is about *every* cat, with no exceptions.
+    - The second fact says Tom is one of those cats.
+    - So whatever is true of every cat is true of Tom.
+  answer: Tom has whiskers. This conclusion must be true if the two facts are.
+
+example_harder:
+  title: A chain of weighings
+  problem: Bag A is heavier than bag B. Bag B is heavier than bag C. You never weighed A against C. Which is heavier?
+  steps:
+    - A outweighs B, so A is heavier than B.
+    - B outweighs C, so B is heavier than C.
+    - Anything heavier than B is heavier than everything B is heavier than - so A is heavier than C.
+    - We reached a fact about A and C without ever comparing them directly.
+  answer: A is heavier than C, and the full order is A, B, C. Reasoning gave us a fact we never measured.
+
+word:
+  terms: [reasoning, conclusion, definition]
+  text: |
+    This is **reasoning** (more fully, *logical reasoning*). The facts you start from are sometimes
+    called **premises**, and the new fact you reach is the **conclusion**. Reasoning in mathematics
+    usually starts from **definitions** - exact statements of what words mean - and from facts that
+    have already been proved.
+
+symbols:
+  - symbol: '\therefore'
+    name: therefore sign
+    looks_like: Three dots arranged in a triangle, pointing upward.
+    means: '"Therefore" - what comes next follows from what came before.'
+    why: It is a quick way to mark the conclusion of a piece of reasoning.
+    read_aloud: '"Therefore".'
+
+formal:
+  statement: |
+    **Mathematical reasoning** is the process of deriving new statements from accepted facts,
+    definitions and assumptions, in such a way that each new statement follows necessarily from
+    statements already established. A conclusion reached this way is guaranteed to be true
+    whenever the starting facts are true.
+  kind: definition
+  glossary:
+    - {word: deriving, meaning: Obtaining by careful steps.}
+    - {word: statement, meaning: 'A sentence that is either true or false.'}
+    - {word: accepted facts, meaning: 'Facts already known to be true, or agreed as starting points.'}
+    - {word: follows necessarily, meaning: 'Cannot be false if the earlier statements are true.'}
+
+notation:
+  - expression: 'A \text{ heavier than } B,\quad B \text{ heavier than } C \quad\therefore\quad A \text{ heavier than } C'
+    read_aloud: A is heavier than B, and B is heavier than C, therefore A is heavier than C
+    parts:
+      - {symbol: 'A,\ B,\ C', meaning: Names for the three bags.}
+      - {symbol: ',', meaning: Separates the two facts we start from.}
+      - {symbol: '\therefore', meaning: '"Therefore" - the conclusion follows.'}
+    english: From two weighings, we know a third comparison without doing it.
+
+connections_back:
+  - {lesson: l0-rules, how: 'Reasoning follows exact steps, just as a rule does.'}
+  - {lesson: l0-comparison, how: 'Chains of comparisons are one of the simplest kinds of reasoning.'}
+
+worked:
+  title: Spot the bad argument
+  problem: '"All birds have feathers. My pillow has feathers. Therefore my pillow is a bird." What is wrong?'
+  steps:
+    - The first fact says every bird has feathers. It does *not* say that only birds have feathers.
+    - The pillow having feathers does not make it one of the birds.
+    - The conclusion does not follow, even though both starting facts are true.
+  answer: The reasoning is faulty. Knowing all birds have feathers tells you nothing about which feathered things are birds.
+
+experiment:
+  widget: weighing-puzzle
+  props: {bags: 4, seed: 3}
+  task: There are four bags this time. Work out the complete order from heaviest to lightest, letting reasoning fill in the comparisons you do not make.
+  goal: {deduceOrder: true}
+  success: |
+    You never compared every pair, yet you know the whole order. The extra knowledge came from
+    reasoning, not from the balance. That is the power of reasoning: it multiplies what you know.
+
+mistakes:
+  - mistake: Treating a pattern as if it were reasoning.
+    why: A pattern seen many times is still a guess about the next case; reasoning guarantees it.
+    fix: Ask, "must this be true, or has it just been true so far?"
+  - mistake: Reversing a fact ("all cats have whiskers, so everything with whiskers is a cat").
+    why: '"All A are B" does not mean "all B are A". Dogs have whiskers too.'
+    fix: Check which way round the fact goes.
+  - mistake: Assuming the conclusion is true just because the reasoning looks tidy.
+    why: If a starting fact is false, the conclusion can be false even with perfect reasoning.
+    fix: Check both the starting facts and each step.
+
+statements:
+  - kind: established-fact
+    text: If A is heavier than B and B is heavier than C, then A is heavier than C.
+    note: This property of "heavier than" is called transitivity. Many comparisons - taller, older, greater - have it.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: valid-conclusion
+      type: choice
+      kind: apply
+      prompt: 'Facts - every square has four corners; this shape is a square. What must be true?'
+      options:
+        - text: This shape has four corners.
+          correct: true
+        - text: Every shape with four corners is a square.
+          diagnosis: That reverses the fact. Rectangles have four corners too but are not all squares.
+        - text: Nothing can be concluded.
+          diagnosis: The two facts together guarantee the shape has four corners.
+      explanation: Whatever is true of every square is true of this square.
+    - id: bad-argument
+      type: choice
+      kind: counterexample
+      prompt: Which argument is faulty?
+      options:
+        - text: All fish live in water. A whale lives in water. Therefore a whale is a fish.
+          correct: true
+        - text: All fish live in water. A trout is a fish. Therefore a trout lives in water.
+          diagnosis: This one is sound - the trout is one of the fish, so it lives in water.
+      explanation: Living in water does not make something a fish - whales are mammals. The fact "all fish live in water" cannot be reversed.
+    - id: guaranteed
+      type: truefalse
+      kind: recall
+      prompt: 'True or false: if the starting facts are true and every step of reasoning is correct, the conclusion must be true.'
+      answer: true
+      diagnosis: That is exactly what makes reasoning reliable - correct steps from true facts cannot lead to a false conclusion.
+      explanation: True. That guarantee is the point of reasoning.
+    - id: heights
+      type: choice
+      kind: solve
+      prompt: Ali is taller than Ben. Ben is taller than Cara. Who is the shortest?
+      options:
+        - text: Cara
+          correct: true
+        - text: Ben
+          diagnosis: Ben is taller than Cara, so Ben is not the shortest.
+        - text: Ali
+          diagnosis: Ali is taller than Ben, who is taller than Cara - Ali is the tallest.
+        - text: It cannot be known.
+          diagnosis: The two facts chain together - Ali, then Ben, then Cara.
+      explanation: Ali is taller than Ben, who is taller than Cara, so Cara is the shortest.
+    - id: pattern-vs-reason
+      type: explain
+      kind: explain
+      prompt: Explain the difference between guessing from a pattern and reasoning. Give an example of each.
+      rubric:
+        - A pattern only shows what has happened so far; the next case could differ.
+        - Reasoning gives a conclusion that must be true if the starting facts are true.
+        - Gives a sensible example of each.
+      model_answer: |
+        A pattern only tells you what has happened so far - "it rained the last three Mondays" does
+        not make next Monday rainy. Reasoning gives conclusions that must be true if the starting
+        facts are - "every cat has whiskers and Tom is a cat, so Tom has whiskers" cannot be wrong
+        if the facts are right.
+      explanation: Patterns suggest; reasoning guarantees.
+
+connections_forward:
+  - {lesson: l0-proof, how: 'A proof is a complete chain of reasoning that settles a question for every case.'}
+  - {lesson: l7-arguments, how: 'Level 7 makes logical arguments precise.'}
+  - {lesson: l7-fallacies, how: 'Common ways reasoning goes wrong, studied carefully.'}
+
+alternatives:
+  - strategy: physical-activity
+    title: Three cups
+    text: |
+      Fill three cups with different amounts of water and label them A, B and C. Pour to compare
+      only A with B and then only B with C (hold them up side by side). Suppose A has more than B
+      and B has more than C. Before comparing A and C, say out loud which has more. Then check.
+      You were right *before* you looked - because the conclusion followed from what you already
+      knew. That is reasoning.
+  - strategy: contrast
+    title: Must versus probably
+    text: |
+      Sort these into "must be true" and "probably true":
+
+      - "Every number in my list is even. 14 is in my list. So 14 is even." - **must**.
+      - "The last five buses were late. So the next bus will be late." - **probably** (a pattern).
+      - "A is older than B, B is older than C. So A is older than C." - **must**.
+
+      Reasoning lives in the "must" column.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      All the toys in the red box are cars. You pull a toy out of the red box. What is it? A car!
+      You didn't even look - you just knew. Knowing something for sure because of other things you
+      know is called reasoning.

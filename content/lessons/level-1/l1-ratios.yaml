@@ -1,0 +1,225 @@
+id: l1-ratios
+estimated_minutes: 18
+
+goal: |
+  We are learning what a ratio is - a comparison of two amounts, like "2 cups of flour for every 3 eggs"
+  - and how ratios stay the same when a recipe is scaled.
+why: |
+  Ratios describe relationships that stay fixed as things grow: recipes, maps, mixtures, speeds. They
+  lead to proportionality, gradients of lines and rates of change in calculus.
+problem: |
+  A recipe for 4 people uses 2 cups of flour and 3 eggs. How much do you need for 8 people - and why is
+  "add the same amount to both" wrong?
+
+plain: |
+  A **ratio** compares two quantities by saying how much of one there is **for every** amount of the
+  other.
+
+  "2 cups of flour for every 3 eggs" is the ratio **2 to 3**, written **2 : 3**.
+
+  Ratios **scale by repeating whole groups**. Two batches of the recipe use 2 + 2 = 4 cups and 3 + 3 = 6
+  eggs, so 4 : 6 is the same ratio as 2 : 3. Three batches: 6 : 9. Every amount is multiplied by the same
+  number.
+
+  **Order matters.** 2 : 3 (flour to eggs) is not the same as 3 : 2.
+
+  **Ratio versus fraction.** In a class of 12 girls and 8 boys, the ratio of girls to boys is 12 : 8
+  (part to part), which simplifies to 3 : 2. The *fraction* of the class that is girls is $\tfrac{12}{20}$
+  (part to whole). Both are useful - but they are different questions.
+
+analogy:
+  strategy: everyday-objects
+  title: Mixing paint
+  text: |
+    A shade of green is made with 1 tin of blue for every 2 tins of yellow. Mix 1 and 2, or 3 and 6, or 10
+    and 20 - the colour is identical, because the ratio 1 : 2 is the same. Mix 3 blue with 4 yellow (just
+    "adding one more of each") and the colour changes.
+
+visual:
+  widget: ratio-mixer
+  props: {a: 2, b: 3, labelA: cups of flour, labelB: eggs, scale: 1, editable: true}
+  caption: |
+    What you are seeing: one batch of a recipe, drawn as 2 squares of flour and 3 circles of egg, boxed
+    together as a group. The scale control adds or removes whole batches. The ratio shown underneath always
+    simplifies back to 2 : 3, however many batches you make.
+  prompt: Make 2, 3 and 4 batches. What stays the same, and what changes?
+
+example_simple:
+  title: Rice and water
+  problem: Rice is cooked with 2 cups of water for every 1 cup of rice. How much water for 3 cups of rice?
+  steps:
+    - |-
+      The ratio of water to rice is 2 : 1.
+    - 3 cups of rice is 3 batches of 1 cup.
+    - Each batch needs 2 cups of water - 3 batches need 2, 4, 6.
+  answer: |-
+    6 cups of water. The ratio 6 : 3 is the same as 2 : 1.
+
+example_harder:
+  title: Girls and boys
+  problem: A class has 12 girls and 8 boys. Give the ratio of girls to boys in its simplest form, and the fraction of the class that is girls.
+  steps:
+    - |-
+      Girls to boys is 12 : 8.
+    - |-
+      Both numbers can be split into 4 equal groups - 12 is 4 groups of 3 and 8 is 4 groups of 2 - so 12 : 8 is 4 batches of 3 : 2.
+    - |-
+      Simplest ratio - 3 : 2. For every 3 girls there are 2 boys.
+    - Fraction of the class - 12 girls out of 20 students, $\tfrac{12}{20} = \tfrac{3}{5}$.
+  answer: |-
+    The ratio is 3 : 2; the fraction of girls is $\tfrac{3}{5}$.
+
+word:
+  terms: [ratio]
+  text: |
+    A comparison like 2 : 3 is a **ratio** (Latin for "reckoning" or "reason"). Ratios that describe the
+    same relationship, like 2 : 3 and 4 : 6, are **equivalent ratios**, and two quantities that always keep
+    the same ratio are said to be **in proportion**.
+
+symbols:
+  - symbol: ':'
+    name: ratio colon
+    looks_like: Two dots, one above the other, between two numbers.
+    means: '"For every" or "to". 2 : 3 means 2 of the first for every 3 of the second.'
+    why: The colon separates the two compared amounts while keeping them together as one comparison.
+    read_aloud: '"2 to 3".'
+
+formal:
+  statement: |
+    The **ratio** of two quantities $a$ and $b$ (with $b \neq 0$), written $a : b$, compares them by how
+    many of the first there are for each amount of the second. The ratios $a : b$ and $c : d$ are equal
+    when $a \times d = b \times c$; in particular $a : b = (a \times k) : (b \times k)$ for any counting
+    number $k$.
+  kind: definition
+  glossary:
+    - {word: 'a, b', meaning: The two amounts being compared.}
+    - {word: 'b \neq 0', meaning: '$b$ is not zero.'}
+    - {word: 'k', meaning: 'Any counting number - the number of batches.'}
+    - {word: 'a \times k', meaning: '$k$ batches of $a$.'}
+
+notation:
+  - expression: '2 : 3 = 4 : 6'
+    read_aloud: two to three equals four to six
+    parts:
+      - {symbol: '2 : 3', meaning: '2 of the first for every 3 of the second - one batch.'}
+      - {symbol: '=', meaning: Describes the same relationship as.}
+      - {symbol: '4 : 6', meaning: Two batches.}
+    english: Doubling both amounts keeps the same ratio.
+
+connections_back:
+  - {lesson: l1-numerators-denominators, how: 'Equivalent ratios work like equivalent fractions - multiply both numbers by the same amount.'}
+  - {lesson: l1-equal-groups, how: 'Scaling a ratio means repeating equal groups (batches).'}
+
+worked:
+  title: Paint
+  problem: |-
+    Green paint uses blue and yellow in the ratio 1 : 2. You have 3 tins of blue. How many tins of yellow?
+  steps:
+    - One batch is 1 blue and 2 yellow.
+    - 3 tins of blue is 3 batches.
+    - 3 batches of 2 yellow is 2, 4, 6.
+  answer: |-
+    6 tins of yellow - the ratio 3 : 6 is the same as 1 : 2.
+
+experiment:
+  widget: ratio-mixer
+  props: {a: 2, b: 3, labelA: cups of flour, labelB: eggs, scale: 1, editable: true}
+  task: Scale the recipe so that it uses exactly 6 cups of flour, keeping the ratio the same.
+  goal: {a: 6, b: 9}
+  success: |
+    6 cups of flour is 3 batches, so the eggs also became 3 batches - 9. Both amounts grew by the same
+    *times*, not by the same *amount*. That is the essence of a ratio.
+
+mistakes:
+  - mistake: |-
+      Scaling by adding the same amount to both (2 : 3 becomes 6 : 7).
+    why: Adding 4 to each changes the relationship - the mixture or recipe changes.
+    fix: Scale by whole batches - multiply both numbers by the same number.
+  - mistake: Reversing the order (writing eggs to flour when asked for flour to eggs).
+    why: '2 : 3 and 3 : 2 describe different recipes.'
+    fix: Write the amounts in the order the question names them.
+  - mistake: Confusing a ratio with a fraction of the whole.
+    why: '12 girls to 8 boys is 12 : 8, but the fraction of girls is 12 out of 20.'
+    fix: Ask - am I comparing part to part (ratio) or part to whole (fraction)?
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: scale
+      type: generated
+      generator: ratio-scale
+    - id: simplest
+      type: text
+      kind: solve
+      mode: math
+      prompt: A bag has 12 red beads and 8 blue beads. What is the ratio of red to blue in its simplest form? (Type it like 3:2.)
+      accept: ['3:2']
+      common_wrong:
+        - answer: '2:3'
+          diagnosis: The order matters - red first, then blue.
+        - answer: '12:8'
+          diagnosis: That is correct but not in simplest form - both numbers share 4 equal groups.
+      hint: Share both numbers into the same number of equal groups.
+      explanation: |-
+        12 : 8 is 4 batches of 3 : 2.
+    - id: order-matters
+      type: truefalse
+      kind: recall
+      prompt: 'True or false: the ratio 2 : 3 is the same as the ratio 3 : 2.'
+      answer: false
+      diagnosis: 2 cups of flour for every 3 eggs is a different recipe from 3 cups of flour for every 2 eggs.
+      explanation: False - order matters in a ratio.
+    - id: part-whole
+      type: choice
+      kind: apply
+      prompt: A team has 3 goalkeepers and 7 other players. What fraction of the team are goalkeepers?
+      options:
+        - text: $\tfrac{3}{10}$
+          correct: true
+        - text: $\tfrac{3}{7}$
+          diagnosis: |-
+            That compares goalkeepers with the other players (a ratio, 3 : 7). The fraction compares goalkeepers with the whole team of 10.
+          revisit: l1-ratios
+        - text: $\tfrac{7}{10}$
+          diagnosis: That is the fraction of players who are not goalkeepers.
+      explanation: 3 goalkeepers out of 10 players - $\tfrac{3}{10}$.
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: A drink is made with 1 cup of juice for every 4 cups of water. Explain how to make a bigger batch with the same taste, and why adding 1 cup of each would change the taste.
+      rubric:
+        - Multiply both amounts by the same number (for example 2 cups of juice to 8 of water).
+        - The ratio stays 1 to 4, so the taste is the same.
+        - Adding 1 to each gives 2 to 5, a different ratio (stronger juice).
+      model_answer: |
+        Make whole batches - for example 2 cups of juice and 8 cups of water, which is two batches - so the
+        ratio stays 1 : 4 and it tastes the same. Adding 1 cup of each would give 2 : 5, which has
+        relatively more juice, so it would taste stronger.
+      explanation: Ratios scale by multiplying, not adding.
+
+connections_forward:
+  - {lesson: l3-proportional, how: 'Quantities that always keep the same ratio are proportional.'}
+  - {lesson: l5-gradients, how: 'The steepness of a line is a ratio - rise for every step across.'}
+  - {lesson: l9-rate-of-change, how: 'Rates of change, such as speed, are ratios.'}
+
+practice: [ratio-scale]
+
+alternatives:
+  - strategy: everyday-objects
+    title: Maps
+    text: |
+      A map with scale 1 : 1000 means 1 centimetre on the map stands for 1000 centimetres (10 metres) in
+      reality. 3 centimetres on the map? 3000 centimetres - 30 metres. Every distance on the map is scaled by
+      the same number. If the scale were "add 999 centimetres" instead, the map would be useless - which is
+      why ratios multiply rather than add.
+  - strategy: visual
+    title: Boxes of batches
+    text: |
+      Draw one batch: two squares and three circles, with a box around them. Two batches: two boxes. Count
+      all the squares and all the circles: 4 and 6. Three boxes: 6 and 9. The ratio is about the *box* -
+      as long as you add whole boxes, the ratio never changes.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      For every 1 toy car you give your friend, you give your sister 2. Give your friend 3 cars, and your
+      sister gets 6. You always give your sister twice as many - that "for every" rule is called a ratio.

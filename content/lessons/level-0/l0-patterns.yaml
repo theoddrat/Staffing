@@ -1,0 +1,225 @@
+id: l0-patterns
+estimated_minutes: 18
+
+goal: |
+  We are learning what a mathematical pattern is, how to continue one - and why patterns can
+  fool you.
+why: |
+  Noticing patterns is how most mathematics is discovered. People noticed that the primes thin
+  out in a particular way long before anyone could explain it - and that pattern eventually led
+  to the Riemann Hypothesis. But patterns also mislead, which is why mathematics needs proof.
+problem: |
+  When you see a few things in a row, how can you predict what comes next - and how sure can
+  you be?
+
+plain: |
+  A **pattern** is something that repeats or grows in a regular way, so that you can predict
+  what comes next.
+
+  - A **repeating pattern** goes round and round: red, blue, red, blue, red, ...
+  - A **growing pattern** changes by a regular rule: 2, 4, 6, 8, ... (two more each time).
+
+  To continue a pattern, look for *what stays the same* about how one item becomes the next.
+
+  But be careful: a pattern you have seen a few times might not continue forever. Seeing a
+  pattern is a **guess** - a very useful guess, but still a guess - until someone explains *why*
+  it must continue.
+
+analogy:
+  strategy: everyday-objects
+  title: Music and wallpaper
+  text: |
+    A drum beat - boom, tap, tap, boom, tap, tap - is a repeating pattern: once you have heard it,
+    you can clap along. Wallpaper with flowers every hand-width is the same idea in space. Your
+    brain predicts what comes next without being told. Mathematics makes that prediction precise.
+
+visual:
+  widget: pattern
+  props: {kind: squares, terms: 4}
+  caption: |
+    What you are seeing: a growing pattern of dots arranged in squares - 1 dot, then 4, then 9,
+    then 16. Each picture is the next "stage" of the pattern. Before revealing the next stage, try
+    to predict how many dots it will have.
+  prompt: Predict the next stage, then reveal it. Try the other patterns too.
+
+example_simple:
+  title: Counting by twos
+  problem: What comes next - 2, 4, 6, 8, ...?
+  steps:
+    - Look at how each number becomes the next. 2 to 4 is two more. 4 to 6 is two more. 6 to 8 is two more.
+    - The pattern is "two more each time".
+    - Two more than 8 is 10.
+  answer: '10'
+
+example_harder:
+  title: The growing triangle
+  problem: Dots are arranged in triangles - 1, 3, 6, 10. How many dots are in the next triangle?
+  steps:
+    - The differences are not all the same - 1 to 3 is two more, 3 to 6 is three more, 6 to 10 is four more.
+    - But the differences themselves form a pattern - 2, 3, 4, ... - each one more than the last.
+    - So the next difference should be 5, and 10 + 5 = 15.
+    - In the picture each new triangle adds a new bottom row, one dot longer than the last row - which explains *why* the pattern continues.
+  answer: 15 dots. The pattern was hidden one layer deeper, in the differences.
+
+word:
+  terms: [pattern]
+  text: |
+    The word is **pattern**. Each item in a pattern is often called a **term** or a **stage**:
+    in 2, 4, 6, 8 the first term is 2 and the fourth term is 8.
+
+symbols:
+  - symbol: '\ldots'
+    name: ellipsis
+    looks_like: Three dots in a row, sitting on the line like full stops.
+    means: '"And so on, following the same pattern" - the list continues in the way it has started.'
+    why: Writing a pattern out forever is impossible. The ellipsis says "you can see how it continues" in three dots.
+    read_aloud: '"And so on", or "dot dot dot".'
+
+formal:
+  statement: |
+    A **pattern** is a regularity in an ordered list of objects or numbers that can be described
+    by a rule, so that later items can be predicted from earlier ones. A pattern observed in
+    finitely many cases is a guess about later cases, not a guarantee.
+  kind: definition
+  glossary:
+    - {word: regularity, meaning: Something that happens in the same way again and again.}
+    - {word: ordered list, meaning: 'Items in a definite order - first, second, third, ...'}
+    - {word: rule, meaning: 'An exact description of how to get the items.'}
+    - {word: finitely many cases, meaning: 'Only the cases actually looked at - not all possible ones.'}
+
+notation:
+  - expression: '2,\ 4,\ 6,\ 8,\ \ldots'
+    read_aloud: two, four, six, eight, and so on
+    parts:
+      - {symbol: '2,\ 4,\ 6,\ 8', meaning: The first four terms of the pattern.}
+      - {symbol: ',', meaning: Commas separate the terms.}
+      - {symbol: '\ldots', meaning: The list continues in the same way forever.}
+    english: The numbers that go up by two each time, starting from two, without end.
+
+connections_back:
+  - {lesson: l0-counting, how: 'Counting itself is a pattern - each counting word is one more than the last.'}
+
+worked:
+  title: The pattern that breaks
+  problem: Put 1, 2, 3, 4 and then 5 points on a circle and join every pair of points with straight lines. The circle is cut into 1, 2, 4, 8, 16 pieces. How many pieces will 6 points give?
+  steps:
+    - The numbers 1, 2, 4, 8, 16 seem to double each time, so it is very tempting to predict 32.
+    - But when you actually draw 6 points carefully, the most pieces you can get is 31.
+    - The doubling pattern held for five cases and then broke.
+    - The pattern was a coincidence of small cases, not a rule.
+  answer: 31, not 32. A pattern seen in a few cases can fail - which is exactly why mathematics needs proof.
+
+experiment:
+  widget: pattern
+  props: {kind: triangles, terms: 3, editable: true}
+  task: Choose a pattern, predict the next stage before revealing it, and get three predictions right.
+  goal: {predict: true}
+  success: |
+    You found the rule behind each pattern and used it to predict. Each time you made a
+    prediction, you were making a guess based on a rule you believed - mathematics then asks,
+    "can we be *sure* the rule continues?"
+
+mistakes:
+  - mistake: Assuming that because a pattern held a few times, it must hold forever.
+    why: Some patterns break - like the circle pieces that go 1, 2, 4, 8, 16, 31.
+    fix: Treat a pattern as a guess until you understand *why* it continues.
+  - mistake: Looking only at the numbers and not at how they change.
+    why: The pattern is often in the differences, as in 1, 3, 6, 10.
+    fix: Write down how each term turns into the next.
+  - mistake: Thinking a short list has only one possible continuation.
+    why: 1, 2, 4 could continue 8 (doubling) or 7 (adding 1, then 2, then 3, ...).
+    fix: Ask what rule produced the list. Without the rule, several continuations are possible.
+
+statements:
+  - kind: computational-observation
+    text: Joining all pairs of 1, 2, 3, 4 and 5 points on a circle gives at most 1, 2, 4, 8 and 16 pieces.
+  - kind: disproved-claim
+    text: '"Joining points on a circle always doubles the number of pieces."'
+    note: With 6 points the maximum is 31, not 32. Five cases of a pattern did not make it true.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: next-threes
+      type: number
+      kind: predict
+      prompt: 'What comes next: 3, 6, 9, 12, ...?'
+      answer: '15'
+      common_wrong:
+        - answer: '13'
+          diagnosis: The pattern goes up by 3 each time, not 1.
+      explanation: Each term is 3 more than the one before, so 12 + 3 = 15.
+    - id: triangle-next
+      type: number
+      kind: predict
+      prompt: 'Triangles of dots have 1, 3, 6, 10, 15 dots. How many dots does the next triangle have?'
+      answer: '21'
+      common_wrong:
+        - answer: '20'
+          diagnosis: The differences grow by one each time - 2, 3, 4, 5 - so the next difference is 6.
+        - answer: '19'
+          diagnosis: Look at the differences between terms - 2, 3, 4, 5. The next one is 6.
+      hint: Look at how much is added each time.
+      explanation: The amount added grows by one each time (2, 3, 4, 5, then 6), so 15 + 6 = 21.
+    - id: repeating
+      type: choice
+      kind: predict
+      prompt: 'A pattern goes: circle, square, square, circle, square, square, circle, ... What is the next shape?'
+      options:
+        - text: square
+          correct: true
+        - text: circle
+          diagnosis: After each circle come two squares. The last shape shown was a circle, so a square comes next.
+      explanation: The block "circle, square, square" repeats, so after a circle comes a square.
+    - id: forever
+      type: truefalse
+      kind: counterexample
+      prompt: 'True or false: if a pattern works for the first five cases, it must work forever.'
+      answer: false
+      diagnosis: Remember the circle pieces - 1, 2, 4, 8, 16 and then 31. Five cases did not guarantee the sixth.
+      explanation: False. Patterns can break. Only a proof shows a pattern continues forever.
+    - id: describe-rule
+      type: explain
+      kind: explain
+      prompt: 'Describe in your own words the rule for 5, 10, 15, 20, ... and say what the 6th term is.'
+      rubric:
+        - Each term is 5 more than the one before (or counting in fives).
+        - The pattern starts at 5.
+        - The 6th term is 30.
+      model_answer: Start at 5 and add 5 each time - counting in fives. The terms are 5, 10, 15, 20, 25, 30, so the 6th term is 30.
+      explanation: The rule is "start at 5 and add 5 each time"; the 6th term is 30.
+
+connections_forward:
+  - {lesson: l0-rules, how: 'A rule is the exact description that produces a pattern.'}
+  - {lesson: l0-proof, how: 'Proof is how we become sure a pattern continues.'}
+  - {lesson: l6-sequences, how: 'A sequence is an ordered list of numbers - patterns made precise.'}
+  - {lesson: l10-prime-distribution, how: 'The pattern in how prime numbers thin out leads to the Riemann Hypothesis.'}
+
+practice: [skip-count]
+
+alternatives:
+  - strategy: physical-activity
+    title: Build it with coins
+    text: |
+      Make a row of 1 coin. Under it, a row of 2 coins. Under that, 3 coins. You have built a
+      triangle: 1, then 1 + 2 = 3 coins, then 3 + 3 = 6 coins. Before adding the next row, predict
+      the total - then build it and check. Building the pattern shows you *why* it grows the way it
+      does: each new row is one coin longer than the last.
+  - strategy: contrast
+    title: Pattern or coincidence?
+    text: |
+      Compare two lists.
+
+      - 2, 4, 6, 8, ... comes from a clear rule ("two more each time"). We can see why it continues.
+      - The scores of a football team in four matches, 2, 4, 6, 8, came from four games. There is
+        no rule making the next score 10.
+
+      Both lists *look* the same. The difference is whether a rule produces them. A mathematical
+      pattern is one backed by a rule.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      Clap, clap, stomp. Clap, clap, stomp. Clap, clap, ... what comes next? Stomp! You knew
+      because it keeps doing the same thing over and over. That is a pattern. Mathematicians love
+      patterns because they let you guess what comes next - and then they try to find out *why*,
+      so they can be really sure.

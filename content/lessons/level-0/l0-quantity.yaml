@@ -1,0 +1,218 @@
+id: l0-quantity
+estimated_minutes: 12
+
+goal: |
+  We are learning what a quantity is - "how many" or "how much" - and that it does not change
+  when things are moved around.
+why: |
+  Mathematics studies quantities, not appearances. A row of coins spread out *looks* longer than
+  the same coins bunched up, but there are not more of them. Learning to see through
+  appearances to the quantity underneath is the first habit of mathematical thinking.
+problem: |
+  When two things look different, how do you know whether there is really more of one?
+
+plain: |
+  A **quantity** is an amount: *how many* things there are, or *how much* of something there is.
+
+  - "How many" is for things you can count one by one: chairs, apples, people.
+  - "How much" is for things you measure rather than count: water, time, distance.
+
+  The important point: a quantity stays the same when you **rearrange** things. Spread out five
+  coins and you still have five coins. Pour juice into a taller glass and you still have the same
+  amount of juice. Only adding or taking away changes a quantity.
+
+analogy:
+  strategy: everyday-objects
+  title: Juice in two glasses
+  text: |
+    Pour a cup of juice into a tall thin glass, then into a short wide glass. In the tall glass
+    the juice reaches higher, so it *looks* like more. But you have not added or spilled a drop:
+    the quantity of juice is exactly the same. The shape of the container changed; the amount did
+    not.
+
+visual:
+  widget: counting-objects
+  props: {count: 6, rearrange: true, editable: false, object: cookie}
+  caption: |
+    What you are seeing: six cookies on a tray. The "Spread out" and "Bunch up" buttons move the
+    cookies around without adding or removing any. Watch the counter in the corner: it stays at 6
+    however the cookies are arranged.
+  prompt: Spread the cookies out, bunch them up, then count them each time.
+
+example_simple:
+  title: Spread-out coins
+  problem: Five coins are bunched together. Someone spreads them out in a long line. Are there more coins now?
+  steps:
+    - Spreading moves the coins; it does not add any.
+    - Count them in the line - one, two, three, four, five.
+  answer: No. There are still five coins - the quantity has not changed.
+
+example_harder:
+  title: How many, or how much?
+  problem: Which of these are "how many" quantities, and which are "how much" quantities - the number of eggs in a box, the amount of milk in a jug, the length of a road, the number of pages in a book?
+  steps:
+    - Eggs and pages come in separate whole pieces you can count one at a time - these are "how many" quantities.
+    - Milk and road length can be divided as finely as you like; you measure them instead of counting - these are "how much" quantities.
+    - Both kinds are quantities, because both are amounts.
+  answer: Eggs and pages are counted ("how many"). Milk and road length are measured ("how much").
+
+word:
+  terms: [quantity]
+  text: |
+    The mathematical word for an amount is **quantity**, from the Latin *quantus*, "how much".
+    Mathematicians sometimes call "how many" quantities *discrete* (made of separate pieces) and
+    "how much" quantities *continuous* (smoothly divisible). You do not need those words yet -
+    just the idea that both are amounts.
+
+symbols: []
+no_symbol_note: |
+  There is no single symbol for "quantity". Quantities are described by numbers, and number
+  symbols are introduced in [[lesson:l1-number-symbols|Number symbols]].
+
+formal:
+  statement: |
+    A **quantity** is a property of a collection or object that can be counted or measured, and
+    that stays the same when the collection is rearranged or the object is moved or reshaped -
+    changing only when something is added or taken away.
+  kind: definition
+  glossary:
+    - {word: property, meaning: 'A feature something has, such as its colour, its shape or its amount.'}
+    - {word: counted, meaning: Found by counting one by one.}
+    - {word: measured, meaning: 'Found by comparing with a unit, such as a cup or a metre.'}
+    - {word: rearranged, meaning: 'Moved into a different position or order, without adding or removing anything.'}
+
+notation: []
+
+connections_back:
+  - {lesson: l0-counting, how: 'Counting is how we find a "how many" quantity.'}
+
+worked:
+  title: The two rows of buttons
+  problem: Row A has 6 buttons spaced far apart. Row B has 6 buttons squashed close together. A child says Row A has more. Is the child right, and how could you show them?
+  steps:
+    - Row A is longer, which is why it looks like more.
+    - Match the buttons one-to-one - move each button of Row B next to a button of Row A.
+    - Every button has exactly one partner, with none left over.
+  answer: No - both rows have 6 buttons. Matching shows the quantities are equal even though the rows look different.
+
+experiment:
+  widget: counting-objects
+  props: {count: 3, rearrange: true, editable: true, object: flower}
+  task: Make a tray of exactly 7 flowers. Then spread them out and bunch them up, checking the total each time.
+  goal: {count: 7}
+  success: |
+    Moving the flowers never changed the total - only adding or removing did. Mathematics cares
+    about that unchanging amount, the quantity.
+
+mistakes:
+  - mistake: Thinking a longer row must contain more objects.
+    why: Length depends on spacing. Spreading things out changes how they look, not how many there are.
+    fix: Count, or match one-to-one, instead of judging by eye.
+  - mistake: Thinking only countable things are quantities.
+    why: Amounts of water, time or distance are quantities too - we measure them instead of counting.
+    fix: Ask "is this an amount?" If yes, it is a quantity.
+
+statements:
+  - kind: established-fact
+    text: Young children often judge a spread-out row of coins to contain more coins than the same coins bunched together.
+    note: The psychologist Jean Piaget studied this; understanding that quantity survives rearrangement is called "conservation".
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: which-quantities
+      type: choice
+      kind: apply
+      multi: true
+      prompt: Which of these are quantities? Choose all that apply.
+      options:
+        - text: The number of pages in a book.
+          correct: true
+        - text: The length of a road.
+          correct: true
+        - text: The weight of a bag of rice.
+          correct: true
+        - text: The colour of a car.
+          diagnosis: Colour is a property, but it is not an amount - you cannot count or measure "how much red".
+        - text: The name of a dog.
+          diagnosis: A name is a label, not an amount.
+      explanation: Pages, length and weight are amounts, so they are quantities. Colour and names are not amounts.
+    - id: spread-coins
+      type: truefalse
+      kind: predict
+      prompt: 'True or false: if you spread 8 coins out in a long line, there are more than 8 coins.'
+      answer: false
+      diagnosis: Spreading out changes the arrangement, not the quantity. Count them - still 8.
+      explanation: False. Rearranging never changes a quantity.
+    - id: many-or-much
+      type: choice
+      kind: apply
+      prompt: The amount of water in a bath is a ...
+      options:
+        - text: '"how much" quantity - we measure it.'
+          correct: true
+        - text: '"how many" quantity - we count it one by one.'
+          diagnosis: Water does not come in separate pieces you can count; we measure it (for example in litres).
+        - text: not a quantity at all.
+          diagnosis: An amount of water is a quantity - it can be measured.
+      explanation: Water is measured, not counted, so it is a "how much" quantity.
+    - id: juice
+      type: choice
+      kind: predict
+      prompt: Juice is poured from a short wide glass into a tall thin glass. Nothing is spilled. What happens to the amount of juice?
+      options:
+        - text: It stays the same.
+          correct: true
+        - text: It increases, because the juice is higher.
+          diagnosis: The juice is higher because the glass is thinner. Nothing was added, so the amount is unchanged.
+        - text: It decreases, because the glass is thinner.
+          diagnosis: A thinner glass holds the same juice higher up. Nothing was removed.
+      explanation: The quantity of juice stays the same; only its shape changed.
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: In your own words, what is a quantity, and what can and cannot change it?
+      rubric:
+        - A quantity is an amount - how many or how much.
+        - Rearranging, moving or reshaping does not change it.
+        - Adding or taking away does change it.
+      model_answer: |
+        A quantity is an amount - how many things there are or how much of something there is.
+        Moving things around or pouring them into a different shape does not change it; only
+        adding some or taking some away does.
+      explanation: A quantity is an amount that survives rearrangement and changes only by adding or removing.
+
+connections_forward:
+  - {lesson: l0-measurement, how: 'Measurement is how we find "how much" quantities.'}
+  - {lesson: l0-comparison, how: 'Comparing tells us which of two quantities is bigger.'}
+  - {lesson: l1-what-is-a-number, how: 'A number is the idea that names a quantity.'}
+
+practice: [count-objects]
+
+alternatives:
+  - strategy: physical-activity
+    title: The play-dough test
+    text: |
+      Roll a ball of play-dough (or bread dough, or clay). Now squash it flat into a pancake. Is
+      there more dough? Less? Roll it back into a ball - it is the same ball. The *shape* changed
+      completely, but the *amount* of dough never did. That unchanging amount is the quantity.
+  - strategy: contrast
+    title: Looks versus amount
+    text: |
+      Two things can look very different and have the same quantity:
+
+      - 5 coins in a heap and 5 coins in a long line - same quantity.
+      - A litre of water in a bucket and a litre in a bottle - same quantity.
+
+      And two things can look similar and have different quantities:
+
+      - A full glass and a glass with one sip taken - looks almost the same, but a little less.
+
+      Mathematics trains you to ask "how much is really there?" rather than "how does it look?"
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      If you have 4 sweets in your hand and you open your fingers so they spread out, do you have
+      more sweets? No! Still 4. The only way to get more sweets is for someone to give you one, and
+      the only way to have fewer is to eat one. "How many sweets" is a quantity. Moving them around
+      does not change it.

@@ -1,0 +1,222 @@
+id: l1-bigger-smaller
+estimated_minutes: 15
+
+goal: |
+  We are learning the symbols $>$ ("greater than") and $<$ ("less than"), how to read them, and how to
+  write them the right way round.
+why: |
+  Comparisons are among the most common statements in mathematics. Statements built from $<$ and
+  $>$ describe where zeta zeros may lie and how fast running times grow - they are everywhere in
+  research mathematics.
+problem: |
+  How do we write "seven is more than three" in a short, exact, universal way - and never get it
+  backwards?
+
+plain: |
+  Two symbols compare numbers:
+
+  - $7 > 3$ is read "seven is **greater than** three".
+  - $3 < 7$ is read "three is **less than** seven".
+
+  The trick to remember: the symbol is **wide open on the side of the bigger number** and **pointed
+  on the side of the smaller number**. Many people picture a hungry mouth that always opens toward
+  the bigger meal.
+
+  Notice that $7 > 3$ and $3 < 7$ say exactly the same fact - one reads it from the big number, the
+  other from the small number.
+
+  If two numbers are the same, neither symbol is true: $5 > 5$ is false and $5 < 5$ is false.
+  (For equal numbers we use $=$, from the next lesson.)
+
+analogy:
+  strategy: everyday-objects
+  title: The open mouth
+  text: |
+    Picture a crocodile choosing between 3 fish and 7 fish. It opens its mouth toward the 7 - it
+    always wants the bigger pile. Draw the mouth and you have $3 < 7$ or $7 > 3$. The open side faces
+    the bigger number, the point faces the smaller one.
+
+visual:
+  widget: compare-groups
+  props: {left: 7, right: 3, showSymbol: true, editable: true}
+  caption: |
+    What you are seeing: two groups with their numbers, and the comparison symbol between them. As
+    you change the groups, the symbol turns to keep its open side toward the bigger group. When the
+    groups are equal it becomes $=$.
+  prompt: Change the groups and say the statement aloud each time - "... is greater than ..." or "... is less than ...".
+
+example_simple:
+  title: Seven and three
+  problem: Write a true statement comparing 7 and 3 using $>$ or $<$.
+  steps:
+    - 7 is the bigger number, so the open side faces 7.
+    - Writing 7 first - $7 > 3$, "seven is greater than three".
+    - Writing 3 first - $3 < 7$, "three is less than seven".
+  answer: $7 > 3$ (or equivalently $3 < 7$).
+
+example_harder:
+  title: Forty-five and fifty-four
+  problem: Put the right symbol between 45 and 54.
+  steps:
+    - Compare tens first - 4 tens versus 5 tens. 54 is bigger.
+    - The open side must face 54, and 45 is written first.
+    - So the point faces 45 - $45 < 54$.
+  answer: $45 < 54$, "forty-five is less than fifty-four".
+
+word:
+  terms: [greater-than, less-than]
+  text: |
+    $>$ is called the **greater-than sign** and $<$ the **less-than sign**. Statements built with them
+    are called **inequalities** - a word you will meet again in algebra.
+
+symbols:
+  - symbol: '>'
+    name: greater-than sign
+    looks_like: Two short lines meeting at a point on the right, open on the left.
+    means: The number on the left (open side) is bigger than the number on the right.
+    why: The shape shows size - wide on the big side, narrow on the small side. It was introduced by the English mathematician Thomas Harriot, published in 1631.
+    read_aloud: '"Is greater than" - $9 > 2$ is "nine is greater than two".'
+  - symbol: '<'
+    name: less-than sign
+    looks_like: Two short lines meeting at a point on the left, open on the right.
+    means: The number on the left (pointed side) is smaller than the number on the right.
+    why: The same shape turned around. Pointed side - smaller.
+    read_aloud: '"Is less than" - $2 < 9$ is "two is less than nine".'
+
+formal:
+  statement: |
+    For numbers $a$ and $b$, $a < b$ ("$a$ is less than $b$") means $a$ comes before $b$ in the order of
+    numbers, and $a > b$ ("$a$ is greater than $b$") means $a$ comes after $b$. The statements $a < b$
+    and $b > a$ say the same thing.
+  kind: definition
+  glossary:
+    - {word: 'a, b', meaning: Any two numbers.}
+    - {word: order of numbers, meaning: 'The order in which they come when counting up.'}
+    - {word: say the same thing, meaning: 'One is true exactly when the other is true.'}
+
+notation:
+  - expression: '3 < 7'
+    read_aloud: three is less than seven
+    parts:
+      - {symbol: '3', meaning: The smaller number.}
+      - {symbol: '<', meaning: 'Is less than - the point faces the smaller number.'}
+      - {symbol: '7', meaning: The bigger number.}
+    english: Three is smaller than seven.
+  - expression: '7 > 3'
+    read_aloud: seven is greater than three
+    parts:
+      - {symbol: '>', meaning: 'Is greater than - the open side faces the bigger number.'}
+    english: The same fact, read from the other end.
+
+connections_back:
+  - {lesson: l1-comparing-numbers, how: 'These symbols write down the result of comparing two numbers.'}
+
+worked:
+  title: Over one hundred
+  problem: Which symbol goes between 102 and 99?
+  steps:
+    - 102 has a hundreds digit; 99 does not. So 102 is bigger.
+    - The open side faces 102, which is written first.
+  answer: $102 > 99$.
+
+experiment:
+  widget: compare-groups
+  props: {left: 2, right: 6, showSymbol: true, editable: true}
+  task: Change the groups so that the statement shown reads "left is greater than right".
+  goal: {relation: '>'}
+  success: |
+    The symbol now opens toward the left group. Read it aloud: "... is greater than ...". The symbol
+    is just a picture of which side is bigger.
+
+mistakes:
+  - mistake: Writing the symbol backwards ($3 > 7$).
+    why: The open side must face the bigger number.
+    fix: Draw the open "mouth" toward the bigger number first, then check by reading aloud.
+  - mistake: Thinking $3 < 7$ and $7 > 3$ are different facts.
+    why: They describe the same comparison from opposite ends.
+    fix: Read both aloud - "three is less than seven", "seven is greater than three" - same fact.
+  - mistake: Thinking $5 < 5$ is true.
+    why: 5 is not smaller than itself.
+    fix: For equal numbers, use $=$.
+
+statements:
+  - kind: established-fact
+    text: The symbols $<$ and $>$ first appeared in a book by Thomas Harriot published in 1631, ten years after his death.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: symbol
+      type: generated
+      generator: compare-numbers
+      params: {min: 0, max: 100}
+    - id: symbol-two
+      type: generated
+      generator: compare-numbers
+      params: {min: 0, max: 1000}
+    - id: read-aloud
+      type: choice
+      kind: recall
+      prompt: How is $12 > 8$ read aloud?
+      options:
+        - text: Twelve is greater than eight.
+          correct: true
+        - text: Twelve is less than eight.
+          diagnosis: The open side faces 12, so 12 is the bigger number - "greater than".
+        - text: Eight is greater than twelve.
+          diagnosis: Read from left to right - twelve comes first.
+      explanation: '$>$ means "is greater than" - twelve is greater than eight.'
+    - id: same-fact
+      type: choice
+      kind: apply
+      prompt: Which statement says the same thing as $4 < 9$?
+      options:
+        - text: $9 > 4$
+          correct: true
+        - text: $9 < 4$
+          diagnosis: This says nine is less than four, which is false.
+        - text: $4 > 9$
+          diagnosis: This says four is greater than nine, which is false.
+      explanation: '"Four is less than nine" is the same fact as "nine is greater than four".'
+    - id: equal-case
+      type: truefalse
+      kind: counterexample
+      prompt: 'True or false: $5 < 5$.'
+      answer: false
+      diagnosis: 5 is not smaller than itself - the numbers are equal.
+      explanation: False. $5 = 5$, so neither $<$ nor $>$ is true.
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: Explain how you remember which way round to write $<$ and $>$.
+      rubric:
+        - The open (wide) side faces the bigger number.
+        - The pointed side faces the smaller number.
+      model_answer: The symbol opens wide toward the bigger number, like a mouth reaching for the bigger meal, and its point faces the smaller number.
+      explanation: Open side to the bigger number, point to the smaller.
+
+connections_forward:
+  - {lesson: l1-equal-quantities, how: 'The third possibility - equal - and the equals sign.'}
+  - {lesson: l3-greater-than, how: 'Reading inequalities fluently, including with negative numbers.'}
+  - {lesson: pb-critical-strip, how: 'The critical strip of the zeta function is described by two inequalities.'}
+
+practice: [compare-numbers]
+
+alternatives:
+  - strategy: visual
+    title: Big side, small side
+    text: |
+      Draw $<$ large on paper. Measure the two ends: the right end is wide open, the left end is a
+      single point. Now write a big number at the wide end and a small number at the point - 2 < 9.
+      The symbol itself is a little picture: it is *bigger* where the bigger number is.
+  - strategy: smaller-steps
+    title: Three steps every time
+    text: |
+      1. Decide which number is bigger (count, or compare tens first).
+      2. Draw the open side facing the bigger number.
+      3. Read it aloud from left to right. If it sounds right ("nine is greater than two"), it is right.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      This sign < is a hungry crocodile mouth. The crocodile always eats the bigger number! So the
+      open mouth points at the bigger one: 2 < 9, because 9 is bigger and the crocodile wants it.

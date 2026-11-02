@@ -1,0 +1,222 @@
+id: l1-negative-numbers
+estimated_minutes: 20
+
+goal: |
+  We are learning about numbers less than zero - temperatures below freezing, depths below sea level,
+  debts - and how to order them.
+why: |
+  Many real quantities go "below zero". Negative numbers let us describe them, and they make
+  subtraction always possible. They also matter far ahead: the "trivial zeros" of the Riemann zeta
+  function are exactly the negative even numbers $-2, -4, -6, \ldots$.
+problem: |
+  If it is 2 degrees and the temperature drops by 5 degrees, what is the new temperature? There is no
+  counting number for the answer - we need something new.
+
+plain: |
+  Extend the number line to the **left of zero**, using the same equal steps. The new points are the
+  **negative numbers**: one step left of 0 is **$-1$** ("negative one"), two steps left is **$-2$**, and
+  so on.
+
+  Each negative number is the **mirror image** of a positive number: $-3$ is three steps left of zero,
+  just as 3 is three steps right.
+
+  Negative numbers describe "below zero":
+
+  - temperatures below freezing ($-5$°C),
+  - depths below sea level ($-200$ metres),
+  - money owed (a debt of 10 coins is like having $-10$ coins),
+  - floors below ground level in a lift ($-1$, $-2$).
+
+  **Ordering is the tricky part.** Further left always means *smaller*. So $-7$ is smaller than $-3$,
+  even though 7 is bigger than 3. Think of temperature: $-7$°C is colder than $-3$°C.
+
+analogy:
+  strategy: everyday-objects
+  title: The thermometer
+  text: |
+    A thermometer is a number line standing upright. Zero is freezing. Warmer temperatures are above
+    zero; colder temperatures go below zero and are written with a minus sign. The further down the
+    thermometer, the colder - so $-10$°C is colder (smaller) than $-2$°C.
+
+visual:
+  widget: number-line
+  props: {min: -10, max: 10, value: 2, orientation: vertical, theme: temperature, editable: true}
+  caption: |
+    What you are seeing: a thermometer drawn as a vertical number line. Zero is freezing. Numbers above
+    zero are positive; numbers below zero are negative, written with a minus sign. Higher on the
+    thermometer always means bigger (warmer); lower always means smaller (colder).
+  prompt: Start at 2 and drag the temperature down by 5 steps. Where do you land?
+
+example_simple:
+  title: Below freezing
+  problem: The temperature is 2 degrees below zero. How is that written?
+  steps:
+    - Below zero means a negative number.
+    - Two steps below zero is $-2$.
+  answer: $-2$°C, read "negative two degrees".
+
+example_harder:
+  title: Which is colder?
+  problem: Which is the smaller number, $-7$ or $-3$?
+  steps:
+    - On the number line, $-7$ is seven steps left of 0, and $-3$ is three steps left of 0.
+    - So $-7$ is further left.
+    - Further left means smaller.
+    - On a thermometer - $-7$°C is colder than $-3$°C.
+  answer: $-7$ is smaller - written $-7 < -3$ - even though 7 is bigger than 3.
+
+word:
+  terms: [negative-number]
+  text: |
+    Numbers less than zero are called **negative numbers** (from Latin *negare*, "to deny"). The
+    numbers 3 and $-3$, the same distance from zero on opposite sides, are called **opposites**.
+
+symbols:
+  - symbol: '-3'
+    name: negative sign
+    looks_like: A short horizontal dash written directly in front of a number.
+    means: The number is that many steps to the left of zero - below zero.
+    why: The same dash is used for subtraction, and the two meanings are closely connected - you will see exactly how in Level 2 and Level 3. Written in front of a number on its own, it means "negative".
+    read_aloud: '"Negative three" (many people also say "minus three").'
+
+formal:
+  statement: |
+    A number $x$ is **negative** if $x < 0$. For every positive number $a$ there is a negative number
+    $-a$ the same distance from zero on the opposite side, and $a$ and $-a$ are called opposites. On the
+    number line, a number further to the left is always smaller.
+  kind: definition
+  glossary:
+    - {word: 'x < 0', meaning: '"$x$ is less than zero" - $x$ lies left of 0.'}
+    - {word: 'a', meaning: Any positive number.}
+    - {word: '-a', meaning: 'The negative number the same distance from 0 as $a$.'}
+    - {word: opposites, meaning: 'Two numbers mirrored across zero, like 4 and $-4$.'}
+
+notation:
+  - expression: '-7 < -3'
+    read_aloud: negative seven is less than negative three
+    parts:
+      - {symbol: '-7', meaning: 'Seven steps left of zero.'}
+      - {symbol: '<', meaning: Is less than.}
+      - {symbol: '-3', meaning: 'Three steps left of zero.'}
+    english: Negative seven is further left (colder) than negative three.
+
+connections_back:
+  - {lesson: l1-positive-numbers, how: 'Negative numbers mirror the positive numbers on the other side of zero.'}
+  - {lesson: l1-zero, how: 'Zero is the dividing point between positive and negative.'}
+
+worked:
+  title: The diver
+  problem: A diver is 10 metres below sea level and swims 4 metres up. Where is she now?
+  steps:
+    - 10 metres below sea level is $-10$.
+    - Swimming up moves toward zero - count 4 steps up - $-9$, $-8$, $-7$, $-6$.
+  answer: She is at $-6$ - six metres below sea level.
+
+experiment:
+  widget: number-line
+  props: {min: -10, max: 10, value: 3, orientation: vertical, theme: temperature, editable: true}
+  task: It is 3 degrees. The temperature falls by 7 degrees. Move the thermometer to the new temperature.
+  goal: {target: -4}
+  success: |
+    Counting 7 steps down from 3 passes through 0 and lands on $-4$. Below zero, the counting simply
+    continues with negative numbers.
+
+mistakes:
+  - mistake: Thinking $-7$ is bigger than $-3$ because 7 is bigger than 3.
+    why: For negative numbers, further from zero means further *left* - and left is smaller.
+    fix: Picture the thermometer - $-7$ degrees is colder, so $-7$ is smaller.
+  - mistake: Thinking negative numbers are not "real" numbers.
+    why: They describe real things - debts, temperatures, depths - and obey clear rules.
+    fix: Treat them as positions on the number line, just like positive numbers.
+  - mistake: Forgetting to pass through zero when moving from positive to negative.
+    why: Zero is a step of its own on the line.
+    fix: Count every step, including the step onto and off 0.
+
+statements:
+  - kind: established-fact
+    text: The ancient Chinese text *The Nine Chapters on the Mathematical Art* used red and black counting rods to represent positive and negative quantities.
+  - kind: established-fact
+    text: Brahmagupta (628 CE) gave rules for calculating with negative numbers, which he described as debts, alongside positive "fortunes".
+  - kind: established-fact
+    text: Many European mathematicians were still uneasy about negative numbers in the 1600s and 1700s.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: compare
+      type: generated
+      generator: compare-numbers
+      params: {min: -20, max: 20}
+    - id: move
+      type: generated
+      generator: number-line-move
+    - id: colder
+      type: choice
+      kind: apply
+      prompt: Which temperature is colder, $-8$°C or $-2$°C?
+      options:
+        - text: $-8$°C
+          correct: true
+        - text: $-2$°C
+          diagnosis: $-2$ is only two steps below zero; $-8$ is eight steps below. Further below zero is colder.
+      explanation: $-8$ is further below zero, so it is colder (smaller).
+    - id: neg-order
+      type: truefalse
+      kind: counterexample
+      prompt: 'True or false: $-10 > -1$, because 10 is bigger than 1.'
+      answer: false
+      diagnosis: On the number line $-10$ is further left than $-1$, so $-10$ is smaller.
+      explanation: False. $-10 < -1$.
+    - id: drop
+      type: number
+      kind: apply
+      prompt: The temperature is 4°C and falls by 6 degrees. What is the new temperature?
+      answer: '-2'
+      common_wrong:
+        - answer: '2'
+          diagnosis: Counting down 6 from 4 passes zero - 3, 2, 1, 0, then $-1$, $-2$. The answer is below zero.
+        - answer: '-10'
+          diagnosis: Start counting down from 4, not from 0.
+      hint: Count down one step at a time from 4.
+      explanation: Counting down - 3, 2, 1, 0, $-1$, $-2$. The new temperature is $-2$°C.
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: Explain why $-7$ is smaller than $-3$, using a number line or a thermometer.
+      rubric:
+        - Negative numbers are to the left of (below) zero.
+        - $-7$ is further left (lower, colder) than $-3$.
+        - Further left (lower) means smaller.
+      model_answer: |
+        On a number line, negative numbers are to the left of zero, and the further left you go the
+        smaller the number. $-7$ is seven steps left of zero, further than $-3$, so it is smaller - just
+        as $-7$ degrees is colder than $-3$ degrees.
+      explanation: Further left on the number line is smaller.
+
+connections_forward:
+  - {lesson: l1-integers, how: 'The whole numbers and their negatives together form the integers.'}
+  - {lesson: l2-integer-arithmetic, how: 'Calculating with negative numbers.'}
+  - {lesson: pb-trivial-zeros, how: 'The trivial zeros of the Riemann zeta function are the negative even numbers.'}
+
+practice: [number-line-move, compare-numbers]
+
+alternatives:
+  - strategy: story
+    title: The lift with a basement
+    text: |
+      A hotel lift has buttons ... $-2$, $-1$, 0, 1, 2, 3 ... where 0 is the ground floor and $-1$, $-2$
+      are the car-park levels underground. If you are on floor 1 and go down 3 floors, you pass 0 and
+      arrive at $-2$. The car park at $-2$ is *lower* than the car park at $-1$. In a lift, nobody thinks
+      $-2$ is "higher" than $-1$ - and that is exactly how negative numbers are ordered.
+  - strategy: everyday-objects
+    title: Money and debt
+    text: |
+      If you have 5 coins you are at 5. If you spend all 5, you are at 0. If you then borrow 3 more coins
+      from a friend, you owe 3 - your money is $-3$. Owing 8 ($-8$) is worse than owing 3 ($-3$): $-8$ is
+      smaller. Negative numbers are a natural way to keep track of debts.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      Imagine climbing down a ladder into a swimming pool. The top of the water is 0. Every step down
+      under the water is a negative number: $-1$, $-2$, $-3$. The deeper you go, the smaller the number.
+      So $-3$ is deeper (smaller) than $-1$.

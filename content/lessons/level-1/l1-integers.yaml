@@ -1,0 +1,225 @@
+id: l1-integers
+estimated_minutes: 15
+
+goal: |
+  We are learning about the integers - all the whole numbers together with their negatives - and the
+  symbol $\mathbb{Z}$.
+why: |
+  The integers are the numbers of number theory. Primes, divisibility and congruences are all about
+  integers, and research papers say "let $n \in \mathbb{Z}$" constantly. The integers are also the first
+  number system where every number has both a next number and a previous one.
+problem: |
+  How do we name the collection of all the evenly spaced points on the number line - in both directions?
+
+plain: |
+  Take the whole numbers 0, 1, 2, 3, ... and add their negatives $-1, -2, -3, \ldots$ The result is the
+  **integers**:
+
+  $$\ldots, -3, -2, -1, 0, 1, 2, 3, \ldots$$
+
+  On the number line, the integers are the **evenly spaced tick marks in both directions**, with nothing
+  in between. Numbers with parts, like $2.5$ or $-\tfrac{1}{2}$, are not integers - they sit between the
+  marks.
+
+  Every integer has a **next** integer (one more) and a **previous** integer (one less). Unlike the
+  natural numbers, the integers have no first member: they go on forever in both directions.
+
+  The set of integers is written $\mathbb{Z}$.
+
+analogy:
+  strategy: everyday-objects
+  title: Floors of a tall building with basements
+  text: |
+    A building with many basement levels has floors ..., $-3$, $-2$, $-1$, 0 (ground), 1, 2, 3, ... There
+    are no half-floors. The lift can always go one floor up or one floor down. The integers are that
+    building, imagined with no top floor and no bottom floor.
+
+visual:
+  widget: number-line
+  props: {min: -8, max: 8, value: -2, highlight: integers, editable: true, snap: 0.5}
+  caption: |
+    What you are seeing: a number line from $-8$ to 8 with every integer marked by a highlighted dot. The
+    movable point can also stop halfway between integers. When it sits on a highlighted dot, its value is
+    an integer; between dots, it is not.
+  prompt: Move the point onto integers and between them. Which positions are integers?
+
+example_simple:
+  title: Listing integers
+  problem: List the integers from $-3$ to 3.
+  steps:
+    - Start at $-3$ and step right one at a time.
+    - $-3, -2, -1, 0, 1, 2, 3$.
+  answer: $-3, -2, -1, 0, 1, 2, 3$ - seven integers.
+
+example_harder:
+  title: How many from minus five to five?
+  problem: How many integers are there from $-5$ to 5, including both ends?
+  steps:
+    - Negative ones - $-5, -4, -3, -2, -1$ - five integers.
+    - Zero - one integer.
+    - Positive ones - $1, 2, 3, 4, 5$ - five integers.
+    - Total - 5, then 1 more, then 5 more.
+  answer: 11 integers. (Forgetting zero gives 10 - a very common slip.)
+
+word:
+  terms: [integer]
+  text: |
+    These numbers are the **integers**, from Latin *integer*, meaning "whole" or "untouched". The symbol
+    $\mathbb{Z}$ comes from the German word *Zahlen*, meaning "numbers".
+
+symbols:
+  - symbol: '\mathbb{Z}'
+    name: blackboard-bold Z
+    looks_like: A capital Z with its diagonal stroke doubled.
+    means: The set of all integers.
+    why: Z for the German *Zahlen*, "numbers". German mathematicians were very influential when the notation settled.
+    read_aloud: '"Z", or "the integers".'
+
+formal:
+  statement: |
+    The **integers** form the set $\mathbb{Z} = \{\ldots, -3, -2, -1, 0, 1, 2, 3, \ldots\}$, consisting of
+    the whole numbers together with their negatives.
+  kind: definition
+  glossary:
+    - {word: '\{\ldots, -2, -1, 0, 1, 2, \ldots\}', meaning: 'The set containing every integer - the dots on both sides mean the list continues forever in both directions.'}
+    - {word: whole numbers, meaning: '0, 1, 2, 3, ...'}
+    - {word: negatives, meaning: 'The opposites $-1, -2, -3, \ldots$'}
+
+notation:
+  - expression: '\mathbb{Z} = \{\ldots, -2, -1, 0, 1, 2, \ldots\}'
+    read_aloud: Z equals the set containing ..., negative two, negative one, zero, one, two, ...
+    parts:
+      - {symbol: '\mathbb{Z}', meaning: The integers.}
+      - {symbol: '\ldots \text{ (left)}', meaning: 'Continuing forever to the left - more and more negative.'}
+      - {symbol: '\ldots \text{ (right)}', meaning: 'Continuing forever to the right.'}
+    english: The integers run forever in both directions, one step at a time.
+  - expression: '-3 \in \mathbb{Z}'
+    read_aloud: negative three is in Z
+    parts:
+      - {symbol: '\in', meaning: Is an element of.}
+    english: Negative three is an integer.
+
+connections_back:
+  - {lesson: l1-negative-numbers, how: 'The negative numbers supply the left half of the integers.'}
+  - {lesson: l1-whole-numbers, how: 'The whole numbers are the right half (including zero).'}
+  - {lesson: l1-natural-numbers, how: 'Set notation and the symbol $\in$.'}
+
+worked:
+  title: Three families
+  problem: Is $-4$ a natural number? A whole number? An integer?
+  steps:
+    - Natural numbers are 1, 2, 3, ... - $-4$ is not one.
+    - Whole numbers are 0, 1, 2, ... - $-4$ is not one.
+    - Integers include the negatives of whole numbers - $-4$ is the negative of 4, so it is an integer.
+  answer: $-4 \notin \mathbb{N}$, it is not a whole number, but $-4 \in \mathbb{Z}$.
+
+experiment:
+  widget: number-sets
+  props: {numbers: ['3', '0', '-5', '12', '-1', '2.5'], sets: [natural, whole, integers]}
+  task: Place every card in the smallest family it belongs to (or outside them all).
+  goal: {sortAll: true}
+  success: |
+    Notice the families are nested: every natural number is a whole number, and every whole number is an
+    integer. 2.5 belongs to none of them - it needs a bigger family, the fractions.
+
+mistakes:
+  - mistake: Thinking numbers like $-\tfrac{1}{2}$ or $2.5$ are integers.
+    why: Integers are only the evenly spaced marks; these numbers sit between them.
+    fix: An integer has no fractional part.
+  - mistake: Forgetting zero when counting integers in a range.
+    why: Zero is an integer, sitting between $-1$ and 1.
+    fix: Count the negatives, then zero, then the positives.
+  - mistake: Thinking the integers have a smallest member.
+    why: However negative an integer is, one less is more negative still.
+    fix: The integers go on forever in both directions.
+
+statements:
+  - kind: established-fact
+    text: The letter Z for the integers comes from the German word *Zahlen*, "numbers".
+  - kind: proven-theorem
+    text: Every integer has a successor (one more) and a predecessor (one less), both of which are integers.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: which-integers
+      type: choice
+      kind: apply
+      multi: true
+      prompt: Which of these are integers? Choose all that apply.
+      options:
+        - text: '-7'
+          correct: true
+        - text: '0'
+          correct: true
+        - text: '25'
+          correct: true
+        - text: '2.5'
+          diagnosis: 2.5 lies halfway between 2 and 3 - it is not one of the evenly spaced marks.
+        - text: '-1/2'
+          diagnosis: Negative one half lies between $-1$ and 0, so it is not an integer.
+      explanation: $-7$, 0 and 25 are integers.
+    - id: count-range
+      type: number
+      kind: solve
+      prompt: How many integers are there from $-5$ to 5, including $-5$ and 5?
+      answer: '11'
+      common_wrong:
+        - answer: '10'
+          diagnosis: Don't forget zero - it is an integer too.
+      hint: Count the negatives, then zero, then the positives.
+      explanation: Five negatives, zero, and five positives - 11.
+    - id: predecessor
+      type: truefalse
+      kind: recall
+      prompt: 'True or false: every integer has an integer just before it (one less).'
+      answer: true
+      diagnosis: However far left you are, you can always take one more step left.
+      explanation: True - the integers have no first member.
+    - id: compare
+      type: generated
+      generator: compare-numbers
+      params: {min: -15, max: 15}
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: Explain what the integers are and how they differ from the whole numbers.
+      rubric:
+        - Integers are the whole numbers and their negatives.
+        - They go on forever in both directions (no smallest).
+        - Whole numbers do not include negatives.
+      model_answer: |
+        The integers are all the whole numbers together with their negatives - ..., $-2$, $-1$, 0, 1, 2,
+        ... They go on forever in both directions. Whole numbers are only 0, 1, 2, ... - no negatives.
+      explanation: Integers are the whole numbers plus their negatives.
+
+connections_forward:
+  - {lesson: l1-fractions, how: 'Numbers between the integers - fractions.'}
+  - {lesson: l1-even-odd, how: 'Every integer is either even or odd.'}
+  - {lesson: l2-integer-arithmetic, how: 'Adding, subtracting and multiplying integers.'}
+  - {lesson: l10-congruences, how: 'Number theory is the deep study of the integers.'}
+
+practice: [compare-numbers, number-line-move]
+
+alternatives:
+  - strategy: visual
+    title: Mirror the whole numbers
+    text: |
+      Write 0, 1, 2, 3, 4 on a strip of paper with equal gaps. Now imagine a mirror standing at 0. The
+      reflection shows $-1, -2, -3, -4$ on the other side. Put the strip and its reflection together and
+      you have the integers - the whole numbers and their mirror images.
+  - strategy: contrast
+    title: Three nested families
+    text: |
+      - **Natural numbers** $\mathbb{N}$: 1, 2, 3, ... (counting).
+      - **Whole numbers**: 0, 1, 2, 3, ... (counting, plus zero).
+      - **Integers** $\mathbb{Z}$: ..., $-2$, $-1$, 0, 1, 2, ... (whole numbers, plus negatives).
+
+      Each family contains the one above it. Each new family solves a problem: zero answers "how many in
+      an empty box?", and negatives let a temperature fall below zero.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      Integers are all the "whole steps" on a number line - going right (1, 2, 3...) and going left
+      ($-1$, $-2$, $-3$...), and zero in the middle. No halves, no in-between bits. Just whole steps, forever
+      both ways.

@@ -1,0 +1,210 @@
+id: l1-number-symbols
+estimated_minutes: 20
+
+goal: |
+  We are learning how ten digits and the idea of place value let us write any whole number, however
+  large.
+why: |
+  Place value is one of humanity's greatest inventions. With only ten symbols it writes every number,
+  and it makes calculation by hand possible. Later, an algorithm's speed is measured by the *number of
+  digits* of its input - so how numbers are written matters even in complexity theory.
+problem: |
+  How can just ten symbols, 0 to 9, write a number like three thousand and seventy-two?
+
+plain: |
+  We write numbers using ten **digits**: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9.
+
+  The trick is that **where a digit sits decides what it is worth**. Counting from the right:
+
+  - the first place counts **ones**,
+  - the second place counts **tens**,
+  - the third place counts **hundreds**,
+  - the fourth place counts **thousands**,
+
+  and each place is worth **ten times** the place to its right - because ten of one place make one of
+  the next (ten ones make a ten, ten tens make a hundred).
+
+  So 352 means 3 hundreds, 5 tens and 2 ones. And 523, with the same digits, is a very different
+  number: 5 hundreds, 2 tens and 3 ones. Zero fills any empty place: 305 has no tens.
+
+  Big numbers are easier to read if the digits are split into groups of three from the right:
+  1,000,000 is one million.
+
+analogy:
+  strategy: everyday-objects
+  title: Coins of different values
+  text: |
+    Imagine coins worth 1, 10 and 100. Three 100-coins, five 10-coins and two 1-coins make 352. Place
+    value is like a row of piles where each pile holds a different type of coin: the pile on the left
+    is the most valuable. The digit says how many coins are in each pile.
+
+visual:
+  widget: place-value
+  props: {value: 352, editable: true, showExpanded: true}
+  caption: |
+    What you are seeing: the number 352 shown as blocks. A flat square is one hundred (ten rows of ten),
+    a long stick is one ten, and a small cube is one. Underneath, each digit is lined up with its place
+    - hundreds, tens, ones - and the expanded form shows what each digit is worth.
+  prompt: Add a ten-stick when there are already nine. What happens to the blocks and the digits?
+
+example_simple:
+  title: Three hundred and fifty-two
+  problem: What does each digit in 352 mean?
+  steps:
+    - The 2 is in the ones place - 2 ones, worth 2.
+    - The 5 is in the tens place - 5 tens, worth 50.
+    - The 3 is in the hundreds place - 3 hundreds, worth 300.
+    - Together - 300 and 50 and 2.
+  answer: 352 is 3 hundreds, 5 tens and 2 ones - three hundred and fifty-two.
+
+example_harder:
+  title: A digit's value
+  problem: In 4,072, what is the 7 worth?
+  steps:
+    - Label the places from the right - 2 is ones, 7 is tens, 0 is hundreds, 4 is thousands.
+    - The 7 is in the tens place, so it counts 7 tens.
+    - 7 tens is seventy.
+  answer: The 7 is worth 70. (And the 0 tells us there are no hundreds.)
+
+word:
+  terms: [digit, place-value]
+  text: |
+    Each of the ten symbols is a **digit** (from Latin *digitus*, "finger" - again because we count
+    on ten fingers). The value a digit has because of its position is its **place value**. Our system
+    is called **base ten**, or the **decimal system**.
+
+symbols:
+  - symbol: '0\ 1\ 2\ 3\ 4\ 5\ 6\ 7\ 8\ 9'
+    name: the ten digits
+    looks_like: Ten distinct shapes, one for each number from zero to nine.
+    means: How many of a place's value are present - "none" up to "nine".
+    why: Ten digits are enough because ten of any place is carried as one of the next place. There is never a need for a single symbol meaning ten.
+    read_aloud: '"Zero, one, two, three, four, five, six, seven, eight, nine".'
+
+formal:
+  statement: |
+    In **base-ten place-value notation**, a whole number is written as a string of digits. Reading from
+    the right, the digits count ones, tens, hundreds, thousands and so on, each place being worth ten
+    times the place to its right. The number's value is the total of the values of all its digits.
+  kind: definition
+  glossary:
+    - {word: base ten, meaning: 'Grouping in tens - ten of one place make one of the next.'}
+    - {word: string of digits, meaning: 'Digits written next to each other, such as 352.'}
+    - {word: value of a digit, meaning: 'The digit times what its place is worth - in 352, the 5 is worth 5 tens, which is 50.'}
+
+notation:
+  - expression: '352 = 300 + 50 + 2'
+    read_aloud: three hundred and fifty-two equals three hundred plus fifty plus two
+    parts:
+      - {symbol: '300', meaning: 'The value of the 3 - three hundreds.'}
+      - {symbol: '50', meaning: 'The value of the 5 - five tens.'}
+      - {symbol: '2', meaning: 'The value of the 2 - two ones.'}
+    english: 352 is made of three hundreds, five tens and two ones. This is called the expanded form.
+
+connections_back:
+  - {lesson: l1-counting-objects, how: 'Grouping in tens is exactly what place value records.'}
+  - {lesson: l1-zero, how: 'Zero holds empty places.'}
+  - {lesson: l0-symbols, how: 'Digits are symbols for numbers.'}
+
+worked:
+  title: Building a number from its places
+  problem: Write the number with 2 thousands, 0 hundreds, 4 tens and 9 ones.
+  steps:
+    - Write the digits in place order, biggest place on the left - thousands, hundreds, tens, ones.
+    - 2, then 0 (no hundreds - the placeholder is essential), then 4, then 9.
+  answer: 2,049 - two thousand and forty-nine.
+
+experiment:
+  widget: place-value
+  props: {value: 0, editable: true, showExpanded: true}
+  task: Use the blocks to build the number 340.
+  goal: {value: 340}
+  success: |
+    340 is 3 hundreds, 4 tens and no ones - and the digits 3, 4, 0 say exactly that. Every whole
+    number can be built this way with at most nine blocks of each kind.
+
+mistakes:
+  - mistake: Thinking a digit always has the same value ("the 5 in 523 is worth 5").
+    why: Its value depends on its place - in 523 the 5 is in the hundreds place, worth 500.
+    fix: Ask "which place is it in?" before saying what a digit is worth.
+  - mistake: Leaving out placeholder zeros (writing 249 for "two thousand and forty-nine").
+    why: Without the 0, the 2 slides into the hundreds place.
+    fix: Fill every empty place with 0.
+  - mistake: Reading digits one by one ("three-five-two") instead of as a number.
+    why: That hides what the number is worth.
+    fix: Say the places - "three hundred and fifty-two".
+
+statements:
+  - kind: established-fact
+    text: Roman numerals do not use place value - in XXX each X is worth ten wherever it stands.
+  - kind: established-fact
+    text: The Babylonians used a place-value system based on sixty, which is why an hour has 60 minutes and a minute has 60 seconds.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: build
+      type: generated
+      generator: build-number
+    - id: digit
+      type: generated
+      generator: digit-value
+    - id: same-digit
+      type: truefalse
+      kind: apply
+      prompt: 'True or false: the digit 5 has the same value in 352 and in 523.'
+      answer: false
+      diagnosis: In 352 the 5 is in the tens place (50); in 523 it is in the hundreds place (500).
+      explanation: False. Place decides value - 50 in one number, 500 in the other.
+    - id: bigger
+      type: choice
+      kind: solve
+      prompt: Which is larger, 1,009 or 999?
+      options:
+        - text: 1,009
+          correct: true
+        - text: '999'
+          diagnosis: 999 has bigger digits, but 1,009 has a thousands digit - a whole extra place.
+      explanation: 1,009 has one thousand; 999 is less than a thousand.
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: Explain why 47 and 74 are different numbers even though they use the same digits.
+      rubric:
+        - The position of a digit decides its value (place value).
+        - In 47 the 4 is tens (40) and the 7 is ones; in 74 the 7 is tens (70) and the 4 is ones.
+      model_answer: |
+        A digit's value depends on its place. In 47 the 4 is in the tens place, so it is worth forty,
+        and the 7 is worth seven. In 74 the 7 is in the tens place, worth seventy, and the 4 is worth
+        four. So 47 is forty-seven and 74 is seventy-four.
+      explanation: Place value - the same digits in different places mean different amounts.
+
+connections_forward:
+  - {lesson: l1-number-lines, how: 'Numbers placed in order on a line.'}
+  - {lesson: l1-decimals, how: 'Place value continues to the right of a decimal point - tenths, hundredths.'}
+  - {lesson: l2-long-multiplication, how: 'Multiplying big numbers works place by place.'}
+  - {lesson: pa-time-complexity, how: 'For algorithms, the size of a number is how many digits it has.'}
+
+practice: [build-number, digit-value]
+
+alternatives:
+  - strategy: history
+    title: Why Roman numerals lost
+    text: |
+      Try adding CCCLII and DXXIII using only Roman numerals - it is awkward, because the symbols do
+      not line up by value. With place value, 352 + 523 lines up neatly: ones under ones, tens under
+      tens, hundreds under hundreds. When Hindu-Arabic place-value numerals spread through Europe
+      (popularised by Fibonacci's book of 1202), merchants discovered they could calculate on paper
+      instead of with counting boards. Place value made arithmetic for everyone possible.
+  - strategy: everyday-objects
+    title: The car odometer
+    text: |
+      A car's distance counter has wheels of digits. When the ones wheel goes past 9, it clicks back to
+      0 and pushes the tens wheel up by one. When the tens wheel passes 9, it pushes the hundreds wheel.
+      That "carry" is place value in action: ten of one place make one of the next.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      Imagine three boxes in a row. The right box holds single sweets, the middle box holds bags of
+      ten sweets, and the left box holds big bags of a hundred. If you have 3 big bags, 5 small bags and
+      2 single sweets, we write 352. The place of each number tells you which box it is.

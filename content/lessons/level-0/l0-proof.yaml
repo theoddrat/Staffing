@@ -1,0 +1,255 @@
+id: l0-proof
+estimated_minutes: 20
+
+goal: |
+  We are learning what a mathematical proof is, why examples are not enough, and how a single
+  counterexample can destroy a claim.
+why: |
+  Proof is what makes mathematical knowledge permanent. A theorem proved 2,300 years ago is still
+  true today and will be true forever. The Riemann Hypothesis and P versus NP are famous precisely
+  because nobody has managed to *prove* them - although huge amounts of evidence exist.
+problem: |
+  How can you be certain a statement is true for *every* case, when there are infinitely many
+  cases and you can only check a few?
+
+plain: |
+  A **proof** is an explanation that shows a statement is true in **every possible case** - not
+  just the cases you happened to check.
+
+  Checking examples is useful: it helps you believe something and understand it. But examples
+  can never cover infinitely many cases. Remember the circle pieces: 1, 2, 4, 8, 16... and then
+  31. Five examples agreed with "doubling", and the sixth did not.
+
+  A proof works differently. Instead of checking cases one by one, it explains a **reason** that
+  applies to all cases at once.
+
+  The opposite also matters. To show that a claim about "every" case is **false**, you need just
+  **one** case where it fails. That one case is called a **counterexample**.
+
+  - A statement that has been proved is a **theorem**.
+  - A statement that people believe but have not proved is a **conjecture**.
+
+analogy:
+  strategy: everyday-objects
+  title: Testing a bridge versus understanding it
+  text: |
+    Driving ten heavy lorries over a new bridge shows it held those ten lorries. It does not show
+    it will hold the eleventh. An engineer who calculates exactly how the steel carries the weight
+    can say "it will hold any lorry up to 40 tonnes" - and explain why. Examples are like the test
+    drives; a proof is like the engineer's calculation that covers every case.
+
+visual:
+  widget: pair-proof
+  props: {a: 6, b: 4}
+  caption: |
+    What you are seeing: two even numbers drawn as dots arranged in pairs (two rows). When the two
+    groups are pushed together, every dot still has a partner, because pairs joined to pairs are
+    still pairs. The table records each example you try. The argument underneath explains why
+    it *must* work for every even number, not just these.
+  prompt: Try several pairs of even numbers. Then read the argument and ask whether any example could break it.
+
+example_simple:
+  title: Even plus even
+  problem: Is the sum of two even numbers always even?
+  steps:
+    - Checking examples first - 2 + 4 = 6, 8 + 10 = 18, 12 + 6 = 18. All even. Encouraging, but only three cases.
+    - Now the reason. An even number is one that can be arranged entirely in pairs, with nothing left over.
+    - Take any two even numbers. Both groups of dots are made entirely of pairs.
+    - Putting the two groups together gives a group made entirely of pairs - nothing can be left over, because nothing was left over in either group.
+    - So the total is even. The reason did not depend on which even numbers we chose.
+  answer: Yes - and now we know it for every pair of even numbers, not just the ones we tried. That is a proof.
+
+example_harder:
+  title: Every odd number is prime?
+  problem: 'Someone notices that 3, 5 and 7 are odd, and each is a prime number (it cannot be split into equal rows except one row). They claim - "every odd number bigger than 1 is prime". Is this true?'
+  steps:
+    - The claim is about *every* odd number, so one failure is enough to destroy it.
+    - Try the next odd number - 9.
+    - 9 dots can be arranged as 3 equal rows of 3.
+    - So 9 is not prime, even though it is odd.
+  answer: The claim is false. 9 is a counterexample - one example is enough to disprove an "every" claim.
+
+word:
+  terms: [proof, counterexample, theorem, conjecture]
+  text: |
+    An argument that settles a statement for every case is a **proof**. One case that breaks an
+    "every" statement is a **counterexample**. A statement that has been proved is a **theorem**
+    (from Greek *theōrēma*, "something looked at"). A statement believed but not yet proved is a
+    **conjecture** (from Latin *conicere*, "to throw together" - an educated guess).
+
+symbols:
+  - symbol: '\blacksquare'
+    name: end-of-proof mark
+    looks_like: A small filled-in square at the end of a line.
+    means: '"The proof is finished."'
+    why: Proofs can be long. The square tells the reader exactly where the argument ends. Older books write "Q.E.D." instead - Latin for "which was to be demonstrated".
+    read_aloud: '"End of proof", or "Q.E.D." (say the three letters).'
+
+formal:
+  statement: |
+    A **proof** of a statement is a finite sequence of steps, each of which is an accepted
+    assumption, a definition, a previously proved result, or follows logically from earlier steps,
+    and whose final step is the statement itself.
+  kind: definition
+  glossary:
+    - {word: finite sequence of steps, meaning: 'A list of steps that ends - a proof cannot go on forever.'}
+    - {word: accepted assumption, meaning: A starting fact everyone agrees to use.}
+    - {word: previously proved result, meaning: 'A theorem that has already been proved and can be reused.'}
+    - {word: follows logically, meaning: 'Must be true if the earlier steps are true.'}
+
+notation:
+  - expression: '\text{even} + \text{even} = \text{even}\qquad\blacksquare'
+    read_aloud: even plus even equals even - end of proof
+    parts:
+      - {symbol: '\text{even}', meaning: Any even number at all - not one particular number.}
+      - {symbol: '+', meaning: Put the two together.}
+      - {symbol: '=', meaning: Is the same as.}
+      - {symbol: '\blacksquare', meaning: 'The proof is complete.'}
+    english: Whichever two even numbers you choose, their total is even - and this has been proved.
+
+connections_back:
+  - {lesson: l0-reasoning, how: 'A proof is a complete chain of reasoning.'}
+  - {lesson: l0-patterns, how: 'Patterns suggest what to prove; proof tells us whether the pattern really continues.'}
+
+worked:
+  title: Checking a claim
+  problem: 'Claim - "every number made of the same digit repeated, like 22, 333 or 4444, is divisible by its digit" (for example 333 shares exactly into 3 groups of 111). Is it a theorem, a conjecture, or false?'
+  steps:
+    - Check examples - 22 is 2 groups of 11. 333 is 3 groups of 111. 4444 is 4 groups of 1111. All work.
+    - Look for the reason. A number like 4444 is four copies of 1111 added together, so it splits into 4 equal groups of 1111.
+    - The same reason works for any repeated digit - "ddd...d" is d copies of "111...1".
+    - So the reason covers every case.
+  answer: It is true for every case, and the reason we found is a proof - so it is a theorem.
+
+experiment:
+  widget: pair-proof
+  props: {a: 2, b: 8}
+  task: Try at least three different pairs of even numbers. Then try to find two even numbers whose total is odd.
+  goal: {tries: 3}
+  success: |
+    You could not find a counterexample - and the pairs argument explains why none exists. Every
+    example agreed with the theorem, but it is the *reason*, not the examples, that makes it certain.
+
+mistakes:
+  - mistake: Thinking that many examples prove a statement.
+    why: Examples cover only the cases checked. A statement about infinitely many numbers needs a reason that covers all of them.
+    fix: Use examples to build belief and understanding, then look for the reason.
+  - mistake: Thinking one counterexample is "just an exception".
+    why: An "every" statement is false if even one case fails. There are no exceptions in mathematics.
+    fix: If you find a counterexample, the statement must be changed or dropped.
+  - mistake: Calling a well-supported conjecture a theorem.
+    why: Evidence, however strong, is not proof.
+    fix: Say "conjecture" until a proof exists - as with the Riemann Hypothesis.
+
+statements:
+  - kind: proven-theorem
+    text: The sum of two even numbers is always even.
+  - kind: disproved-claim
+    text: Every odd number greater than 1 is prime.
+    note: '9 is a counterexample: 9 = 3 rows of 3.'
+  - kind: proven-theorem
+    text: There are infinitely many prime numbers.
+    note: Proved by Euclid around 300 BCE. You will study the proof in Level 10.
+  - kind: conjecture
+    text: Every even number greater than 2 is the sum of two prime numbers (Goldbach's conjecture, 1742).
+  - kind: computational-observation
+    text: Goldbach's conjecture has been checked by computer for every even number up to 4 × 10¹⁸ (four billion billion).
+    note: This enormous evidence is still not a proof - which is why Goldbach's statement is still a conjecture.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: five-examples
+      type: choice
+      kind: recall
+      prompt: You check a statement about numbers in 5 examples, and it works every time. What do you know?
+      options:
+        - text: It is true in those 5 cases, but it might fail in some other case.
+          correct: true
+        - text: It is true for every number.
+          diagnosis: Five examples cannot cover every number. Remember the circle pieces - 1, 2, 4, 8, 16, then 31.
+        - text: It is false.
+          diagnosis: Nothing has gone wrong yet - but nothing has been proved either.
+      explanation: Examples show the statement holds in those cases only. A proof is needed for all cases.
+    - id: one-counterexample
+      type: truefalse
+      kind: recall
+      prompt: 'True or false: one counterexample is enough to show that a statement about "every" case is false.'
+      answer: true
+      diagnosis: An "every" statement claims no exceptions, so a single exception destroys it.
+      explanation: True. One case that fails is enough.
+    - id: find-counterexample
+      type: choice
+      kind: counterexample
+      prompt: 'Which number is a counterexample to the claim "every odd number is bigger than 2"?'
+      options:
+        - text: '1'
+          correct: true
+        - text: '3'
+          diagnosis: 3 is odd and bigger than 2, so it agrees with the claim.
+        - text: '9'
+          diagnosis: 9 is odd and bigger than 2, so it agrees with the claim.
+        - text: '4'
+          diagnosis: 4 is not odd, so the claim says nothing about it.
+      explanation: 1 is odd but not bigger than 2, so it breaks the claim.
+    - id: goldbach-kind
+      type: choice
+      kind: apply
+      prompt: Goldbach's statement - every even number greater than 2 is the sum of two primes - has been checked up to 4 × 10¹⁸ but never proved. It is a...
+      options:
+        - text: conjecture.
+          correct: true
+        - text: theorem.
+          diagnosis: A theorem needs a proof. Huge evidence is still not a proof.
+        - text: disproved claim.
+          diagnosis: No counterexample has ever been found.
+      explanation: Believed, heavily tested, but unproved - a conjecture.
+    - id: why-not-examples
+      type: explain
+      kind: explain
+      prompt: Explain to a friend why checking a thousand examples does not prove a statement about all numbers, but one bad example can disprove it.
+      rubric:
+        - There are infinitely many numbers, so examples can never cover them all.
+        - A pattern can hold for many cases and then fail (or any similar point).
+        - '"Every" claims have no exceptions, so one failing case shows the claim is false.'
+      model_answer: |
+        There are infinitely many numbers, so a thousand examples still leave infinitely many
+        unchecked - and patterns can break after many cases. A proof gives a reason that covers
+        every case at once. But a claim about every number has no room for exceptions, so finding
+        just one number where it fails is enough to show it is false.
+      explanation: Examples cannot cover infinitely many cases; one exception breaks an "every" claim.
+
+connections_forward:
+  - {lesson: l7-direct-proof, how: 'Level 7 teaches the main methods of proof.'}
+  - {lesson: l7-counterexamples, how: 'Counterexamples studied carefully.'}
+  - {lesson: l7-conjectures, how: 'How conjectures arise and how they are settled.'}
+  - {lesson: pb-critical-line, how: 'The Riemann Hypothesis is a conjecture - trillions of checked cases, but no proof.'}
+  - {lesson: pa-class-np, how: 'Most experts conjecture that P is not equal to NP, but no one has a proof.'}
+
+practice: [is-prime]
+
+alternatives:
+  - strategy: story
+    title: The mathematician and the scientist
+    text: |
+      A scientist, an engineer and a mathematician are on a train through a new country. They see a
+      black sheep in a field. "Look," says the scientist, "the sheep here are black." The engineer
+      says, "At least one sheep here is black." The mathematician says, "There is at least one
+      field, containing at least one sheep, at least one side of which is black." The joke is about
+      the mathematician's care: claim exactly what you have shown, and nothing more. A proof is
+      what lets you claim more.
+  - strategy: visual
+    title: Seeing why, not just that
+    text: |
+      Draw an even number of dots in two rows: every dot has a partner below or above it. Draw
+      another even number the same way. Slide the second drawing next to the first. The two rows
+      just get longer - every dot still has a partner. Notice that you never needed to know *which*
+      even numbers they were. A picture that works no matter which numbers you choose is a proof.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      Your friend says "every ball in this bag is red". You pull out three red balls. Is your
+      friend right? Maybe! But there might be a blue one at the bottom. If you pull out one blue
+      ball, you know for sure your friend was wrong. And the only way to know for sure they were
+      right is to have a good reason - like watching them fill the bag only from a box of red
+      balls. That good reason is what mathematicians call a proof.

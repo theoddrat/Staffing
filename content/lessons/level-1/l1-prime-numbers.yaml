@@ -1,0 +1,231 @@
+id: l1-prime-numbers
+estimated_minutes: 25
+
+goal: |
+  We are learning what prime numbers are - whole numbers bigger than 1 that cannot be arranged into a
+  rectangle with more than one row - and why mathematicians have studied them for over two thousand years.
+why: |
+  Primes are the building blocks of all whole numbers: every whole number above 1 is made by multiplying
+  primes together. They are also deeply mysterious. The Riemann Hypothesis - one of the two destinations
+  of this journey - is, at heart, a precise statement about how the primes are spread out.
+problem: |
+  Some numbers of tiles can be arranged into neat rectangles in several ways; others refuse to form any
+  rectangle except one long row. Which numbers refuse, and why do they matter?
+
+plain: |
+  Take some square tiles and try to arrange them into a rectangle with **equal rows** - at least two rows,
+  and at least two tiles in each row.
+
+  - **6 tiles** can make 2 rows of 3. A real rectangle!
+  - **7 tiles** cannot. 2 rows leaves one over; 3 rows leaves one over; and so on. The only arrangement is
+    one long row of 7.
+
+  Numbers like 7, which only make a single row, are called **prime numbers**. The first few are
+  **2, 3, 5, 7, 11, 13, 17, 19, 23, 29**.
+
+  Three important facts:
+
+  - **1 is not prime.** One tile is not "a row that cannot be split" in any interesting sense, and - more
+    importantly - mathematicians define primes to be bigger than 1 so that every number has exactly one
+    way of being broken into primes. (You will see why in Level 10.)
+  - **2 is prime** - two tiles make one row of 2 or two rows of 1, nothing else. It is the only even prime.
+  - **There are infinitely many primes.** They never run out, though they become rarer as numbers grow.
+
+analogy:
+  strategy: everyday-objects
+  title: Atoms and building blocks
+  text: |
+    Everything around you is built from atoms. In the same way, every whole number bigger than 1 is built by
+    multiplying primes together: 12 is built from 2, 2 and 3. The primes themselves cannot be broken into
+    smaller whole-number pieces - they are the atoms of arithmetic.
+
+visual:
+  widget: rectangle-arranger
+  props: {n: 7, editable: true, maxN: 30}
+  caption: |
+    What you are seeing: a number of square tiles and a control for how many equal rows to make. If the rows
+    come out equal with none left over, the tiles form a rectangle; if not, the leftover tiles are shown in
+    red. For a prime number, every choice except 1 row (or one tile per row) leaves tiles over.
+  prompt: Try 7 tiles in 2, 3, 4, 5 and 6 rows. Then try 8, 9, 11 and 12 tiles. Which numbers are prime?
+
+example_simple:
+  title: Five tiles
+  problem: Is 5 a prime number?
+  steps:
+    - Try 2 rows - 2 tiles each uses 4, leaving 1 over.
+    - Try 3 rows - 1 tile each uses 3; 2 tiles each would need 6. It does not work.
+    - Try 4 rows - 1 each uses 4, leaving 1 over.
+    - No rectangle with at least two rows of at least two tiles exists.
+  answer: Yes, 5 is prime.
+
+example_harder:
+  title: Is 51 prime?
+  problem: 51 is odd and does not end in 5. Is it prime?
+  steps:
+    - It is not divisible by 2 (it is odd) or by 5 (it does not end in 0 or 5).
+    - Try 3 rows - skip count by 3 - 3, 6, 9, ..., 48, 51. It lands exactly on 51!
+    - So 51 tiles make 3 rows of 17.
+  answer: No - 51 = 3 rows of 17, so 51 is not prime. It only *looks* prime.
+
+word:
+  terms: [prime-number]
+  text: |
+    These numbers are called **prime numbers**, or just **primes**, from Latin *primus*, "first" - they come
+    first, before all the numbers built from them.
+
+symbols: []
+no_symbol_note: |
+  There is no special symbol meaning "is prime". Mathematicians traditionally use the letter $p$ to stand
+  for "some prime number", as in "let $p$ be a prime" - you will see this constantly in number theory.
+
+formal:
+  statement: |
+    A natural number $p$ is **prime** if $p > 1$ and the only natural numbers that divide $p$ exactly are $1$
+    and $p$ itself.
+  kind: definition
+  glossary:
+    - {word: natural number, meaning: 'A counting number 1, 2, 3, ...'}
+    - {word: 'p > 1', meaning: '$p$ is greater than 1 - so 1 is excluded.'}
+    - {word: divide exactly, meaning: 'Share $p$ objects into equal rows with nothing left over.'}
+    - {word: 'only 1 and p', meaning: 'The only rectangles are 1 row of $p$ and $p$ rows of 1.'}
+
+notation:
+  - expression: '2,\ 3,\ 5,\ 7,\ 11,\ 13,\ 17,\ 19,\ \ldots'
+    read_aloud: two, three, five, seven, eleven, thirteen, seventeen, nineteen, and so on
+    parts:
+      - {symbol: '2', meaning: 'The smallest prime, and the only even one.'}
+      - {symbol: '\ldots', meaning: 'The primes continue forever - but with no simple pattern.'}
+    english: The prime numbers, which never end.
+
+connections_back:
+  - {lesson: l1-equal-groups, how: 'Primes are defined by which equal-row arrangements are possible.'}
+  - {lesson: l1-natural-numbers, how: 'Primes are natural numbers bigger than 1.'}
+
+worked:
+  title: Fifteen and thirteen
+  problem: Which of 15 and 13 is prime?
+  steps:
+    - 15 - try 3 rows. Skip count by 5 - 5, 10, 15 - so 3 rows of 5 works. 15 is not prime.
+    - 13 - try 2 rows (leaves 1 over), 3 rows (leaves 1), 4 rows (leaves 1), 5 rows (leaves 3), 6 rows (leaves 1). Beyond 6 rows, each row would have just 1 tile.
+    - No rectangle works for 13.
+  answer: 13 is prime; 15 is not (it is 3 rows of 5).
+
+experiment:
+  widget: sieve
+  props: {max: 50, guided: true}
+  task: Find all the primes up to 50 with the Sieve of Eratosthenes. Start with 2 - keep it, and cross out every multiple of 2 (every second number). Then do the same with 3, 5 and 7.
+  goal: {complete: true}
+  success: |
+    The numbers that survive are exactly the primes up to 50. Notice that you only needed to sieve with 2,
+    3, 5 and 7: any number up to 50 that is not prime has one of these as a factor. And notice how irregular
+    the survivors are - that irregularity is the mystery the Riemann Hypothesis is about.
+
+mistakes:
+  - mistake: Thinking 1 is prime.
+    why: Primes are defined to be bigger than 1. This keeps the "building blocks" idea clean - each number breaks into primes in exactly one way.
+    fix: Remember the definition starts "$p > 1$".
+  - mistake: Thinking every odd number is prime.
+    why: 9, 15, 21, 25, 27, 33, 35, 39, 45, 49, 51, ... are odd but not prime.
+    fix: Test for rows of 3, 5 and 7 as well as 2.
+  - mistake: Thinking 2 is not prime because it is even.
+    why: 2 can only be arranged as 1 row of 2 - it fits the definition perfectly.
+    fix: Every *other* even number is 2 rows of something, so 2 is the only even prime.
+
+statements:
+  - kind: proven-theorem
+    text: There are infinitely many prime numbers.
+    note: Proved by Euclid around 300 BCE. You will study the proof in Level 10.
+  - kind: computational-observation
+    text: There are exactly 25 primes less than 100.
+  - kind: conjecture
+    text: There are infinitely many pairs of primes that differ by 2, such as 11 and 13, or 17 and 19 (the twin prime conjecture).
+  - kind: established-fact
+    text: As of late 2024, the largest known prime had more than 41 million digits. It was found by a volunteer computing project, the Great Internet Mersenne Prime Search.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: is-prime-a
+      type: generated
+      generator: is-prime
+      params: {max: 50}
+    - id: is-prime-b
+      type: generated
+      generator: is-prime
+      params: {max: 100}
+    - id: one
+      type: truefalse
+      kind: recall
+      prompt: 'True or false: 1 is a prime number.'
+      answer: false
+      diagnosis: Primes are defined to be greater than 1, so 1 is not prime.
+      revisit: l1-prime-numbers
+      explanation: False. By definition primes are bigger than 1.
+    - id: even-prime
+      type: choice
+      kind: recall
+      prompt: Which even number is prime?
+      options:
+        - text: '2'
+          correct: true
+        - text: None - no even number is prime.
+          diagnosis: 2 tiles can only make 1 row of 2 or 2 rows of 1, so 2 is prime.
+        - text: '4'
+          diagnosis: 4 tiles make 2 rows of 2, a real rectangle - so 4 is not prime.
+      explanation: 2 is the only even prime; every other even number is 2 rows of something.
+    - id: count-to-20
+      type: number
+      kind: solve
+      prompt: How many prime numbers are there less than 20?
+      answer: '8'
+      common_wrong:
+        - answer: '9'
+          diagnosis: Did you include 1? It is not prime. The primes below 20 are 2, 3, 5, 7, 11, 13, 17, 19.
+        - answer: '7'
+          diagnosis: Did you leave out 2? It is prime. The primes below 20 are 2, 3, 5, 7, 11, 13, 17, 19.
+      hint: List them carefully, testing each number from 2 to 19.
+      explanation: 2, 3, 5, 7, 11, 13, 17, 19 - eight primes.
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: Explain what a prime number is using the idea of arranging tiles, and say why 9 is not prime.
+      rubric:
+        - A prime is a whole number bigger than 1 whose tiles can only make a single row (no rectangle with at least 2 rows of at least 2).
+        - 9 tiles can be arranged as 3 rows of 3, so 9 is not prime.
+      model_answer: |
+        A prime number is a whole number bigger than 1 whose tiles can only be laid out as one long row - you
+        can never make a rectangle with two or more equal rows. 9 is not prime because 9 tiles make a
+        rectangle of 3 rows of 3.
+      explanation: Primes allow no rectangle except a single row; 9 is 3 rows of 3.
+
+connections_forward:
+  - {lesson: l1-composite-numbers, how: 'The numbers that are not prime.'}
+  - {lesson: l10-primes-in-depth, how: 'Euclid''s proof that the primes never run out.'}
+  - {lesson: l10-prime-distribution, how: 'How the primes thin out as numbers grow.'}
+  - {lesson: pb-euler-product, how: 'The zeta function can be written as a product over all the primes - the bridge to the Riemann Hypothesis.'}
+
+practice: [is-prime]
+
+alternatives:
+  - strategy: physical-activity
+    title: Coins on a table
+    text: |
+      Take 12 coins and try to make rectangles: 2 rows of 6, 3 rows of 4, 4 rows of 3, 6 rows of 2. Lots of
+      choices! Now take 11 coins. 2 rows? One left over. 3 rows? Two left over. 4 rows? Three left over. 5 rows?
+      One left over. Nothing works except one long line. 11 is stubborn - and stubborn numbers are prime.
+  - strategy: history
+    title: An ancient obsession
+    text: |
+      The Greek mathematician Euclid proved around 300 BCE that the primes never run out. Around 200 BCE,
+      Eratosthenes invented his "sieve" for finding them. In the 1700s Leonhard Euler discovered a surprising
+      link between the primes and infinite sums, and in 1859 Bernhard Riemann used that link to write down the
+      hypothesis that bears his name. Today, the largest known primes have millions of digits, and the
+      security of online banking relies on the fact that multiplying two large primes is easy while undoing it
+      seems very hard - an idea connected to P versus NP. Both of this course's destinations grow from this
+      lesson.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      Some numbers of blocks can be stacked into neat rectangles - 6 blocks make 2 rows of 3. But some numbers
+      can't! Try 5 blocks: they just make one long line. Numbers like 5 that only make a line are called prime
+      numbers. They are special, like the basic pieces everything else is built from.

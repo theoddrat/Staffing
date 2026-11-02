@@ -1,0 +1,219 @@
+id: l1-equal-quantities
+estimated_minutes: 15
+
+goal: |
+  We are learning exactly what "equal" means, and the true meaning of the equals sign $=$:
+  "the two sides are the same amount".
+why: |
+  The equals sign is the most important symbol in mathematics. Every equation - from $2 + 3 = 5$
+  to the equations of the zeta function - is a claim that two things are equal. Misreading it as
+  "here comes the answer" is the most common reason algebra later feels confusing.
+problem: |
+  What exactly are we claiming when we write $=$, and how can we check that the claim is true?
+
+plain: |
+  Two quantities are **equal** when they are exactly the same amount. Five apples and five pears are
+  equal *in number*: they pair off perfectly, with nothing left over.
+
+  The **equals sign** $=$ makes a claim: *the thing on the left is the same amount as the thing on
+  the right*. It works like a **balance scale** - the scale sits level only when both sides hold the
+  same amount.
+
+  This means $=$ is **not** an instruction "work out the answer". These are all true:
+
+  - $3 + 2 = 5$
+  - $5 = 3 + 2$ (the same claim, written the other way round)
+  - $2 + 3 = 1 + 4$ (neither side is "the answer" - both sides are 5)
+
+  And equal things behave sensibly: anything equals itself; if one thing equals a second, the second
+  equals the first; and if two things both equal a third, they equal each other.
+
+analogy:
+  strategy: everyday-objects
+  title: The balance scale
+  text: |
+    A balance scale has two pans. Put the same weight on each and the beam sits level; put more on one
+    side and it tips. The equals sign is a written balance: $2 + 3 = 1 + 4$ says the left pan (2 and 3)
+    and the right pan (1 and 4) hold exactly the same amount, so the beam is level.
+
+visual:
+  widget: balance
+  props: {left: 5, right: 5, editable: true, showNumbers: true}
+  caption: |
+    What you are seeing: a balance scale with blocks on each pan. The beam tips down toward the
+    heavier side. When both pans hold the same number of blocks, the beam is level and the statement
+    underneath shows $=$.
+  prompt: Add and remove blocks on each side. When is the beam level?
+
+example_simple:
+  title: Five and three-plus-two
+  problem: Is $3 + 2 = 5$ true?
+  steps:
+    - Left side - 3 blocks and 2 more blocks is 5 blocks.
+    - Right side - 5 blocks.
+    - Both sides hold the same amount, so the balance is level.
+  answer: True. Both sides are five.
+
+example_harder:
+  title: No answer on either side
+  problem: Is $2 + 3 = 1 + 4$ true?
+  steps:
+    - Left side - 2 and 3 more is 5.
+    - Right side - 1 and 4 more is 5.
+    - Both sides are 5, so they are equal - even though neither side is a single "answer".
+  answer: True. The equals sign only claims the two sides are the same amount.
+
+word:
+  terms: [equal]
+  text: |
+    Being the same amount is called being **equal**, and the claim that two things are equal is called
+    an **equality** (or, once letters appear, an **equation**). The two sides are called the
+    **left-hand side** and **right-hand side**.
+
+symbols:
+  - symbol: '='
+    name: equals sign
+    looks_like: Two short parallel lines, one above the other.
+    means: '"Is the same amount as". The left-hand side and the right-hand side are equal.'
+    why: Robert Recorde invented it in 1557, choosing two parallel lines of the same length because nothing could be more equal.
+    read_aloud: '"Equals" or "is equal to". $5 = 3 + 2$ is "five equals three plus two".'
+
+formal:
+  statement: |
+    Two numbers $a$ and $b$ are **equal**, written $a = b$, when they are the same number. For any
+    numbers $a$, $b$ and $c$, equality obeys three laws:
+
+    - $a = a$ (everything equals itself);
+    - if $a = b$ then $b = a$ (equality works both ways);
+    - if $a = b$ and $b = c$ then $a = c$ (things equal to the same thing are equal to each other).
+  kind: definition
+  glossary:
+    - {word: 'a, b, c', meaning: Any numbers at all.}
+    - {word: same number, meaning: 'The same amount - collections of each size match one-to-one exactly.'}
+    - {word: 'if ... then ...', meaning: 'Whenever the first part is true, the second part is also true.'}
+
+notation:
+  - expression: '2 + 3 = 1 + 4'
+    read_aloud: two plus three equals one plus four
+    parts:
+      - {symbol: '2 + 3', meaning: 'The left-hand side - its amount is 5.'}
+      - {symbol: '=', meaning: Is the same amount as.}
+      - {symbol: '1 + 4', meaning: 'The right-hand side - its amount is also 5.'}
+    english: Two and three together is the same amount as one and four together.
+
+connections_back:
+  - {lesson: l1-comparing-numbers, how: 'Equal is the case of comparing where nothing is left over.'}
+  - {lesson: l0-symbols, how: 'The equals sign was introduced there; here we look at exactly what it claims.'}
+
+worked:
+  title: Balance the scale
+  problem: The left pan has 3 + 5 blocks. How many blocks must go on the right pan to make it level?
+  steps:
+    - The left pan has 3 and 5 more, which is 8 blocks.
+    - For the beam to be level, the right pan needs the same amount.
+  answer: 8 blocks, so $3 + 5 = 8$.
+
+experiment:
+  widget: balance
+  props: {left: 6, right: 2, editable: true, showNumbers: true}
+  task: Change the blocks until the balance is perfectly level.
+  goal: {balanced: true}
+  success: |
+    The beam is level, so the two sides are equal. Whatever you did - adding to the lighter side or
+    removing from the heavier - you made the two amounts the same. Algebra will use exactly this idea:
+    keep the balance level.
+
+mistakes:
+  - mistake: 'Reading "=" as "the answer comes next".'
+    why: Then $5 = 3 + 2$ looks wrong and $2 + 3 = 1 + 4$ looks like nonsense - but both are true.
+    fix: Read $=$ as "is the same amount as" every time.
+  - mistake: 'Writing chains like $2 + 3 = 5 + 1 = 6$.'
+    why: This claims $2 + 3$ equals $5 + 1$, which is false (5 is not 6).
+    fix: Each $=$ must join two things that really are equal. Write $2 + 3 = 5$ and then $5 + 1 = 6$ separately.
+
+statements:
+  - kind: definition
+    text: For all numbers $a$, $b$, $c$ - $a = a$; if $a = b$ then $b = a$; and if $a = b$ and $b = c$ then $a = c$.
+    note: These three laws are sometimes taken as the definition of what any "equality" must satisfy.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: both-sides
+      type: truefalse
+      kind: apply
+      prompt: 'True or false: $2 + 3 = 1 + 4$.'
+      answer: true
+      diagnosis: Work out each side separately - both are 5, so they are equal.
+      explanation: True - both sides are 5.
+    - id: fill-in
+      type: number
+      kind: solve
+      prompt: 'What number makes this true?  $5 + 2 = \square + 3$'
+      answer: '4'
+      common_wrong:
+        - answer: '7'
+          diagnosis: 7 is the value of the left side, but the right side is "something + 3". It must be 7 altogether, so the box is 4.
+        - answer: '10'
+          diagnosis: That adds all the numbers. The two sides must be the same amount - the left is 7, so the box plus 3 must make 7.
+      hint: Work out the left side first. Then ask what must be added to 3 to make the same amount.
+      explanation: The left side is 7. For the right side to be 7, the box must be 4, because $4 + 3 = 7$.
+    - id: answer-left
+      type: truefalse
+      kind: recall
+      prompt: 'True or false: $9 = 4 + 5$ is wrong, because the answer must come after the equals sign.'
+      answer: false
+      diagnosis: '"=" says both sides are the same amount - it does not care which side is a single number.'
+      explanation: False. $9 = 4 + 5$ is true.
+    - id: chain
+      type: choice
+      kind: counterexample
+      prompt: 'A student writes $4 + 4 = 8 + 2 = 10$. What is wrong?'
+      options:
+        - text: It claims $4 + 4$ equals $8 + 2$, but 8 is not 10.
+          correct: true
+        - text: Nothing is wrong - each step is correct.
+          diagnosis: Every equals sign must join two things that are really equal. $4 + 4$ is 8, but $8 + 2$ is 10.
+        - text: You are not allowed to write two equals signs.
+          diagnosis: Several equals signs are allowed, as long as everything joined really is equal, as in $2 + 2 = 4 = 1 + 3$.
+      explanation: Each $=$ must join equal things. Here $4 + 4$ is 8 but $8 + 2$ is 10, so they are not equal.
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: Explain what the equals sign means, and why $6 = 2 + 4$ is a true statement.
+      rubric:
+        - '"=" means the two sides are the same amount (like a level balance).'
+        - It does not mean "here comes the answer".
+        - Both sides of $6 = 2 + 4$ are 6.
+      model_answer: |
+        The equals sign means the left side and the right side are the same amount, like a level
+        balance. It doesn't mean "the answer comes next". $6 = 2 + 4$ is true because 2 and 4 together
+        make 6, which is the same as the left side.
+      explanation: '"=" claims both sides are the same amount.'
+
+connections_forward:
+  - {lesson: l1-fractions, how: 'Equal parts are the basis of fractions.'}
+  - {lesson: l3-equals, how: 'Reading equalities in more advanced notation.'}
+  - {lesson: l4-equations, how: 'Equations - equalities with an unknown number - are solved by keeping the balance level.'}
+
+alternatives:
+  - strategy: physical-activity
+    title: A coat-hanger balance
+    text: |
+      Hang two paper cups from the ends of a coat-hanger and hang the hanger from a door handle. Put 5
+      coins in each cup and the hanger hangs level. Put 2 coins plus 3 coins in one cup, and 1 coin
+      plus 4 coins in the other: still level. That is $2 + 3 = 1 + 4$. The equals sign is just a way of
+      writing "the hanger is level".
+  - strategy: contrast
+    title: Calculator habit versus mathematics
+    text: |
+      On a calculator you press 2, +, 3, = and the answer appears. That makes "=" feel like a button
+      meaning "show me the answer". But in mathematics, "=" is a *statement*: it claims two things are
+      the same amount. A calculator could never display $2 + 3 = 1 + 4$, yet it is a perfectly true
+      mathematical sentence.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      You have 2 red blocks and 3 blue blocks. Your friend has 1 red block and 4 blue blocks. Who has
+      more? Count: you have 5, your friend has 5. Same! When two things are the same amount, we use the
+      equals sign: $2 + 3 = 1 + 4$.

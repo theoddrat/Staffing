@@ -1,0 +1,234 @@
+id: l0-real-world
+estimated_minutes: 15
+
+goal: |
+  We are learning how mathematics describes real situations using models - and why every model
+  leaves something out.
+why: |
+  Mathematics is powerful in the real world because we can describe a situation with numbers and
+  rules, then *reason* about it to make predictions. Weather forecasts, bridges and phone networks
+  all rely on mathematical models. Knowing what models can and cannot do is part of thinking like a
+  mathematician.
+problem: |
+  How can thinking about numbers and rules tell you anything about the real world - about money,
+  journeys, or how much paint to buy?
+
+plain: |
+  To use mathematics on a real situation, we build a **model**:
+
+  1. **Pick out the quantities that matter** - money saved, distance walked, tiles needed.
+  2. **Describe how they are connected with a rule** - "I add 5 coins every week".
+  3. **Reason with the rule** to make a prediction - "after 4 weeks I will have added 20 coins".
+  4. **Check the prediction against reality**, and improve the model if needed.
+
+  A model is always **simpler than reality**. A savings model ignores the week you forget to save;
+  a walking model ignores getting tired. That is not a flaw - leaving out details is what makes the
+  model useful. But it means a model's predictions are only as good as its assumptions.
+
+analogy:
+  strategy: everyday-objects
+  title: A map is a model
+  text: |
+    A map of a city leaves out almost everything - trees, people, the colour of doors - and keeps
+    only what you need to find your way: streets and their connections. Because it leaves so much
+    out, it fits in your pocket. A mathematical model is a map of a situation, drawn with numbers
+    and rules.
+
+visual:
+  widget: model
+  props: {scenario: savings}
+  caption: |
+    What you are seeing: a savings jar described by a model. The model has two numbers - how many
+    coins are in the jar at the start, and how many are added each week - and one rule: "each week,
+    add the weekly amount". The slider moves forward in time, and the model predicts how many coins
+    the jar holds after each week.
+  prompt: Change the starting amount and the weekly amount, and predict the total before moving the slider.
+
+example_simple:
+  title: The savings jar
+  problem: A jar has 10 coins. You add 5 coins every week. How many coins after 2 weeks?
+  steps:
+    - 'The quantities that matter - coins in the jar, and coins added per week.'
+    - 'The rule - each week, add 5.'
+    - After week 1 - 10 and 5 more is 15.
+    - After week 2 - 15 and 5 more is 20.
+  answer: 20 coins - if you really do save 5 every week.
+
+example_harder:
+  title: The walking model
+  problem: 'A walker covers 3 kilometres every hour. The model predicts 12 kilometres after 4 hours. In reality she covers only 10. Was the mathematics wrong?'
+  steps:
+    - The arithmetic was right - 3 kilometres each hour for 4 hours is 3 + 3 + 3 + 3 = 12.
+    - The model assumed she walks at exactly the same speed for 4 hours.
+    - Real walkers get tired, stop for water and walk uphill. The model left those details out.
+    - The mismatch tells us the model's assumption was too simple, not that the arithmetic failed. A better model might include a rest.
+  answer: The reasoning was correct, but the model was too simple. Prediction errors usually point to missing details in the model.
+
+word:
+  terms: [mathematical-model]
+  text: |
+    A simplified description of a real situation in numbers and rules is called a **mathematical
+    model**. The things a model takes for granted - "she walks at the same speed" - are its
+    **assumptions**.
+
+symbols: []
+no_symbol_note: |
+  Models are written with symbols, and in Level 4 you will see how letters let a model describe
+  quantities that change - see [[lesson:l4-why-letters|Why letters appear in mathematics]]. For now,
+  words and numbers are enough.
+
+formal:
+  statement: |
+    A **mathematical model** is a simplified representation of a real-world situation in which the
+    relevant quantities are represented by numbers and the relationships between them by
+    mathematical rules. Conclusions drawn from a model hold for the real situation only to the
+    extent that the model's assumptions are accurate.
+  kind: definition
+  glossary:
+    - {word: simplified representation, meaning: 'A description that keeps the important parts and leaves out the rest.'}
+    - {word: relevant quantities, meaning: 'The amounts that matter for the question being asked.'}
+    - {word: relationships, meaning: 'How the quantities depend on one another.'}
+    - {word: assumptions, meaning: 'What the model takes for granted about the situation.'}
+
+notation:
+  - expression: '10 + 5 + 5 + 5 + 5 = 30'
+    read_aloud: ten plus five plus five plus five plus five equals thirty
+    parts:
+      - {symbol: '10', meaning: The coins in the jar at the start.}
+      - {symbol: '+\,5', meaning: 'The coins added each week - four times, for four weeks.'}
+      - {symbol: '30', meaning: The predicted total after four weeks.}
+    english: Starting with 10 coins and adding 5 each week for four weeks gives 30 coins.
+
+connections_back:
+  - {lesson: l0-measurement, how: 'Models need quantities, and many quantities come from measuring.'}
+  - {lesson: l0-rules, how: 'The heart of a model is a rule connecting quantities.'}
+  - {lesson: l0-symbols, how: 'Symbols let us write models compactly.'}
+
+worked:
+  title: Tiling a floor
+  problem: A floor is to be covered with square tiles - 4 rows, each with 6 tiles. How many tiles are needed? What might the model leave out?
+  steps:
+    - 'The quantities - rows (4), tiles per row (6), total tiles.'
+    - The rule - the total is 4 rows of 6, counted row by row - 6, 12, 18, 24.
+    - The model predicts 24 tiles.
+    - What it leaves out - tiles break when cut, rooms are not perfect rectangles, a builder buys spares.
+  answer: 24 tiles in the model. A sensible builder buys a few extra, because the model assumes no breakages.
+
+experiment:
+  widget: model
+  props: {scenario: journey}
+  task: Use the journey model to predict how far a traveller goes in 5 hours. Make your prediction before moving the slider, then check it.
+  goal: {predict: true}
+  success: |
+    Your prediction came from reasoning with the model's rule, not from watching the journey.
+    That is what models are for - and checking against reality is how we find out whether the
+    model's assumptions were good ones.
+
+mistakes:
+  - mistake: Thinking a model's prediction is guaranteed to come true.
+    why: A model is only as good as its assumptions. Reality has details the model left out.
+    fix: Treat predictions as "what happens if the assumptions hold", and check them.
+  - mistake: Thinking a wrong prediction means the arithmetic was wrong.
+    why: Often the arithmetic is fine and an assumption is wrong.
+    fix: When a model fails, look first at what it assumed.
+  - mistake: Trying to put every detail into a model.
+    why: A model with everything in it is as complicated as reality, and no longer useful.
+    fix: Keep only the details that matter for your question.
+
+statements:
+  - kind: established-fact
+    text: Weather forecasts are computed from mathematical models of the atmosphere.
+  - kind: established-fact
+    text: '"All models are wrong, but some are useful" is a saying attributed to the statistician George Box.'
+    note: It means every model simplifies, but a good simplification can still predict well.
+
+assessment:
+  pass_score: 0.7
+  questions:
+    - id: savings-three
+      type: number
+      kind: apply
+      prompt: A jar has 10 coins. You add 5 coins each week. According to the model, how many coins are in the jar after 3 weeks?
+      answer: '25'
+      common_wrong:
+        - answer: '15'
+          diagnosis: That is the coins added over 3 weeks. Do not forget the 10 that were in the jar at the start.
+        - answer: '20'
+          diagnosis: That is after 2 weeks. Add one more week of 5 coins.
+      explanation: 10, then 15 after week 1, 20 after week 2, 25 after week 3.
+    - id: leaves-out
+      type: choice
+      kind: apply
+      prompt: A model says a plant grows 2 cm every day. Which real detail does this model leave out?
+      options:
+        - text: Plants grow at different speeds in cold weather.
+          correct: true
+        - text: The plant gets taller as days pass.
+          diagnosis: The model includes that - it is exactly what "grows 2 cm every day" describes.
+        - text: Growth is measured in centimetres.
+          diagnosis: The model includes the unit - centimetres.
+      explanation: The model assumes the same growth every day, ignoring weather and other changes.
+    - id: wrong-prediction
+      type: truefalse
+      kind: recall
+      prompt: 'True or false: if a model''s prediction turns out wrong, there must be a mistake in the arithmetic.'
+      answer: false
+      diagnosis: The arithmetic can be perfect while an assumption of the model is unrealistic.
+      explanation: False. Usually an assumption, not the arithmetic, is to blame.
+    - id: which-model
+      type: choice
+      kind: recall
+      prompt: Which of these is a mathematical model?
+      options:
+        - text: '"A bus leaves every 15 minutes, starting at 8:00" - used to predict when buses arrive.'
+          correct: true
+        - text: A photograph of a bus stop.
+          diagnosis: A photograph shows the situation but gives no quantities or rules to reason with.
+        - text: A poem about buses.
+          diagnosis: A poem may describe buses, but it does not give quantities and rules for prediction.
+      explanation: The timetable rule describes quantities (times) with a rule, so we can predict.
+    - id: own-words
+      type: explain
+      kind: explain
+      prompt: In your own words, what is a mathematical model, and why can its predictions be wrong?
+      rubric:
+        - A model describes a real situation using numbers and rules.
+        - It is used to make predictions.
+        - It is simpler than reality / leaves details out, so its assumptions may not hold.
+      model_answer: |
+        A mathematical model describes a real situation with numbers and rules so we can reason about
+        it and make predictions. It is always simpler than reality - it leaves details out - so if an
+        assumption does not hold, the prediction can be wrong even though the reasoning was right.
+      explanation: Models describe situations with numbers and rules; they simplify, so predictions depend on assumptions.
+
+connections_forward:
+  - {lesson: l1-what-is-a-number, how: 'Level 1 looks closely at the numbers that models are built from.'}
+  - {lesson: l4-why-letters, how: 'Letters let models describe quantities that change.'}
+  - {lesson: l12-pr-random-models-primes, how: 'Mathematicians model the primes as if they were random - a model that makes remarkably good predictions, and that the Riemann Hypothesis helps to justify.'}
+
+alternatives:
+  - strategy: everyday-objects
+    title: Packing for a trip
+    text: |
+      Planning a 5-day trip, you think: "I need 1 shirt per day, plus 1 spare - so 6 shirts." That
+      is a model! The quantities are days and shirts; the rule is "one per day, plus a spare". It
+      ignores the possibility of spilling soup on two shirts in one day - and that is fine,
+      because the spare covers most surprises. Everyday planning is full of small mathematical
+      models.
+  - strategy: question-led
+    title: What does the model assume?
+    text: |
+      For each model, ask "what is it assuming?"
+
+      - "A car at 60 km per hour travels 120 km in 2 hours." Assumes: no traffic, no stops.
+      - "A class of 30 needs 30 chairs." Assumes: everyone comes, nobody brings a friend.
+      - "A pizza for every 3 people." Assumes: everyone is equally hungry.
+
+      Finding the assumptions is the most important skill in using mathematics on the real world.
+  - strategy: eli5
+    title: Like you're five
+    text: |
+      If you eat 2 biscuits every day, how many biscuits do you need for 3 days? 2, 4, 6 - six
+      biscuits! That is a little model: it pretends you always eat exactly 2. On a hungry day you
+      might eat 3 - then the model is a bit wrong. Models are guesses about the world that use
+      numbers, and they work well when the world behaves the way we pretended.
